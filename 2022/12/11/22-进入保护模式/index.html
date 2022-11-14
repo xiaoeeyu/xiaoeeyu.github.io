@@ -1,0 +1,119 @@
+<!DOCTYPE html><html class="appearance-auto" lang="zh-CN"><head><meta charset="UTF-8"><title>22-进入保护模式</title><meta name="description" content="May the Force be with you"><meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, initial-scale=1"><!-- Google Analytics --><!-- End Google Analytics -->
+<!-- Baidu Analytics --><!-- End Baidu Analytics --><link rel="icon" href="/images/rabete.jpg"><link rel="stylesheet" href="/style/common/bulma.css"><link rel="stylesheet" href="/style/base.css"><link rel="stylesheet" href="/style/common/helper.css"><script src="/js/common.js"></script><link rel="stylesheet" href="/style/post.css"><link rel="stylesheet" href="/style/themes/highlight-theme-light.css"><link rel="stylesheet" href="/style/common/jquery.fancybox.min.css"><script src="/js/highlight.pack.js"></script><meta name="description" content="
+保护模式是要保护什么
+
+
+
+
+全局描述符表GDT和全局描述符表GDTR
+
+保护模式下: 对内存的访问让然使用段地址和偏移地址, 但是, 在每个段能够访问之前, 必须先进性登记
+
+
+
+超出范围的访问会产生一个内部异常的中断
+和一个段有关的信息需要八个字节(64位)来描述, 称之为段描述符, 而在内存中存放这些描述符的地方就叫做描述符表
+全局描述符表(GDT): 顾名思义是为整个计算机硬件系统服务的, 进入保护模式之前由系统定义
+(GDTR): 描述符表寄存器(48位)
+
+
+
+
+准备创建全局描述符表
+
+
+寻址GDT起始地址的方法
+从CS段主引导程序0x7c00+gdt_base获取到GDT的起始地址, 然后除以16分别讲余数和商放入dx和ax中(16位(除数)	(dx高位和ax低位拼接)(被除数)	ax(商).."><script src="//unpkg.com/valine/dist/Valine.min.js"></script><meta name="generator" content="Hexo 6.3.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head><body class="is-flex is-flex-direction-column"><header class="header-widget is-flex-shrink-0 is-hidden-mobile"><div class="container is-fullhd is-flex is-justify-content-space-between is-align-items-center is-full-height"><section class="is-hidden-mobile is-flex-shrink-0"><h2><a href="/">xiaoeryu's blog</a></h2></section><h3 class="is-hidden-mobile is-family-serif is-full-height is-flex is-align-items-center is-flex-shrink-0"><div class="is-full-height" id="postTopic"><p class="is-full-height is-flex-shrink-0 is-flex is-align-items-center is-justify-content-center">22-进入保护模式</p><p class="is-full-height is-flex-shrink-0 is-flex is-align-items-center is-justify-content-center">点击返回顶部</p></div></h3><aside class="is-flex-shrink-0"><h3 class="is-inline-block"><a href="/">首页</a></h3><h3 class="is-inline-block"><a href="/about">关于</a></h3><h3 class="is-inline-block"><a href="/archives">归档</a></h3></aside></div></header><header class="is-flex header-widget is-flex-shrink-0 is-align-items-center is-justify-content-center is-hidden-tablet"><h3 class="is-inline-block"><a href="/">首页</a></h3><h3 class="is-inline-block"><a href="/about">关于</a></h3><h3 class="is-inline-block"><a href="/archives">归档</a></h3></header><main><main class="container is-max-widescreen content section post-page pt-4 px-4"><div class="columns is-flex-desktop is-justify-content-center is-flex-direction-row-reverse"><div class="column is-3 is-hidden-mobile is-hidden"></div><div class="column is-9"><header class="my-4"><a href="/tags/X86%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80%EF%BC%9A%E5%AE%9E%E6%A8%A1%E5%BC%8F%E5%88%B0%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F"><i class="tag post-item-tag">X86汇编语言：实模式到保护模式</i></a></header><h1 class="mt-0 mb-1 is-family-serif" id="postTitle">22-进入保护模式</h1><time class="has-text-grey" datetime="2022-12-11T14:40:00.000Z">2022-12-11</time><article class="mt-2 post-content"><ol>
+<li><p>保护模式是要保护什么</p>
+<span id="more"></span>
+
+<img src="/2022/12/11/22-%E8%BF%9B%E5%85%A5%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F/17acce13de7fa801e5431f34b95e4867.png" class="" title="17acce13de7fa801e5431f34b95e4867">
+</li>
+<li><p>全局描述符表GDT和全局描述符表GDTR</p>
+<img src="/2022/12/11/22-%E8%BF%9B%E5%85%A5%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F/157c9ec465396fb8b62c7a2978d4dbc5-166832631434711.png" class="" title="描述符表">
+<p>保护模式下: 对内存的访问让然使用段地址和偏移地址, 但是, 在每个段能够访问之前, 必须先进性登记</p>
+</li>
+</ol>
+<ul>
+<li>超出范围的访问会产生一个内部异常的中断</li>
+<li>和一个段有关的信息需要八个字节(64位)来描述, 称之为段描述符, 而在内存中存放这些描述符的地方就叫做描述符表<ul>
+<li>全局描述符表(GDT): 顾名思义是为整个计算机硬件系统服务的, 进入保护模式之前由系统定义</li>
+<li>(GDTR): 描述符表寄存器(48位)<img src="/2022/12/11/22-%E8%BF%9B%E5%85%A5%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F/21d28d9a8682eb20c1fc1f0938ba542a-166832631434713.png" class="" title="GDTR"></li>
+</ul>
+</li>
+</ul>
+<ol start="3">
+<li>准备创建全局描述符表</li>
+</ol>
+<ul>
+<li>寻址GDT起始地址的方法<ul>
+<li>从CS段主引导程序0x7c00+gdt_base获取到GDT的起始地址, 然后除以16分别讲余数和商放入dx和ax中(16位(除数)	<em>(dx高位和ax低位拼接)(被除数)	ax(商)	dx(余数))</em></li>
+</ul>
+</li>
+</ul>
+<pre><code>             ;计算GDT所在的逻辑段地址
+         mov ax,[cs:gdt_base+0x7c00]        ;低16位
+         mov dx,[cs:gdt_base+0x7c00+0x02]   ;高16位
+         mov bx,16
+         div bx
+         mov ds,ax                          ;令DS指向该段以进行操作
+         mov bx,dx                          ;段内起始偏移地址    
+</code></pre>
+<img src="/2022/12/11/22-%E8%BF%9B%E5%85%A5%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F/029bee4356257f4d8734737427d4815c-166832631434712.png" class="">
+
+<center>gdt_base是相对于主引导程序的偏移偏移处存放的是我们自定义的GDT表地址</center>
+
+<ol start="4">
+<li><p>描述符的分类<br>描述符像是一个索引或者标签</p>
+<img src="/2022/12/11/22-%E8%BF%9B%E5%85%A5%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F/64dca01d9aaef20ad3fc23c38cf90fce-166832631434714.png" class="" title="描述符">
+<img src="/2022/12/11/22-%E8%BF%9B%E5%85%A5%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F/e50691a47afce4f90646d6c746fd58b2-166832631434716.png" class="">
+<img src="/2022/12/11/22-%E8%BF%9B%E5%85%A5%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F/b343ae3ebbe2b9f4f2029b61fa263798-166832631434715.png" class="">
+</li>
+<li><p>存储器的段描述符- 段的类型和基地址</p>
+<ol>
+<li>每个描述符占八个字节也就是64位<ol>
+<li>如果S=1则当前描述符是存储器的段描述符<img src="/2022/12/11/22-%E8%BF%9B%E5%85%A5%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F/e5f98567154b1d8b3b15d8220e5c52ea-166832631434717.png" class="" title="段描述符格式"></li>
+</ol>
+</li>
+</ol>
+</li>
+<li><p>存储器的段描述符-段界限及访问控制</p>
+<img src="/2022/12/11/22-%E8%BF%9B%E5%85%A5%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F/fb8dc67c0a729b770d438eab61806921-166832631434718.png" class="" title="描述符的段界限">
+</li>
+<li><p>安装存储器的段描述符</p>
+<img src="/2022/12/11/22-%E8%BF%9B%E5%85%A5%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F/6a09e183989807ba111d49b25cb34200-166832631434819.png" class="" title="段描述符对齐">
+</li>
+<li><p>加载全局描述符表寄存器GDTR</p>
+<ol>
+<li>lgdt指令<img src="/2022/12/11/22-%E8%BF%9B%E5%85%A5%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F/1b2a40a6372b98fe0840ad30357b939b-166832631434820.png" class="" title="lgdt"></li>
+</ol>
+</li>
+</ol>
+<pre><code>             ;初始化描述符表寄存器GDTR
+         mov word [cs: gdt_size+0x7c00],15  ;描述符表的界限（总字节数减一）
+
+         lgdt [cs: gdt_size+0x7c00] 
+</code></pre>
+<ol start="9">
+<li><p>开启处理器的第21跟地址线A20<br>通过在第21跟地址线加与门来控制输出, 在现在的CPU上已经废弃</p>
+</li>
+<li><p>通过设置寄存器CR0的PE位进入保护模式</p>
+<ol>
+<li>将CR0的第一个比特位置1打开保护模式的开关</li>
+</ol>
+</li>
+<li><p>描述符高速缓存器和保护模式下的内存访问</p>
+<ol>
+<li>将段选择子传送到段选择器后处理器会到描述符表中取出指定的描述符然后将描述符的内容传送到描述符高速缓存器</li>
+<li>将段选择子传送到段选择器, 将描述符中的索引号乘以8得到在描述符表中的偏移量(因为TI位是0所以是从GDT中找)加上GDTR中的线性基地址, 得到一个线性地址从GDT表中取出描述符, 然后将描述符的内容传送到描述符高速缓存器中</li>
+</ol>
+</li>
+<li><p>在调试器中观察实模式和保护模式的内存访问</p>
+<ol>
+<li>在32位的实模式下也是使用高速缓存器保存基地址, 写入的时候会自动用偏移加上基地址去寻址</li>
+</ol>
+</li>
+</ol>
+</article><section class="jump-container is-flex is-justify-content-space-between my-6"><!-- em is empty placeholder--><a class="button is-default" href="/2022/12/11/31-%E5%88%86%E9%A1%B5%E5%92%8C%E5%8A%A8%E6%80%81%E9%A1%B5%E9%9D%A2%E5%88%86%E9%85%8D/" title="31. 分页和动态页面分配"><i class="iconfont icon-prev mr-2 has-text-grey"></i><span class="has-text-weight-semibold">上一页: 31. 分页和动态页面分配</span></a><a class="button is-default" href="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/" title="Andromeda木马分析"><span class="has-text-weight-semibold">下一页: Andromeda木马分析</span><i class="iconfont icon-next ml-2 has-text-grey"></i></a></section><article class="mt-6 comment-container"><script async repo="Haojen/Claudia-theme-blog" src="https://utteranc.es/client.js" issue-term="pathname" theme="preferred-color-scheme"></script></article><article class="mt-6 comment-container" id="vcomments"></article></div></div></main></main><footer class="is-flex is-flex-direction-column is-align-items-center is-flex-shrink-0 is-family-serif"><section class="sns-container"><a title="twitter" target="_blank" rel="noopener nofollow" href="//twitter.com//"><i class="iconfont icon-twitter"></i></a><!-- Github--><a title="github" target="_blank" rel="noopener nofollow" href="//github.com/xiaoeryu"><i class="iconfont icon-github"></i></a><!-- Ins--><a title="instagram" target="_blank" rel="noopener nofollow" href="//www.instagram.com//"><i class="iconfont icon-ins"></i></a><!-- RSS--><!-- 知乎--><!-- 领英--><!-- 脸书--><a title="facebook" target="_blank" rel="noopener nofollow" href="//www.facebook.com//"><i class="iconfont icon-tian7_facebook"></i></a></section><p><span>Copyright ©</span><span> xiaoeryu 2022</span></p><div class="is-flex is-justify-content-center is-flex-wrap-wrap"><p>Powered by Hexo &verbar;&nbsp;</p><p class="is-flex is-justify-content-center"><a title="Hexo theme author" target="_blank" rel="noopener" href="//github.com/haojen">Theme by Haojen&nbsp;</a></p><div style="margin-top: 2px"><a class="github-button" title="github-button" target="_blank" rel="noopener" href="https://github.com/haojen/hexo-theme-Claudia" data-color-scheme="no-preference: light; light: light; dark: dark;" data-show-count="true"></a></div></div><div><span></span></div></footer><script async defer src="https://buttons.github.io/buttons.js"></script><script src="/js/jquery-3.6.1.min.js"></script><script src="/js/jquery-fancybox.min.js"></script><script src="/js/img_zoom.js"></script><script src="/js/post.js"></script></body></html>

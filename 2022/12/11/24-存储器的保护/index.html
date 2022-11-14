@@ -1,0 +1,208 @@
+<!DOCTYPE html><html class="appearance-auto" lang="zh-CN"><head><meta charset="UTF-8"><title>24-存储器的保护</title><meta name="description" content="May the Force be with you"><meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, initial-scale=1"><!-- Google Analytics --><!-- End Google Analytics -->
+<!-- Baidu Analytics --><!-- End Baidu Analytics --><link rel="icon" href="/images/rabete.jpg"><link rel="stylesheet" href="/style/common/bulma.css"><link rel="stylesheet" href="/style/base.css"><link rel="stylesheet" href="/style/common/helper.css"><script src="/js/common.js"></script><link rel="stylesheet" href="/style/post.css"><link rel="stylesheet" href="/style/themes/highlight-theme-light.css"><link rel="stylesheet" href="/style/common/jquery.fancybox.min.css"><script src="/js/highlight.pack.js"></script><meta name="description" content="01. MOV DS, AX和 MOV DS, EAX这两条指令计算GDT的逻辑段地址,使用64位除法指令: eax(商)保存段地址, edx(余数)保存偏移div r/m32
+
+
+
+mov ds, ax在16位操作尺寸下机器码是==8ED8==, 在32位操作尺寸下应该是==668ED8==, 但是Intel的官方文档对这种指令做了优化: 
+
+但是有些编译器在编译这条指令的时候仍然会加上==66前缀==所以官方文档建议使用mov ds, eax, 不过在NASM编译器下编译的结果不管是mov ds, eax还是mov ds, ax在16还是32操作尺寸下都不会有==前缀66==.编译之后查看==lst==列表文件:使用16位操作尺寸时:
+
+使用32位操作尺寸时:
+
+可以看到NASM编译器将指令译码成了==.."><script src="//unpkg.com/valine/dist/Valine.min.js"></script><meta name="generator" content="Hexo 6.3.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head><body class="is-flex is-flex-direction-column"><header class="header-widget is-flex-shrink-0 is-hidden-mobile"><div class="container is-fullhd is-flex is-justify-content-space-between is-align-items-center is-full-height"><section class="is-hidden-mobile is-flex-shrink-0"><h2><a href="/">xiaoeryu's blog</a></h2></section><h3 class="is-hidden-mobile is-family-serif is-full-height is-flex is-align-items-center is-flex-shrink-0"><div class="is-full-height" id="postTopic"><p class="is-full-height is-flex-shrink-0 is-flex is-align-items-center is-justify-content-center">24-存储器的保护</p><p class="is-full-height is-flex-shrink-0 is-flex is-align-items-center is-justify-content-center">点击返回顶部</p></div></h3><aside class="is-flex-shrink-0"><h3 class="is-inline-block"><a href="/">首页</a></h3><h3 class="is-inline-block"><a href="/about">关于</a></h3><h3 class="is-inline-block"><a href="/archives">归档</a></h3></aside></div></header><header class="is-flex header-widget is-flex-shrink-0 is-align-items-center is-justify-content-center is-hidden-tablet"><h3 class="is-inline-block"><a href="/">首页</a></h3><h3 class="is-inline-block"><a href="/about">关于</a></h3><h3 class="is-inline-block"><a href="/archives">归档</a></h3></header><main><main class="container is-max-widescreen content section post-page pt-4 px-4"><div class="columns is-flex-desktop is-justify-content-center is-flex-direction-row-reverse"><div class="column is-3 is-hidden-mobile"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#01-MOV-DS-AX%E5%92%8C-MOV-DS-EAX"><span class="toc-text">01. MOV DS, AX和 MOV DS, EAX</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#02-%E4%BF%AE%E6%94%B9%E6%AE%B5%E5%AF%84%E5%AD%98%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4"><span class="toc-text">02. 修改段寄存器的保护</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%9C%AC%E8%8A%82%E4%B8%BB%E8%A6%81%E5%86%85%E5%AE%B9-%E4%BB%8B%E7%BB%8D%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F%E4%B8%8B%E4%BF%AE%E6%94%B9%E6%AE%B5%E5%AF%84%E5%AD%98%E5%99%A8%E6%97%B6%E7%9A%84%E4%BF%9D%E6%8A%A4%E6%9C%BA%E5%88%B6"><span class="toc-text">本节主要内容:介绍保护模式下修改段寄存器时的保护机制</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#03-%E4%BB%A3%E7%A0%81%E6%AE%B5%E6%89%A7%E8%A1%8C%E6%97%B6%E7%9A%84%E4%BF%9D%E6%8A%A4"><span class="toc-text">03. 代码段执行时的保护</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#04-%E7%94%A8%E5%90%91%E4%B8%8A%E6%89%A9%E5%B1%95%E7%9A%84%E6%AE%B5%E4%BD%9C%E4%B8%BA%E6%A0%88%E6%AE%B5"><span class="toc-text">04. 用向上扩展的段作为栈段</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#05-%E5%90%91%E4%B8%8A%E6%89%A9%E5%B1%95%E7%9A%84%E6%AE%B5%E4%BD%9C%E4%B8%BA%E6%A0%88%E6%AE%B5%E6%97%B6%E7%9A%84%E4%BF%9D%E6%8A%A4"><span class="toc-text">05. 向上扩展的段作为栈段时的保护</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#06-%E8%AE%BF%E9%97%AE%E6%99%AE%E9%80%9A%E6%95%B0%E6%8D%AE%E6%AE%B5%E6%97%B6%E7%9A%84%E4%BF%9D%E6%8A%A4"><span class="toc-text">06. 访问普通数据段时的保护</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#07-%E5%86%85%E5%AD%98%E7%BA%BF%E6%80%A7%E5%9C%B0%E5%9D%80%E7%9A%84%E5%9B%9E%E7%BB%95%E7%89%B9%E6%80%A7"><span class="toc-text">07. 内存线性地址的回绕特性</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#08-%E7%94%A8%E5%90%91%E4%B8%8B%E6%89%A9%E5%B1%95%E7%9A%84%E6%AE%B5%E4%BD%9C%E4%B8%BA%E6%A0%88%E6%AE%B5"><span class="toc-text">08. 用向下扩展的段作为栈段</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#09-%E5%90%91%E4%B8%8B%E6%89%A9%E5%B1%95%E7%9A%84%E6%AE%B5%E4%BD%9C%E4%B8%BA%E6%A0%88%E6%AE%B5%E6%97%B6%E7%9A%84%E4%BF%9D%E6%8A%A4"><span class="toc-text">09. 向下扩展的段作为栈段时的保护</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#10-%E9%80%9A%E8%BF%87%E5%88%AB%E5%90%8D%E6%9D%A5%E5%AE%9E%E7%8E%B0%E6%AE%B5%E7%9A%84%E5%85%B1%E7%94%A8%E5%92%8C%E5%85%B1%E4%BA%AB"><span class="toc-text">10. 通过别名来实现段的共用和共享</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#11-%E5%86%92%E6%B3%A1%E6%8E%92%E5%BA%8F%E7%9A%84%E5%9F%BA%E6%9C%AC%E5%8E%9F%E7%90%86"><span class="toc-text">11. 冒泡排序的基本原理</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#12-32%E4%BD%8D%E6%93%8D%E4%BD%9C%E5%B0%BA%E5%AF%B8%E4%B8%8B%E7%9A%84LOOP%E6%8C%87%E4%BB%A4"><span class="toc-text">12. 32位操作尺寸下的LOOP指令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#13-%E6%95%B0%E6%8D%AE%E4%BA%A4%E6%8D%A2%E6%8C%87%E4%BB%A4XCHG"><span class="toc-text">13. 数据交换指令XCHG</span></a></li></ol></div><div class="column is-9"><header class="my-4"><a href="/tags/X86%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80%EF%BC%9A%E5%AE%9E%E6%A8%A1%E5%BC%8F%E5%88%B0%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F"><i class="tag post-item-tag">X86汇编语言：实模式到保护模式</i></a></header><h1 class="mt-0 mb-1 is-family-serif" id="postTitle">24-存储器的保护</h1><time class="has-text-grey" datetime="2022-12-11T14:45:00.000Z">2022-12-11</time><article class="mt-2 post-content"><h2 id="01-MOV-DS-AX和-MOV-DS-EAX"><a href="#01-MOV-DS-AX和-MOV-DS-EAX" class="headerlink" title="01. MOV DS, AX和 MOV DS, EAX"></a>01. MOV DS, AX和 MOV DS, EAX</h2><p>这两条指令计算GDT的逻辑段地址,使用64位除法指令: eax(商)保存段地址, edx(余数)保存偏移<br><code>div r/m32</code></p>
+<span id="more"></span>
+
+<img src="/2022/12/11/24-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4/1b5047235903fba8bbb50f7d347f9a3a.png" class="">
+<p><code>mov ds, ax</code>在16位操作尺寸下机器码是==8ED8==, 在32位操作尺寸下应该是==668ED8==, 但是Intel的官方文档对这种指令做了优化: </p>
+<img src="/2022/12/11/24-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4/b8566b6fdd714d9f20e7ccc8d0d9d4fe.png" class="">
+<p>但是有些编译器在编译这条指令的时候仍然会加上==66前缀==所以官方文档建议使用<code>mov ds, eax</code>, 不过在NASM编译器下编译的结果不管是<code>mov ds, eax</code>还是<code>mov ds, ax</code>在16还是32操作尺寸下都不会有==前缀66==.<br>编译之后查看==lst==列表文件:<br>使用16位操作尺寸时:</p>
+<img src="/2022/12/11/24-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4/012766565620de75ea1fd36a90d8a8e7.png" class="" title="16位操作尺寸">
+<p>使用32位操作尺寸时:</p>
+<img src="/2022/12/11/24-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4/a756dd044cdd21358ddb4cd809abbf26.png" class="" title="32位操作尺寸">
+<p>可以看到NASM编译器将指令译码成了==8ED8==.<br>处理器不允许在任何时候使用索引字段为==0==的选择子去访问==0号==描述符, 任何时候的访问都会引发异常中断</p>
+<img src="/2022/12/11/24-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4/dff722b81cbcf64715b115b92270809e.png" class="" title="0描述符">
+
+<ul>
+<li>此节程序设置了==GDT==逻辑地址, 安装了描述符, 加载初始化了==GDTR==, 打开==A20==地址线, 清除中断, 设置CR0寄存器的<strong>PE</strong>位进入保护模式, <strong>jmpf</strong>进入保护模式执行.</li>
+</ul>
+<h2 id="02-修改段寄存器的保护"><a href="#02-修改段寄存器的保护" class="headerlink" title="02. 修改段寄存器的保护"></a>02. 修改段寄存器的保护</h2><h3 id="本节主要内容-介绍保护模式下修改段寄存器时的保护机制"><a href="#本节主要内容-介绍保护模式下修改段寄存器时的保护机制" class="headerlink" title="本节主要内容:介绍保护模式下修改段寄存器时的保护机制"></a>本节主要内容:介绍保护模式下修改段寄存器时的保护机制</h3><p>保护模式下对段寄存器的修改要分为两步:<br>    1. 将一个描述符选择子带入段选择器此时要检查带入值的合法性<br>    2. 用选择子选择一个描述符并传送到段描述符高速缓存器, 此时要检查描述符的完整性和正确性</p>
+<p>在上一节进入到保护模式之后, 执行了==jmpf==, 此时给出的段选择子的==TI位==都是0, 表示要选择的描述符都在==GDT==中. 同时也要执行两步检查来确认这一过程的正确</p>
+<ol>
+<li><p>将一个描述符选择子带入段选择器此时要检查带入值的合法性</p>
+<ol>
+<li>处理器会检查访问的描述符的边界, 如果超过了边界条件就会产生一个==异常中断13==, 同时寄存器保持原来的值不变. <img src="/2022/12/11/24-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4/cf7be462210f27a56e9cce8c87d9f08c.png" class=""></li>
+</ol>
+</li>
+<li><p>用选择子选择一个描述符并传送到段描述符高速缓存器, 此时要检查描述符的完整性和正确性</p>
+<ol>
+<li>确定描述符的类型, 比如描述符==S=1, X=1==, 表示此描述符代表一个代码段, 只能加载到段寄存器CS. 首先表示描述符类型==TYPE==的四个字段必须是有效的(X E W A), 接着按下表检查描述符的类型与段寄存器是否匹配<img src="/2022/12/11/24-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4/7f3245ca542c143d7664e8a2f4f92e11.png" class="">
+<img src="/2022/12/11/24-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4/834979e102d8631b7557cc77b899c79c.png" class=""></li>
+</ol>
+</li>
+<li><p>检查描述符中的==P位==是否为1, 若为0表示虽然描述符已经定义, 但是它对应的段并不存在物理内存中, 此时处理器终止处理并引发==11号中断==. 一般来说需要定义一个中断处理程序接管==11号中断==,  在中断处理的过程中把该描述符所对应的段从外部硬盘等存储器中调入内存, 然后将==P位==置1. 这种类型的中断返回时并不是返回到下一条指令二十返回到引起中断的那条指令, 这次就可以重新加载描述符到段寄存器了. 如果==P位=1==处理器将描述符加载到段描述符对应的描述符高速缓存器中, 同时将==A位==置1.<br>代码段在==R=1==的时候类似于只读存储器ROM可以使用段超越前缀CS来读取其中的内容也可以将它们的描述符选择子加载到==DS ES FS GS==来作为数据段访问, 但是代码段在任何时候都是不可写的.</p>
+</li>
+<li><p>一旦上述验证全部通过, 处理器就将==段选择子==加载到==段寄存器==的==段选择器==中.</p>
+</li>
+</ol>
+<p>另外还有一些注意事项:</p>
+<img src="/2022/12/11/24-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4/0eb3ec5d63e3e3e6cd184b56a6239824.png" class="">
+
+<h2 id="03-代码段执行时的保护"><a href="#03-代码段执行时的保护" class="headerlink" title="03. 代码段执行时的保护"></a>03. 代码段执行时的保护</h2><p>进入保护模式之后转移指令<code>jmp 0x0010:flush</code>会修改段寄存器CS, 会进行一系列检查工作:</p>
+<ul>
+<li>首先选择子==0x0010==指定的描述符不能超过描述符表的边界;</li>
+<li>其次指定的描述符必须是代码段描述符, 相关的信息必须是完整且合法的;</li>
+<li>还要检查偏移量flush是否超出了当前段的界限. 因为是刚进入保护模式, CS的描述符高速缓存器中的内容还是之前的值, 段界限是==0XFFFF==.<br>一旦通过了检查, 就将==选择子0x0010==带入==CS的段选择器==, 并用描述符填充描述符高速缓存器, 接着用偏移量==flush==修改指令指针寄存器==EIP==, 处理器立即转入目标位置处执行.<br>因为这一条指令刷新了段寄存器==CS==, 导致处理器到一个新的代码段执行.<br>这个描述符指定了==D位是1==表示处理器的默认操作尺寸是32位的, 因为这个描述符所指定的段在==jmp==指令之前是在16位操作尺寸下运行的, 之后是在32位操作尺寸下运行的.<img src="/2022/12/11/24-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4/896a649a211d80d2b5e6992a385fe38c.png" class="">
+在保护模式下一旦相应的描述符被加载到CS描述符高速缓存器中, 则处理器取指令和执行指令的时候就不在访问描述符表, 二十直接使用CS描述符高速缓存器的内容, 从中取得线性基地址同指令指针寄存器==EIP==的值相加形成32位线性基地址, 从内存中取得下一条指令.</li>
+</ul>
+<p>在执行下一条指令之前, 处理器也要检查指令的地址是否有效, 以防止执行超出允许范围之外的指令. </p>
+<p>每个段都有其段界限, 位于其描述符中实际使用的段界限其粒度取决于描述符的==G位==, 实际使用的段界限也要满足于==0 &lt; EIP+指令长度-1 &gt;实际使用的段界限. </p>
+<img src="/2022/12/11/24-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4/77aebdb7c57f5f90aec1ef93d6cd2f83.png" class="">
+
+<h2 id="04-用向上扩展的段作为栈段"><a href="#04-用向上扩展的段作为栈段" class="headerlink" title="04. 用向上扩展的段作为栈段"></a>04. 用向上扩展的段作为栈段</h2><p>选择==01号==描述符</p>
+<img src="/2022/12/11/24-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4/faa6ecfdc04064593c2187538b016d53.png" class="">
+<img src="/2022/12/11/24-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4/20d38262af60146b85491f4fc9e35560.png" class="">
+<p>查看==01号段描述符==</p>
+<img src="/2022/12/11/24-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4/9bb7c4ee6942d6799ec345ab5722dbec.png" class="">
+
+<ul>
+<li><strong>基地址</strong>: 为0x00000000</li>
+<li><strong>S位</strong>: 为1</li>
+<li><strong>X位</strong>: 为0, 表示数据段</li>
+<li><strong>E位</strong>: 为0, 表示向上扩展</li>
+<li><strong>段界限</strong>: 为0xFFFFF</li>
+<li><strong>G位</strong>: 为1, 表示段的粒度为4K字节, 段界限是以4K字节为单位<img src="/2022/12/11/24-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4/72cf5620753aad0a89a78fff765bab5b.png" class=""></li>
+</ul>
+<p>这个数据段所占用的空间与之前的代码段重叠了, 我们知道代码段是不允许写入的, 但是不允许写入指的是不允许通过代码段的描述符来写入代码段, 是可以通过这个重叠的4G字节的数据段来写入代码段. </p>
+<p>设置栈段:</p>
+<img src="/2022/12/11/24-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4/5f6bc86c2b0bbfa28ae3ced5216d4e23.png" class="">
+<p>二进制==11==是第四个描述符</p>
+<img src="/2022/12/11/24-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4/9d4184077cda167885a8ad7a748e3cf7.png" class="">
+
+<ul>
+<li><strong>X位</strong>: 为0, 表示为数据段</li>
+<li><strong>B位(因为是数据段所以D/B位是B位)</strong>: 为1表示使用==ESP==(为0则使用SP)</li>
+<li><strong>E位</strong>: 为0, 表示是向上扩展的段</li>
+<li><strong>基地址</strong>: 为0x00006C00</li>
+<li><strong>段界限</strong>: 为0x007FF</li>
+<li><strong>G位</strong>: 为0, 表示段界限的粒度以字节为单位</li>
+</ul>
+<img src="/2022/12/11/24-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4/c07413ae69547ac24bc35c6478c45746.png" class="">
+
+<center>这个栈段是数据段, 共2K字节</center>
+
+<p>栈的==扩展方向==和==推进方向==不同, 段扩展方向不是数据的读写方向, 而是用来定义偏移量的范围, 界限检查.<br>段的扩展方向决定了处理器如何对段的访问进行检查</p>
+<img src="/2022/12/11/24-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4/992185c00e3d10260709cc14bfc4af81.png" class="">
+<p>因为这是数据段, 所以是B位, 且B位的值为1, 表示使用ESP当作栈的指针, 所以要设置ESP的初始值为段的大小(段界限0x7FF + 1 = 0x800 = 2048). </p>
+<h2 id="05-向上扩展的段作为栈段时的保护"><a href="#05-向上扩展的段作为栈段时的保护" class="headerlink" title="05. 向上扩展的段作为栈段时的保护"></a>05. 向上扩展的段作为栈段时的保护</h2><p>上一节中使用的栈段为2K字节:</p>
+<img src="/2022/12/11/24-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4/38ecf365ff993ff5e8cc0d71e3e3c4b8.png" class="">
+
+<p>且使用==ESP==当作栈指针寄存器来进行隐式的栈操作指令, 如:</p>
+<img src="/2022/12/11/24-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4/3dbad33e467a13c4c8bb0f56683128b9.png" class="">
+<img src="/2022/12/11/24-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4/650aa3cfe536d7e955920ed47a12a600.png" class="">
+<p>这些指令操作时, 会对栈进行压栈, 出栈.</p>
+<p>使用下列两条代码演示栈的检查:</p>
+<img src="/2022/12/11/24-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4/1b581c0afc4c2bc3e56eb88b6ea86b95.png" class="">
+
+<p>在压入时对偏移量进行检查:</p>
+<img src="/2022/12/11/24-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4/0da722cc7dd0fd58228cd9a0786f8b37.png" class="">
+<p>第一条指令压栈后的状态, 和检查过程:</p>
+<img src="/2022/12/11/24-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4/5233807d22ddc7f010f94b872ed3e281.png" class="">
+<img src="/2022/12/11/24-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4/9e8bead96b7411a85c63c58a3f574449.png" class="">
+<p>正好符合使用界限的要求, 若将==ESP==的初始值设置为大于0x800比如==0x802, 再进行压栈指令操作时就会将数据压入到边界之外, 会导致处理器产生中断.</p>
+<h2 id="06-访问普通数据段时的保护"><a href="#06-访问普通数据段时的保护" class="headerlink" title="06. 访问普通数据段时的保护"></a>06. 访问普通数据段时的保护</h2><p>将上一节压入的数据弹出:</p>
+<img src="/2022/12/11/24-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4/c8cd77849769d1fb3edd1e0250dc51e6.png" class="">
+
+<p>当前栈的布局:</p>
+<img src="/2022/12/11/24-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4/e8328caac6a6420bd869459b6bd1b079.png" class="">
+<p>首先需要检查出栈的数据是否超出栈的边界:</p>
+<img src="/2022/12/11/24-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4/0666f08ce296096fab463e028efe3114.png" class="">
+
+<p>检查通过之后:<br>    1. 使用==SS==的基地址==0x00006C00==加上当前==ESP==中的偏移值==0x07F8==得到有效地址==0x00073F8==, 从这个地址处出去四个字节数据.<br>    2. 之后使用默认的数据段==DS==段地址==0x00000000加上指令中给出的偏移量==0x0B800==得到有效地址为==0x000B8000==, 将栈中弹出的数据写入此处.</p>
+<img src="/2022/12/11/24-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4/1966f897d44a0bafbb6c4950cbe27596.png" class="">
+<p>在写入之前, 处理器要检查是否会超出段界限之外:</p>
+<img src="/2022/12/11/24-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4/df76be4458212651a62defd71f6b34c4.png" class="">
+<p>写入之后数据段==DS==的状态:</p>
+<img src="/2022/12/11/24-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4/6a19b8a2865e1c148aede31b98375256.png" class="">
+<pre><code>3. 出栈之后, 处理器将==ESP的值加4==变为==0x07FC==
+</code></pre>
+<img src="/2022/12/11/24-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4/36ee499be6eca2ea474c7240d2343bef.png" class="">
+
+
+<h2 id="07-内存线性地址的回绕特性"><a href="#07-内存线性地址的回绕特性" class="headerlink" title="07. 内存线性地址的回绕特性"></a>07. 内存线性地址的回绕特性</h2><p>段的逻辑地址为==0x00000000==, 加上右边的偏移量, 得到逻辑地址</p>
+<img src="/2022/12/11/24-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4/fcb649fcc68631430ba4a99f986defb7.png" class="">
+<img src="/2022/12/11/24-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4/0e52729cf791d29491cad920d07b0c53.png" class="">
+<p>还可以使用下列方式表示偏移量:</p>
+<img src="/2022/12/11/24-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4/483ed43e4cf752c5847ddb7949b0e895.png" class="">
+<img src="/2022/12/11/24-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4/7b46f7ff6dfa07da667fc96c766bcea2.png" class="">
+<img src="/2022/12/11/24-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4/ef863300690948d99350071f8d5464b3.png" class="">
+
+<h2 id="08-用向下扩展的段作为栈段"><a href="#08-用向下扩展的段作为栈段" class="headerlink" title="08. 用向下扩展的段作为栈段"></a>08. 用向下扩展的段作为栈段</h2><p>之前使用向上扩展的段作为栈段, 大小为2K字节.</p>
+<img src="/2022/12/11/24-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4/e62ebf4b9bfa8ca5424718326670afec.png" class="">
+<p>描述符:</p>
+<img src="/2022/12/11/24-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4/2951d97f1dd24b7c5e9cf3b6d522fecf.png" class="">
+
+<ul>
+<li>S位: 为1, 表示为寄存器的段描述符</li>
+<li>X位: 为0, 表示数据段描述符, 为1表示是代码段描述符</li>
+<li>E位: 为0, 表示是向上扩展的段, 为1表示是向下扩展的段<br>向下扩展的数据段实际允许使用的偏移量范围 = 实际允许使用的段界限 + 1开始的, 段内偏移量的最大值为==0xFFFF==或==0xFFFFFFFF==.<img src="/2022/12/11/24-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4/15f11c6a8e4dbf4ebd18d79a9f2aecff.png" class=""></li>
+</ul>
+<p>对于向下扩展的段:</p>
+<img src="/2022/12/11/24-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4/7c598377dd29fff913aca0e7d63b922f.png" class="">
+
+<p>程序中使用的第二个栈段:</p>
+<img src="/2022/12/11/24-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4/dc8055320b99f5258a5a34c8309a7f0d.png" class="">
+
+<p>程序中使用的第二个栈段描述符:</p>
+<img src="/2022/12/11/24-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4/391097b5520370f4dc8a85612f2a0535.png" class="">
+<img src="/2022/12/11/24-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4/ff70bd2dd24a02e094faf74301722bfb.png" class="">
+
+<ul>
+<li>S位: 为1, 表示存储器的段描述符</li>
+<li>X位: 为0, 表示数据段</li>
+<li>段基地址: ==0x00007C00==</li>
+<li>E位: 为1, 表示向下扩展</li>
+<li>W位: 为1, 表示可读可写</li>
+<li>段界限: ==0xFFFFFE==</li>
+<li>G位: 为1, 表示粒度以==4K字节==为单位</li>
+<li>B位: 为1, 表示偏移量理论最大值是==0xFFFFFFFF==, 而且使用==ESP==位栈指针</li>
+</ul>
+<p>这个栈段的状态如下图:</p>
+<img src="/2022/12/11/24-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4/440c379626a7dfa235d192c8f824473c.png" class="">
+<p>==ESP==的值要设置为栈的最大界限值 + 1: ==0xFFFFFFFF +1 = 0x00000000==.</p>
+<h2 id="09-向下扩展的段作为栈段时的保护"><a href="#09-向下扩展的段作为栈段时的保护" class="headerlink" title="09. 向下扩展的段作为栈段时的保护"></a>09. 向下扩展的段作为栈段时的保护</h2><p>上一节中设置的栈:</p>
+<img src="/2022/12/11/24-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4/609e6f5a2b3b335d37cfc7ebdd66a3ab.png" class="">
+
+<p>使用下列指令执行压栈操作:</p>
+<img src="/2022/12/11/24-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4/4c5d56edda424f8df68ea1ca6ab0198f.png" class="">
+<p>在执行压栈指令时, 需要对压入的数据进行检查, 以确定不会超出段的界限:</p>
+<img src="/2022/12/11/24-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4/1d603df7aad64f9f9229d01c24dec8ef.png" class="">
+<p>具体为处理器先执行==ESP - 4 = 0xFFFFFFFC==, 0xFFFFFFFC &gt; 实际使用的段界限==0xFFFFEFFF==, 符合上述条件执行压栈操作. </p>
+<p>接下来处理器使用段的基地址==0x00007C00 + 0xFFFFFFFC = 0x00007BFC, 从这里写入数据.</p>
+<img src="/2022/12/11/24-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4/68e0568c6fec5a195b57dbbf16cff16c.png" class="">
+<p>压栈后执行出栈操作</p>
+<img src="/2022/12/11/24-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4/e2b58c0ed6456f11f738e4b8750a63ee.png" class="">
+<p>出栈:</p>
+<img src="/2022/12/11/24-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4/1bc297a853f54a8a2bb0571e725d96c9.png" class="">
+
+<h2 id="10-通过别名来实现段的共用和共享"><a href="#10-通过别名来实现段的共用和共享" class="headerlink" title="10. 通过别名来实现段的共用和共享"></a>10. 通过别名来实现段的共用和共享</h2><p>在保护模式下不能使用==CS==来修改内存, 但是可以设置一个代码段的别名描述符, 将其==X位==设置为0表示数据段, 这样就可以通过==ES==来访问字符串所在的内存位置, 以达到修改内存的操作.</p>
+<img src="/2022/12/11/24-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4/e180b2058d4d9b11287f912eff746810.png" class="">
+
+<h2 id="11-冒泡排序的基本原理"><a href="#11-冒泡排序的基本原理" class="headerlink" title="11. 冒泡排序的基本原理"></a>11. 冒泡排序的基本原理</h2><img src="/2022/12/11/24-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4/b2e5460885bf9342412d042119339c1c.png" class="">
+
+<h2 id="12-32位操作尺寸下的LOOP指令"><a href="#12-32位操作尺寸下的LOOP指令" class="headerlink" title="12. 32位操作尺寸下的LOOP指令"></a>12. 32位操作尺寸下的LOOP指令</h2><p>如果==CS==高速缓存器中的==D位为0==表示使用16位操作尺寸, ==loop==指令使用==cx==计数, 如果==D=1==那么表示使用32位操作尺寸, ==loop==使用==ecx==计数.<br>冒泡排序循环:@@1处</p>
+<img src="/2022/12/11/24-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4/0d588a106bd54741185f3e6945c1fa73.png" class="">
+
+<p>冒泡排序内循环: @@2处</p>
+<img src="/2022/12/11/24-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4/390dc92a8ce50d36c122e217c6b526f7.png" class="">
+
+<p>其中外循环比较次数: 可以看出内循环比较次数和外循环的==ECX==相同</p>
+<img src="/2022/12/11/24-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4/6e3b915f0449d48ab3a7a5e202898502.png" class="">
+
+<p>冒泡内循环比较过程:</p>
+<img src="/2022/12/11/24-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4/ec0258efab5eb24c7d5d9328f7f60598.png" class="">
+
+<h2 id="13-数据交换指令XCHG"><a href="#13-数据交换指令XCHG" class="headerlink" title="13. 数据交换指令XCHG"></a>13. 数据交换指令XCHG</h2><p>==XCHG==指令: 操作数不能同时为内存地址</p>
+<img src="/2022/12/11/24-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4/image-20221113170928597.png" class="" title="image-20221113170928597">
+</article><section class="jump-container is-flex is-justify-content-space-between my-6"><!-- em is empty placeholder--><a class="button is-default" href="/2022/12/11/25-%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F%E7%A8%8B%E5%BA%8F%E7%9A%84%E5%8A%A8%E6%80%81%E5%8A%A0%E8%BD%BD%E5%92%8C%E6%89%A7%E8%A1%8C/" title="25. 保护模式程序的动态加载和执行"><i class="iconfont icon-prev mr-2 has-text-grey"></i><span class="has-text-weight-semibold">上一页: 25. 保护模式程序的动态加载和执行</span></a><a class="button is-default" href="/2022/12/11/23-%E6%8C%87%E4%BB%A4%E7%9A%84%E6%A0%BC%E5%BC%8F%E5%8F%8A%E5%85%B6%E6%93%8D%E4%BD%9C%E5%B0%BA%E5%AF%B8/" title="23-指令的格式及其操作尺寸"><span class="has-text-weight-semibold">下一页: 23-指令的格式及其操作尺寸</span><i class="iconfont icon-next ml-2 has-text-grey"></i></a></section><article class="mt-6 comment-container"><script async repo="Haojen/Claudia-theme-blog" src="https://utteranc.es/client.js" issue-term="pathname" theme="preferred-color-scheme"></script></article><article class="mt-6 comment-container" id="vcomments"></article></div></div></main></main><footer class="is-flex is-flex-direction-column is-align-items-center is-flex-shrink-0 is-family-serif"><section class="sns-container"><a title="twitter" target="_blank" rel="noopener nofollow" href="//twitter.com//"><i class="iconfont icon-twitter"></i></a><!-- Github--><a title="github" target="_blank" rel="noopener nofollow" href="//github.com/xiaoeryu"><i class="iconfont icon-github"></i></a><!-- Ins--><a title="instagram" target="_blank" rel="noopener nofollow" href="//www.instagram.com//"><i class="iconfont icon-ins"></i></a><!-- RSS--><!-- 知乎--><!-- 领英--><!-- 脸书--><a title="facebook" target="_blank" rel="noopener nofollow" href="//www.facebook.com//"><i class="iconfont icon-tian7_facebook"></i></a></section><p><span>Copyright ©</span><span> xiaoeryu 2022</span></p><div class="is-flex is-justify-content-center is-flex-wrap-wrap"><p>Powered by Hexo &verbar;&nbsp;</p><p class="is-flex is-justify-content-center"><a title="Hexo theme author" target="_blank" rel="noopener" href="//github.com/haojen">Theme by Haojen&nbsp;</a></p><div style="margin-top: 2px"><a class="github-button" title="github-button" target="_blank" rel="noopener" href="https://github.com/haojen/hexo-theme-Claudia" data-color-scheme="no-preference: light; light: light; dark: dark;" data-show-count="true"></a></div></div><div><span></span></div></footer><script async defer src="https://buttons.github.io/buttons.js"></script><script src="/js/jquery-3.6.1.min.js"></script><script src="/js/jquery-fancybox.min.js"></script><script src="/js/img_zoom.js"></script><script src="/js/post.js"></script></body></html>

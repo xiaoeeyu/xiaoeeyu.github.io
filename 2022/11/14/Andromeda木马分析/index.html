@@ -1,0 +1,383 @@
+<!DOCTYPE html><html class="appearance-auto" lang="zh-CN"><head><meta charset="UTF-8"><title>Andromeda木马分析</title><meta name="description" content="May the Force be with you"><meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, initial-scale=1"><!-- Google Analytics --><!-- End Google Analytics -->
+<!-- Baidu Analytics --><!-- End Baidu Analytics --><link rel="icon" href="/images/rabete.jpg"><link rel="stylesheet" href="/style/common/bulma.css"><link rel="stylesheet" href="/style/base.css"><link rel="stylesheet" href="/style/common/helper.css"><script src="/js/common.js"></script><link rel="stylesheet" href="/style/post.css"><link rel="stylesheet" href="/style/themes/highlight-theme-light.css"><link rel="stylesheet" href="/style/common/jquery.fancybox.min.css"><script src="/js/highlight.pack.js"></script><meta name="description" content="样本简介
+
+
+MD5
+文件类型
+
+
+
+44ff2421bbd7918c6ad68da4fa276e02
+exe
+
+
+
+
+攻击流程
+
+详细分析行为分析行为监控：释放了大量可执行文件并执行
+
+
+执行监控：
+
+
+进程监控：可以看到有大量个跨进程间操作；大致可以看到执行分了几个阶段：MD5.exe&amp;gt;hwwefuxasa.exe&amp;gt;MD5.exe&amp;gt;msiexec.exe&amp;gt;reyefiyevu.exe&amp;gt;msiexec.exe&amp;gt;wuauclt.exe
+
+
+文件创建监控：
+
+
+文件删除监控：
+
+
+第一阶段：MD5.exe释放了一些dll和exe文件在之后的下一阶段使用
+
+
+创建temp文件夹路径并设置文件夹属性
+
+
+在temp文件夹下创建文件
+
+
+往文件内写入内容
+
+
+设置文件时间
+
+
+
+.."><script src="//unpkg.com/valine/dist/Valine.min.js"></script><meta name="generator" content="Hexo 6.3.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head><body class="is-flex is-flex-direction-column"><header class="header-widget is-flex-shrink-0 is-hidden-mobile"><div class="container is-fullhd is-flex is-justify-content-space-between is-align-items-center is-full-height"><section class="is-hidden-mobile is-flex-shrink-0"><h2><a href="/">xiaoeryu's blog</a></h2></section><h3 class="is-hidden-mobile is-family-serif is-full-height is-flex is-align-items-center is-flex-shrink-0"><div class="is-full-height" id="postTopic"><p class="is-full-height is-flex-shrink-0 is-flex is-align-items-center is-justify-content-center">Andromeda木马分析</p><p class="is-full-height is-flex-shrink-0 is-flex is-align-items-center is-justify-content-center">点击返回顶部</p></div></h3><aside class="is-flex-shrink-0"><h3 class="is-inline-block"><a href="/">首页</a></h3><h3 class="is-inline-block"><a href="/about">关于</a></h3><h3 class="is-inline-block"><a href="/archives">归档</a></h3></aside></div></header><header class="is-flex header-widget is-flex-shrink-0 is-align-items-center is-justify-content-center is-hidden-tablet"><h3 class="is-inline-block"><a href="/">首页</a></h3><h3 class="is-inline-block"><a href="/about">关于</a></h3><h3 class="is-inline-block"><a href="/archives">归档</a></h3></header><main><main class="container is-max-widescreen content section post-page pt-4 px-4"><div class="columns is-flex-desktop is-justify-content-center is-flex-direction-row-reverse"><div class="column is-3 is-hidden-mobile"><ol class="toc"><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%A0%B7%E6%9C%AC%E7%AE%80%E4%BB%8B"><span class="toc-text">样本简介</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E6%94%BB%E5%87%BB%E6%B5%81%E7%A8%8B"><span class="toc-text">攻击流程</span></a></li><li class="toc-item toc-level-1"><a class="toc-link" href="#%E8%AF%A6%E7%BB%86%E5%88%86%E6%9E%90"><span class="toc-text">详细分析</span></a><ol class="toc-child"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E8%A1%8C%E4%B8%BA%E5%88%86%E6%9E%90"><span class="toc-text">行为分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%80%E9%98%B6%E6%AE%B5%EF%BC%9AMD5-exe"><span class="toc-text">第一阶段：MD5.exe</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%BA%8C%E9%98%B6%E6%AE%B5%EF%BC%9Aheswfuxasa-exe"><span class="toc-text">第二阶段：heswfuxasa.exe</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%89%E9%98%B6%E6%AE%B5%EF%BC%9AMD5-exe"><span class="toc-text">第三阶段：MD5.exe</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E5%9B%9B%E9%98%B6%E6%AE%B5%EF%BC%9AMD5-exe"><span class="toc-text">第四阶段：MD5.exe</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%BA%94%E9%98%B6%E6%AE%B5%EF%BC%9Amsiexec-exe"><span class="toc-text">第五阶段：msiexec.exe</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E5%85%AD%E9%98%B6%E6%AE%B5%EF%BC%9Areyefiyevu-exe"><span class="toc-text">第六阶段：reyefiyevu.exe</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B8%83%E9%98%B6%E6%AE%B5%EF%BC%9Amsiexec-exe"><span class="toc-text">第七阶段：msiexec.exe</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E5%85%AB%E9%98%B6%E6%AE%B5%EF%BC%9Amsiexec-exe"><span class="toc-text">第八阶段：msiexec.exe</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E7%AC%AC%E4%B9%9D%E4%B8%AA%E9%98%B6%E6%AE%B5%EF%BC%9Awuauclt-exe"><span class="toc-text">第九个阶段：wuauclt.exe</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#IOC"><span class="toc-text">IOC</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%87%8A%E6%94%BE%E7%9A%84%E6%96%87%E4%BB%B6"><span class="toc-text">释放的文件</span></a></li></ol></li></ol></div><div class="column is-9"><header class="my-4"><a href="/tags/Andromeda%E6%9C%A8%E9%A9%AC"><i class="tag post-item-tag">Andromeda木马</i></a><a href="/tags/windows%E6%9C%A8%E9%A9%AC"><i class="tag post-item-tag">windows木马</i></a></header><h1 class="mt-0 mb-1 is-family-serif" id="postTitle">Andromeda木马分析</h1><time class="has-text-grey" datetime="2022-11-14T14:01:58.000Z">2022-11-14</time><article class="mt-2 post-content"><h1 id="样本简介"><a href="#样本简介" class="headerlink" title="样本简介"></a>样本简介</h1><table>
+<thead>
+<tr>
+<th align="left">MD5</th>
+<th>文件类型</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">44ff2421bbd7918c6ad68da4fa276e02</td>
+<td>exe</td>
+</tr>
+</tbody></table>
+<span id="more"></span>
+
+<h1 id="攻击流程"><a href="#攻击流程" class="headerlink" title="攻击流程"></a>攻击流程</h1><img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210621173535459.png" class="" title="image-20210621173535459">
+
+<h1 id="详细分析"><a href="#详细分析" class="headerlink" title="详细分析"></a>详细分析</h1><h2 id="行为分析"><a href="#行为分析" class="headerlink" title="行为分析"></a>行为分析</h2><p>行为监控：释放了大量可执行文件并执行</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210613163748901.png" class="" title="image-20210613163748901">
+
+<p>执行监控：</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210712225228859.png" class="" title="image-20210712225228859">
+
+<p>进程监控：可以看到有大量个跨进程间操作；大致可以看到执行分了几个阶段：MD5.exe&gt;hwwefuxasa.exe&gt;MD5.exe&gt;msiexec.exe&gt;reyefiyevu.exe&gt;msiexec.exe&gt;wuauclt.exe</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210613170050764.png" class="" title="image-20210613170050764">
+
+<p>文件创建监控：</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210613172155974.png" class="" title="image-20210613172155974">
+
+<p>文件删除监控：</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210613174023213.png" class="" title="image-20210613174023213">
+
+<h2 id="第一阶段：MD5-exe"><a href="#第一阶段：MD5-exe" class="headerlink" title="第一阶段：MD5.exe"></a>第一阶段：MD5.exe</h2><p>释放了一些dll和exe文件在之后的下一阶段使用</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210614211545714.png" class="" title="image-20210614211545714">
+
+<p>创建temp文件夹路径并设置文件夹属性</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210614203558637.png" class="" title="image-20210614203558637">
+
+<p>在temp文件夹下创建文件</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210614204018971.png" class="" title="image-20210614204018971">
+
+<p>往文件内写入内容</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210614204358356.png" class="" title="image-20210614204358356">
+
+<p>设置文件时间</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210614205438515.png" class="" title="image-20210614205438515">
+
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210614205635004.png" class="" title="image-20210614205635004">
+
+<p>创建了一个exe文件&amp;几个dll文件+ric文件</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210614212511913.png" class="" title="image-20210614212511913">
+
+<p>启动heswfuxasa.exe</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210614213229679.png" class="" title="image-20210614213229679">
+
+<p>设置注册表启动heswfuxasa.exe启动附加调试器</p>
+<h2 id="第二阶段：heswfuxasa-exe"><a href="#第二阶段：heswfuxasa-exe" class="headerlink" title="第二阶段：heswfuxasa.exe"></a>第二阶段：heswfuxasa.exe</h2><p>通过GetProcAddress来获取所需的函数</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210615215928628.png" class="" title="image-20210615215928628">
+
+<p>LoadLibrary来加载所需的模块</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210615220210230.png" class="" title="image-20210615220210230">
+
+<p>以挂起的方式创建进程</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210615220933949.png" class="" title="image-20210615220933949">
+
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210615221701331.png" class="" title="image-20210615221701331">
+
+<p>卸载挂起进程内存空间数据</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210615223426537.png" class="" title="image-20210615223426537">
+
+<p>以读写执行的权限在目标进程创建开辟内存空间</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210615224548100.png" class="" title="image-20210615224548100">
+
+<p>在内存中写入数据</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210615225320320.png" class="" title="image-20210615225320320">
+
+<p>在执行到GetThreadContext的时候通过pContext参数指向的CONTEXT结构找到新的线程入口点</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210621174956056.png" class="" title="image-20210621174956056">
+
+<p>然后在调用ResumeThread之前通过process Hacker修改一下线程入口点方便附加调试(这里可以使用<code>CC</code>或者<code>EB FE</code>来修改入口点)</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210617003253716.png" class="" title="image-20210617003253716">
+
+<h2 id="第三阶段：MD5-exe"><a href="#第三阶段：MD5-exe" class="headerlink" title="第三阶段：MD5.exe"></a>第三阶段：MD5.exe</h2><p>用x32Dbg附加调试，再将此处的内存修改为之前的内容（因为前面为了方便调试修改了两个字节为<code>EB FE</code>）</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210617144509637.png" class="" title="image-20210617144509637">
+
+<p>为当前进程加载新的资源模块</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210617165346529.png" class="" title="image-20210617165346529">
+
+<p>使用加密服务</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210617172343847.png" class="" title="image-20210617172343847">
+
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210617172751662.png" class="" title="image-20210617172751662">
+
+<p>拼接路径删除之前释放的文件</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210617182706462.png" class="" title="image-20210617182706462">
+
+<p>装载新的资源模块</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210617184302238.png" class="" title="image-20210617184302238">
+
+<p>继续以挂起的方式创建进程，创建自身的新进程并修改进程内存空间</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210617213637015.png" class="" title="image-20210617213637015">
+
+<p>仍然在挂起处暂停，修改线程入口点为无限循环，方便附加调试(将<code>E8 90</code>改为<code>EB FE</code>)</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210625144911095.png" class="" title="image-20210625144911095">
+
+<h2 id="第四阶段：MD5-exe"><a href="#第四阶段：MD5-exe" class="headerlink" title="第四阶段：MD5.exe"></a>第四阶段：MD5.exe</h2><p>获取系统快照信息来遍历进程：查找是否有卡巴的杀软avp.exe</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210618003204591.png" class="" title="image-20210618003204591">
+
+<p>释放文件msiexec.exe</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210618100027438.png" class="" title="image-20210618100027438">
+
+<p>将MD5.exe的内容拷贝到0F48F.tmp中，重新开辟一块内存空间并将数据读入开辟的内存</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210618151108108.png" class="" title="image-20210618151108108">
+
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210618151951237.png" class="" title="image-20210618151951237">
+
+<p>删除0FFBF.tmp文件</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210618160131848.png" class="" title="image-20210618160131848">
+
+<ul>
+<li>使用ShellExecuteExW的方式启动msiexec.exe(可以设置注册表调试器附加启动)</li>
+</ul>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210618161911590.png" class="" title="image-20210618161911590">
+
+<h2 id="第五阶段：msiexec-exe"><a href="#第五阶段：msiexec-exe" class="headerlink" title="第五阶段：msiexec.exe"></a>第五阶段：msiexec.exe</h2><p>获取当前用户使用的桌面语言：0x804表示简体中文</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210618180041834.png" class="" title="image-20210618180041834">
+
+<p>在<code>%temp%</code>目录下创建新的wehexukaje.Gav文件并写入内容</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210618222132923.png" class="" title="image-20210618222132923">
+
+<p>并修改文件时间</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210618222101458.png" class="" title="image-20210618222101458">
+
+<p>重新创建befunvatur.dll、Ziniyucenaqe.dll、xizitixeqob.dll、salebolotew.dll、reyefiyevu.exe、nst5FFB.tmp、</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210618222023450.png" class="" title="image-20210618222023450">
+
+<p>启动新进程reyefiyevu.exe</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210618230409713.png" class="" title="image-20210618230409713">
+
+<h2 id="第六阶段：reyefiyevu-exe"><a href="#第六阶段：reyefiyevu-exe" class="headerlink" title="第六阶段：reyefiyevu.exe"></a>第六阶段：reyefiyevu.exe</h2><p>通过IDA可以看到当前程序主要执行了，获取当前线程的句柄并修改优先级并加载xifuzinahi.dll的操作</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210619004513010.png" class="" title="image-20210619004513010">
+
+<p>加载xifuzinahi.dll之后做了一些开辟内存开辟，拷贝，获取模块以及字符串等操作</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210619005700963.png" class="" title="image-20210619005700963">
+
+<p>加载Ziniyucenaqe.dll获取用户默认的语言环境</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210619173810398.png" class="" title="image-20210619173810398">
+
+<p>加载Befunuvatur.dll后查看导=导入函数可以看到有一些进程和内存相关的操作，来动态调试一下</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210619174325026.png" class="" title="image-20210619174325026">
+
+<p>以挂起的方式创建进程msiexec.exe</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210619201624743.png" class="" title="image-20210619201624743">
+
+<p>以修改线程OEP处内存为无限循环的方式附加进程msiexec.exe</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210619210354720.png" class="" title="image-20210619210354720">
+
+<h2 id="第七阶段：msiexec-exe"><a href="#第七阶段：msiexec-exe" class="headerlink" title="第七阶段：msiexec.exe"></a>第七阶段：msiexec.exe</h2><p>加载新的资源</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210619220231614.png" class="" title="image-20210619220231614">
+
+<p>获取释放的文件名并删除</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210619224453665.png" class="" title="image-20210619224453665">
+
+<p>继续创建傀儡进程启动msiexec.exe</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210619230600359.png" class="" title="image-20210619230600359">
+
+<p>修改线程OEP为无限循环<code>EB FE</code></p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210619231722619.png" class="" title="image-20210619231722619">
+
+<h2 id="第八阶段：msiexec-exe"><a href="#第八阶段：msiexec-exe" class="headerlink" title="第八阶段：msiexec.exe"></a>第八阶段：msiexec.exe</h2><p>创建一个互斥体来防止多开</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210619234819467.png" class="" title="image-20210619234819467">
+
+<p>遍历当前进程</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210620112130335.png" class="" title="image-20210620112130335">
+
+<p>检测注册表<code>HKEY_LOCAL_MACHINE\SYSTEM\ControlSet001\Services\Disk\Enum</code>下的键值</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210620110024956.png" class="" title="image-20210620110024956">
+
+<p>进入新写入的内存执行后续代码</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210620154742685.png" class="" title="image-20210620154742685">
+
+<p>将现有<code>%temp%</code>路径下的msiexec.exe拷贝到”C:\ProgramData\svchost.exe”</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210620003955673.png" class="" title="image-20210620003955673">
+
+<p>将”C:\ProgramData\svchost.exe”写入注册表自启动</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210620004503674.png" class="" title="image-20210620004503674">
+
+<p>使用文件映射（NtCreateSection<code>+</code>NtMapViewOfSection）的方式来执行远程进程注入</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210620162327198.png" class="" title="image-20210620162327198">
+
+<p>以挂起的方式创建wuauclt.exe</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210620163009867.png" class="" title="image-20210620163009867">
+
+<p>修改线程OEP为无限循环（<code>EB FE</code>）</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210625144750506.png" class="" title="image-20210625144750506">
+
+<h2 id="第九个阶段：wuauclt-exe"><a href="#第九个阶段：wuauclt-exe" class="headerlink" title="第九个阶段：wuauclt.exe"></a>第九个阶段：wuauclt.exe</h2><p>通过调用GetEnvironmentVariableW从环境变量获取启动程序的完整路径</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210706210151786.png" class="" title="image-20210706210151786">
+
+<p>再用SetEnvironmentVariableW传入空字符串来重置该变量</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210706210941966.png" class="" title="image-20210706210941966">
+
+<p>用获取到的系统卷信息创建一个互斥体防止进程多开</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210630233459555.png" class="" title="image-20210630233459555">
+
+<p>创建一个新文件文件名和后缀米随机并将自身复制进去，写入注册表自启动之后再将msiexec.exe删除</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210706215336940.png" class="" title="image-20210706215336940">
+
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210706215626718.png" class="" title="image-20210706215626718">
+
+<p><strong>然后初始化网络创建新的线程</strong></p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210706220343714.png" class="" title="image-20210706220343714">
+
+<p>获取系统的版本号</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210705214914849.png" class="" title="image-20210705214914849">
+
+<p>查看注册表判断是否启用远程PRC限制</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210705215604773.png" class="" title="image-20210705215604773">
+
+<p>获取本地的IP</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210705221012684.png" class="" title="image-20210705221012684">
+
+<p>获取浏览器的cookie</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210707120259771.png" class="" title="image-20210707120259771">
+
+<p>通过对发送消息的格式和前面的一些行为来判断可能是属于仙女座（Andromeda ）的样本</p>
+<pre><code>id:%lu|bid:%lu|bv:%lu|sv:%lu|pa:%lu|la:%lu|ar:%lu
+id 值根据本地系统卷信息产生
+bid 值是硬编码的，可能指编译id.
+bv值也是硬编码的，可能指编译版本（目前是206h(518))
+sv值代表受害机器的系统版本
+pa值是调用ZwQueryInformationProcess API的返回值，用以确定OS是32位还是64位。
+la值是根据www.update.microsoft.com的IP地址而生成的
+ar值是调用CheckTokenMembership API的返回值，确认bot是否运行在管理员权限下。
+</code></pre>
+<p>加密前的字符串</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210701211959385.png" class="" title="image-20210701211959385">
+
+<p>第一次加密：自定义加密</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210707102207882.png" class="" title="image-20210707102207882">
+
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210706155750770.png" class="" title="image-20210706155750770">
+
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210706155621097.png" class="" title="image-20210706155621097">
+
+<p>二次加密：再经过base64加密</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210707103351430.png" class="" title="image-20210707103351430">
+
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210706155829786.png" class="" title="image-20210706155829786">
+
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210706155702049.png" class="" title="image-20210706155702049">
+
+<p>将数据发送往服务器并接收服务器返回的消息</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210706161529651.png" class="" title="image-20210706161529651">
+
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210704000806080.png" class="" title="image-20210704000806080">
+
+<p>这是从网上找到的仙女座C&amp;C服务器的Web面板的图片</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210706160912985.png" class="" title="image-20210706160912985">
+
+<p>如果服务器可以正常连接服务器下发数据包，病毒程序根据接收到的包解密后得到的ID执行不同的操作</p>
+<img src="/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/image-20210705154023635.png" class="" title="image-20210705154023635">
+
+<p>因为仙女座已经被摧毁后续的命令下发执行操作无法继续分析，通过前面的分析可以看到这是一个模块化的病毒样本，分阶段释放了大量的exe和dll文件最终注入了系统进程wuauclt.exe，并在多线程和内存中释放的多模块之间跳转执行并将上传和下载的信息都进行了加密处理一定程度上加大了分析的难度，具有较高的稳定性和隐蔽性。模块的功能有浏览器cookie抓取，本机信息获取等行为。</p>
+<h2 id="IOC"><a href="#IOC" class="headerlink" title="IOC"></a>IOC</h2><p>xdqzpbcgrvkj.ru<br>orzdwjtvmein.in<br>anam0rph.su<br>ygiudewsqhct.in<br>bdcrqgonzmwuehky.nl<br>somicrososoft.ru<br>pe.suckmycocklameavindustry.in<br>sc.suckmycocklameavindustry.in</p>
+<h2 id="释放的文件"><a href="#释放的文件" class="headerlink" title="释放的文件"></a>释放的文件</h2><table>
+<thead>
+<tr>
+<th>文件名</th>
+<th>MD5</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Befunuvatur.dll</td>
+<td>5E1BD554B134DAF7753021CA7AE9C362</td>
+</tr>
+<tr>
+<td>Fewuxusahif.dll</td>
+<td>1e1120080170a963da2dc9461789f1c1</td>
+</tr>
+<tr>
+<td>hewefuxasa.exe</td>
+<td>9537cf2d215b97bc3effadd74e1a75c9</td>
+</tr>
+<tr>
+<td>Hunoqoriqop.dll</td>
+<td>ae057dff4e992c5208234b3d62b05f40</td>
+</tr>
+<tr>
+<td>reyefiyevu.exe</td>
+<td>c86fc56810ae163cbd8a728c4d501948</td>
+</tr>
+<tr>
+<td>salebolotew.dll</td>
+<td>d75174a7147f7a1c3fa59dcb60be70ad</td>
+</tr>
+<tr>
+<td>vinoliwulab.dll</td>
+<td>e255130efe8242a6e2573ba63a667f2d</td>
+</tr>
+<tr>
+<td>wehexukaje.Gav</td>
+<td>85d804cd262bfc55dcd09bbec078c1e9</td>
+</tr>
+<tr>
+<td>xizitixeqob.dll</td>
+<td>08d784e44da8fcf358b2c932ee318293</td>
+</tr>
+<tr>
+<td>Zayimahizo.dll</td>
+<td>5a8f117565e4add93e564ad9ac086c85</td>
+</tr>
+<tr>
+<td>Ziniyucenaqe.dll</td>
+<td>439b2205e6e881e64dde45b0c71f4dfe</td>
+</tr>
+<tr>
+<td>msqvfea.bat</td>
+<td>92804812b5fd9459f7cf3c2d607804c1</td>
+</tr>
+<tr>
+<td>msiexec.exe</td>
+<td>92804812b5fd9459f7cf3c2d607804c1</td>
+</tr>
+<tr>
+<td>msyalicw.com</td>
+<td>92804812b5fd9459f7cf3c2d607804c1</td>
+</tr>
+<tr>
+<td>msozpgci.exe</td>
+<td>eb069d27bae4c00dc581f670f2423bb8</td>
+</tr>
+</tbody></table>
+</article><section class="jump-container is-flex is-justify-content-space-between my-6"><!-- em is empty placeholder--><a class="button is-default" href="/2022/12/11/22-%E8%BF%9B%E5%85%A5%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F/" title="22-进入保护模式"><i class="iconfont icon-prev mr-2 has-text-grey"></i><span class="has-text-weight-semibold">上一页: 22-进入保护模式</span></a><a class="button is-default" href="/2022/09/08/010EDIT%E7%A0%B4%E8%A7%A3-%E6%B3%A8%E5%86%8C%E6%9C%BA/" title="010EDIT破解&amp;注册机"><span class="has-text-weight-semibold">下一页: 010EDIT破解&amp;注册机</span><i class="iconfont icon-next ml-2 has-text-grey"></i></a></section><article class="mt-6 comment-container"><script async repo="Haojen/Claudia-theme-blog" src="https://utteranc.es/client.js" issue-term="pathname" theme="preferred-color-scheme"></script></article><article class="mt-6 comment-container" id="vcomments"></article></div></div></main></main><footer class="is-flex is-flex-direction-column is-align-items-center is-flex-shrink-0 is-family-serif"><section class="sns-container"><a title="twitter" target="_blank" rel="noopener nofollow" href="//twitter.com//"><i class="iconfont icon-twitter"></i></a><!-- Github--><a title="github" target="_blank" rel="noopener nofollow" href="//github.com/xiaoeryu"><i class="iconfont icon-github"></i></a><!-- Ins--><a title="instagram" target="_blank" rel="noopener nofollow" href="//www.instagram.com//"><i class="iconfont icon-ins"></i></a><!-- RSS--><!-- 知乎--><!-- 领英--><!-- 脸书--><a title="facebook" target="_blank" rel="noopener nofollow" href="//www.facebook.com//"><i class="iconfont icon-tian7_facebook"></i></a></section><p><span>Copyright ©</span><span> xiaoeryu 2022</span></p><div class="is-flex is-justify-content-center is-flex-wrap-wrap"><p>Powered by Hexo &verbar;&nbsp;</p><p class="is-flex is-justify-content-center"><a title="Hexo theme author" target="_blank" rel="noopener" href="//github.com/haojen">Theme by Haojen&nbsp;</a></p><div style="margin-top: 2px"><a class="github-button" title="github-button" target="_blank" rel="noopener" href="https://github.com/haojen/hexo-theme-Claudia" data-color-scheme="no-preference: light; light: light; dark: dark;" data-show-count="true"></a></div></div><div><span></span></div></footer><script async defer src="https://buttons.github.io/buttons.js"></script><script src="/js/jquery-3.6.1.min.js"></script><script src="/js/jquery-fancybox.min.js"></script><script src="/js/img_zoom.js"></script><script src="/js/post.js"></script></body></html>

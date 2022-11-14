@@ -1,0 +1,271 @@
+<!DOCTYPE html><html class="appearance-auto" lang="zh-CN"><head><meta charset="UTF-8"><title>Ocean Lotus样本分析</title><meta name="description" content="May the Force be with you"><meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, initial-scale=1"><!-- Google Analytics --><!-- End Google Analytics -->
+<!-- Baidu Analytics --><!-- End Baidu Analytics --><link rel="icon" href="/images/rabete.jpg"><link rel="stylesheet" href="/style/common/bulma.css"><link rel="stylesheet" href="/style/base.css"><link rel="stylesheet" href="/style/common/helper.css"><script src="/js/common.js"></script><link rel="stylesheet" href="/style/post.css"><link rel="stylesheet" href="/style/themes/highlight-theme-light.css"><link rel="stylesheet" href="/style/common/jquery.fancybox.min.css"><script src="/js/highlight.pack.js"></script><meta name="description" content="0x00样本简介​    该样本是2018年5月份国内某安全厂商威胁情报系统捕获的一起针对中国及其他东亚地区国家政府、科研单位领域的攻击样本，该APT组织确认为APT-32（海莲花OceanLotus）。​    此次攻击载体选用的是.doc后缀的rtf文件，该rtf文件通过利用漏洞CVE-2017-11882释放恶意文件到本地并加载执行。其释放文件利用了白加黑的组合加载手法逃避杀软的查杀，在运行过程中并无我们常见的多级注入行为，也并没有文件落地，具有较强的隐蔽性。原始样本信息如表１所示。
+
+
+
+文件名称
+Document_GPI Invitation-UNSOOC China.doc
+
+
+
+Md5
+02ae075da4fb2a6d38ce06f8f40e397e
+
+
+文件类型
+Rtf
+
+
+表1
+
+
+
+0x.."><script src="//unpkg.com/valine/dist/Valine.min.js"></script><meta name="generator" content="Hexo 6.3.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head><body class="is-flex is-flex-direction-column"><header class="header-widget is-flex-shrink-0 is-hidden-mobile"><div class="container is-fullhd is-flex is-justify-content-space-between is-align-items-center is-full-height"><section class="is-hidden-mobile is-flex-shrink-0"><h2><a href="/">xiaoeryu's blog</a></h2></section><h3 class="is-hidden-mobile is-family-serif is-full-height is-flex is-align-items-center is-flex-shrink-0"><div class="is-full-height" id="postTopic"><p class="is-full-height is-flex-shrink-0 is-flex is-align-items-center is-justify-content-center">Ocean Lotus样本分析</p><p class="is-full-height is-flex-shrink-0 is-flex is-align-items-center is-justify-content-center">点击返回顶部</p></div></h3><aside class="is-flex-shrink-0"><h3 class="is-inline-block"><a href="/">首页</a></h3><h3 class="is-inline-block"><a href="/about">关于</a></h3><h3 class="is-inline-block"><a href="/archives">归档</a></h3></aside></div></header><header class="is-flex header-widget is-flex-shrink-0 is-align-items-center is-justify-content-center is-hidden-tablet"><h3 class="is-inline-block"><a href="/">首页</a></h3><h3 class="is-inline-block"><a href="/about">关于</a></h3><h3 class="is-inline-block"><a href="/archives">归档</a></h3></header><main><main class="container is-max-widescreen content section post-page pt-4 px-4"><div class="columns is-flex-desktop is-justify-content-center is-flex-direction-row-reverse"><div class="column is-3 is-hidden-mobile"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00%E6%A0%B7%E6%9C%AC%E7%AE%80%E4%BB%8B"><span class="toc-text">0x00样本简介</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01%E6%94%BB%E5%87%BB%E6%B5%81%E7%A8%8B"><span class="toc-text">0x01攻击流程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x02%E8%AF%A6%E7%BB%86%E5%88%86%E6%9E%90"><span class="toc-text">0x02详细分析</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x03-IOC"><span class="toc-text">0x03 IOC</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x04%E6%80%BB%E7%BB%93"><span class="toc-text">0x04总结</span></a></li></ol></div><div class="column is-9"><header class="my-4"><a href="/tags/windows%E6%9C%A8%E9%A9%AC"><i class="tag post-item-tag">windows木马</i></a><a href="/tags/OceanLotus"><i class="tag post-item-tag">OceanLotus</i></a></header><h1 class="mt-0 mb-1 is-family-serif" id="postTitle">Ocean Lotus样本分析</h1><time class="has-text-grey" datetime="2021-05-24T07:51:57.000Z">2021-05-24</time><article class="mt-2 post-content"><h2 id="0x00样本简介"><a href="#0x00样本简介" class="headerlink" title="0x00样本简介"></a>0x00样本简介</h2><p>​    该样本是2018年5月份国内某安全厂商威胁情报系统捕获的一起针对中国及其他东亚地区国家政府、科研单位领域的攻击样本，该APT组织确认为APT-32（海莲花OceanLotus）。<br>​    此次攻击载体选用的是.doc后缀的rtf文件，该rtf文件通过利用漏洞CVE-2017-11882释放恶意文件到本地并加载执行。其释放文件利用了白加黑的组合加载手法逃避杀软的查杀，在运行过程中并无我们常见的多级注入行为，也并没有文件落地，具有较强的隐蔽性。原始样本信息如表１所示。</p>
+<table>
+<thead>
+<tr>
+<th>文件名称</th>
+<th>Document_GPI Invitation-UNSOOC China.doc</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Md5</td>
+<td>02ae075da4fb2a6d38ce06f8f40e397e</td>
+</tr>
+<tr>
+<td>文件类型</td>
+<td>Rtf</td>
+</tr>
+</tbody></table>
+<center>表1</center>
+
+<span id="more"></span>
+
+<h2 id="0x01攻击流程"><a href="#0x01攻击流程" class="headerlink" title="0x01攻击流程"></a>0x01攻击流程</h2><p>该样本首先通过利用Office公式编辑器模块在解析公式名时候出现的栈溢出漏洞CVE-2017-11882释放三个文件（MicrosoftWindowsDiskDiagnosticResolver.exe，rastls.dll和OUTLFLTR.DAT）到本地临时目录，然后执行释放的PE文件。MicrosoftWindowsDiskDiagnosticResolver.exe是一个拥有合法签名的PE文件，该PE文件运行期间会加载rastls.dll（注意系统目录下也有一个同名DLL）。rastls.dll模块DllMain会将宿主PE的代码段内容进行CSP加密混淆，并且会hook代码段后续一个位置，劫持EIP至DLL里面的函数，继而加载OUTLFLTR.DAT。然后从OUTLFLTR.DAT解密出shellcode1，跳转执行shellcode1.后续将.DAT文件解密变形出多个DLL文件，这些内存中的DLL文件将导入网络功能、注册表功能等所需的系统资源DLL。最终将执行其窃密、远控等恶意功能。其运行流程如下图所示。</p>
+<img src="/2021/05/24/Ocean-Lotus%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/1.png" class="" title="img">
+
+<center>图1 样本执行流程</center>
+
+
+
+<h2 id="0x02详细分析"><a href="#0x02详细分析" class="headerlink" title="0x02详细分析"></a>0x02详细分析</h2><p>漏洞部分该报告不分析，我们直接分析其释放文件。</p>
+<p>MicrosoftWindowsDiskDiagnosticResolver.exe是一个白签名文件（如图2所示），我们从rastls.dll着手分析。调试器挂载MicrosoftWindowsDiskDiagnosticResolver.exe，跟进rastls.dll模块，结合IDA反汇编可以快速跟踪到对宿主代码段加密部分（图3）。</p>
+<img src="/2021/05/24/Ocean-Lotus%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/2.png" class="" title="img">
+
+<center>图2 文件签名信息和VT检测信息</center>
+
+
+
+
+
+<img src="/2021/05/24/Ocean-Lotus%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/3.png" class="" title="img">
+
+<center>图3 对宿主PE.text段加密混淆</center>
+
+
+
+<p>然后修改0x40c19b处的代码为call sub_6e771ed0。</p>
+<img src="/2021/05/24/Ocean-Lotus%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/4.png" class="" title="img">
+
+<center>图4 劫持宿主EIP</center>
+
+<p>sub_6e771ed0是rastls.dll中的函数，IDA可观察到明显的文件操作行为。</p>
+<img src="/2021/05/24/Ocean-Lotus%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/5.png" class="" title="img">
+
+<center>图5 sub_6e771ed0函数（图中偏移0x1ED0即sub_10001ED0）</center>
+
+<p>在sub_6e771ed0内部下断或下断文件操作相关API，可跟踪到程序调用CreateFileW加载OUTLFLTR.DAT文件（图6）</p>
+<img src="/2021/05/24/Ocean-Lotus%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/6.png" class="" title="img">
+
+<center>图6 加载OUTLFLTR.DAT</center>
+
+
+
+<p>随后将在OUTLFLTR.DAT文件中提取处指定位置资源解析出相应的shellcode1（图7），并跳转执行shellcode（图8）。</p>
+<img src="/2021/05/24/Ocean-Lotus%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/7.png" class="" title="img">
+
+<center>图7 解密提取shellcode</center>
+
+<img src="/2021/05/24/Ocean-Lotus%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/8.png" class="" title="img">
+
+<center>图8 跳转到对缓冲区的shellcode执行</center>
+
+
+
+<p>Shellcode1中继续从提取的资源中解密出第一个动态链接库文件，名为{92BA1818-0119-4F79-874E-E3BF79C355B8}.dll。跳转到经PE解析得到的该DLL的OEP位置。DLLMain函数并无特殊功能，其提供的大量局部函数片段将服务shellocde。</p>
+<img src="/2021/05/24/Ocean-Lotus%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/9.png" class="" title="img">
+
+<center>图9 找到第一个DLL资源（{92BA1818-0119-4F79-874E-E3BF79C355B8}.dll）</center>
+
+<img src="/2021/05/24/Ocean-Lotus%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/10.png" class="" title="img">
+
+<center>图10 修复IAT之后跳入{92BA1818-0119-4F79-874E-E3BF79C355B8}.dll OEP</center>
+
+
+
+<p>此时我们Dump出修复之后的DLL文件（可对VirtualProtect下断快速找到堆区的DLL文件）。修改Dump文件的文件对齐即各区段偏移之后，直接IDA反汇编以辅助我们动态跟踪。</p>
+<img src="/2021/05/24/Ocean-Lotus%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/11.png" class="" title="img">
+
+<center>图10 IDA反汇编中找到的DLL签名信息</center>
+
+
+
+<p>执行完{92BA1818-0119-4F79-874E-E3BF79C355B8}.dll DllEntry之后，返回至shellcode1，后续将调用{92BA1818-0119-4F79-874E-E3BF79C355B8}.dll中的构造好的代码片段寻找第二个DLL资源。</p>
+<img src="/2021/05/24/Ocean-Lotus%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/11.png" class="" title="img">
+
+<center>图11 寻找第二个DLL资源</center>
+
+
+
+<p>找到第二个DLL之后，程序流会解密出第二段shellcode2，跳转执行shellcode2，然后修复找到的DLL，跳转到新的DLL OEP。</p>
+<img src="/2021/05/24/Ocean-Lotus%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/12.png" class="" title="img">
+
+<center>图12 解密出shellcode2，跳转执行</center>
+
+<img src="/2021/05/24/Ocean-Lotus%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/13.png" class="" title="img">
+
+<center>图13 跳入修复后的DLL（{A96B020F-0000-466F-A96D-A91BBF8EAC96}.dll）</center>
+
+
+
+<img src="/2021/05/24/Ocean-Lotus%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/14.png" class="" title="img">
+
+<center>图14 {A96B020F-0000-466F-A96D-A91BBF8EAC96}.dll签名信息</center>
+
+
+
+<p>{A96B020F-0000-466F-A96D-A91BBF8EAC96}.dll与第一个DLL类似，其DllEntry无特别作用，但是它提供了针对源资源的解密方法，后续的程序流程中将调用揭秘方法解密出敏感信息（如网络相关的CC）。此外该DLL将会继续解密提取出三个网络相关的动态链接库文件。</p>
+<img src="/2021/05/24/Ocean-Lotus%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/14.1.png" class="" title="img">
+
+<center>图14 位于{A96B020F-0000-466F-A96D-A91BBF8EAC96}.dll内的资源解密函数</center>
+
+
+
+<p>继续解密修复第三个DLL资源。</p>
+<img src="/2021/05/24/Ocean-Lotus%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/15.png" class="" title="img">
+
+<center>图15 解密出的第三个DLL（HttpProv.dll）</center>
+
+
+
+<img src="/2021/05/24/Ocean-Lotus%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/16.png" class="" title="img">
+
+<center>图16 HttpProv.dll签名信息</center>
+
+<p>HttpProv.dll提供了一个重要的导出函数CreateInstance。</p>
+<img src="/2021/05/24/Ocean-Lotus%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/17.png" class="" title="img">
+
+<center>图17 HttpProv.dll-&gt;CreateInstance</center>
+
+<img src="/2021/05/24/Ocean-Lotus%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/18.png" class="" title="img">
+
+<center>图18 创建新的线程</center>
+
+
+
+<p>解密出第四个DLL资源。</p>
+<img src="/2021/05/24/Ocean-Lotus%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/19.png" class="" title="img">
+
+<center>图19 跳转执行DnsProvider.dll OEP</center>
+
+<img src="/2021/05/24/Ocean-Lotus%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/20.png" class="" title="img">
+
+<center>图20 DnsProvider.dll签名信息</center>
+
+
+
+<p>设置图标资源相关的注册表值选用REG_OPTION_NON_VOLATILE方式，即只在内存中有效，无实际注册表修改。猜测这应该也是一种隐蔽自身的手段。</p>
+<img src="/2021/05/24/Ocean-Lotus%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/21.png" class="" title="img">
+
+<center>图21 注册表设置</center>
+
+<p>解密出最后一个DLL资源。</p>
+<img src="/2021/05/24/Ocean-Lotus%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/22.png" class="" title="img">
+
+<center>图22 HttpProv.dll</center>
+
+<img src="/2021/05/24/Ocean-Lotus%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/23.png" class="" title="img">
+
+<center>图23 HttpProv.dll签名信息</center>
+
+
+
+<p>解密出的这些DLL文件在其初始化过程中将会载入网络模块相关系统资源，然后将进行本地数据上传、远程CC连接等行为。</p>
+<img src="/2021/05/24/Ocean-Lotus%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/24.png" class="" title="img">
+
+<center>图24我们待资源解密之后提取的敏感信息</center>
+
+
+
+<img src="/2021/05/24/Ocean-Lotus%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/25.png" class="" title="img">
+
+<center>图25 远程CC服务器连接</center>
+
+<img src="/2021/05/24/Ocean-Lotus%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/26.png" class="" title="img">
+
+<center>图26 将本地用户信息加密之后上传</center>
+
+<img src="/2021/05/24/Ocean-Lotus%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/27.png" class="" title="img">
+
+<center>图27 远程域名请求行为</center>
+
+
+
+<h2 id="0x03-IOC"><a href="#0x03-IOC" class="headerlink" title="0x03 IOC"></a>0x03 IOC</h2><p>网络C2</p>
+<table>
+<thead>
+<tr>
+<th>回连域名</th>
+<th>andreagahuvrauvin.comstraliaenollma.xyzbyronorenstein.com</th>
+</tr>
+</thead>
+<tbody><tr>
+<td></td>
+<td></td>
+</tr>
+</tbody></table>
+<p>释放文件及中间件哈希</p>
+<table>
+<thead>
+<tr>
+<th>文件名</th>
+<th>MD5</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>MicrosoftWindowsDiskDiagnosticResolver.exe</td>
+<td>62944e26b36b1dcace429ae26ba66164</td>
+</tr>
+<tr>
+<td>OUTLFLTR.DAT</td>
+<td>b10f93cdbcdf43d4c5c5770872e239f4</td>
+</tr>
+<tr>
+<td>rastls.dll</td>
+<td>f775cc387a55831386e44dd00ef9723e</td>
+</tr>
+<tr>
+<td>{92BA1818-0119-4F79-874E-E3BF79C355B8}.dll</td>
+<td>93b6996fe1f5a91400b76f4a56f56a0c</td>
+</tr>
+<tr>
+<td>{A96B020F-0000-466F-A96D-A91BBF8EAC96}.dll</td>
+<td>76a4d8da378ad191e3d93d210c217e59</td>
+</tr>
+<tr>
+<td>HttpProv.dll</td>
+<td>b8df4f077f900878871dddea14774bc5</td>
+</tr>
+<tr>
+<td>DnsProvider.dll</td>
+<td>a5ad1094870ffaa5129b51a840d497cd</td>
+</tr>
+<tr>
+<td>HttpProv.dll</td>
+<td>c2941048fa90d98147e8f0790b708657</td>
+</tr>
+</tbody></table>
+<h2 id="0x04总结"><a href="#0x04总结" class="headerlink" title="0x04总结"></a>0x04总结</h2><p>此次捕获的由APT组织海莲花针对我国发起的攻击活动的高危情报，该样本选用伪装成doc文件的RTF文档作为攻击载体，利用了常见的栈溢出漏洞CVE-2017-11882，当用户打开后缀为.doc的文档时，若没有更新该漏洞补丁则会触发漏洞释放内嵌的资源文件到本地。释放文件采用了白利用技术绕过常规杀软检测，在木马运行过程中无文件落地并且也没有进行常规木马的可信进程注入行为。解析的shellcode存在较多的加密混淆操作，后续的窃密远控行为分为多线程执行，其执行流程在内存中解密出的多模块间跳转，这些操作一定程度上加大了逆向分析难度。总结来说，该样本具有较强的隐蔽性，较高的稳定性，其蓄谋攻击可见一斑。</p>
+</article><section class="jump-container is-flex is-justify-content-space-between my-6"><!-- em is empty placeholder--><a class="button is-default" href="/2021/05/24/ARM%E6%B1%87%E7%BC%96%E7%AC%94%E8%AE%B0/" title="ARM汇编笔记"><i class="iconfont icon-prev mr-2 has-text-grey"></i><span class="has-text-weight-semibold">上一页: ARM汇编笔记</span></a><a class="button is-default" href="/2021/05/24/%E4%B8%80%E6%9E%9A%E7%AE%80%E5%8D%95%E7%9A%84%E6%9C%AA%E7%9F%A5%E5%A3%B3/" title="一枚简单的未知壳"><span class="has-text-weight-semibold">下一页: 一枚简单的未知壳</span><i class="iconfont icon-next ml-2 has-text-grey"></i></a></section><article class="mt-6 comment-container"><script async repo="Haojen/Claudia-theme-blog" src="https://utteranc.es/client.js" issue-term="pathname" theme="preferred-color-scheme"></script></article><article class="mt-6 comment-container" id="vcomments"></article></div></div></main></main><footer class="is-flex is-flex-direction-column is-align-items-center is-flex-shrink-0 is-family-serif"><section class="sns-container"><a title="twitter" target="_blank" rel="noopener nofollow" href="//twitter.com//"><i class="iconfont icon-twitter"></i></a><!-- Github--><a title="github" target="_blank" rel="noopener nofollow" href="//github.com/xiaoeryu"><i class="iconfont icon-github"></i></a><!-- Ins--><a title="instagram" target="_blank" rel="noopener nofollow" href="//www.instagram.com//"><i class="iconfont icon-ins"></i></a><!-- RSS--><!-- 知乎--><!-- 领英--><!-- 脸书--><a title="facebook" target="_blank" rel="noopener nofollow" href="//www.facebook.com//"><i class="iconfont icon-tian7_facebook"></i></a></section><p><span>Copyright ©</span><span> xiaoeryu 2022</span></p><div class="is-flex is-justify-content-center is-flex-wrap-wrap"><p>Powered by Hexo &verbar;&nbsp;</p><p class="is-flex is-justify-content-center"><a title="Hexo theme author" target="_blank" rel="noopener" href="//github.com/haojen">Theme by Haojen&nbsp;</a></p><div style="margin-top: 2px"><a class="github-button" title="github-button" target="_blank" rel="noopener" href="https://github.com/haojen/hexo-theme-Claudia" data-color-scheme="no-preference: light; light: light; dark: dark;" data-show-count="true"></a></div></div><div><span></span></div></footer><script async defer src="https://buttons.github.io/buttons.js"></script><script src="/js/jquery-3.6.1.min.js"></script><script src="/js/jquery-fancybox.min.js"></script><script src="/js/img_zoom.js"></script><script src="/js/post.js"></script></body></html>
