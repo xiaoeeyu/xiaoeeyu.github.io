@@ -7,12 +7,12 @@
 
 
 
-硬件中断信号，==NMI==是不可屏蔽中断、==INTR==是来自硬件中断引脚的可屏蔽中断。随机产生，与处理器是异步的。
-软件中断，==INT N==是在软件内部主动引发的中断。
-处理异常中断（Exceptions），是处理器内部产生的中断，表示处理器执行时产生了错误的状况。比如当处理器执行一条非法指令或者因条件不具备指令不能正常执行时将会引发这种类型的中断。如==div指令==中==除数是0==的情况。
+硬件中断信号，NMI是不可屏蔽中断、INTR是来自硬件中断引脚的可屏蔽中断。随机产生，与处理器是异步的。
+软件中断，INT N是在软件内部主动引发的中断。
+处理异常中断（Exceptions），是处理器内部产生的中断，表示处理器执行时产生了错误的状况。比如当处理器执行一条非法指令或者因条件不具备指令不能正常执行时将会引发这种类型的中断。如div指令中除数是0的情况。
 终端和异常
 按照异常的产生原因分类：
-指令执行异常：处理.."><script src="//unpkg.com/valine/dist/Valine.min.js"></script><meta name="generator" content="Hexo 6.3.0">
+指令执行异常：处理器在执行指令时检测到程序的错误并由此而引.."><script src="//unpkg.com/valine/dist/Valine.min.js"></script><meta name="generator" content="Hexo 6.3.0">
 <style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
 </head><body class="is-flex is-flex-direction-column"><header class="header-widget is-flex-shrink-0 is-hidden-mobile"><div class="container is-fullhd is-flex is-justify-content-space-between is-align-items-center is-full-height"><section class="is-hidden-mobile is-flex-shrink-0"><h2><a href="/">xiaoeryu's blog</a></h2></section><h3 class="is-hidden-mobile is-family-serif is-full-height is-flex is-align-items-center is-flex-shrink-0"><div class="is-full-height" id="postTopic"><p class="is-full-height is-flex-shrink-0 is-flex is-align-items-center is-justify-content-center">30-中断和异常的处理与抢占式多任务</p><p class="is-full-height is-flex-shrink-0 is-flex is-align-items-center is-justify-content-center">点击返回顶部</p></div></h3><aside class="is-flex-shrink-0"><h3 class="is-inline-block"><a href="/">首页</a></h3><h3 class="is-inline-block"><a href="/about">关于</a></h3><h3 class="is-inline-block"><a href="/archives">归档</a></h3></aside></div></header><header class="is-flex header-widget is-flex-shrink-0 is-align-items-center is-justify-content-center is-hidden-tablet"><h3 class="is-inline-block"><a href="/">首页</a></h3><h3 class="is-inline-block"><a href="/about">关于</a></h3><h3 class="is-inline-block"><a href="/archives">归档</a></h3></header><main><main class="container is-max-widescreen content section post-page pt-4 px-4"><div class="columns is-flex-desktop is-justify-content-center is-flex-direction-row-reverse"><div class="column is-3 is-hidden-mobile"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#1-%E4%B8%AD%E6%96%AD%E5%92%8C%E5%BC%82%E5%B8%B8%E6%A6%82%E8%BF%B0"><span class="toc-text">1. 中断和异常概述</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#02-%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F%E4%B8%8B%E4%B8%AD%E6%96%AD%E5%92%8C%E5%BC%82%E5%B8%B8%E7%9A%84%E5%90%91%E9%87%8F%E5%88%86%E9%85%8D"><span class="toc-text">02. 保护模式下中断和异常的向量分配</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#03-%E4%B8%AD%E6%96%AD%E6%8F%8F%E8%BF%B0%E7%AC%A6%E3%80%81%E4%B8%AD%E6%96%AD%E9%97%A8%E5%92%8C%E9%99%B7%E9%98%B1%E9%97%A8"><span class="toc-text">03. 中断描述符、中断门和陷阱门</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#04-%E6%9C%AC%E7%AB%A0%E7%A8%8B%E5%BA%8F%E4%BB%8B%E7%BB%8D"><span class="toc-text">04. 本章程序介绍</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#05-%E5%88%9B%E5%BB%BA%E5%B9%B6%E5%AE%89%E8%A3%85%E5%85%A8%E9%83%A8%E7%9A%84256%E4%B8%AA%E4%B8%AD%E6%96%AD%E9%97%A8"><span class="toc-text">05. 创建并安装全部的256个中断门</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#06-%E4%B8%BA%E5%AE%9E%E6%97%B6%E6%97%B6%E9%92%9F%E4%B8%AD%E6%96%AD%E5%88%9B%E5%BB%BA%E5%92%8C%E5%AE%89%E8%A3%85%E4%B8%AD%E6%96%AD%E9%97%A8"><span class="toc-text">06. 为实时时钟中断创建和安装中断门</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#07-%E5%8A%A0%E8%BD%BD%E4%B8%AD%E6%96%AD%E6%8F%8F%E8%BF%B0%E7%AC%A6%E8%A1%A8%E5%AF%84%E5%AD%98%E5%99%A8IDTR"><span class="toc-text">07. 加载中断描述符表寄存器IDTR</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#08-%E9%87%8D%E6%96%B0%E8%AE%BE%E7%BD%AE8259A%E4%B8%BB%E7%89%87%E7%9A%84%E4%B8%AD%E6%96%AD%E5%90%91%E9%87%8F"><span class="toc-text">08. 重新设置8259A主片的中断向量</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#09-%E4%B8%AD%E6%96%AD%E5%92%8C%E5%BC%82%E5%B8%B8%E5%8F%91%E7%94%9F%E4%BC%BC%E7%9A%84%E7%89%B9%E6%9D%83%E7%BA%A7%E6%A3%80%E6%9F%A5"><span class="toc-text">09. 中断和异常发生似的特权级检查</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#10-%E4%B8%AD%E6%96%AD%E5%92%8C%E5%BC%82%E5%B8%B8%E5%8F%91%E7%94%9F%E6%97%B6%E7%9A%84%E6%A0%88%E5%88%87%E6%8D%A2%E8%BF%87%E7%A8%8B"><span class="toc-text">10. 中断和异常发生时的栈切换过程</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#11-%E5%9C%A8%E4%B8%AD%E6%96%AD%E5%A4%84%E7%90%86%E8%BF%87%E7%A8%8B%E4%B8%AD%E5%AE%9E%E6%96%BD%E4%BB%BB%E5%8A%A1%E5%88%87%E6%8D%A2%EF%BC%88%E5%90%ABNOP%E6%8C%87%E4%BB%A4%E7%9A%84%E4%BB%8B%E7%BB%8D%EF%BC%89"><span class="toc-text">11. 在中断处理过程中实施任务切换（含NOP指令的介绍）</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#12-%E6%8A%A2%E5%8D%A0%E5%BC%8F%E5%A4%9A%E4%BB%BB%E5%8A%A1%E7%9A%84%E6%89%A7%E8%A1%8C%E6%95%88%E6%9E%9C%E6%BC%94%E7%A4%BA"><span class="toc-text">12. 抢占式多任务的执行效果演示</span></a></li></ol></div><div class="column is-9"><header class="my-4"><a href="/tags/X86%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80%EF%BC%9A%E5%AE%9E%E6%A8%A1%E5%BC%8F%E5%88%B0%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F"><i class="tag post-item-tag">X86汇编语言：实模式到保护模式</i></a></header><h1 class="mt-0 mb-1 is-family-serif" id="postTitle">30-中断和异常的处理与抢占式多任务</h1><time class="has-text-grey" datetime="2022-12-11T14:48:00.000Z">2022-12-11</time><article class="mt-2 post-content"><h2 id="1-中断和异常概述"><a href="#1-中断和异常概述" class="headerlink" title="1. 中断和异常概述"></a>1. 中断和异常概述</h2><p>协同式任务切换不一定要通过一个专门的接口例程进行，也可以用一般的例程进行。</p>
 <span id="more"></span>
@@ -22,13 +22,13 @@
 <img src="/2022/12/11/30-%E4%B8%AD%E6%96%AD%E5%92%8C%E5%BC%82%E5%B8%B8%E7%9A%84%E5%A4%84%E7%90%86%E4%B8%8E%E6%8A%A2%E5%8D%A0%E5%BC%8F%E5%A4%9A%E4%BB%BB%E5%8A%A1/0541841212d9120d7adc89707c464bc7.png" class="">
 
 <ul>
-<li>硬件中断信号，==NMI==是不可屏蔽中断、==INTR==是来自硬件中断引脚的可屏蔽中断。随机产生，与处理器是异步的。</li>
-<li>软件中断，==INT N==是在软件内部主动引发的中断。</li>
-<li>处理异常中断（Exceptions），是处理器内部产生的中断，表示处理器执行时产生了错误的状况。比如当处理器执行一条非法指令或者因条件不具备指令不能正常执行时将会引发这种类型的中断。如==div指令==中==除数是0==的情况。<img src="/2022/12/11/30-%E4%B8%AD%E6%96%AD%E5%92%8C%E5%BC%82%E5%B8%B8%E7%9A%84%E5%A4%84%E7%90%86%E4%B8%8E%E6%8A%A2%E5%8D%A0%E5%BC%8F%E5%A4%9A%E4%BB%BB%E5%8A%A1/e083d1c54d9b807af3a4d71568db31b6.png" class="">
+<li>硬件中断信号，<mark>NMI</mark>是不可屏蔽中断、<mark>INTR</mark>是来自硬件中断引脚的可屏蔽中断。随机产生，与处理器是异步的。</li>
+<li>软件中断，<mark>INT N</mark>是在软件内部主动引发的中断。</li>
+<li>处理异常中断（Exceptions），是处理器内部产生的中断，表示处理器执行时产生了错误的状况。比如当处理器执行一条非法指令或者因条件不具备指令不能正常执行时将会引发这种类型的中断。如<mark>div指令</mark>中<mark>除数是0</mark>的情况。<img src="/2022/12/11/30-%E4%B8%AD%E6%96%AD%E5%92%8C%E5%BC%82%E5%B8%B8%E7%9A%84%E5%A4%84%E7%90%86%E4%B8%8E%E6%8A%A2%E5%8D%A0%E5%BC%8F%E5%A4%9A%E4%BB%BB%E5%8A%A1/e083d1c54d9b807af3a4d71568db31b6.png" class="">
 终端和异常<img src="/2022/12/11/30-%E4%B8%AD%E6%96%AD%E5%92%8C%E5%BC%82%E5%B8%B8%E7%9A%84%E5%A4%84%E7%90%86%E4%B8%8E%E6%8A%A2%E5%8D%A0%E5%BC%8F%E5%A4%9A%E4%BB%BB%E5%8A%A1/9f6e794666998a02b19d053418864147.png" class="">
 按照异常的产生原因分类：<ol>
 <li>指令执行异常：处理器在执行指令时检测到程序的错误并由此而引发的异常</li>
-<li>程序调试异常：供调试器使用，由==INTO、INT3==主动发起。用来检查特定的机器状态是否出现。==INTO==检查标志寄存器的==OF=1==（溢出标志位）则执行指令引发异常中断。<strong>INT3</strong>指令由调试器单步执行使用。</li>
+<li>程序调试异常：供调试器使用，由<mark>INTO、INT3</mark>主动发起。用来检查特定的机器状态是否出现。<mark>INTO</mark>检查标志寄存器的<mark>OF=1</mark>（溢出标志位）则执行指令引发异常中断。<strong>INT3</strong>指令由调试器单步执行使用。</li>
 <li>机器检查异常：和处理器架构有关，如在奔腾4、P6处理器家族上就实现了机器检查架构，用这种异常检测与硬件有关的总线错误、奇偶校验错误、高速缓存错误等等。</li>
 </ol>
 </li>
@@ -38,8 +38,8 @@
 
 <ol>
 <li>故障（Faults）：通常可以纠正，如缺页异常。中断程序返回的是当前指令。</li>
-<li>陷阱（Traps）：通常是在执行了截获陷阱条件的指令之后立即产生，通常用于调试==INT3、INTO==。中断程序返回的是当前指令的下一条指令。</li>
-<li>终止（Aborts）：通常标志最严重的错误，如硬件错误、系统表错误（如GDT、LDT数据不一致、无效、错误），这类异常一般无法精确的报告引起错误的指令的位置。发生时程序和错误都不可能重新启动，双重异常（当处理器发生异常时，在转入异常执行时又发生了另一个异常）如中断向量号18，==INT 0x18==。</li>
+<li>陷阱（Traps）：通常是在执行了截获陷阱条件的指令之后立即产生，通常用于调试<mark>INT3、INTO</mark>。中断程序返回的是当前指令的下一条指令。</li>
+<li>终止（Aborts）：通常标志最严重的错误，如硬件错误、系统表错误（如GDT、LDT数据不一致、无效、错误），这类异常一般无法精确的报告引起错误的指令的位置。发生时程序和错误都不可能重新启动，双重异常（当处理器发生异常时，在转入异常执行时又发生了另一个异常）如中断向量号18，<mark>INT 0x18</mark>。</li>
 </ol>
 <p>对于某些异常来说，处理器再转入异常处理程序之前，会在栈中压入一个称为错误代码的数值，这样可以帮助诊断异常产生的位置和原因。</p>
 <h2 id="02-保护模式下中断和异常的向量分配"><a href="#02-保护模式下中断和异常的向量分配" class="headerlink" title="02. 保护模式下中断和异常的向量分配"></a>02. 保护模式下中断和异常的向量分配</h2><p>终端和异常的编号叫做中断向量。</p>
@@ -49,14 +49,14 @@
 <img src="/2022/12/11/30-%E4%B8%AD%E6%96%AD%E5%92%8C%E5%BC%82%E5%B8%B8%E7%9A%84%E5%A4%84%E7%90%86%E4%B8%8E%E6%8A%A2%E5%8D%A0%E5%BC%8F%E5%A4%9A%E4%BB%BB%E5%8A%A1/70cbd9f6d7a234ea6667922d43c27f20.png" class="">
 <p>中断发生时，处理器要么自发产生一个中断向量、要么从软中断指令的操作数到中断向量、或者从从外部的中断控制器取得一个中断向量。将该向量作为索引访问中断向量表<strong>IVT</strong>，具体做法是将中断向量乘以4作为偏移量访问<strong>IVT</strong>，从中取得中断处理过程的段地址和偏移地址，并转到那里执行。</p>
 <p>保护模式下：使用中断描述符表<strong>IDT</strong>（Interrupt Descriptor Table），保存和中断处理过程相关的描述符，包括中断门、陷阱门、任务门，门是特殊的描述符。</p>
-<p>==中断门==描述符用来描述中断处理过程。</p>
+<p><mark>中断门</mark>描述符用来描述中断处理过程。</p>
 <img src="/2022/12/11/30-%E4%B8%AD%E6%96%AD%E5%92%8C%E5%BC%82%E5%B8%B8%E7%9A%84%E5%A4%84%E7%90%86%E4%B8%8E%E6%8A%A2%E5%8D%A0%E5%BC%8F%E5%A4%9A%E4%BB%BB%E5%8A%A1/05b1c6c1d0dcb160102e0248a536feca.png" class="">
-<p>==陷阱门==描述符用来描述陷阱中断的处理过程。</p>
+<p><mark>陷阱门</mark>描述符用来描述陷阱中断的处理过程。</p>
 <img src="/2022/12/11/30-%E4%B8%AD%E6%96%AD%E5%92%8C%E5%BC%82%E5%B8%B8%E7%9A%84%E5%A4%84%E7%90%86%E4%B8%8E%E6%8A%A2%E5%8D%A0%E5%BC%8F%E5%A4%9A%E4%BB%BB%E5%8A%A1/506f1a49cbf434b592d7810c41d99dfc.png" class="">
 <p>任务门，32位处理器支持，若<strong>IDT</strong>中描述的是一个任务门，则执行的是一个任务切换。在64位处理器中既不支持硬件切换也不支持任务门。</p>
 <p>实模式下的中断向量表<strong>IVT</strong>只能位于内存的最低端。保护模式下的中断描述符表<strong>IDT</strong>可以位于内存的任何位置。</p>
 <img src="/2022/12/11/30-%E4%B8%AD%E6%96%AD%E5%92%8C%E5%BC%82%E5%B8%B8%E7%9A%84%E5%A4%84%E7%90%86%E4%B8%8E%E6%8A%A2%E5%8D%A0%E5%BC%8F%E5%A4%9A%E4%BB%BB%E5%8A%A1/7957d4bde64a8c498450b215e31de922.png" class="">
-<p><strong>IDT</strong>的第一个描述符，即==0号槽位==也是有效的。</p>
+<p><strong>IDT</strong>的第一个描述符，即<mark>0号槽位</mark>也是有效的。</p>
 <img src="/2022/12/11/30-%E4%B8%AD%E6%96%AD%E5%92%8C%E5%BC%82%E5%B8%B8%E7%9A%84%E5%A4%84%E7%90%86%E4%B8%8E%E6%8A%A2%E5%8D%A0%E5%BC%8F%E5%A4%9A%E4%BB%BB%E5%8A%A1/f0ce0cd6d25a0616bf8bbf347dbf1802.png" class="">
 
 <ul>
@@ -68,7 +68,7 @@
 <li>将<strong>段基地址</strong>和<strong>偏移量</strong>相加得到中断处理过程的的线性地址，从而转移执行。</li>
 </ul>
 <p>使用中断向量访问<strong>IDT</strong>时，中断向量超过<strong>IDT</strong>界限值时，就会产生常规保护异常**#GP**。</p>
-<h2 id="04-本章程序介绍"><a href="#04-本章程序介绍" class="headerlink" title="04. 本章程序介绍"></a>04. 本章程序介绍</h2><p>引导程序：==c13_mbr0.asm==</p>
+<h2 id="04-本章程序介绍"><a href="#04-本章程序介绍" class="headerlink" title="04. 本章程序介绍"></a>04. 本章程序介绍</h2><p>引导程序：<mark>c13_mbr0.asm</mark></p>
 <ol>
 <li>取出<strong>GDT</strong>所在线性基地址</li>
 <li>创建本程序相关描述符，接着使用<strong>cli</strong>指令关闭中断响应</li>
@@ -77,7 +77,7 @@
 <li>创建内核相关的描述符</li>
 <li>跳转执行内核</li>
 </ol>
-<p>内核程序：==c30_core0.asm==</p>
+<p>内核程序：<mark>c30_core0.asm</mark></p>
 <ol>
 <li>创建各个段的选择子常量和<strong>IDT</strong>线性地址</li>
 <li>内核头部段</li>
@@ -85,25 +85,25 @@
 <li>内核核心数据段，各种数据</li>
 <li>内核核心代码，改变了内核入口点<strong>start</strong>的程序。</li>
 </ol>
-<p>用户程序0：==c30_app0.asm==<br>其他不变，死循环打印==，，，，，，==</p>
-<p>用户程序1：==c30_app1.asm==<br>其他不变，死循环打印==cccccc==</p>
-<h2 id="05-创建并安装全部的256个中断门"><a href="#05-创建并安装全部的256个中断门" class="headerlink" title="05. 创建并安装全部的256个中断门"></a>05. 创建并安装全部的256个中断门</h2><p>在进入内核==start==之后，准备创建内核任务、用户任务并进行任务切换，在此之前需要准备好保护模式下的中断系统。</p>
-<p>中断或异常发生时，并不是直接调用中断或异常处理程序，而是用中断向量先到中断描述符中寻找对应的中断描述符，即中断门或陷阱门，之后从中断门或陷阱门中间接找到中断处理过程。意味着必须为这个通用的中断处理过程创建中断门或陷阱门，并安装在中断描述符表==IDT==中。</p>
+<p>用户程序0：<mark>c30_app0.asm</mark><br>其他不变，死循环打印<mark>，，，，，，</mark></p>
+<p>用户程序1：<mark>c30_app1.asm</mark><br>其他不变，死循环打印<mark>cccccc</mark></p>
+<h2 id="05-创建并安装全部的256个中断门"><a href="#05-创建并安装全部的256个中断门" class="headerlink" title="05. 创建并安装全部的256个中断门"></a>05. 创建并安装全部的256个中断门</h2><p>在进入内核<mark>start</mark>之后，准备创建内核任务、用户任务并进行任务切换，在此之前需要准备好保护模式下的中断系统。</p>
+<p>中断或异常发生时，并不是直接调用中断或异常处理程序，而是用中断向量先到中断描述符中寻找对应的中断描述符，即中断门或陷阱门，之后从中断门或陷阱门中间接找到中断处理过程。意味着必须为这个通用的中断处理过程创建中断门或陷阱门，并安装在中断描述符表<mark>IDT</mark>中。</p>
 <p>创建中断门代码如下：</p>
-<pre><code>    ;前20个向量是处理器异常使用的
+<pre><code class="assembly">    ;前20个向量是处理器异常使用的
     mov eax,general_exception_handler  ;门代码在段内偏移地址
     mov bx,sys_routine_seg_sel         ;门代码所在段的选择子
     mov cx,0x8e00                      ;32位中断门，0特权级
     call sys_routine_seg_sel:make_gate_descriptor
 </code></pre>
-<p>中断门属性值==8E00==：</p>
+<p>中断门属性值<mark>8E00</mark>：</p>
 <img src="/2022/12/11/30-%E4%B8%AD%E6%96%AD%E5%92%8C%E5%BC%82%E5%B8%B8%E7%9A%84%E5%A4%84%E7%90%86%E4%B8%8E%E6%8A%A2%E5%8D%A0%E5%BC%8F%E5%A4%9A%E4%BB%BB%E5%8A%A1/d24b99343349d21cb8e624e9d7860a1d.png" class="">
 <p>创建好之后需要安装在中断描述符表<strong>IDT</strong>中，<strong>IDT</strong>现在还没有创建，创建<strong>IDT</strong>就是指定表的起始线性基地址，并从这个地址安装中断门和陷阱门就可以了。</p>
 <p>目前系统内存布局：</p>
 <img src="/2022/12/11/30-%E4%B8%AD%E6%96%AD%E5%92%8C%E5%BC%82%E5%B8%B8%E7%9A%84%E5%A4%84%E7%90%86%E4%B8%8E%E6%8A%A2%E5%8D%A0%E5%BC%8F%E5%A4%9A%E4%BB%BB%E5%8A%A1/b9132c903725144ad56a81ec7e391e95.png" class="">
 
 <p>依次安装中断门或陷阱门：前20个中断门指向通用处理过程<strong>general_exception_handler</strong>。</p>
-<pre><code>    mov ebx,idt_linear_address         ;中断描述符表的线性地址
+<pre><code class="assembly">    mov ebx,idt_linear_address         ;中断描述符表的线性地址
     xor esi,esi
 .idt0:
     mov [es:ebx+esi*8],eax				;基址变址寻址
@@ -113,7 +113,7 @@
     jle .idt0
 </code></pre>
 <p>之后安装通过的中断门：后236个中断门都指向同一个中断处理程序<strong>general_interrupt_handler</strong>。</p>
-<pre><code>    ;其余为保留或硬件使用的中断向量
+<pre><code class="assembly">    ;其余为保留或硬件使用的中断向量
     mov eax,general_interrupt_handler  ;门代码在段内偏移地址
     mov bx,sys_routine_seg_sel         ;门代码所在段的选择子
     mov cx,0x8e00                      ;32位中断门，0特权级
@@ -129,7 +129,7 @@
 </code></pre>
 <h2 id="06-为实时时钟中断创建和安装中断门"><a href="#06-为实时时钟中断创建和安装中断门" class="headerlink" title="06. 为实时时钟中断创建和安装中断门"></a>06. 为实时时钟中断创建和安装中断门</h2><p>使用实时时钟中断，默认中断号<strong>0x70</strong>，当发生<strong>0x70</strong>号中断时并不是执行一个通用的中断过程，而是执行它自己的中断处理过程<strong>rtm_0x70_interrupt_handle</strong>。</p>
 <p>现在需要创建<strong>0x70</strong>号中断的中断门，并安装在中断描述符表中，用来替换原来的通用中断门。</p>
-<pre><code>    ;设置实时时钟中断处理过程
+<pre><code class="assembly">    ;设置实时时钟中断处理过程
     mov eax,rtm_0x70_interrupt_handle  ;门代码在段内偏移地址
     mov bx,sys_routine_seg_sel         ;门代码所在段的选择子
     mov cx,0x8e00                      ;32位中断门，0特权级
@@ -144,7 +144,7 @@
 <img src="/2022/12/11/30-%E4%B8%AD%E6%96%AD%E5%92%8C%E5%BC%82%E5%B8%B8%E7%9A%84%E5%A4%84%E7%90%86%E4%B8%8E%E6%8A%A2%E5%8D%A0%E5%BC%8F%E5%A4%9A%E4%BB%BB%E5%8A%A1/99bae412d7ff952cfc8225cb8b0a28ea.png" class="">
 <p>偏移为<em>m</em>的地方开辟出6个字节的空间。前2个字节保存<strong>IDT</strong>的界限值，后4字节保存着<strong>IDT</strong>的线性基地址。执行此条指令时，处理器用段寄存器中的线性基地址加上指令中的<strong>偏移m</strong>构成物理地址访问内存取出这6个字节。然后传送到处理器内部的<strong>IDTR</strong>寄存器中。该指令在实模式下也能执行。</p>
 <p>开机时，<strong>IDTR</strong>中基地址被初始化为<strong>0x00000000</strong>，界限值被初始化为<strong>0xFFFF</strong>。<strong>lidt</strong>指令不影响任何标志位。代码如下：</p>
-<pre><code>    ;准备开放中断
+<pre><code class="assembly">    ;准备开放中断
     mov word [pidt],256*8-1            ;IDT的界限
     mov dword [pidt+2],idt_linear_address
     lidt [pidt]                        ;加载中断描述符表寄存器IDTR
@@ -161,20 +161,20 @@
 <img src="/2022/12/11/30-%E4%B8%AD%E6%96%AD%E5%92%8C%E5%BC%82%E5%B8%B8%E7%9A%84%E5%A4%84%E7%90%86%E4%B8%8E%E6%8A%A2%E5%8D%A0%E5%BC%8F%E5%A4%9A%E4%BB%BB%E5%8A%A1/1b3a44f5f57993fa3fde845ab5e753fe.png" class="">
 <p>对于主片来说先向<strong>0x20</strong>号端口发送<strong>ICW1</strong>，对于从片来说要向<strong>0xA0</strong>号端口发送<strong>ICW1</strong>，<strong>ICW1</strong>是一个标志，每次<strong>8259A</strong>芯片接收到<strong>ICW1</strong>表示一个新的初始化过程开始了。</p>
 <p>从<strong>0x20、0xA0</strong>接收到<strong>ICW1</strong>后，<strong>8259A</strong>期待从<strong>0x21、0xA0</strong>接收<strong>ICW2</strong>，后续是否期待<strong>ICW3、ICW4</strong>要看<strong>ICW1</strong>的内容。<strong>ICW1</strong>发送给<strong>0x20、0xA0</strong>号端口作为标志，之后<strong>ICW2、ICW3、ICW4</strong>会发送给<strong>0x21、0xA1</strong>号端口。</p>
-<p>==ICW1==：</p>
+<p><mark>ICW1</mark>：</p>
 <img src="/2022/12/11/30-%E4%B8%AD%E6%96%AD%E5%92%8C%E5%BC%82%E5%B8%B8%E7%9A%84%E5%A4%84%E7%90%86%E4%B8%8E%E6%8A%A2%E5%8D%A0%E5%BC%8F%E5%A4%9A%E4%BB%BB%E5%8A%A1/f91758bee251fd8220e7de9497bcc1d7.png" class="">
 
-<p>==ICW2==：</p>
+<p><mark>ICW2</mark>：</p>
 <img src="/2022/12/11/30-%E4%B8%AD%E6%96%AD%E5%92%8C%E5%BC%82%E5%B8%B8%E7%9A%84%E5%A4%84%E7%90%86%E4%B8%8E%E6%8A%A2%E5%8D%A0%E5%BC%8F%E5%A4%9A%E4%BB%BB%E5%8A%A1/511bc7af4ee3bcacd4ac5eae71ef3a8b.png" class="">
 
-<p>==ICW3==：</p>
+<p><mark>ICW3</mark>：</p>
 <img src="/2022/12/11/30-%E4%B8%AD%E6%96%AD%E5%92%8C%E5%BC%82%E5%B8%B8%E7%9A%84%E5%A4%84%E7%90%86%E4%B8%8E%E6%8A%A2%E5%8D%A0%E5%BC%8F%E5%A4%9A%E4%BB%BB%E5%8A%A1/13779e943bef875df248803639068b0e.png" class="">
 
-<p>==ICW4==：</p>
+<p><mark>ICW4</mark>：</p>
 <img src="/2022/12/11/30-%E4%B8%AD%E6%96%AD%E5%92%8C%E5%BC%82%E5%B8%B8%E7%9A%84%E5%A4%84%E7%90%86%E4%B8%8E%E6%8A%A2%E5%8D%A0%E5%BC%8F%E5%A4%9A%E4%BB%BB%E5%8A%A1/23d57fbce03a1e104a6cd035237449ad.png" class="">
 
 <p>代码如下：</p>
-<pre><code>    ;设置8259A中断控制器
+<pre><code class="assembly">    ;设置8259A中断控制器
     mov al,0x11
     out 0x20,al                        ;ICW1：边沿触发/级联方式
     mov al,0x20
@@ -194,7 +194,7 @@
     out 0xa1,al                        ;ICW4:非总线缓冲，全嵌套，正常EOI
 </code></pre>
 <p>之后设置和时钟中断相关的硬件：</p>
-<pre><code>    ;设置和时钟中断相关的硬件
+<pre><code class="assembly">    ;设置和时钟中断相关的硬件
     mov al,0x0b			;RTC寄存器B
     or al,0x80          ;阻断NMI
     out 0x70,al
@@ -209,8 +209,8 @@
     out 0x70,al
     in al,0x71          ;读RTC寄存器C，复位未决的中断状态
 </code></pre>
-<h2 id="09-中断和异常发生似的特权级检查"><a href="#09-中断和异常发生似的特权级检查" class="headerlink" title="09. 中断和异常发生似的特权级检查"></a>09. 中断和异常发生似的特权级检查</h2><p>接上一节，目前中断描述符表已经创建，在这个表中，所有与中断、异常相关的描述符已经安装完毕。包括==0x70号中断==，其中断门已经安装完毕，指向其自己的中断处理过程。</p>
-<p>接下来开中断，讲标志寄存器==IF==位置1，那么中断就可以随时进来。</p>
+<h2 id="09-中断和异常发生似的特权级检查"><a href="#09-中断和异常发生似的特权级检查" class="headerlink" title="09. 中断和异常发生似的特权级检查"></a>09. 中断和异常发生似的特权级检查</h2><p>接上一节，目前中断描述符表已经创建，在这个表中，所有与中断、异常相关的描述符已经安装完毕。包括<mark>0x70号中断</mark>，其中断门已经安装完毕，指向其自己的中断处理过程。</p>
+<p>接下来开中断，讲标志寄存器<mark>IF</mark>位置1，那么中断就可以随时进来。</p>
 <img src="/2022/12/11/30-%E4%B8%AD%E6%96%AD%E5%92%8C%E5%BC%82%E5%B8%B8%E7%9A%84%E5%A4%84%E7%90%86%E4%B8%8E%E6%8A%A2%E5%8D%A0%E5%BC%8F%E5%A4%9A%E4%BB%BB%E5%8A%A1/322fd7154dbaeccf68c9b55f409709b7.png" class="">
 <p>当中断发生时，处理器从软中断指令、或中断控制器芯片取得中断向量。用这个向量从中断描述符表<strong>IDT</strong>中取出中断门、陷阱门、任务门，但是中断向量只是一个代表中断号码的数字，没有表指示器、<strong>RPL</strong>字段，所以中断和异常发生时不检查<strong>RPL</strong>字段；</p>
 <img src="/2022/12/11/30-%E4%B8%AD%E6%96%AD%E5%92%8C%E5%BC%82%E5%B8%B8%E7%9A%84%E5%A4%84%E7%90%86%E4%B8%8E%E6%8A%A2%E5%8D%A0%E5%BC%8F%E5%A4%9A%E4%BB%BB%E5%8A%A1/36d0e5a120263624bae1c2858c3332db.png" class="">
@@ -255,12 +255,12 @@
 <li><strong>段选择子索引</strong>：用于指示<strong>GDT</strong>或<strong>LDT</strong>中的段描述符、或<strong>IDT</strong>内的门描述符。就是段选择子的高13位用于索引描述符。<img src="/2022/12/11/30-%E4%B8%AD%E6%96%AD%E5%92%8C%E5%BC%82%E5%B8%B8%E7%9A%84%E5%A4%84%E7%90%86%E4%B8%8E%E6%8A%A2%E5%8D%A0%E5%BC%8F%E5%A4%9A%E4%BB%BB%E5%8A%A1/02c3a1acd2107868868cf3d50a36ffaa.png" class=""></li>
 </ul>
 <h2 id="11-在中断处理过程中实施任务切换（含NOP指令的介绍）"><a href="#11-在中断处理过程中实施任务切换（含NOP指令的介绍）" class="headerlink" title="11. 在中断处理过程中实施任务切换（含NOP指令的介绍）"></a>11. 在中断处理过程中实施任务切换（含NOP指令的介绍）</h2><p>接上一节，接着开放中断：</p>
-<pre><code>        sti			;开放硬件中断
+<pre><code class="assembly">        sti			;开放硬件中断
 </code></pre>
-<p>假定在执行指令==mov ebx, message_0==时发生<strong>0x70号中断</strong>，这条指令完成后立即响应中断，用中断号0x70乘以8到中断描述符表中取出中断门进行特权级检查，然后进入<strong>0x70</strong>号中断的处理过程执行。</p>
+<p>假定在执行指令<mark>mov ebx, message_0<mark>时发生<strong>0x70号中断</strong>，这条指令完成后立即响应中断，用中断号0x70乘以8到中断描述符表中取出中断门进行特权级检查，然后进入<strong>0x70</strong>号中断的处理过程执行。</mark></mark></p>
 <p>此时还没有创建内核任务，那么TR中的内容是无效的，因为<strong>0x70</strong>号中断的处理过程在内核公共例程段，特权级为0，当前特权级也是0，所以不需要切换栈，自然也不需要访问任务状态段<strong>TSS</strong>。</p>
 <p><strong>0x70</strong>号中断的处理过程：</p>
-<pre><code>;-------------------------------------------------------------------------------
+<pre><code class="assembly">;-------------------------------------------------------------------------------
 rtm_0x70_interrupt_handle:             ;实时时钟中断处理过程
 
     pushad
@@ -286,24 +286,24 @@ rtm_0x70_interrupt_handle:             ;实时时钟中断处理过程
 <li>安装调用门，对门进行测试；</li>
 <li>创建内核任务相关，在创建之前使用<strong>cli</strong>指令清中断，之后<strong>sti</strong>指令开放中断；</li>
 <li>创建第一个用户任务，在创建之前使用<strong>cli</strong>指令清中断，之后<strong>sti</strong>指令开放中断；<ol>
-<li>在开放中断之后，若立即发生了<strong>0x70</strong>号中断，将执行任务切换，首先执行==rtm_0x70_interrupt_handle==，在里面先保存当前内核任务的状态到内核任务<strong>TSS</strong>中，接着将用户任务的状态从其<strong>TSS</strong>中恢复到处理器中，TR就指向用户任务，用户任务就成了当前任务。</li>
-<li>第一次执行用户任务从入口点执行，先切换栈在死循环打印==，，，，，，==，在执行==jmp .do_prn==指令之前若发生了<strong>0x70</strong>号中断，又转到==rtm_0x70_interrupt_handle==执行；</li>
+<li>在开放中断之后，若立即发生了<strong>0x70</strong>号中断，将执行任务切换，首先执行<mark>rtm_0x70_interrupt_handle</mark>，在里面先保存当前内核任务的状态到内核任务<strong>TSS</strong>中，接着将用户任务的状态从其<strong>TSS</strong>中恢复到处理器中，TR就指向用户任务，用户任务就成了当前任务。</li>
+<li>第一次执行用户任务从入口点执行，先切换栈在死循环打印<mark>，，，，，，</mark>，在执行<mark>jmp .do_prn</mark>指令之前若发生了<strong>0x70</strong>号中断，又转到<mark>rtm_0x70_interrupt_handle</mark>执行；</li>
 <li>这一次用户任务时当前任务，找到就绪的内核任务，先保存当前的任务也就是用户任务的状态到其<strong>TSS</strong>，然后将内核任务的状态从其<strong>TSS</strong>中恢复到处理器。此时<strong>TR</strong>指向内核任务，内核任务成为当前任务。内核任务从下面返回：<img src="/2022/12/11/30-%E4%B8%AD%E6%96%AD%E5%92%8C%E5%BC%82%E5%B8%B8%E7%9A%84%E5%A4%84%E7%90%86%E4%B8%8E%E6%8A%A2%E5%8D%A0%E5%BC%8F%E5%A4%9A%E4%BB%BB%E5%8A%A1/b98070cf32d38af1095d692179618875.png" class=""></li>
 </ol>
 </li>
 </ul>
-<p>因为之前内核任务是从这里切换出去的，然后<strong>retf</strong>返回到中断处理过程==rtm_0x70_interrupt_handle==，如下：返回到<strong>popad</strong>指令处。</p>
+<p>因为之前内核任务是从这里切换出去的，然后<strong>retf</strong>返回到中断处理过程<mark>rtm_0x70_interrupt_handle</mark>，如下：返回到<strong>popad</strong>指令处。</p>
 <img src="/2022/12/11/30-%E4%B8%AD%E6%96%AD%E5%92%8C%E5%BC%82%E5%B8%B8%E7%9A%84%E5%A4%84%E7%90%86%E4%B8%8E%E6%8A%A2%E5%8D%A0%E5%BC%8F%E5%A4%9A%E4%BB%BB%E5%8A%A1/5332d252c92ab03ba05f620d2d165454.png" class="">
 
-<p>再执行==iretd==从中断处理过程返回到内核任务中上一次<strong>0x70</strong>号中断的地方，即内核<strong>start</strong>里面的nop指令处：</p>
+<p>再执行<mark>iretd</mark>从中断处理过程返回到内核任务中上一次<strong>0x70</strong>号中断的地方，即内核<strong>start</strong>里面的nop指令处：</p>
 <img src="/2022/12/11/30-%E4%B8%AD%E6%96%AD%E5%92%8C%E5%BC%82%E5%B8%B8%E7%9A%84%E5%A4%84%E7%90%86%E4%B8%8E%E6%8A%A2%E5%8D%A0%E5%BC%8F%E5%A4%9A%E4%BB%BB%E5%8A%A1/7e6e29824e3d95591e20eeb190f3c945.png" class="">
 <p>添加<strong>nop</strong>指令的意图是，假定在执行这三条<strong>nop</strong>指令期间发生了<strong>0x70</strong>号中断，于是处理器又一次在内核任务中中执行中断处理过程</p>
 <p>之后顺序执行代码即可。</p>
 <p>其中<strong>nop</strong>指令：</p>
 <img src="/2022/12/11/30-%E4%B8%AD%E6%96%AD%E5%92%8C%E5%BC%82%E5%B8%B8%E7%9A%84%E5%A4%84%E7%90%86%E4%B8%8E%E6%8A%A2%E5%8D%A0%E5%BC%8F%E5%A4%9A%E4%BB%BB%E5%8A%A1/61a9d56175641a5edbf7407f56f60a6a.png" class="">
-<p>在调试期间，可能需要动态修改一个正在执行的程序，例如我们想把==08 c9==这条跳转指令去掉又不影响其它指令，此时最好的办法就是将其修改为==90 90==。</p>
+<p>在调试期间，可能需要动态修改一个正在执行的程序，例如我们想把<mark>08 c9</mark>这条跳转指令去掉又不影响其它指令，此时最好的办法就是将其修改为<mark>90 90</mark>。</p>
 <h2 id="12-抢占式多任务的执行效果演示"><a href="#12-抢占式多任务的执行效果演示" class="headerlink" title="12. 抢占式多任务的执行效果演示"></a>12. 抢占式多任务的执行效果演示</h2><p>接上一节，执行<strong>nop</strong>指令之后继续创建第二个用户任务：</p>
-<pre><code>    ;为说明任务切换而特意添加的无操作指令
+<pre><code class="assembly">    ;为说明任务切换而特意添加的无操作指令
     nop
     nop
     nop
@@ -322,7 +322,7 @@ rtm_0x70_interrupt_handle:             ;实时时钟中断处理过程
     sti
 </code></pre>
 <p>之后的内核任务是一个无限循环：</p>
-<pre><code>.do_switch:
+<pre><code class="assembly">.do_switch:
     mov ebx,core_msg2
     call sys_routine_seg_sel:put_string
     

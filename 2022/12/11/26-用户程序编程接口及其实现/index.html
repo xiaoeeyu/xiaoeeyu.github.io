@@ -1,5 +1,5 @@
 <!DOCTYPE html><html class="appearance-auto" lang="zh-CN"><head><meta charset="UTF-8"><title>26. 用户程序编程接口及其实现</title><meta name="description" content="May the Force be with you"><meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, initial-scale=1"><!-- Google Analytics --><!-- End Google Analytics -->
-<!-- Baidu Analytics --><!-- End Baidu Analytics --><link rel="icon" href="/images/rabete.jpg"><link rel="stylesheet" href="/style/common/bulma.css"><link rel="stylesheet" href="/style/base.css"><link rel="stylesheet" href="/style/common/helper.css"><script src="/js/common.js"></script><link rel="stylesheet" href="/style/post.css"><link rel="stylesheet" href="/style/themes/highlight-theme-light.css"><link rel="stylesheet" href="/style/common/jquery.fancybox.min.css"><script src="/js/highlight.pack.js"></script><meta name="description" content="01.内核与用户程序之间的栈切换问题从内核进入用户程序时，使用的是==call far==指令，这是一个过程调用指令，是需要使用==retf==指令返回的。过程调用需要隐式的栈操作，使用栈来保存返回地址，因此当==call far==指令执行时需要将下一条指令的地址压入当前正在使用的栈中保存，也就是内核的栈中。
+<!-- Baidu Analytics --><!-- End Baidu Analytics --><link rel="icon" href="/images/rabete.jpg"><link rel="stylesheet" href="/style/common/bulma.css"><link rel="stylesheet" href="/style/base.css"><link rel="stylesheet" href="/style/common/helper.css"><script src="/js/common.js"></script><link rel="stylesheet" href="/style/post.css"><link rel="stylesheet" href="/style/themes/highlight-theme-light.css"><link rel="stylesheet" href="/style/common/jquery.fancybox.min.css"><script src="/js/highlight.pack.js"></script><meta name="description" content="01.内核与用户程序之间的栈切换问题从内核进入用户程序时，使用的是call far指令，这是一个过程调用指令，是需要使用retf指令返回的。过程调用需要隐式的栈操作，使用栈来保存返回地址，因此当call far指令执行时需要将下一条指令的地址压入当前正在使用的栈中保存，也就是内核的栈中。
 
 
 用户程序：
@@ -11,13 +11,13 @@ start:
          mov esp,stack_end
 
          ;mov eax,[data_seg]
-    .."><script src="//unpkg.com/valine/dist/Valine.min.js"></script><meta name="generator" content="Hexo 6.3.0">
+         ;mov ds.."><script src="//unpkg.com/valine/dist/Valine.min.js"></script><meta name="generator" content="Hexo 6.3.0">
 <style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
-</head><body class="is-flex is-flex-direction-column"><header class="header-widget is-flex-shrink-0 is-hidden-mobile"><div class="container is-fullhd is-flex is-justify-content-space-between is-align-items-center is-full-height"><section class="is-hidden-mobile is-flex-shrink-0"><h2><a href="/">xiaoeryu's blog</a></h2></section><h3 class="is-hidden-mobile is-family-serif is-full-height is-flex is-align-items-center is-flex-shrink-0"><div class="is-full-height" id="postTopic"><p class="is-full-height is-flex-shrink-0 is-flex is-align-items-center is-justify-content-center">26. 用户程序编程接口及其实现</p><p class="is-full-height is-flex-shrink-0 is-flex is-align-items-center is-justify-content-center">点击返回顶部</p></div></h3><aside class="is-flex-shrink-0"><h3 class="is-inline-block"><a href="/">首页</a></h3><h3 class="is-inline-block"><a href="/about">关于</a></h3><h3 class="is-inline-block"><a href="/archives">归档</a></h3></aside></div></header><header class="is-flex header-widget is-flex-shrink-0 is-align-items-center is-justify-content-center is-hidden-tablet"><h3 class="is-inline-block"><a href="/">首页</a></h3><h3 class="is-inline-block"><a href="/about">关于</a></h3><h3 class="is-inline-block"><a href="/archives">归档</a></h3></header><main><main class="container is-max-widescreen content section post-page pt-4 px-4"><div class="columns is-flex-desktop is-justify-content-center is-flex-direction-row-reverse"><div class="column is-3 is-hidden-mobile"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#01-%E5%86%85%E6%A0%B8%E4%B8%8E%E7%94%A8%E6%88%B7%E7%A8%8B%E5%BA%8F%E4%B9%8B%E9%97%B4%E7%9A%84%E6%A0%88%E5%88%87%E6%8D%A2%E9%97%AE%E9%A2%98"><span class="toc-text">01.内核与用户程序之间的栈切换问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#02-%E5%86%85%E6%A0%B8%E4%B8%AD%E4%BD%8D%E7%94%A8%E6%88%B7%E7%A8%8B%E5%BA%8F%E6%8F%90%E4%BE%9B%E7%BC%96%E7%A8%8B%E6%94%AF%E6%8C%81"><span class="toc-text">02. 内核中位用户程序提供编程支持</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#03-%E7%94%A8%E6%88%B7%E7%A8%8B%E5%BA%8F%E4%B8%AD%E7%9A%84%E7%AC%A6%E5%8F%B7%E5%9C%B0%E5%9D%80%E6%A3%80%E7%B4%A2%E8%A1%A8"><span class="toc-text">03. 用户程序中的符号地址检索表</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#04-%E5%86%85%E6%A0%B8%E7%A8%8B%E5%BA%8F%E4%B8%AD%E7%9A%84%E7%AC%A6%E5%8F%B7%E5%9C%B0%E5%9D%80%E6%A3%80%E7%B4%A2%E8%A1%A8"><span class="toc-text">04. 内核程序中的符号地址检索表</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#05-%E4%B8%B2%E6%AF%94%E8%BE%83%E6%8C%87%E4%BB%A4CMPS"><span class="toc-text">05. 串比较指令CMPS</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#06-%E4%B8%B2%E6%AF%94%E8%BE%83%E7%9A%84%E6%96%B9%E5%90%91%E5%92%8C%E9%87%8D%E5%A4%8D%E5%89%8D%E7%BC%80"><span class="toc-text">06. 串比较的方向和重复前缀</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#07-%E4%BD%BF%E7%94%A8%E5%A4%96%E5%BE%AA%E7%8E%AF%E4%BE%9D%E6%AC%A1%E5%8F%96%E5%BE%97%E7%94%A8%E6%88%B7SALT%E8%A1%A8%E4%B8%AD%E7%9A%84%E6%AF%8F%E4%B8%AA%E6%9D%A1%E7%9B%AE"><span class="toc-text">07. 使用外循环依次取得用户SALT表中的每个条目</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#08-%E4%BD%BF%E7%94%A8%E5%86%85%E5%BE%AA%E7%8E%AF%E4%BE%9D%E6%AC%A1%E5%8F%96%E5%BE%97%E5%86%85%E6%A0%B8SALT%E8%A1%A8%E4%B8%AD%E7%9A%84%E6%AF%8F%E4%B8%AA%E6%9D%A1%E7%9B%AE%E5%B9%B6%E8%BF%9B%E8%A1%8C%E6%AF%94%E8%BE%83"><span class="toc-text">08. 使用内循环依次取得内核SALT表中的每个条目并进行比较</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#09-%E7%94%A8%E6%88%B7%E7%A8%8B%E5%BA%8F%E4%B8%AD%E4%BD%BF%E7%94%A8%E5%86%85%E6%A0%B8%E7%BC%96%E7%A8%8B%E6%8E%A5%E5%8F%A3%E8%AF%BB%E7%A1%AC%E7%9B%98%E5%92%8C%E6%98%BE%E7%A4%BA%E6%96%87%E6%9C%AC"><span class="toc-text">09. 用户程序中使用内核编程接口读硬盘和显示文本</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#10-%E8%99%9A%E6%8B%9F%E6%9C%BA%E9%AA%8C%E8%AF%81%E7%A8%8B%E5%BA%8F%E6%89%A7%E8%A1%8C"><span class="toc-text">10. 虚拟机验证程序执行</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#11-%E4%BB%A516%E8%BF%9B%E5%88%B6%E5%BD%A2%E5%BC%8F%E6%98%BE%E7%A4%BA%E4%B8%80%E4%B8%AA%E5%8F%8C%E5%AD%97%E4%BB%A5%E5%8F%8APUSHAD%E3%80%81POPAD%E5%92%8CXLAT%E6%8C%87%E4%BB%A4%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="toc-text">11. 以16进制形式显示一个双字以及PUSHAD、POPAD和XLAT指令的使用</span></a></li></ol></div><div class="column is-9"><header class="my-4"><a href="/tags/X86%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80%EF%BC%9A%E5%AE%9E%E6%A8%A1%E5%BC%8F%E5%88%B0%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F"><i class="tag post-item-tag">X86汇编语言：实模式到保护模式</i></a></header><h1 class="mt-0 mb-1 is-family-serif" id="postTitle">26. 用户程序编程接口及其实现</h1><time class="has-text-grey" datetime="2022-12-11T14:44:00.000Z">2022-12-11</time><article class="mt-2 post-content"><h2 id="01-内核与用户程序之间的栈切换问题"><a href="#01-内核与用户程序之间的栈切换问题" class="headerlink" title="01.内核与用户程序之间的栈切换问题"></a>01.内核与用户程序之间的栈切换问题</h2><p>从内核进入用户程序时，使用的是==call far==指令，这是一个过程调用指令，是需要使用==retf==指令返回的。过程调用需要隐式的栈操作，使用栈来保存返回地址，因此当==call far==指令执行时需要将下一条指令的地址压入当前正在使用的栈中保存，也就是内核的栈中。</p>
+</head><body class="is-flex is-flex-direction-column"><header class="header-widget is-flex-shrink-0 is-hidden-mobile"><div class="container is-fullhd is-flex is-justify-content-space-between is-align-items-center is-full-height"><section class="is-hidden-mobile is-flex-shrink-0"><h2><a href="/">xiaoeryu's blog</a></h2></section><h3 class="is-hidden-mobile is-family-serif is-full-height is-flex is-align-items-center is-flex-shrink-0"><div class="is-full-height" id="postTopic"><p class="is-full-height is-flex-shrink-0 is-flex is-align-items-center is-justify-content-center">26. 用户程序编程接口及其实现</p><p class="is-full-height is-flex-shrink-0 is-flex is-align-items-center is-justify-content-center">点击返回顶部</p></div></h3><aside class="is-flex-shrink-0"><h3 class="is-inline-block"><a href="/">首页</a></h3><h3 class="is-inline-block"><a href="/about">关于</a></h3><h3 class="is-inline-block"><a href="/archives">归档</a></h3></aside></div></header><header class="is-flex header-widget is-flex-shrink-0 is-align-items-center is-justify-content-center is-hidden-tablet"><h3 class="is-inline-block"><a href="/">首页</a></h3><h3 class="is-inline-block"><a href="/about">关于</a></h3><h3 class="is-inline-block"><a href="/archives">归档</a></h3></header><main><main class="container is-max-widescreen content section post-page pt-4 px-4"><div class="columns is-flex-desktop is-justify-content-center is-flex-direction-row-reverse"><div class="column is-3 is-hidden-mobile"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#01-%E5%86%85%E6%A0%B8%E4%B8%8E%E7%94%A8%E6%88%B7%E7%A8%8B%E5%BA%8F%E4%B9%8B%E9%97%B4%E7%9A%84%E6%A0%88%E5%88%87%E6%8D%A2%E9%97%AE%E9%A2%98"><span class="toc-text">01.内核与用户程序之间的栈切换问题</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#02-%E5%86%85%E6%A0%B8%E4%B8%AD%E4%BD%8D%E7%94%A8%E6%88%B7%E7%A8%8B%E5%BA%8F%E6%8F%90%E4%BE%9B%E7%BC%96%E7%A8%8B%E6%94%AF%E6%8C%81"><span class="toc-text">02. 内核中位用户程序提供编程支持</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#03-%E7%94%A8%E6%88%B7%E7%A8%8B%E5%BA%8F%E4%B8%AD%E7%9A%84%E7%AC%A6%E5%8F%B7%E5%9C%B0%E5%9D%80%E6%A3%80%E7%B4%A2%E8%A1%A8"><span class="toc-text">03. 用户程序中的符号地址检索表</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#04-%E5%86%85%E6%A0%B8%E7%A8%8B%E5%BA%8F%E4%B8%AD%E7%9A%84%E7%AC%A6%E5%8F%B7%E5%9C%B0%E5%9D%80%E6%A3%80%E7%B4%A2%E8%A1%A8"><span class="toc-text">04. 内核程序中的符号地址检索表</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#05-%E4%B8%B2%E6%AF%94%E8%BE%83%E6%8C%87%E4%BB%A4CMPS"><span class="toc-text">05. 串比较指令CMPS</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#06-%E4%B8%B2%E6%AF%94%E8%BE%83%E7%9A%84%E6%96%B9%E5%90%91%E5%92%8C%E9%87%8D%E5%A4%8D%E5%89%8D%E7%BC%80"><span class="toc-text">06. 串比较的方向和重复前缀</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#07-%E4%BD%BF%E7%94%A8%E5%A4%96%E5%BE%AA%E7%8E%AF%E4%BE%9D%E6%AC%A1%E5%8F%96%E5%BE%97%E7%94%A8%E6%88%B7SALT%E8%A1%A8%E4%B8%AD%E7%9A%84%E6%AF%8F%E4%B8%AA%E6%9D%A1%E7%9B%AE"><span class="toc-text">07. 使用外循环依次取得用户SALT表中的每个条目</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#08-%E4%BD%BF%E7%94%A8%E5%86%85%E5%BE%AA%E7%8E%AF%E4%BE%9D%E6%AC%A1%E5%8F%96%E5%BE%97%E5%86%85%E6%A0%B8SALT%E8%A1%A8%E4%B8%AD%E7%9A%84%E6%AF%8F%E4%B8%AA%E6%9D%A1%E7%9B%AE%E5%B9%B6%E8%BF%9B%E8%A1%8C%E6%AF%94%E8%BE%83"><span class="toc-text">08. 使用内循环依次取得内核SALT表中的每个条目并进行比较</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#09-%E7%94%A8%E6%88%B7%E7%A8%8B%E5%BA%8F%E4%B8%AD%E4%BD%BF%E7%94%A8%E5%86%85%E6%A0%B8%E7%BC%96%E7%A8%8B%E6%8E%A5%E5%8F%A3%E8%AF%BB%E7%A1%AC%E7%9B%98%E5%92%8C%E6%98%BE%E7%A4%BA%E6%96%87%E6%9C%AC"><span class="toc-text">09. 用户程序中使用内核编程接口读硬盘和显示文本</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#10-%E8%99%9A%E6%8B%9F%E6%9C%BA%E9%AA%8C%E8%AF%81%E7%A8%8B%E5%BA%8F%E6%89%A7%E8%A1%8C"><span class="toc-text">10. 虚拟机验证程序执行</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#11-%E4%BB%A516%E8%BF%9B%E5%88%B6%E5%BD%A2%E5%BC%8F%E6%98%BE%E7%A4%BA%E4%B8%80%E4%B8%AA%E5%8F%8C%E5%AD%97%E4%BB%A5%E5%8F%8APUSHAD%E3%80%81POPAD%E5%92%8CXLAT%E6%8C%87%E4%BB%A4%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="toc-text">11. 以16进制形式显示一个双字以及PUSHAD、POPAD和XLAT指令的使用</span></a></li></ol></div><div class="column is-9"><header class="my-4"><a href="/tags/X86%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80%EF%BC%9A%E5%AE%9E%E6%A8%A1%E5%BC%8F%E5%88%B0%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F"><i class="tag post-item-tag">X86汇编语言：实模式到保护模式</i></a></header><h1 class="mt-0 mb-1 is-family-serif" id="postTitle">26. 用户程序编程接口及其实现</h1><time class="has-text-grey" datetime="2022-12-11T14:44:00.000Z">2022-12-11</time><article class="mt-2 post-content"><h2 id="01-内核与用户程序之间的栈切换问题"><a href="#01-内核与用户程序之间的栈切换问题" class="headerlink" title="01.内核与用户程序之间的栈切换问题"></a>01.内核与用户程序之间的栈切换问题</h2><p>从内核进入用户程序时，使用的是<mark>call far</mark>指令，这是一个过程调用指令，是需要使用<mark>retf</mark>指令返回的。过程调用需要隐式的栈操作，使用栈来保存返回地址，因此当<mark>call far</mark>指令执行时需要将下一条指令的地址压入当前正在使用的栈中保存，也就是内核的栈中。</p>
 <span id="more"></span>
 
 <p>用户程序：</p>
-<pre><code>start:
+<pre><code class="assembly">start:
          mov eax,ds		;此时DS指向用户程序头部段
          mov fs,eax		;但是我们不能失去对DS的追踪，所以使用其他FS段寄存器重新设置DS
 
@@ -31,10 +31,10 @@ start:
 
          retf 
 </code></pre>
-<p>一旦将栈切换到用户程序自己的栈中，将无法返回内核，因为==retf==指令执行时要从栈中弹出内核的栈状态到==CS==和==ESP==。但是当前使用的时用户程序的栈而非内核的栈，这些地址时保存在内核的栈中的。</p>
-<p>修改用户程序，在进入用户程序之后先保存内核栈的==SS和ESP==再使用用户程序自己的栈，在使用==retf==返回内核时再恢复栈为内核的栈地址：</p>
+<p>一旦将栈切换到用户程序自己的栈中，将无法返回内核，因为<mark>retf</mark>指令执行时要从栈中弹出内核的栈状态到<mark>CS</mark>和<mark>ESP</mark>。但是当前使用的时用户程序的栈而非内核的栈，这些地址时保存在内核的栈中的。</p>
+<p>修改用户程序，在进入用户程序之后先保存内核栈的<mark>SS和ESP</mark>再使用用户程序自己的栈，在使用<mark>retf</mark>返回内核时再恢复栈为内核的栈地址：</p>
 <p>添加用户栈常量：</p>
-<pre><code>SECTION data vstart=0
+<pre><code class="assembly">SECTION data vstart=0
 
          os_ss             dw 0	;用于保存内核栈的状态
          os_esp            dd 0
@@ -45,8 +45,8 @@ start:
 
 data_end:
 </code></pre>
-<p>==retf==时恢复==SS和ESP==</p>
-<pre><code>start:
+<p><mark>retf</mark>时恢复<mark>SS和ESP</mark></p>
+<pre><code class="assembly">start:
          mov eax,ds		;此时DS指向用户程序头部段
          mov fs,eax		;但是我们不能失去对DS的追踪，所以使用其他FS段寄存器重新设置DS
 
@@ -65,7 +65,7 @@ data_end:
 
          retf                                     ;将控制权返回到系统
 </code></pre>
-<p>因为我们在用户代码中保存了内核的栈状态==SS、ESP==，所以就不用在内核中再重复写代码恢复这个状态了。</p>
+<p>因为我们在用户代码中保存了内核的栈状态<mark>SS、ESP</mark>，所以就不用在内核中再重复写代码恢复这个状态了。</p>
 <ul>
 <li>进入用户程序之前临时保存堆栈指针的指令</li>
 <li>回到内核之后切换回内核自己堆栈的指令<img src="/2022/12/11/26-%E7%94%A8%E6%88%B7%E7%A8%8B%E5%BA%8F%E7%BC%96%E7%A8%8B%E6%8E%A5%E5%8F%A3%E5%8F%8A%E5%85%B6%E5%AE%9E%E7%8E%B0/ece9a96ffb6a138049089d2e4501acaa.png" class=""></li>
@@ -77,12 +77,12 @@ data_end:
 <li><strong>首先因为用户程序不需要为内核提供服务，比如为内核保存栈状态等等</strong></li>
 <li><strong>其次内核必须是稳定的，不能依赖于用户程序否则用户程序一旦出错内核也将崩溃是不行的</strong></li>
 </ul>
-<h2 id="02-内核中位用户程序提供编程支持"><a href="#02-内核中位用户程序提供编程支持" class="headerlink" title="02. 内核中位用户程序提供编程支持"></a>02. 内核中位用户程序提供编程支持</h2><p>在用户程序中暂时无法访问现存，在进入内核之前创建过一个显存的描述符由内核使用。因此我们知道显存的段选择子，在原则上就可以在用户程序中访问显存显示文本。也可以使用内核中的==put_string==例程来显示字符串。</p>
+<h2 id="02-内核中位用户程序提供编程支持"><a href="#02-内核中位用户程序提供编程支持" class="headerlink" title="02. 内核中位用户程序提供编程支持"></a>02. 内核中位用户程序提供编程支持</h2><p>在用户程序中暂时无法访问现存，在进入内核之前创建过一个显存的描述符由内核使用。因此我们知道显存的段选择子，在原则上就可以在用户程序中访问显存显示文本。也可以使用内核中的<mark>put_string</mark>例程来显示字符串。</p>
 <p>代码如下：</p>
 <ul>
 <li>定义的字符串</li>
 </ul>
-<pre><code>SECTION data vstart=0
+<pre><code class="assembly">SECTION data vstart=0
 
          os_ss             dw 0	;用于保存内核栈的状态
          os_esp            dd 0
@@ -96,7 +96,7 @@ data_end:
 <ul>
 <li>使用显存的描述符</li>
 </ul>
-<pre><code>start:
+<pre><code class="assembly">start:
          mov eax,ds		;此时DS指向用户程序头部段
          mov fs,eax		;但是我们不能失去对DS的追踪，所以使用其他FS段寄存器重新设置DS
 
@@ -120,14 +120,14 @@ data_end:
 </code></pre>
 <p>虚拟机运行成功：</p>
 <img src="/2022/12/11/26-%E7%94%A8%E6%88%B7%E7%A8%8B%E5%BA%8F%E7%BC%96%E7%A8%8B%E6%8E%A5%E5%8F%A3%E5%8F%8A%E5%85%B6%E5%AE%9E%E7%8E%B0/af5adf72e8ff8e697afd26a16f724fd4.png" class="">
-<p>但是通常用户程序不可能知道内核的==段选择子==和内核中的==例程==，所以上述代码一般不会出现。但是用户程序也可以自己安装一些描述符在==GDT==中，如显存的段描述符，不过一般不能这样做，==GDT==只能给内核使用不然有可能会造成内核的崩溃。</p>
-<p>所以处理器有了特权级==DPL==的概念，来限制用户程序的权限。但是内核会给用户程序提供一些例程，供其使用（<em>也可以在一定程度上减少用户程序重复造轮子</em>），也叫用户程序接口（API：Applicatio Programming Interface）。</p>
-<h2 id="03-用户程序中的符号地址检索表"><a href="#03-用户程序中的符号地址检索表" class="headerlink" title="03. 用户程序中的符号地址检索表"></a>03. 用户程序中的符号地址检索表</h2><p>本节使用==c13_mbr0.asm==作为引导程序：首先创建一些初始的段描述符、进入保护模式、加载内核、对内和进行设置和重定位、最后将控制权交给内核跳转执行内核程序。</p>
-<p>内核发布时需要向程序员发布一个内核编程手册，对于我们这个==c13_core1.asm==内核也有一个编程手册：</p>
+<p>但是通常用户程序不可能知道内核的<mark>段选择子</mark>和内核中的<mark>例程</mark>，所以上述代码一般不会出现。但是用户程序也可以自己安装一些描述符在<mark>GDT</mark>中，如显存的段描述符，不过一般不能这样做，<mark>GDT</mark>只能给内核使用不然有可能会造成内核的崩溃。</p>
+<p>所以处理器有了特权级<mark>DPL</mark>的概念，来限制用户程序的权限。但是内核会给用户程序提供一些例程，供其使用（<em>也可以在一定程度上减少用户程序重复造轮子</em>），也叫用户程序接口（API：Applicatio Programming Interface）。</p>
+<h2 id="03-用户程序中的符号地址检索表"><a href="#03-用户程序中的符号地址检索表" class="headerlink" title="03. 用户程序中的符号地址检索表"></a>03. 用户程序中的符号地址检索表</h2><p>本节使用<mark>c13_mbr0.asm</mark>作为引导程序：首先创建一些初始的段描述符、进入保护模式、加载内核、对内和进行设置和重定位、最后将控制权交给内核跳转执行内核程序。</p>
+<p>内核发布时需要向程序员发布一个内核编程手册，对于我们这个<mark>c13_core1.asm</mark>内核也有一个编程手册：</p>
 <img src="/2022/12/11/26-%E7%94%A8%E6%88%B7%E7%A8%8B%E5%BA%8F%E7%BC%96%E7%A8%8B%E6%8E%A5%E5%8F%A3%E5%8F%8A%E5%85%B6%E5%AE%9E%E7%8E%B0/045ee1d4090c61889bf9cdc6eb188a8f.png" class="">
 <img src="/2022/12/11/26-%E7%94%A8%E6%88%B7%E7%A8%8B%E5%BA%8F%E7%BC%96%E7%A8%8B%E6%8E%A5%E5%8F%A3%E5%8F%8A%E5%85%B6%E5%AE%9E%E7%8E%B0/2b832ac9837b7415d63a77403641ae97.png" class="">
-<p>符号地址检索表位于用户程序头部，当内核加载用户程序时需要对这个表进行处理，会将每一个字符串的名字替换成其在内核中的地址，包括段选择子和段内偏移量。如此一来标号处存储的就是对应例程在内核中的地址。在用户程序头部定义符号地址检索表==SALT(Symbol Address Lookup Table)。<br>如下：</p>
-<pre><code>SECTION header vstart=0
+<p>符号地址检索表位于用户程序头部，当内核加载用户程序时需要对这个表进行处理，会将每一个字符串的名字替换成其在内核中的地址，包括段选择子和段内偏移量。如此一来标号处存储的就是对应例程在内核中的地址。在用户程序头部定义符号地址检索表<mark>SALT(Symbol Address Lookup Table)</mark>。<br>如下：</p>
+<pre><code class="assembly">SECTION header vstart=0
 
          program_length   dd program_end          ;程序总长度#0x00
          
@@ -160,8 +160,8 @@ data_end:
                  
 header_end:   
 </code></pre>
-<h2 id="04-内核程序中的符号地址检索表"><a href="#04-内核程序中的符号地址检索表" class="headerlink" title="04. 内核程序中的符号地址检索表"></a>04. 内核程序中的符号地址检索表</h2><p>本节主要讲了内核中的符号地址检索表==SALT==的内容，在==c13_core1.asm==中的定义如下：</p>
-<pre><code>SECTION core_data vstart=0                  ;系统核心的数据段
+<h2 id="04-内核程序中的符号地址检索表"><a href="#04-内核程序中的符号地址检索表" class="headerlink" title="04. 内核程序中的符号地址检索表"></a>04. 内核程序中的符号地址检索表</h2><p>本节主要讲了内核中的符号地址检索表<mark>SALT</mark>的内容，在<mark>c13_core1.asm</mark>中的定义如下：</p>
+<pre><code class="assembly">SECTION core_data vstart=0                  ;系统核心的数据段
 ;-------------------------------------------------------------------------------
          pgdt             dw  0             ;用于设置和修改GDT 
                           dd  0
@@ -197,40 +197,40 @@ header_end:
 <ul>
 <li>从主引导程序进入内核</li>
 <li>显示一些文本信息、显示处理器品牌信息</li>
-<li>调用==load_relocate_program==加载和重定位用户程序</li>
+<li>调用<mark>load_relocate_program</mark>加载和重定位用户程序</li>
 <li>显示文本信息</li>
 <li>调转执行用户程序</li>
 </ul>
-<p>其中==load_relocate_program==中添加了对符号地址检索表的处理：</p>
+<p>其中<mark>load_relocate_program</mark>中添加了对符号地址检索表的处理：</p>
 <ul>
 <li>读硬盘扇区，将用户程序读入内存，为用户程序的每个段创建描述符；</li>
-<li>处理符号地址检索表，即将符号出的字符串替换成其对应例程在内存中的地址，替换成例程在内存中的==段选择子==和==段内偏移量==。如何知道每个字符串所代表的例程在内存中的地址呢？<img src="/2022/12/11/26-%E7%94%A8%E6%88%B7%E7%A8%8B%E5%BA%8F%E7%BC%96%E7%A8%8B%E6%8E%A5%E5%8F%A3%E5%8F%8A%E5%85%B6%E5%AE%9E%E7%8E%B0/ad854eef0591d42fe1ccce5858a97c02.png" class="">
-将用户程序中的符号取出，依次和内核中的符号地址检索表中的内容进行比较，相同的话就是用内核中对应的后六个字节的==段选择子==和==段内偏移量==覆盖用户程序原先的符号，覆盖之后用户程序中存放的就是对应例程的==段选择子==和==段内偏移量==。</li>
-<li>处理完==SALT==之后返回</li>
+<li>处理符号地址检索表，即将符号出的字符串替换成其对应例程在内存中的地址，替换成例程在内存中的<mark>段选择子</mark>和<mark>段内偏移量</mark>。如何知道每个字符串所代表的例程在内存中的地址呢？<img src="/2022/12/11/26-%E7%94%A8%E6%88%B7%E7%A8%8B%E5%BA%8F%E7%BC%96%E7%A8%8B%E6%8E%A5%E5%8F%A3%E5%8F%8A%E5%85%B6%E5%AE%9E%E7%8E%B0/ad854eef0591d42fe1ccce5858a97c02.png" class="">
+将用户程序中的符号取出，依次和内核中的符号地址检索表中的内容进行比较，相同的话就是用内核中对应的后六个字节的<mark>段选择子</mark>和<mark>段内偏移量</mark>覆盖用户程序原先的符号，覆盖之后用户程序中存放的就是对应例程的<mark>段选择子</mark>和<mark>段内偏移量</mark>。</li>
+<li>处理完<mark>SALT</mark>之后返回</li>
 </ul>
-<p>其中，使用字符串比较指令==cmpsb、cmpsw、cmpsd、cmpsq==进行字符串比较：</p>
+<p>其中，使用字符串比较指令<mark>cmpsb、cmpsw、cmpsd、cmpsq</mark>进行字符串比较：</p>
 <img src="/2022/12/11/26-%E7%94%A8%E6%88%B7%E7%A8%8B%E5%BA%8F%E7%BC%96%E7%A8%8B%E6%8E%A5%E5%8F%A3%E5%8F%8A%E5%85%B6%E5%AE%9E%E7%8E%B0/cb32bf565275d98327fe23c223c2751c.png" class="">
 
 
-<h2 id="06-串比较的方向和重复前缀"><a href="#06-串比较的方向和重复前缀" class="headerlink" title="06. 串比较的方向和重复前缀"></a>06. 串比较的方向和重复前缀</h2><p>==CMPS==指令只会执行一次，重复比较需要使用指令重复前缀==rep==。</p>
+<h2 id="06-串比较的方向和重复前缀"><a href="#06-串比较的方向和重复前缀" class="headerlink" title="06. 串比较的方向和重复前缀"></a>06. 串比较的方向和重复前缀</h2><p><mark>CMPS</mark>指令只会执行一次，重复比较需要使用指令重复前缀<mark>rep</mark>。</p>
 <img src="/2022/12/11/26-%E7%94%A8%E6%88%B7%E7%A8%8B%E5%BA%8F%E7%BC%96%E7%A8%8B%E6%8E%A5%E5%8F%A3%E5%8F%8A%E5%85%B6%E5%AE%9E%E7%8E%B0/f544652bb7f4ed2453d57b5826ea103d.png" class="">
 
-<p>==rep==重复前缀：指令每执行一次，==CX/ECX/RCX==值减1。</p>
+<p><mark>rep</mark>重复前缀：指令每执行一次，<mark>CX/ECX/RCX</mark>值减1。</p>
 <img src="/2022/12/11/26-%E7%94%A8%E6%88%B7%E7%A8%8B%E5%BA%8F%E7%BC%96%E7%A8%8B%E6%8E%A5%E5%8F%A3%E5%8F%8A%E5%85%B6%E5%AE%9E%E7%8E%B0/13cb4f393d56a743c45f57fc45018557.png" class="">
 
-<p>如果总字节数除不尽的话，应该使用==cmpsb==，而不是==cmpsw==指令，==CX、ECX、RCX==设置的总字节数是字符串的长度，所以两个字符串长度要相等。</p>
+<p>如果总字节数除不尽的话，应该使用<mark>cmpsb</mark>，而不是<mark>cmpsw</mark>指令，<mark>CX、ECX、RCX</mark>设置的总字节数是字符串的长度，所以两个字符串长度要相等。</p>
 <img src="/2022/12/11/26-%E7%94%A8%E6%88%B7%E7%A8%8B%E5%BA%8F%E7%BC%96%E7%A8%8B%E6%8E%A5%E5%8F%A3%E5%8F%8A%E5%85%B6%E5%AE%9E%E7%8E%B0/1b52744b5b7594ac73020c7bf1880bde.png" class="">
 
-<p>重复前缀==rep==指令不会在比较字符串时做出判断，这个问题使用如下方法解决：</p>
+<p>重复前缀<mark>rep</mark>指令不会在比较字符串时做出判断，这个问题使用如下方法解决：</p>
 <img src="/2022/12/11/26-%E7%94%A8%E6%88%B7%E7%A8%8B%E5%BA%8F%E7%BC%96%E7%A8%8B%E6%8E%A5%E5%8F%A3%E5%8F%8A%E5%85%B6%E5%AE%9E%E7%8E%B0/399ef3d5492da8102fdca97626a80bff.png" class="">
 
-<p>例如指令，==repe cmpsw==，执行过程是：以字节为单位进行字符串比较，若相等则设置零标志位==ZF = 1==，也将==CX/ECX/RCX==减1，若==CX/ECX/RCX==不为零且==ZF = 1==，表示字符串相等继续比较，若在==C<br>X/ECX/RCX==不为零但是==ZF = 0==则表示当前字符串不相等，比较终止。</p>
+<p>例如指令，<mark>repe cmpsw</mark>，执行过程是：以字节为单位进行字符串比较，若相等则设置零标志位<mark>ZF = 1</mark>，也将<mark>CX/ECX/RCX</mark>减1，若<mark>CX/ECX/RCX</mark>不为零且<mark>ZF = 1</mark>，表示字符串相等继续比较，若在<mark>C<br>X/ECX/RCX</mark>不为零但是<mark>ZF = 0</mark>则表示当前字符串不相等，比较终止。</p>
 <img src="/2022/12/11/26-%E7%94%A8%E6%88%B7%E7%A8%8B%E5%BA%8F%E7%BC%96%E7%A8%8B%E6%8E%A5%E5%8F%A3%E5%8F%8A%E5%85%B6%E5%AE%9E%E7%8E%B0/840e693515f2ec110ffa54d2cf589fc1.png" class="">
 
 <p>字符串比较的完整过程：</p>
 <img src="/2022/12/11/26-%E7%94%A8%E6%88%B7%E7%A8%8B%E5%BA%8F%E7%BC%96%E7%A8%8B%E6%8E%A5%E5%8F%A3%E5%8F%8A%E5%85%B6%E5%AE%9E%E7%8E%B0/f92bc1d8d48b0065e1f85321f6fd7f01.png" class="">
 
-<h2 id="07-使用外循环依次取得用户SALT表中的每个条目"><a href="#07-使用外循环依次取得用户SALT表中的每个条目" class="headerlink" title="07. 使用外循环依次取得用户SALT表中的每个条目"></a>07. 使用外循环依次取得用户SALT表中的每个条目</h2><p>接05节：<br>在==load_relocate_program==中，添加了符号地址检索表==SALT==的重定位过程：</p>
+<h2 id="07-使用外循环依次取得用户SALT表中的每个条目"><a href="#07-使用外循环依次取得用户SALT表中的每个条目" class="headerlink" title="07. 使用外循环依次取得用户SALT表中的每个条目"></a>07. 使用外循环依次取得用户SALT表中的每个条目</h2><p>接05节：<br>在<mark>load_relocate_program</mark>中，添加了符号地址检索表<mark>SALT</mark>的重定位过程：</p>
 <pre><code>SECTION core_code vstart=0
 ;-------------------------------------------------------------------------------
 load_relocate_program:                      ;加载并重定位用户程序
@@ -296,17 +296,17 @@ load_relocate_program:                      ;加载并重定位用户程序
       
          ret
 </code></pre>
-<p>其中：在用户程序中，偏移==为4==的地方之前是用户程序头部段的长度，现在被修改为用户程序头部段的选择子。</p>
+<p>其中：在用户程序中，偏移<mark>为4</mark>的地方之前是用户程序头部段的长度，现在被修改为用户程序头部段的选择子。</p>
 <img src="/2022/12/11/26-%E7%94%A8%E6%88%B7%E7%A8%8B%E5%BA%8F%E7%BC%96%E7%A8%8B%E6%8E%A5%E5%8F%A3%E5%8F%8A%E5%85%B6%E5%AE%9E%E7%8E%B0/cffe3bc20c22bb6c0d0838d5f97f1b38.png" class="">
 
 <p>其中比较过程使用循环进行，外循环遍历用户程序、内存换遍历内核程序：</p>
 <img src="/2022/12/11/26-%E7%94%A8%E6%88%B7%E7%A8%8B%E5%BA%8F%E7%BC%96%E7%A8%8B%E6%8E%A5%E5%8F%A3%E5%8F%8A%E5%85%B6%E5%AE%9E%E7%8E%B0/d9f76df51c8017be3e97601d9ba12156.png" class="">
 
-<p>外循环：每执行一次都会使得==EDI==指向代表下一个例程名称字符串的首地址。</p>
+<p>外循环：每执行一次都会使得<mark>EDI</mark>指向代表下一个例程名称字符串的首地址。</p>
 <img src="/2022/12/11/26-%E7%94%A8%E6%88%B7%E7%A8%8B%E5%BA%8F%E7%BC%96%E7%A8%8B%E6%8E%A5%E5%8F%A3%E5%8F%8A%E5%85%B6%E5%AE%9E%E7%8E%B0/47b044824e22a668d5aeb2b50cd7b2bb.png" class="">
 
 
-<h2 id="08-使用内循环依次取得内核SALT表中的每个条目并进行比较"><a href="#08-使用内循环依次取得内核SALT表中的每个条目并进行比较" class="headerlink" title="08. 使用内循环依次取得内核SALT表中的每个条目并进行比较"></a>08. 使用内循环依次取得内核SALT表中的每个条目并进行比较</h2><p>在上一节中：==EDI==增量为256字节、==ESI==增量为262字节。</p>
+<h2 id="08-使用内循环依次取得内核SALT表中的每个条目并进行比较"><a href="#08-使用内循环依次取得内核SALT表中的每个条目并进行比较" class="headerlink" title="08. 使用内循环依次取得内核SALT表中的每个条目并进行比较"></a>08. 使用内循环依次取得内核SALT表中的每个条目并进行比较</h2><p>在上一节中：<mark>EDI</mark>增量为256字节、<mark>ESI</mark>增量为262字节。</p>
 <img src="/2022/12/11/26-%E7%94%A8%E6%88%B7%E7%A8%8B%E5%BA%8F%E7%BC%96%E7%A8%8B%E6%8E%A5%E5%8F%A3%E5%8F%8A%E5%85%B6%E5%AE%9E%E7%8E%B0/7a4cc3780aa0afd2380c9944eb6f623b.png" class="">
 
 <p>内循环：</p>
@@ -317,17 +317,17 @@ load_relocate_program:                      ;加载并重定位用户程序
 
 <p>执行比较之前：</p>
 <ul>
-<li>现在段寄存器==ES==指向用户程序数据段；</li>
-<li>==EDI==指向用户程序符号地址检索表的某个条目；</li>
-<li>段寄存器==DS==指向内核数据段；</li>
-<li>==ESI==指向内核符号地址检索表的某个条目；</li>
+<li>现在段寄存器<mark>ES</mark>指向用户程序数据段；</li>
+<li><mark>EDI</mark>指向用户程序符号地址检索表的某个条目；</li>
+<li>段寄存器<mark>DS</mark>指向内核数据段；</li>
+<li><mark>ESI</mark>指向内核符号地址检索表的某个条目；</li>
 </ul>
-<p>在检索表中，每个字符串的长度是==256个字节 = 64个双字==；<br>如果两个字符串相同，比较操作要进行64次，结束后零标志位ZF = 1;<br>如果两个字符串不同，比较操作中止，此时零标志位ZF = 0。</p>
-<p>如果比较结束之后==ZF = 1==，表示字符串相同，执行重定位操作：</p>
+<p>在检索表中，每个字符串的长度是<mark>256个字节 = 64个双字</mark>；<br>如果两个字符串相同，比较操作要进行64次，结束后零标志位ZF = 1;<br>如果两个字符串不同，比较操作中止，此时零标志位ZF = 0。</p>
+<p>如果比较结束之后<mark>ZF = 1</mark>，表示字符串相同，执行重定位操作：</p>
 <img src="/2022/12/11/26-%E7%94%A8%E6%88%B7%E7%A8%8B%E5%BA%8F%E7%BC%96%E7%A8%8B%E6%8E%A5%E5%8F%A3%E5%8F%8A%E5%85%B6%E5%AE%9E%E7%8E%B0/eebc49647b46d4e2b4c9efb4c3d2dbab.png" class="">
 
 <p>具体过程看下面代码：</p>
-<pre><code>         mov ecx,64                         ;检索表中，每条目的比较次数 
+<pre><code class="assembly">         mov ecx,64                         ;检索表中，每条目的比较次数 
          repe cmpsd                         ;每次比较4字节 
          jnz .b4
          mov eax,[esi]                      ;若匹配，esi恰好指向其后的地址数据
@@ -335,9 +335,9 @@ load_relocate_program:                      ;加载并重定位用户程序
          mov ax,[esi+4]
          mov [es:edi-252],ax                ;以及段选择子 
 </code></pre>
-<h2 id="09-用户程序中使用内核编程接口读硬盘和显示文本"><a href="#09-用户程序中使用内核编程接口读硬盘和显示文本" class="headerlink" title="09. 用户程序中使用内核编程接口读硬盘和显示文本"></a>09. 用户程序中使用内核编程接口读硬盘和显示文本</h2><p>其中在内核跳转执行用户程序时，使用==jmp far [0x08]==指令，不需要在栈中压入返回地址；之前使用==call==指令需要在栈中压入返回地址，所以有栈的切换问题。</p>
+<h2 id="09-用户程序中使用内核编程接口读硬盘和显示文本"><a href="#09-用户程序中使用内核编程接口读硬盘和显示文本" class="headerlink" title="09. 用户程序中使用内核编程接口读硬盘和显示文本"></a>09. 用户程序中使用内核编程接口读硬盘和显示文本</h2><p>其中在内核跳转执行用户程序时，使用<mark>jmp far [0x08]</mark>指令，不需要在栈中压入返回地址；之前使用<mark>call</mark>指令需要在栈中压入返回地址，所以有栈的切换问题。</p>
 <p>进入用户程序执行，使用内核例程。</p>
-<pre><code>SECTION code vstart=0
+<pre><code class="assembly">SECTION code vstart=0
 
 start:
     mov eax,ds
@@ -365,13 +365,13 @@ start:
 
 code_end:
 </code></pre>
-<h2 id="10-虚拟机验证程序执行"><a href="#10-虚拟机验证程序执行" class="headerlink" title="10. 虚拟机验证程序执行"></a>10. 虚拟机验证程序执行</h2><p>先用Vhd Writer讲文件写入要读取的==100号扇区==<br>再使用==VirtualBox==虚拟机测试代码</p>
+<h2 id="10-虚拟机验证程序执行"><a href="#10-虚拟机验证程序执行" class="headerlink" title="10. 虚拟机验证程序执行"></a>10. 虚拟机验证程序执行</h2><p>先用Vhd Writer讲文件写入要读取的<mark>100号扇区</mark><br>再使用<mark>VirtualBox</mark>虚拟机测试代码</p>
 <img src="/2022/12/11/26-%E7%94%A8%E6%88%B7%E7%A8%8B%E5%BA%8F%E7%BC%96%E7%A8%8B%E6%8E%A5%E5%8F%A3%E5%8F%8A%E5%85%B6%E5%AE%9E%E7%8E%B0/acbb223d65c87a95abe0c1c6a57a075a.png" class="">
 <img src="/2022/12/11/26-%E7%94%A8%E6%88%B7%E7%A8%8B%E5%BA%8F%E7%BC%96%E7%A8%8B%E6%8E%A5%E5%8F%A3%E5%8F%8A%E5%85%B6%E5%AE%9E%E7%8E%B0/68b455214947bd9ce839cd7b7c199545.png" class="">
 
 
-<h2 id="11-以16进制形式显示一个双字以及PUSHAD、POPAD和XLAT指令的使用"><a href="#11-以16进制形式显示一个双字以及PUSHAD、POPAD和XLAT指令的使用" class="headerlink" title="11. 以16进制形式显示一个双字以及PUSHAD、POPAD和XLAT指令的使用"></a>11. 以16进制形式显示一个双字以及PUSHAD、POPAD和XLAT指令的使用</h2><p>在内核中实现了==put_hex_dword==例程：</p>
-<pre><code>    ;汇编语言程序是极难一次成功，而且调试非常困难。这个例程可以提供帮助
+<h2 id="11-以16进制形式显示一个双字以及PUSHAD、POPAD和XLAT指令的使用"><a href="#11-以16进制形式显示一个双字以及PUSHAD、POPAD和XLAT指令的使用" class="headerlink" title="11. 以16进制形式显示一个双字以及PUSHAD、POPAD和XLAT指令的使用"></a>11. 以16进制形式显示一个双字以及PUSHAD、POPAD和XLAT指令的使用</h2><p>在内核中实现了<mark>put_hex_dword</mark>例程：</p>
+<pre><code class="assembly">    ;汇编语言程序是极难一次成功，而且调试非常困难。这个例程可以提供帮助
 put_hex_dword:					;在当前光标处以十六进制形式显示
                                 ;一个双字并推进光标
                                 ;输入：EDX=要转换并显示的数字
@@ -407,14 +407,14 @@ put_hex_dword:					;在当前光标处以十六进制形式显示
 <img src="/2022/12/11/26-%E7%94%A8%E6%88%B7%E7%A8%8B%E5%BA%8F%E7%BC%96%E7%A8%8B%E6%8E%A5%E5%8F%A3%E5%8F%8A%E5%85%B6%E5%AE%9E%E7%8E%B0/5f0099e490a46b3416c67f91f594fa5c.png" class="">
 <p>每个字符在字符串中的偏移正好可以代表其作为16进制的数字字符。</p>
 <p>将32位二进制数分成8个4位，将每个4位二进制数据转化为16进制，再用值作为偏移去取出对应的字符显示出来即可。</p>
-<p>其中==pushad==：每次先将==ESP减4==，==ESP==是先保存再压入。</p>
+<p>其中<mark>pushad</mark>：每次先将<mark>ESP减4</mark>，<mark>ESP</mark>是先保存再压入。</p>
 <img src="/2022/12/11/26-%E7%94%A8%E6%88%B7%E7%A8%8B%E5%BA%8F%E7%BC%96%E7%A8%8B%E6%8E%A5%E5%8F%A3%E5%8F%8A%E5%85%B6%E5%AE%9E%E7%8E%B0/ac6aa3c66215e25c2f6d1090953ec547.png" class="">
-<p>对应的==popad==指令：</p>
+<p>对应的<mark>popad</mark>指令：</p>
 <img src="/2022/12/11/26-%E7%94%A8%E6%88%B7%E7%A8%8B%E5%BA%8F%E7%BC%96%E7%A8%8B%E6%8E%A5%E5%8F%A3%E5%8F%8A%E5%85%B6%E5%AE%9E%E7%8E%B0/4c3b9f98064b65ba4890b24688071a4b.png" class="">
-<p>其中==xalt==指令：</p>
+<p>其中<mark>xalt</mark>指令：</p>
 <img src="/2022/12/11/26-%E7%94%A8%E6%88%B7%E7%A8%8B%E5%BA%8F%E7%BC%96%E7%A8%8B%E6%8E%A5%E5%8F%A3%E5%8F%8A%E5%85%B6%E5%AE%9E%E7%8E%B0/80dc47c15fb9439664aebc9dff90824c.png" class="">
-<p>运行过程：将==EDX==循环左移4位，再备份到==EAX==中，==EAX==除了低四位外全部置零，就可以获取==AL==的值了。</p>
-<p>课后作业：<br>使用==put_hex_dword==在屏幕上输出一串数字：</p>
+<p>运行过程：将<mark>EDX</mark>循环左移4位，再备份到<mark>EAX</mark>中，<mark>EAX</mark>除了低四位外全部置零，就可以获取<mark>AL</mark>的值了。</p>
+<p>课后作业：<br>使用<mark>put_hex_dword</mark>在屏幕上输出一串数字：</p>
 <img src="/2022/12/11/26-%E7%94%A8%E6%88%B7%E7%A8%8B%E5%BA%8F%E7%BC%96%E7%A8%8B%E6%8E%A5%E5%8F%A3%E5%8F%8A%E5%85%B6%E5%AE%9E%E7%8E%B0/7975a37ae207e8ef8dba0ae97b1d2ca9.png" class="">
 <img src="/2022/12/11/26-%E7%94%A8%E6%88%B7%E7%A8%8B%E5%BA%8F%E7%BC%96%E7%A8%8B%E6%8E%A5%E5%8F%A3%E5%8F%8A%E5%85%B6%E5%AE%9E%E7%8E%B0/image-20221113171015954.png" class="" title="image-20221113171015954">
 </article><section class="jump-container is-flex is-justify-content-space-between my-6"><!-- em is empty placeholder--><a class="button is-default" href="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/" title="27. 任务和任务的创建"><i class="iconfont icon-prev mr-2 has-text-grey"></i><span class="has-text-weight-semibold">上一页: 27. 任务和任务的创建</span></a><a class="button is-default" href="/2022/12/11/25-%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F%E7%A8%8B%E5%BA%8F%E7%9A%84%E5%8A%A8%E6%80%81%E5%8A%A0%E8%BD%BD%E5%92%8C%E6%89%A7%E8%A1%8C/" title="25. 保护模式程序的动态加载和执行"><span class="has-text-weight-semibold">下一页: 25. 保护模式程序的动态加载和执行</span><i class="iconfont icon-next ml-2 has-text-grey"></i></a></section><article class="mt-6 comment-container"><script async repo="Haojen/Claudia-theme-blog" src="https://utteranc.es/client.js" issue-term="pathname" theme="preferred-color-scheme"></script></article><article class="mt-6 comment-container" id="vcomments"></article></div></div></main></main><footer class="is-flex is-flex-direction-column is-align-items-center is-flex-shrink-0 is-family-serif"><section class="sns-container"><a title="twitter" target="_blank" rel="noopener nofollow" href="//twitter.com//"><i class="iconfont icon-twitter"></i></a><!-- Github--><a title="github" target="_blank" rel="noopener nofollow" href="//github.com/xiaoeryu"><i class="iconfont icon-github"></i></a><!-- Ins--><a title="instagram" target="_blank" rel="noopener nofollow" href="//www.instagram.com//"><i class="iconfont icon-ins"></i></a><!-- RSS--><!-- 知乎--><!-- 领英--><!-- 脸书--><a title="facebook" target="_blank" rel="noopener nofollow" href="//www.facebook.com//"><i class="iconfont icon-tian7_facebook"></i></a></section><p><span>Copyright ©</span><span> xiaoeryu 2022</span></p><div class="is-flex is-justify-content-center is-flex-wrap-wrap"><p>Powered by Hexo &verbar;&nbsp;</p><p class="is-flex is-justify-content-center"><a title="Hexo theme author" target="_blank" rel="noopener" href="//github.com/haojen">Theme by Haojen&nbsp;</a></p><div style="margin-top: 2px"><a class="github-button" title="github-button" target="_blank" rel="noopener" href="https://github.com/haojen/hexo-theme-Claudia" data-color-scheme="no-preference: light; light: light; dark: dark;" data-show-count="true"></a></div></div><div><span></span></div></footer><script async defer src="https://buttons.github.io/buttons.js"></script><script src="/js/jquery-3.6.1.min.js"></script><script src="/js/jquery-fancybox.min.js"></script><script src="/js/img_zoom.js"></script><script src="/js/post.js"></script></body></html>
