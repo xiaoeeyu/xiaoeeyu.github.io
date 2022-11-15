@@ -741,7 +741,7 @@
       
       <categories>
           
-          <category> windows逆向 </category>
+          <category> Windows逆向 </category>
           
       </categories>
       
@@ -824,6 +824,8 @@
         <tags>
             
             <tag> go </tag>
+            
+            <tag> 环境配置 </tag>
             
         </tags>
       
