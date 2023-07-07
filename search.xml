@@ -4,13 +4,27 @@
   
     
     <entry>
-      <title>test</title>
-      <link href="/2023/07/05/test/"/>
-      <url>/2023/07/05/test/</url>
+      <title>CTF006</title>
+      <link href="/2023/07/07/CTF006/"/>
+      <url>/2023/07/07/CTF006/</url>
       
-        <content type="html"><![CDATA[]]></content>
+        <content type="html"><![CDATA[<p>test</p>]]></content>
       
       
+      <categories>
+          
+          <category> Android逆向 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Android CTF </tag>
+            
+            <tag> 加密解密 </tag>
+            
+        </tags>
       
     </entry>
     
@@ -923,9 +937,9 @@
       
         <tags>
             
-            <tag> PDF漏洞 </tag>
-            
             <tag> 漏洞分析 </tag>
+            
+            <tag> PDF漏洞 </tag>
             
         </tags>
       
