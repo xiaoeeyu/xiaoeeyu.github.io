@@ -8,21 +8,21 @@
       <link href="/2023/07/07/CTF006/"/>
       <url>/2023/07/07/CTF006/</url>
       
-        <content type="html"><![CDATA[<p>test</p>]]></content>
+        <content type="html"><![CDATA[<p>test</p><img src="/2023/07/07/CTF006/image-20230707185402203.png" class="" title="image-20230707185402203">]]></content>
       
       
       <categories>
           
-          <category> Android逆向 </category>
+          <category> 安卓 </category>
+          
+          <category> 加密解密 </category>
           
       </categories>
       
       
         <tags>
             
-            <tag> Android CTF </tag>
-            
-            <tag> 加密解密 </tag>
+            <tag> CTF </tag>
             
         </tags>
       
@@ -937,9 +937,9 @@
       
         <tags>
             
-            <tag> 漏洞分析 </tag>
-            
             <tag> PDF漏洞 </tag>
+            
+            <tag> 漏洞分析 </tag>
             
         </tags>
       
