@@ -8,9 +8,25 @@
       <link href="/2023/07/09/CTF004/"/>
       <url>/2023/07/09/CTF004/</url>
       
-        <content type="html"><![CDATA[]]></content>
+        <content type="html"><![CDATA[<h3 id="1-脱壳"><a href="#1-脱壳" class="headerlink" title="1. 脱壳"></a>1. 脱壳</h3><p>用jadx打开之后发现有加壳那先脱壳再分析</p><img src="/2023/07/09/CTF004/image-20230709013442386.png" class="" title="image-20230709013442386"><p>看名字是一个_qihoo_的壳，这个呢我们使用反射大师去脱壳，反射大师需要运行在安卓7.1以下的系统上<br>在root过的手机上安装一个_VMOS Pro_模拟一个安卓7.1的系统<br>安装上反射大师和CTF004,注意：反射大师需要重启才能启用<br>然后打开反射大师，选择我们的CTF004并打开</p><img src="/2023/07/09/CTF004/image-20230709013731077.png" class="" title="image-20230709013731077"><p>然后点击这个芒星点击 当前ACTIVITY</p><img src="/2023/07/09/CTF004/image-20230709013744990.png" class="" title="image-20230709013744990"><p>然后点击写出DEX-&gt;修复Magic-&gt;确定<br>之后去提示的路径处将文件拷贝到物理机，再使用_adb pull_命令拉取下来对脱壳后的文件开始分析。</p><img src="/2023/07/09/CTF004/image-20230709013759330.png" class="" title="image-20230709013759330"><h3 id="2-开始分析"><a href="#2-开始分析" class="headerlink" title="2. 开始分析"></a>2. 开始分析</h3><h4 id="分析一下代码逻辑"><a href="#分析一下代码逻辑" class="headerlink" title="分析一下代码逻辑"></a>分析一下代码逻辑</h4><img src="/2023/07/09/CTF004/image-20230709013828469.png" class="" title="image-20230709013828469"><p>进来_MainActivity_之后发现_onCreate_函数都在native层去实现了，那再看看其它的类<br>点进Flag类</p><img src="/2023/07/09/CTF004/image-20230709013838746.png" class="" title="image-20230709013838746"><p>进来之后发现这里面有些需要我们注意的点：</p><pre><code>  1. 有两个key  2. 有计算这两个key的地方，且在MyService类中进行了对比如果符合条件会去调用calcFlagFirstStep()</code></pre><img src="/2023/07/09/CTF004/image-20230709013850294.png" class="" title="image-20230709013850294"><ol start="3"><li>调用之后会去执行comm()方法对接收到的字符串进行一系列操作</li></ol><h4 id="hook获取Flag"><a href="#hook获取Flag" class="headerlink" title="hook获取Flag"></a>hook获取Flag</h4><p>接下来我们写脚本来hook以下这两个计算函数看返回值是什么就可以直接拿到Flag了</p><pre><code class="js">setImmediate(function(){    Java.perform(function(){        // 因为这个hook不需要实例化所以直接使用Java.use就可以        var Flag = Java.use("ctf.crack.vulcrack.Flag")        var ret1 = Flag.calcFlagFirstStep();        console.log("ret1= "+ret1);        var ret2 = Flag.calcFlagSecondStep();        console.log("ret2= "+ret2);    })})</code></pre><p> 执行hook脚本</p><img src="/2023/07/09/CTF004/image-20230709014023478.png" class="" title="image-20230709014023478"><p><strong>这里可以看到两个返回值加起来就是完整的Flag。</strong></p><p><strong>over~</strong></p>]]></content>
       
       
+      <categories>
+          
+          <category> Android逆向 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> frida-hook </tag>
+            
+            <tag> AndroidCTF </tag>
+            
+            <tag> Android脱壳 </tag>
+            
+        </tags>
       
     </entry>
     
@@ -33,11 +49,11 @@
       
         <tags>
             
-            <tag> CFT </tag>
-            
             <tag> 重打包 </tag>
             
             <tag> frida-hook </tag>
+            
+            <tag> Android CTF </tag>
             
         </tags>
       
@@ -62,9 +78,9 @@
       
         <tags>
             
-            <tag> CTF </tag>
-            
             <tag> 加密解密 </tag>
+            
+            <tag> Android CTF </tag>
             
         </tags>
       
