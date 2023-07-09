@@ -177,6 +177,8 @@
       
       <categories>
           
+          <category> Windows保护模式 </category>
+          
           <category> 学习笔记 </category>
           
           <category> 二进制 </category>
@@ -203,6 +205,8 @@
       
       
       <categories>
+          
+          <category> Windows保护模式 </category>
           
           <category> 学习笔记 </category>
           
@@ -231,6 +235,8 @@
       
       <categories>
           
+          <category> Windows保护模式 </category>
+          
           <category> 学习笔记 </category>
           
           <category> 二进制 </category>
@@ -257,6 +263,8 @@
       
       
       <categories>
+          
+          <category> Windows保护模式 </category>
           
           <category> 学习笔记 </category>
           
@@ -285,6 +293,8 @@
       
       <categories>
           
+          <category> Windows保护模式 </category>
+          
           <category> 学习笔记 </category>
           
           <category> 二进制 </category>
@@ -311,6 +321,8 @@
       
       
       <categories>
+          
+          <category> Windows保护模式 </category>
           
           <category> 学习笔记 </category>
           
@@ -339,6 +351,8 @@
       
       <categories>
           
+          <category> Windows保护模式 </category>
+          
           <category> 学习笔记 </category>
           
           <category> 二进制 </category>
@@ -365,6 +379,8 @@
       
       
       <categories>
+          
+          <category> Windows保护模式 </category>
           
           <category> 学习笔记 </category>
           
@@ -393,6 +409,8 @@
       
       <categories>
           
+          <category> Windows保护模式 </category>
+          
           <category> 学习笔记 </category>
           
           <category> 二进制 </category>
@@ -419,6 +437,8 @@
       
       
       <categories>
+          
+          <category> Windows保护模式 </category>
           
           <category> 学习笔记 </category>
           
@@ -450,6 +470,8 @@
           <category> 学习笔记 </category>
           
           <category> 二进制 </category>
+          
+          <category> Windows保护模式 </category>
           
       </categories>
       
@@ -501,7 +523,7 @@
       
       <categories>
           
-          <category> 软件逆向 </category>
+          <category> Windows软件逆向 </category>
           
       </categories>
       
@@ -562,6 +584,8 @@
             
             <tag> 资本主义 </tag>
             
+            <tag> 哲学 </tag>
+            
         </tags>
       
     </entry>
@@ -578,14 +602,14 @@
       
       <categories>
           
-          <category> 软件逆向 </category>
+          <category> Windows软件逆向 </category>
           
       </categories>
       
       
         <tags>
             
-            <tag> 破解 </tag>
+            <tag> 暴力破解 </tag>
             
         </tags>
       
@@ -1009,7 +1033,7 @@
           
           <category> 二进制 </category>
           
-          <category> windows逆向 </category>
+          <category> 漏洞分析 </category>
           
       </categories>
       
@@ -1038,7 +1062,7 @@
           
           <category> 二进制 </category>
           
-          <category> windows逆向 </category>
+          <category> 漏洞分析 </category>
           
       </categories>
       
@@ -1150,12 +1174,12 @@
           
           <category> 二进制 </category>
           
+          <category> 漏洞分析 </category>
+          
       </categories>
       
       
         <tags>
-            
-            <tag> 漏洞分析 </tag>
             
             <tag> Adobe Reader漏洞 </tag>
             
