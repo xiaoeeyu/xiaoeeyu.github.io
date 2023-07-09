@@ -4,11 +4,63 @@
   
     
     <entry>
-      <title>CTF004</title>
-      <link href="/2023/07/09/CTF004/"/>
-      <url>/2023/07/09/CTF004/</url>
+      <title>CTF001</title>
+      <link href="/2023/07/09/CTF001/"/>
+      <url>/2023/07/09/CTF001/</url>
       
-        <content type="html"><![CDATA[<h3 id="1-脱壳"><a href="#1-脱壳" class="headerlink" title="1. 脱壳"></a>1. 脱壳</h3><p>用jadx打开之后发现有加壳那先脱壳再分析</p><img src="/2023/07/09/CTF004/image-20230709013442386.png" class="" title="image-20230709013442386"><p>看名字是一个_qihoo_的壳，这个呢我们使用反射大师去脱壳，反射大师需要运行在安卓7.1以下的系统上<br>在root过的手机上安装一个_VMOS Pro_模拟一个安卓7.1的系统<br>安装上反射大师和CTF004,注意：反射大师需要重启才能启用<br>然后打开反射大师，选择我们的CTF004并打开</p><img src="/2023/07/09/CTF004/image-20230709013731077.png" class="" title="image-20230709013731077"><p>然后点击这个芒星点击 当前ACTIVITY</p><img src="/2023/07/09/CTF004/image-20230709013744990.png" class="" title="image-20230709013744990"><p>然后点击写出DEX-&gt;修复Magic-&gt;确定<br>之后去提示的路径处将文件拷贝到物理机，再使用_adb pull_命令拉取下来对脱壳后的文件开始分析。</p><img src="/2023/07/09/CTF004/image-20230709013759330.png" class="" title="image-20230709013759330"><h3 id="2-开始分析"><a href="#2-开始分析" class="headerlink" title="2. 开始分析"></a>2. 开始分析</h3><h4 id="分析一下代码逻辑"><a href="#分析一下代码逻辑" class="headerlink" title="分析一下代码逻辑"></a>分析一下代码逻辑</h4><img src="/2023/07/09/CTF004/image-20230709013828469.png" class="" title="image-20230709013828469"><p>进来_MainActivity_之后发现_onCreate_函数都在native层去实现了，那再看看其它的类<br>点进Flag类</p><img src="/2023/07/09/CTF004/image-20230709013838746.png" class="" title="image-20230709013838746"><p>进来之后发现这里面有些需要我们注意的点：</p><pre><code>  1. 有两个key  2. 有计算这两个key的地方，且在MyService类中进行了对比如果符合条件会去调用calcFlagFirstStep()</code></pre><img src="/2023/07/09/CTF004/image-20230709013850294.png" class="" title="image-20230709013850294"><ol start="3"><li>调用之后会去执行comm()方法对接收到的字符串进行一系列操作</li></ol><h4 id="hook获取Flag"><a href="#hook获取Flag" class="headerlink" title="hook获取Flag"></a>hook获取Flag</h4><p>接下来我们写脚本来hook以下这两个计算函数看返回值是什么就可以直接拿到Flag了</p><pre><code class="js">setImmediate(function(){    Java.perform(function(){        // 因为这个hook不需要实例化所以直接使用Java.use就可以        var Flag = Java.use("ctf.crack.vulcrack.Flag")        var ret1 = Flag.calcFlagFirstStep();        console.log("ret1= "+ret1);        var ret2 = Flag.calcFlagSecondStep();        console.log("ret2= "+ret2);    })})</code></pre><p> 执行hook脚本</p><img src="/2023/07/09/CTF004/image-20230709014023478.png" class="" title="image-20230709014023478"><p><strong>这里可以看到两个返回值加起来就是完整的Flag。</strong></p><p><strong>over~</strong></p>]]></content>
+        <content type="html"><![CDATA[<img src="/2023/07/09/CTF001/image-20230709145814540.png" class="" title="image-20230709145814540"><h3 id="用jadx分析代码逻辑"><a href="#用jadx分析代码逻辑" class="headerlink" title="用jadx分析代码逻辑"></a>用jadx分析代码逻辑</h3><p>先查一下程序没有加壳，用jadx打开apk查看代码</p><img src="/2023/07/09/CTF001/image-20230709145835648.png" class="" title="image-20230709145835648"><p>通过_<strong>AndroidManifest.xml</strong><em>找到程序的入口点可以看到提示的字符串<br>然后因为它处理flag的函数是在native层所以我们需要用ida去查看这个函数是怎么在<strong>so文件</strong>中实现的<br>用解压缩软件取出apk的lib库中的so文件，用ida去分析一下<br>ida分析完后在文件中我们可以直接搜索</em><strong>java开头的函数</strong>_或者直接搜索<strong>verify</strong>这个函数，有可能可以直接搜索到<br>如果我们搜索不到verify这个函数的时候也许这个函数是动态注册的，可以通过<strong>JNI_OnLoad</strong>去查找加载的函数<br>JNI_OnLoad()函数是Java Native Interface（JNI）中的一个特殊函数，它在加载本地库时由Java虚拟机调用，它主要用于初始化本地库，并返回JNI的版本号给虚拟机。</p><img src="/2023/07/09/CTF001/image-20230709145854617.png" class="" title="image-20230709145854617"><p>但是这里ida分析的参数有点错误</p><h4 id="修复IDA参数识别错误"><a href="#修复IDA参数识别错误" class="headerlink" title="修复IDA参数识别错误"></a>修复IDA参数识别错误</h4><p>看一下JNI_OnLoad()的代码示例</p><img src="/2023/07/09/CTF001/image-20230709145909806.png" class="" title="image-20230709145909806"><p>我们需要去找这个<strong>RegisterNatives()<strong>方法中的第三个参数</strong>methods</strong>来找到注册的本地方法，但是上面IDA识别的有问题需要手动修改一下参数的类型</p><img src="/2023/07/09/CTF001/image-20230709145922233.png" class="" title="image-20230709145922233"><img src="/2023/07/09/CTF001/image-20230709145928563.png" class="" title="image-20230709145928563"><img src="/2023/07/09/CTF001/image-20230709145933873.png" class="" title="image-20230709145933873"><p>修复完成</p><img src="/2023/07/09/CTF001/image-20230709145946280.png" class="" title="image-20230709145946280"><h4 id="定位动态注册函数地址"><a href="#定位动态注册函数地址" class="headerlink" title="定位动态注册函数地址"></a>定位动态注册函数地址</h4><p>进来之后就可以定位到动态注册的函数位置</p><img src="/2023/07/09/CTF001/image-20230709150003399.png" class="" title="image-20230709150003399"><p>进来之后发现这是一个简单的算法验证器，对数组的每一位进行了校验</p><img src="/2023/07/09/CTF001/image-20230709150015769.png" class="" title="image-20230709150015769"><h3 id="验证Flag"><a href="#验证Flag" class="headerlink" title="验证Flag"></a>验证Flag</h3><p>先验证一下长度，然后对每一位进行验证全部相等就返回true，我们可以将这些验证的数字转译对应的ascii码，或者直接按<em>table键</em>进入反汇编页面就能看到IDA自动解析的字符编码</p><img src="/2023/07/09/CTF001/image-20230709150057728.png" class="" title="image-20230709150057728"><img src="/2023/07/09/CTF001/image-20230709150104981.png" class="" title="image-20230709150104981"><p>将字符串输入验证</p><img src="/2023/07/09/CTF001/image-20230709150119452.png" class="" title="image-20230709150119452">]]></content>
+      
+      
+      <categories>
+          
+          <category> Android逆向 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Android CTF </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>CTF002</title>
+      <link href="/2023/07/09/CTF002/"/>
+      <url>/2023/07/09/CTF002/</url>
+      
+        <content type="html"><![CDATA[<h3 id="1-通过hook脚本暴力破解"><a href="#1-通过hook脚本暴力破解" class="headerlink" title="1. 通过hook脚本暴力破解"></a>1. 通过hook脚本暴力破解</h3><h4 id="进入入口点之后，简单查看一下代码的逻辑"><a href="#进入入口点之后，简单查看一下代码的逻辑" class="headerlink" title="进入入口点之后，简单查看一下代码的逻辑"></a>进入入口点之后，简单查看一下代码的逻辑</h4><img src="/2023/07/09/CTF002/image-20230709145110009.png" class="" title="image-20230709145110009"><p>可以发现密码是一个六位数字，经过encode函数加密后跟预定的值进行比较，比较相等就通过。<br>查看这个encode函数使用了sha1摘要算法，这样我们并不能根据hook某一个点位直接获取到正确的密钥，<br>因为密码是六位数字存在暴力破解的可能，我们可以直接hook这个<strong>encode</strong>函数来做一个暴力破解。<br>因为这个_<strong>public class MainActivity extends Activity</strong><em>类不是一个静态类，所以不能直接通过类去调用里面的函数，所以不能直接用</em><strong>Java.use()</strong>_的方式写脚本,需要使用**<em>choose()</em><strong>方法去内存中查找到类</strong>MainActivity**的实例之后再使用类方法</p><pre><code class="js">// 使用 setImmediate 在下一个事件循环中执行代码,防止脚本执行过程中报错Failed to load script: timeout was reachedsetImmediate(function(){  // 在 Java 环境中执行代码  Java.perform(function(){    // 寻找指定类的实例    Java.choose("com.android.ctf.MainActivity",{      // 当匹配到实例时的回调函数      "onMatch":function(instance){        console.log("找到实例");        var str = Java.use("java.lang.String");        var Integer = Java.use("java.lang.Integer")        var start = 100000; // 起始值        var end = 1000000; // 结束值        for (var i = start; i &lt; end; i++) {          // 将整数转换为字符串          var result = instance.encode(Integer.toString(i));          if (result === "6574f28f75dddc488f3c7c21fddfa0cd16901206") {            console.log("找到密码: " + i);            return; // 找到密码后立即返回          }        }      },      // 堆搜索完成时的回调函数      "onComplete":function(){        console.log("堆搜索完成");      }    });  });});</code></pre><p>执行脚本：这个脚本执行起来比较耗费时间，如果手机性能不够可能程序可能会崩溃，需要缩小搜索范围</p><img src="/2023/07/09/CTF002/image-20230709145154071.png" class="" title="image-20230709145154071"><h3 id="2-正向破解"><a href="#2-正向破解" class="headerlink" title="2. 正向破解"></a>2. 正向破解</h3><p>因为这里有完整的算法，所以可以直接把算法扣出来写代码计算一下结果：</p><img src="/2023/07/09/CTF002/image-20230709145403892.png" class="" title="image-20230709145403892"><p>直接扣出来用Eclipse写java代码正向破解效率会更高，也不用担心程序崩溃的问题</p><pre><code class="java">package TestFlag002;import java.security.MessageDigest;import java.security.NoSuchAlgorithmException;public class TestFlag002 {    public static void main(String[] args) {        // TODO Auto-generated method stub        for (int i = 100000; i &lt; 1000000; i++) {            if ("6574f28f75dddc488f3c7c21fddfa0cd16901206".equals(encode(Integer.toString(i)))) {                System.out.println(i);            }        }    }    public static String encode(String decript) {        try {            MessageDigest digest = MessageDigest.getInstance("SHA-1");            digest.update(decript.getBytes());            byte[] messageDigest = digest.digest();            StringBuilder hexString = new StringBuilder();            for (byte b : messageDigest) {                String shaHex = Integer.toHexString(b &amp; 255);                if (shaHex.length() &lt; 2) {                    hexString.append(0);                }                hexString.append(shaHex);            }            return hexString.toString();        } catch (NoSuchAlgorithmException e) {            e.printStackTrace();            return "";        }    }}</code></pre><img src="/2023/07/09/CTF002/image-20230709145448067.png" class="" title="image-20230709145448067"><p><strong>运行一秒钟就可以出结果，效率更高。</strong></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Android逆向 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Android CTF </tag>
+            
+            <tag> 暴力解密 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>CTF003</title>
+      <link href="/2023/07/09/CTF003/"/>
+      <url>/2023/07/09/CTF003/</url>
+      
+        <content type="html"><![CDATA[<img src="/2023/07/09/CTF003/image-20230709144529782.png" class="" title="image-20230709144529782"><h3 id="分析函数逻辑"><a href="#分析函数逻辑" class="headerlink" title="分析函数逻辑"></a>分析函数逻辑</h3><p>打开入口函数后，可以发现把校验函数写在so库里了</p><img src="/2023/07/09/CTF003/image-20230709144547072.png" class="" title="image-20230709144547072"><h3 id="IDA分析so库文件"><a href="#IDA分析so库文件" class="headerlink" title="IDA分析so库文件"></a>IDA分析so库文件</h3><p>那接下来用ida打开_native-lib.so_进行分析，文件打开之后可以直接搜索到这个函数，可以看到如果没有动态加载的话，java层映射到native层的本地函数命名特点<strong>Java+包名+函数名</strong></p><img src="/2023/07/09/CTF003/image-20230709144600683.png" class="" title="image-20230709144600683"><h4 id="修复参数"><a href="#修复参数" class="headerlink" title="修复参数"></a>修复参数</h4><p>这个函数解析的看起来比较乱，我们可以修复一下参数类型看会不会好点</p><ul><li>在jadx里面看到只传递了一个参数，这里可以看到又三个参数，实际只有第三个参数_a3_才是我们传递的字符串参数，_a1_是JNIEnv* ，_a2_是JavaObject（表示Java层调用该JNI函数的对象的引用（即Java对象的指针））</li></ul><h4 id="修复完成之后我们来看一下这个函数"><a href="#修复完成之后我们来看一下这个函数" class="headerlink" title="修复完成之后我们来看一下这个函数"></a>修复完成之后我们来看一下这个函数</h4><img src="/2023/07/09/CTF003/image-20230709144614920.png" class="" title="image-20230709144614920"><p>根据图中可知返回值来自于<strong>strcmp</strong>的比较结果，只有返回值为true也就是两个参数相等的情况下，验证才能通过。_strcmp_的两个参数都来自于_convertUnCharToStr_方法。这样的话可以尝试一下看能不能用_frida-trace_跟踪一下调用函数来查看这两个参数的值分别是什么</p><h3 id="使用frida-trace来hook函数的传参"><a href="#使用frida-trace来hook函数的传参" class="headerlink" title="使用frida-trace来hook函数的传参"></a>使用frida-trace来hook函数的传参</h3><img src="/2023/07/09/CTF003/image-20230709144627303.png" class="" title="image-20230709144627303"><p>这里我们可以看到成功的跟踪到了这两个函数，但是_<strong>strcmp()</strong>_触发的有点多，可能代码里面有很多比较的地方，<br>_<strong>convertUnCharToStr()</strong>_触发较少方便我们查看参数。<br>来查看一下跟踪到的函数：发现这里没有识别出来函数的参数可能是因为识别不准确造成的</p><img src="/2023/07/09/CTF003/image-20230709144651083.png" class="" title="image-20230709144651083"><h4 id="根据函数原型编写hook脚本"><a href="#根据函数原型编写hook脚本" class="headerlink" title="根据函数原型编写hook脚本"></a>根据函数原型编写hook脚本</h4><pre><code class="c">void convertUnCharToStr(char* str, unsigned char* UnChar, int ucLen)</code></pre><p>根据函数原型修改一下代码读取一下参数的值：获取so库函数的参数需要从内存中读取</p><img src="/2023/07/09/CTF003/image-20230709144715947.png" class="" title="image-20230709144715947"><p>修改完成之后保存，再点击验证按钮执行的时候看脚本打印结果</p><img src="/2023/07/09/CTF003/image-20230709144751559.png" class="" title="image-20230709144751559"><p>可以看到一串能读懂的字符串我们来试一下这个是不是就是flag</p><img src="/2023/07/09/CTF003/image-20230709144803178.png" class="" title="image-20230709144803178"><p>输入之后点击验证按钮我们就能看到这个信封解封了<br><strong>over~</strong></p>]]></content>
       
       
       <categories>
@@ -22,7 +74,34 @@
             
             <tag> frida-hook </tag>
             
-            <tag> AndroidCTF </tag>
+            <tag> Android CTF </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>CTF004</title>
+      <link href="/2023/07/09/CTF004/"/>
+      <url>/2023/07/09/CTF004/</url>
+      
+        <content type="html"><![CDATA[<h3 id="1-脱壳"><a href="#1-脱壳" class="headerlink" title="1. 脱壳"></a>1. 脱壳</h3><p>用jadx打开之后发现有加壳那先脱壳再分析</p><img src="/2023/07/09/CTF004/image-20230709013442386.png" class="" title="image-20230709013442386"><p>看名字是一个_qihoo_的壳，这个呢我们使用反射大师去脱壳，反射大师需要运行在安卓7.1以下的系统上<br>在root过的手机上安装一个_VMOS Pro_模拟一个安卓7.1的系统<br>安装上反射大师和CTF004,注意：反射大师需要重启才能启用<br>然后打开反射大师，选择我们的CTF004并打开</p><img src="/2023/07/09/CTF004/image-20230709013731077.png" class="" title="image-20230709013731077"><p>然后点击这个芒星点击 当前ACTIVITY</p><img src="/2023/07/09/CTF004/image-20230709013744990.png" class="" title="image-20230709013744990"><p>然后点击写出DEX-&gt;修复Magic-&gt;确定<br>之后去提示的路径处将文件拷贝到物理机，再使用_adb pull_命令拉取下来对脱壳后的文件开始分析。</p><img src="/2023/07/09/CTF004/image-20230709013759330.png" class="" title="image-20230709013759330"><h3 id="2-开始分析"><a href="#2-开始分析" class="headerlink" title="2. 开始分析"></a>2. 开始分析</h3><h4 id="分析代码逻辑"><a href="#分析代码逻辑" class="headerlink" title="分析代码逻辑"></a>分析代码逻辑</h4><img src="/2023/07/09/CTF004/image-20230709013828469.png" class="" title="image-20230709013828469"><p>进来_MainActivity_之后发现_onCreate_函数都在native层去实现了，那再看看其它的类<br>点进Flag类</p><img src="/2023/07/09/CTF004/image-20230709013838746.png" class="" title="image-20230709013838746"><p>进来之后发现这里面有些需要我们注意的点：</p><pre><code>  1. 有两个key  2. 有计算这两个key的地方，且在MyService类中进行了对比如果符合条件会去调用calcFlagFirstStep()</code></pre><img src="/2023/07/09/CTF004/image-20230709013850294.png" class="" title="image-20230709013850294"><ol start="3"><li>调用之后会去执行comm()方法对接收到的字符串进行一系列操作</li></ol><h4 id="hook获取Flag"><a href="#hook获取Flag" class="headerlink" title="hook获取Flag"></a>hook获取Flag</h4><p>接下来我们写脚本来hook以下这两个计算函数看返回值是什么就可以直接拿到Flag了</p><pre><code class="js">setImmediate(function(){    Java.perform(function(){        // 因为这个hook不需要实例化所以直接使用Java.use就可以        var Flag = Java.use("ctf.crack.vulcrack.Flag")        var ret1 = Flag.calcFlagFirstStep();        console.log("ret1= "+ret1);        var ret2 = Flag.calcFlagSecondStep();        console.log("ret2= "+ret2);    })})</code></pre><p> 执行hook脚本</p><img src="/2023/07/09/CTF004/image-20230709014023478.png" class="" title="image-20230709014023478"><p><strong>这里可以看到两个返回值加起来就是完整的Flag。</strong></p><p><strong>over~</strong></p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Android逆向 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> frida-hook </tag>
+            
+            <tag> Android CTF </tag>
             
             <tag> Android脱壳 </tag>
             
