@@ -4,6 +4,33 @@
   
     
     <entry>
+      <title>RSA加解密-iBuck</title>
+      <link href="/2023/07/09/RSA%E5%8A%A0%E8%A7%A3%E5%AF%86-iBuck/"/>
+      <url>/2023/07/09/RSA%E5%8A%A0%E8%A7%A3%E5%AF%86-iBuck/</url>
+      
+        <content type="html"><![CDATA[<p><strong>rsa加解密</strong></p><ul><li>RSA加密属于一种非对称加密算法，对于相同内容的每次加密结果也都是不一样的，但是用私钥解密后的结果却都是可还原的</li></ul><p>rsa生成的密匙对</p><img src="/2023/07/09/RSA%E5%8A%A0%E8%A7%A3%E5%AF%86-iBuck/image-20230709153627907.png" class="" title="image-20230709153627907"><p>可以通过RSA的私钥提取公钥</p><img src="/2023/07/09/RSA%E5%8A%A0%E8%A7%A3%E5%AF%86-iBuck/image-20230709153656153.png" class="" title="image-20230709153656153"><p>公钥提取modulus（模数）</p><img src="/2023/07/09/RSA%E5%8A%A0%E8%A7%A3%E5%AF%86-iBuck/image-20230709153710904.png" class="" title="image-20230709153710904"><h3 id="1-分析iBuck登录加解密"><a href="#1-分析iBuck登录加解密" class="headerlink" title="1. 分析iBuck登录加解密"></a>1. 分析iBuck登录加解密</h3><p>本章只分析软件的登录加解密验证</p><h4 id="fiddler抓登陆包"><a href="#fiddler抓登陆包" class="headerlink" title="fiddler抓登陆包"></a>fiddler抓登陆包</h4><img src="/2023/07/09/RSA%E5%8A%A0%E8%A7%A3%E5%AF%86-iBuck/image-20230709153900282.png" class="" title="image-20230709153900282"><p><strong>先通过frida-trace 寻找RSA加解密相关的函数接口</strong></p><p><code>frida-trace -m "*[* *rsa*]" -U iBuck</code></p><p><strong>找到相关函数接口</strong></p><p>+[BKDataEncrypManger bk_rsaDecryptForJson:0x280848cc0]<br>+[BKDataEncrypManger bk_rsaEncrypJsonForDictionary:0x282664b80]</p><p>然后可以通过hook接口获取到参数信息</p><img src="/2023/07/09/RSA%E5%8A%A0%E8%A7%A3%E5%AF%86-iBuck/image-20230709154215964.png" class="" title="image-20230709154215964"><img src="/2023/07/09/RSA%E5%8A%A0%E8%A7%A3%E5%AF%86-iBuck/image-20230709154238135.png" class="" title="image-20230709154238135"><p>再通过rsa的通杀脚本来获取密钥相关的信息</p><p><code>frida -U iBuick -l .\ios_rsa.js</code></p><img src="/2023/07/09/RSA%E5%8A%A0%E8%A7%A3%E5%AF%86-iBuck/image-20230709154315544.png" class="" title="image-20230709154315544"><p>接下来去ida解析的字符串里面搜索一下RSA公钥的编码特征看是否能搜到：一般是<strong>MIGfMA0</strong>开头的</p><img src="/2023/07/09/RSA%E5%8A%A0%E8%A7%A3%E5%AF%86-iBuck/image-20230709154348971.png" class="" title="image-20230709154348971"><p>直接搜索到了三组硬编码，那接下来可以解析一下这三个硬编码的模数看哪一个和我们刚刚通过RSA通杀脚本获取到的模数相同。</p><p>通过计算获取到正确的那一组硬编码</p><img src="/2023/07/09/RSA%E5%8A%A0%E8%A7%A3%E5%AF%86-iBuck/image-20230709154420182.png" class="" title="image-20230709154420182"><p>确定了之后，先在ida里面查看一下这个公钥的调用，通过交叉引用找到调用的函数</p><img src="/2023/07/09/RSA%E5%8A%A0%E8%A7%A3%E5%AF%86-iBuck/image-20230709154434989.png" class="" title="image-20230709154434989"><p>到了这边之后发现只是返回了一个公钥的值，继续再往上一层查看可以跟到下图解密函数</p><img src="/2023/07/09/RSA%E5%8A%A0%E8%A7%A3%E5%AF%86-iBuck/image-20230709154446127.png" class="" title="image-20230709154446127"><p>有点奇怪，第二天使用frida的时候报错</p><img src="/2023/07/09/RSA%E5%8A%A0%E8%A7%A3%E5%AF%86-iBuck/image-20230709154504743.png" class="" title="image-20230709154504743"><ul><li>不知道是哪里的问题，重启刷机好了</li></ul><p>找到这个解密函数之后，可以对解密函数进行hook查看它的参数和返回结果去验证他的解密过程</p><p><em>插入log获取参数和返回值</em></p><img src="/2023/07/09/RSA%E5%8A%A0%E8%A7%A3%E5%AF%86-iBuck/image-20230709154558580.png" class="" title="image-20230709154558580"><p>执行hook</p><p><code>frida-trace -m "*[BKRSA decryptString:publicKey*]" -U iBuick</code></p><p>重新点击登录查看参数和返回值的值</p><img src="/2023/07/09/RSA%E5%8A%A0%E8%A7%A3%E5%AF%86-iBuck/image-20230709154622285.png" class="" title="image-20230709154622285"><p><strong>从这里可以获知两点：</strong></p><p>a. 未解密字符串的值是服务器的返回包，可以在fiddler里面找到</p><img src="/2023/07/09/RSA%E5%8A%A0%E8%A7%A3%E5%AF%86-iBuck/image-20230709154641117.png" class="" title="image-20230709154641117"><p>b. 这个公钥是用来解密返回包的，解密的返回值是**{}**</p><p>既然它是用公钥来解密服务端返回的数据包，这里我们可以猜测这个加密逻辑是：</p><p>​在客户端使用公钥加密-&gt;发送到服务器用私钥解密</p><p>​在服务端使用私钥加密-&gt;发送给客户端用公钥解密</p><p>来验证确认一下：</p><p>在ida里面搜索加密相关函数发现使用公钥私钥的都有，那我们接下来使用<em>frida-trace</em>来hook确认一下解密服务器返回包的时候调用的是哪个函数</p><img src="/2023/07/09/RSA%E5%8A%A0%E8%A7%A3%E5%AF%86-iBuck/image-20230709154712851.png" class="" title="image-20230709154712851"><p><code>frida-trace -m "*[BKRSA enc*]" -U iBuick</code></p><img src="/2023/07/09/RSA%E5%8A%A0%E8%A7%A3%E5%AF%86-iBuck/image-20230709154727247.png" class="" title="image-20230709154727247"><p>根据hook返回结果发现是使用BKRSA encryptString:privateKey函数私钥加密，那接下来插入log来查看一下它的参数和返回值</p><img src="/2023/07/09/RSA%E5%8A%A0%E8%A7%A3%E5%AF%86-iBuck/image-20230709154757109.png" class="" title="image-20230709154757109"><p>执行hook</p><p><code>frida-trace -m "*[BKRSA encryptString:privateKey*]" -U iBuick</code><br>返回值：</p><img src="/2023/07/09/RSA%E5%8A%A0%E8%A7%A3%E5%AF%86-iBuck/image-20230709154818632.png" class="" title="image-20230709154818632"><p>接下来验证一下：</p><ol><li>用公钥解密服务器下发的data包</li></ol><img src="/2023/07/09/RSA%E5%8A%A0%E8%A7%A3%E5%AF%86-iBuck/image-20230709154835268.png" class="" title="image-20230709154835268"><img src="/2023/07/09/RSA%E5%8A%A0%E8%A7%A3%E5%AF%86-iBuck/image-20230709154844888.png" class="" title="image-20230709154844888"><ol start="2"><li>用私钥加密重放发送给服务器看能否通过验证</li></ol><img src="/2023/07/09/RSA%E5%8A%A0%E8%A7%A3%E5%AF%86-iBuck/image-20230709154906562.png" class="" title="image-20230709154906562"><p>验证通过，和我们点击登录返回相同的结果（这个app有限时防重放机制，发送时间过去太长的包重放是会失败的）</p><img src="/2023/07/09/RSA%E5%8A%A0%E8%A7%A3%E5%AF%86-iBuck/image-20230709154939287.png" class="" title="image-20230709154939287"><p>根据验证的结果发现，本app在客户端有两对密匙，两种加密方式，一种是使用公钥加密服务端私钥解密，一种是使用私钥加密服务端公钥解密</p><p>关于这个app加固可以把客户端存储的密钥进行加密，例如将密钥存储为文件通过解密文件解析出公钥会让安全性更高一点</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> Android逆向 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 加密解密 </tag>
+            
+            <tag> RSA </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>CTF001</title>
       <link href="/2023/07/09/CTF001/"/>
       <url>/2023/07/09/CTF001/</url>
