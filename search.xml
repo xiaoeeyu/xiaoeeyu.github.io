@@ -4,6 +4,25 @@
   
     
     <entry>
+      <title>ios15.7.5越狱</title>
+      <link href="/2023/07/09/ios15-7-5%E8%B6%8A%E7%8B%B1/"/>
+      <url>/2023/07/09/ios15-7-5%E8%B6%8A%E7%8B%B1/</url>
+      
+        <content type="html"><![CDATA[<p>15一下的系统可以使用<strong>CheckRa1n</strong>越狱，15以上的可以使用<strong>palera1n</strong>来越狱。两个工具的流程都差不多。</p><p>IOS每次重启之后需要重新越狱。</p><p>这里使用制作启动盘的方式来进行刷机，使用balenaEtcher制作就行不多赘述。</p><ol><li>进去启动盘之后</li></ol><p>选择Options，进去后，选择Create Faksfs，空格键选中，回车确认！返回之后，一定要确认左上角有-f -c参数</p><img src="/2023/07/09/ios15-7-5%E8%B6%8A%E7%8B%B1/image-20230709222036105.png" class="" title="image-20230709222036105"><p>选择Start开始越狱，此时会自动引导手机进入恢复模式</p><img src="/2023/07/09/ios15-7-5%E8%B6%8A%E7%8B%B1/image-20230709222046618.png" class="" title="image-20230709222046618"><p>1回车<br>2.将手机电源键和HOME键一起按住(4秒)<br>3.松开电源键，但是保持按住HOME按钮(10秒)<br>4,手机开始自动跑代码，电脑出现进度条，就可以松开按键~</p><img src="/2023/07/09/ios15-7-5%E8%B6%8A%E7%8B%B1/image-20230709222058624.png" class="" title="image-20230709222058624"><p><strong>解决办法</strong>：1，按 Ctrl +C 键取消越狱，不要重启手机。回车，输入palera1n_menu，重新开启越狱菜单。2，再次选择Start越狱</p><img src="/2023/07/09/ios15-7-5%E8%B6%8A%E7%8B%B1/image-20230709222115864.png" class="" title="image-20230709222115864"><img src="/2023/07/09/ios15-7-5%E8%B6%8A%E7%8B%B1/image-20230709222124273.png" class="" title="image-20230709222124273"><p>重启完成后，iOS设备进入系统之后，重新启动电脑，选择U盘启动，再次来到越狱工具界面，选择Start开始（注意！！！这次不需要选Options，不要选择Create Faksfs），进入第二阶段越狱。</p><p>按照前面步骤一样，提示Press Enter when ready for DFU mode后，回车，按照上面步骤操作iOS设备，让它进入DFU模式</p><p>如果还是不成功，再重复一遍<strong>解决办法</strong></p><img src="/2023/07/09/ios15-7-5%E8%B6%8A%E7%8B%B1/image-20230709222142737.png" class="" title="image-20230709222142737"><p>越狱完成重启后</p><img src="/2023/07/09/ios15-7-5%E8%B6%8A%E7%8B%B1/image-20230709222215384.png" class="" title="image-20230709222215384"><p>点击进入palera1n</p><img src="/2023/07/09/ios15-7-5%E8%B6%8A%E7%8B%B1/image-20230709222231723.png" class="" title="image-20230709222231723"><p>点击Install，安装越狱环境。这一步，依据网络的不同，有些朋友可能需要很久，甚至会失败。失败就重新来。（如果不行就挂梯子，设置wifi的代理用开了梯子主机的ip和梯子端口）</p><p>安装完成后，点击注销Respring即可，恭喜你！越狱完成！</p><p>Substitute的安装：进入Sileo，搜索Substitute安装，现在可以启用插件支持！</p><p>越狱完成！结束，开始享受越狱！</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> ios越狱 </category>
+          
+      </categories>
+      
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>RSA加解密-iBuck</title>
       <link href="/2023/07/09/RSA%E5%8A%A0%E8%A7%A3%E5%AF%86-iBuck/"/>
       <url>/2023/07/09/RSA%E5%8A%A0%E8%A7%A3%E5%AF%86-iBuck/</url>
