@@ -4,6 +4,31 @@
   
     
     <entry>
+      <title>逆向分析和脱壳的意义</title>
+      <link href="/2023/08/19/%E9%80%86%E5%90%91%E5%88%86%E6%9E%90%E5%92%8C%E8%84%B1%E5%A3%B3%E7%9A%84%E6%84%8F%E4%B9%89/"/>
+      <url>/2023/08/19/%E9%80%86%E5%90%91%E5%88%86%E6%9E%90%E5%92%8C%E8%84%B1%E5%A3%B3%E7%9A%84%E6%84%8F%E4%B9%89/</url>
+      
+        <content type="html"><![CDATA[<h2 id="查壳"><a href="#查壳" class="headerlink" title="查壳"></a>查壳</h2><ul><li>app解压看文件也能看出来是否加壳</li><li>用Android killer等工具也能查看：AndroidManifest.xml里面有入口包名，但是找不到这个文件可能是dex加壳了当然也可能是解析错误，一半都可以看到包名特征（这类工具还有：GDA、jadx。。。）</li><li>现在国内应用商城大部分应用都加壳了，除了一些大型应用和对效率要求比较高的应用，googleplay倒是没有强制要求加壳。苹果商店加的是苹果的壳，自动脱壳机就能脱。</li></ul><h2 id="逆向"><a href="#逆向" class="headerlink" title="逆向"></a>逆向</h2><ul><li>逆向分析过程中的点：<ol><li>持之以恒的精神：更多的时候是死磕专业安全人员编写的代码。</li><li>耐心：因为分析的东西比较多包括混淆、加壳、so文件等等保护手段。尽量在每次分析过程中都有所提高，而不是去进行一些重复的工作。</li></ol></li><li>一些时候安全软件可能会把加壳的应用识别为木马</li><li>一些书籍：<ul><li>非虫《Android软件安全与逆向分析》（对逆向分析怎么做有一个大概的流程）</li><li>姜维《Android应用安全防护和逆向分析》（偏向应用方面，对加壳的手段为什么这么加壳有一定的了解，以及未来的发展前景有一定估计）</li><li>邓凡平《深入理解Android：Java虚拟机ART》（难度比较大：可以先看能看懂的地方。主要从源码的角度去看ART的实现，如果能看懂这本书，那么ART对于我们来说也就是一些C/C++代码了可以很轻松的进行定制来跟踪记录app的运行轨迹可以做自己的应用沙盒来辅助逆向分析可以事半功倍）</li></ul></li><li>一定要会正向开发才能做好逆向分析，比如什么是四大组件？app的运行流程？等等。。</li><li>攻防一体，只有先懂得了加壳原理才知道为什么别人这么脱壳，甚至是定制属于自己的脱壳手段，写一个类似于FART的脱壳工具</li><li>逆向分析的一般流程：<ol><li>使用自动化检测工具检测apk是否加壳，或者用反编译工具判断是否加壳</li><li>如果加壳，需要对apk进行脱壳</li><li>使用jeb、jadx、apktool等反编译工具对apk进行反编译</li><li>先依据静态分析中得到的关键字符串、关键api调用等方法快速定位需要分析的关键函数和流程</li><li>如果依据简单的字符串、关键api无法快速定位，这时候apk可能是用了字符串加密、反射调用等手段，此时可结合hook、动态调试等</li><li>定位到关键函数后，再根据是java实现还是jni实现进行一步步分析，如果是java实现的话往往根据静态的分析就能得出结果，如果是在so中的函数那么分析难度会较大一些。</li></ol></li></ul><h2 id="使用FART脱壳机进行脱壳"><a href="#使用FART脱壳机进行脱壳" class="headerlink" title="使用FART脱壳机进行脱壳"></a>使用FART脱壳机进行脱壳</h2><h3 id="制作脱壳机"><a href="#制作脱壳机" class="headerlink" title="制作脱壳机"></a>制作脱壳机</h3><ul><li><p>本次脱壳机设备：nexus5</p></li><li><p>制作脱壳机流程</p><ol><li><p>先进入bootloader</p><p><code>adb reboot bootloader</code></p></li><li><p>执行FART的对应设备型号的镜像刷入脱壳机</p><ul><li>执行镜像中的<strong>flash-all.bat</strong>文件</li></ul></li></ol></li></ul><h3 id="使用脱壳机"><a href="#使用脱壳机" class="headerlink" title="使用脱壳机"></a>使用脱壳机</h3><ul><li><p>直接安装apk，并执行就可以了</p><ul><li><p>需要注意的点</p><ol><li>是本次使用的脱壳机镜像需要在手机设置里面给app读写读写文件权限</li><li>测试的时候有个app没有文件读写的功能，所以没法给读写权限所以脱壳失败，因为没法写入到存储卡</li><li>这个版本的脱壳机将脱壳文件写在了**/sdcard/fart/**目录下</li></ol></li><li><p>如果权限正常执行apk后就会在**/sdcard/fart/**目录下生成脱壳后的文件</p><img src="/2023/08/19/%E9%80%86%E5%90%91%E5%88%86%E6%9E%90%E5%92%8C%E8%84%B1%E5%A3%B3%E7%9A%84%E6%84%8F%E4%B9%89/image-20230819100828350.png" class="" title="image-20230819100828350"></li></ul></li><li><p>脱壳出来的dex的魔术头可能会被抹掉导致反编译工具不识别</p><ul><li>有这种情况就打开一个正常的dex文件，把它的前八个字节替换过来就好了</li></ul></li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> Android逆向 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Android脱壳 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>ios15.7.5越狱</title>
       <link href="/2023/07/09/ios15-7-5%E8%B6%8A%E7%8B%B1/"/>
       <url>/2023/07/09/ios15-7-5%E8%B6%8A%E7%8B%B1/</url>
