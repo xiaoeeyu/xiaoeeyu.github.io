@@ -462,6 +462,11 @@ public class TestActivity extends Activity {
         }
         Log.i("xiaoeryu", "根节点: " + tmpClassLoader);
 </code></pre>
+<p><strong>运行结果</strong></p>
+<pre><code>当前节点: dalvik.system.PathClassLoader[DexPathList[[zip file "/data/app/com.kanxue.load04-zqQtFmn29CDDYSwO8gpsPQ==/base.apk"],nativeLibraryDirectories=[/data/app/com.kanxue.load04-zqQtFmn29CDDYSwO8gpsPQ==/lib/arm64, /system/lib64, /vendor/lib64]]]--父节点: dalvik.system.DexClassLoader[DexPathList[[dex file "/sdcard/5.dex"],nativeLibraryDirectories=[/data/user/0/com.kanxue.load04/app_lib_path, /system/lib64, /vendor/lib64]]]
+当前节点: dalvik.system.DexClassLoader[DexPathList[[dex file "/sdcard/5.dex"],nativeLibraryDirectories=[/data/user/0/com.kanxue.load04/app_lib_path, /system/lib64, /vendor/lib64]]]--父节点: java.lang.BootClassLoader@118830f
+根节点: java.lang.BootClassLoader@118830f
+</code></pre>
 <p>题外话：</p>
 <p>对于用户提交的一个带加固的app之后呢，加固厂商一般分两种情况去处理：</p>
 <ol>
