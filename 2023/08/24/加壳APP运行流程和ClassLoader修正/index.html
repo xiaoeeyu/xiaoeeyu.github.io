@@ -1,0 +1,454 @@
+<!DOCTYPE html><html class="appearance-auto" lang="zh-CN"><head><meta charset="UTF-8"><title>加壳APP运行流程和ClassLoader修正</title><meta name="description" content="May the Force be with you"><meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no, initial-scale=1"><!-- Google Analytics --><!-- End Google Analytics -->
+<!-- Baidu Analytics --><!-- End Baidu Analytics --><link rel="icon" href="/images/rabete.jpg"><link rel="stylesheet" href="/style/common/bulma.css"><link rel="stylesheet" href="/style/base.css"><link rel="stylesheet" href="/style/common/helper.css"><script src="/js/common.js"></script><link rel="stylesheet" href="/style/post.css"><link rel="stylesheet" href="/style/themes/highlight-theme-light.css"><link rel="stylesheet" href="/style/common/jquery.fancybox.min.css"><script src="/js/highlight.pack.js"></script><meta name="description" content="本节内容主要基于分析Android 8.0源码，来学习APP的启动流程和APP加壳原理以及运行流程以及写代码怎么去加载其它dex中的Activity
+
+
+
+
+app启动流程
+
+
+通过Zygote进程最终进入到app进程的世界，ActivityThread.main()是进入app进程世界的大门。只有通过这个函数之后，我们才进入到一个加壳app自己的代码当中。
+
+源码网址：
+
+国外
+国内
+
+ActivityThread的源代码ActivityThread的源代码在frameworks当中
+
+
+
+通过Zygote进程最终进入到APP进程的世界，ActivityThread.main()是进入app进程世界的大门。只有通过这个函数之后，我们才进入到一个加壳app自己的代码当中。ActivityThread还有一个.."><script src="//unpkg.com/valine/dist/Valine.min.js"></script><meta name="generator" content="Hexo 6.3.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head><body class="is-flex is-flex-direction-column"><header class="header-widget is-flex-shrink-0 is-hidden-mobile"><div class="container is-fullhd is-flex is-justify-content-space-between is-align-items-center is-full-height"><section class="is-hidden-mobile is-flex-shrink-0"><h2><a href="/">xiaoeryu's blog</a></h2></section><h3 class="is-hidden-mobile is-family-serif is-full-height is-flex is-align-items-center is-flex-shrink-0"><div class="is-full-height" id="postTopic"><p class="is-full-height is-flex-shrink-0 is-flex is-align-items-center is-justify-content-center">加壳APP运行流程和ClassLoader修正</p><p class="is-full-height is-flex-shrink-0 is-flex is-align-items-center is-justify-content-center">点击返回顶部</p></div></h3><aside class="is-flex-shrink-0"><h3 class="is-inline-block"><a href="/">首页</a></h3><h3 class="is-inline-block"><a href="/about">关于</a></h3><h3 class="is-inline-block"><a href="/archives">归档</a></h3></aside></div></header><header class="is-flex header-widget is-flex-shrink-0 is-align-items-center is-justify-content-center is-hidden-tablet"><h3 class="is-inline-block"><a href="/">首页</a></h3><h3 class="is-inline-block"><a href="/about">关于</a></h3><h3 class="is-inline-block"><a href="/archives">归档</a></h3></header><main><main class="container is-max-widescreen content section post-page pt-4 px-4"><div class="columns is-flex-desktop is-justify-content-center is-flex-direction-row-reverse"><div class="column is-3 is-hidden-mobile"><ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#app%E5%90%AF%E5%8A%A8%E6%B5%81%E7%A8%8B"><span class="toc-text">app启动流程</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#ActivityThread%E7%9A%84%E6%BA%90%E4%BB%A3%E7%A0%81"><span class="toc-text">ActivityThread的源代码</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#APP%E5%8A%A0%E5%A3%B3%E5%8E%9F%E7%90%86%E4%BB%A5%E5%8F%8A%E8%BF%90%E8%A1%8C%E6%B5%81%E7%A8%8B"><span class="toc-text">APP加壳原理以及运行流程</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%88%86%E6%9E%90%E6%BA%90%E7%A0%81%E5%B9%B6%E5%86%99%E4%BB%A3%E7%A0%81%E5%8A%A0%E8%BD%BD%E5%85%B6%E5%AE%83dex%E4%B8%ADActivity"><span class="toc-text">分析源码并写代码加载其它dex中Activity</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#%E6%8E%A5%E4%B8%8B%E6%9D%A5%E5%86%99%E4%BB%A3%E7%A0%81%E5%8E%BB%E5%8A%A0%E8%BD%BDdex%E4%B8%AD%E7%9A%84Activity"><span class="toc-text">接下来写代码去加载dex中的Activity</span></a></li></ol></li></ol></div><div class="column is-9"><header class="my-4"><a href="/tags/Android%E5%8A%A0%E5%A3%B3"><i class="tag post-item-tag">Android加壳</i></a><a href="/tags/%E5%8A%A0%E5%A3%B3%E5%92%8C%E8%BF%90%E8%A1%8C%E6%97%B6%E7%9A%84%E6%9C%BA%E5%88%B6"><i class="tag post-item-tag">加壳和运行时的机制</i></a></header><h1 class="mt-0 mb-1 is-family-serif" id="postTitle">加壳APP运行流程和ClassLoader修正</h1><time class="has-text-grey" datetime="2023-08-24T08:41:02.000Z">2023-08-24</time><article class="mt-2 post-content"><p>本节内容主要基于分析Android 8.0源码，来学习APP的启动流程和APP加壳原理以及运行流程以及写代码怎么去加载其它dex中的Activity</p>
+<span id="more"></span>
+
+
+
+<h3 id="app启动流程"><a href="#app启动流程" class="headerlink" title="app启动流程"></a>app启动流程</h3><img src="/2023/08/24/%E5%8A%A0%E5%A3%B3APP%E8%BF%90%E8%A1%8C%E6%B5%81%E7%A8%8B%E5%92%8CClassLoader%E4%BF%AE%E6%AD%A3/image-20230824173255564.png" class="" title="image-20230824173255564">
+
+<ul>
+<li>通过Zygote进程最终进入到app进程的世界，ActivityThread.main()是进入app进程世界的大门。只有通过这个函数之后，我们才进入到一个加壳app自己的代码当中。</li>
+</ul>
+<p><strong>源码网址：</strong></p>
+<ul>
+<li><a target="_blank" rel="noopener" href="http://androidxref.com/">国外</a></li>
+<li><a target="_blank" rel="noopener" href="http://aospxref.com/">国内</a></li>
+</ul>
+<h4 id="ActivityThread的源代码"><a href="#ActivityThread的源代码" class="headerlink" title="ActivityThread的源代码"></a>ActivityThread的源代码</h4><p>ActivityThread的源代码在frameworks当中</p>
+<img src="/2023/08/24/%E5%8A%A0%E5%A3%B3APP%E8%BF%90%E8%A1%8C%E6%B5%81%E7%A8%8B%E5%92%8CClassLoader%E4%BF%AE%E6%AD%A3/image-20230824174127453.png" class="" title="image-20230824174127453">
+
+<ul>
+<li><p>通过Zygote进程最终进入到APP进程的世界，ActivityThread.main()是进入app进程世界的大门。只有通过这个函数之后，我们才进入到一个加壳app自己的代码当中。ActivityThread还有一个静态函数currentActivityThread那我们就可以通过它来获取到进程当中的ActivityThread实例进而获取到Activity当中的一些很重要的变量。</p>
+<img src="/2023/08/24/%E5%8A%A0%E5%A3%B3APP%E8%BF%90%E8%A1%8C%E6%B5%81%E7%A8%8B%E5%92%8CClassLoader%E4%BF%AE%E6%AD%A3/image-20230824175216003.png" class="" title="image-20230824175216003">
+</li>
+<li><p>对于ActivityThread这个类，其中的sCurrentActivityThread静态变量用于全局保存创建的ActivityThread实例,</p>
+<pre><code class="java">javaprivate static volatile ActivityThread sCurrentActivityThread;
+</code></pre>
+<p>同时还提供了<code>public static ActivityThread currentActivityThread()</code>这个静态函数用于获取当前虚拟机创建的ActivityThread实例。ActivityThread.main()函数是java中app启动的入口main()函数，这里会启动主消息循环，并创建ActivityThread实例，之后调用thread.attach(false)完成一系列初始化准备工作，并完成全局静态变量sCurrentActivityThread的初始化。</p>
+<pre><code class="java">private void attach(boolean system) {
+    sCurrentActivityThread = this;
+    ...
+}
+
+--------------------------------------------------
+
+public static void main(String[] args) {
+    ...
+    // 创建Looper对象，创建MessageQueue对象
+    Looper.prepareMainLooper();
+
+    // 创建自己的ActivityThread对象
+    ActivityThread thread = new ActivityThread();
+    thread.attach(false);
+
+    if (sMainThreadHandler == null) {
+        sMainThreadHandler = thread.getHandler();
+    }
+
+    if (false) {
+        Looper.myLooper().setMessageLogging(new
+                LogPrinter(Log.DEBUG, "ActivityThread"));
+    }
+
+    // End of event ActivityThreadMain.
+    Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);
+    Looper.loop();
+
+    throw new RuntimeException("Main thread loop unexpectedly exited");
+}
+</code></pre>
+<p>之后主线进程进入消息循环，等待接收来自系统的消息。当收到系统发送来的bindapplication的进程间调用时，调用函数handlebindapplication来处理该请求</p>
+<pre><code class="java">public void handleMessage(Message msg) {
+    
+    ...
+    // 处理bindApplication调用
+    case BIND_APPLICATION:
+    Trace.traceBegin(Trace.TRACE_TAG_ACTIVITY_MANAGER, "bindApplication");
+    AppBindData data = (AppBindData)msg.obj;
+    handleBindApplication(data);
+    Trace.traceEnd(Trace.TRACE_TAG_ACTIVITY_MANAGER);
+    
+    ...
+        
+}
+-------------------------------------------------------------
+// 定义不可修改&amp;继承的LoadedApk对象    
+public final LoadedApk getPackageInfoNoCheck(ApplicationInfo ai,
+    CompatibilityInfo compatInfo) {
+    return getPackageInfo(ai, compatInfo, null, false, true, false);
+}
+
+-------------------------------------------------------------
+private void handleBindApplication(AppBindData data) {
+    //step 1: 创建LoadedApk对象
+    data.info = getPackageInfoNoCheck(data.appInfo, data.compatInfo);
+    ...
+    //step 2: 创建ContextImpl对象;
+    final ContextImpl appContext = ContextImpl.createAppContext(this, data.info);
+ 
+    //step 3: 创建Instrumentation
+    mInstrumentation = new Instrumentation();
+ 
+    //step 4: 创建Application对象;在makeApplication函数中调用了newApplication，在该函数中又调用了app.attach(context)，在attach函数中调用了Application.attachBaseContext函数
+    Application app = data.info.makeApplication(data.restrictedBackupMode, null);
+    mInitialApplication = app;
+ 
+    //step 5: 安装providers
+    List&lt;ProviderInfo&gt; providers = data.providers;
+    installContentProviders(app, providers);
+ 
+    //step 6: 执行Application.Create回调
+    mInstrumentation.callApplicationOnCreate(app);
+</code></pre>
+<p>在handleBindApplication函数中第一次进入了app的代码世界，该函数功能启动一个application，并把系统收集到的apk组件等相关信息绑定到application里，在创建完application对象后，接着调用了application的attachBaseContext方法，之后调用了application的onCreate函数。由此可以发现，<strong>app的Application类中的attachBaseContext和onCreate这两个函数是最先获取执行权进行代码执行的。这也是为什么各家的加固工具的主要逻辑都是通过替换app入口Application，并亲自实现这两个函数</strong>，在这两个函数中进行代码的脱壳以及执行权交付的原因。</p>
+</li>
+</ul>
+<h3 id="APP加壳原理以及运行流程"><a href="#APP加壳原理以及运行流程" class="headerlink" title="APP加壳原理以及运行流程"></a>APP加壳原理以及运行流程</h3><p>从前面的分析可以得出一个结论，app最先获得执行权限的是app中声明的Application类中的attachBaseContext和onCreate函数。因此，壳想要完成应用中加固代码的解密以及应用执行权的交付就都是在这两个函数上做文章。下图大致讲了加壳应用的运行流程。</p>
+<img src="/2023/08/24/%E5%8A%A0%E5%A3%B3APP%E8%BF%90%E8%A1%8C%E6%B5%81%E7%A8%8B%E5%92%8CClassLoader%E4%BF%AE%E6%AD%A3/image-20230825163132654.png" class="" title="image-20230825163132654">
+
+<p>当壳函数attachBaseContext和onCreate中执行完加密的dex文件的解密后，通过自定义的ClassLoader在内存中加载解密后的dex文件。为了解决后续应用在加载执行解密后的dex文件中的Class和Method的问题，接下来就是通过利用java的反射修复一系列需要用到的变量。其中最为重要的一个变量就是应用运行中的ClassLoader，只有ClassLoader被修正后，应用才能够正常的加载并调用dex中的类和方法，否则的话由于ClassLoader的双亲委派机制，最终会报ClassnotFound异常，应用崩溃退出。ClassLoader是一个至关重要的变量，所有的应用中加载的dex文件最终都在app的ClassLoader中。</p>
+<p>因此，只要获取到加固应用最终通过反射设置后的ClassLoader，我们就可以通过一系列反射最终获取到当前应用所加载的解密后的内存中的Dex文件。</p>
+<p>随着加壳技术的发展，为了对抗dex整体加固容易被内存dump来得到原始dex的问题，各加固厂商又结合hook技术，通过hook dex文件中类和方法加载执行过程中的关键流程，来实现在函数执行前才进行解密操作的指令抽取的解决方案。此时，就算是对内存中的dex整体进行了dump，但是由于其方法的最为重要的函数体中的指令被加密，导致无法对相关的函数进行脱壳。由此Fupk3诞生了，该脱壳工具通过欺骗壳而主动调用dex中的各个函数，完成调用流程，让壳主动解密对应method的指令区域，从而完成对指令抽取型壳的脱壳。</p>
+<h4 id="分析源码并写代码加载其它dex中Activity"><a href="#分析源码并写代码加载其它dex中Activity" class="headerlink" title="分析源码并写代码加载其它dex中Activity"></a>分析源码并写代码加载其它dex中Activity</h4><ol>
+<li><p>先通过反射获取到ActivityThread，它是一个单例模式，可以获取到app进程当中仅有的ActivityThread的实例</p>
+</li>
+<li><p>接下来可以通过反射获取到mPackages的ArrayMap对象（这里的ArrayMap用于存储已加载的应用程序包的信息）</p>
+<img src="/2023/08/24/%E5%8A%A0%E5%A3%B3APP%E8%BF%90%E8%A1%8C%E6%B5%81%E7%A8%8B%E5%92%8CClassLoader%E4%BF%AE%E6%AD%A3/image-20230824220114889.png" class="" title="image-20230824220114889">
+</li>
+<li><p>通过mPackages获取到loadApk：（LoadedApk是Android中表示已加载应用程序包信息的类，它包含了应用程序的资源、类加载器、类信息等，其中就保存有我们加载app组件的mClassLoader）</p>
+<img src="/2023/08/24/%E5%8A%A0%E5%A3%B3APP%E8%BF%90%E8%A1%8C%E6%B5%81%E7%A8%8B%E5%92%8CClassLoader%E4%BF%AE%E6%AD%A3/image-20230824215203666.png" class="" title="image-20230824215203666">
+</li>
+<li><p>通过LoadedApk获取到mClassLoader字段（这就是接下来app运行过程中用于加载相关的四大组件的这些类的classLoader）</p>
+<img src="/2023/08/24/%E5%8A%A0%E5%A3%B3APP%E8%BF%90%E8%A1%8C%E6%B5%81%E7%A8%8B%E5%92%8CClassLoader%E4%BF%AE%E6%AD%A3/image-20230824222103300.png" class="" title="image-20230824222103300"></li>
+</ol>
+<h4 id="接下来写代码去加载dex中的Activity"><a href="#接下来写代码去加载dex中的Activity" class="headerlink" title="接下来写代码去加载dex中的Activity"></a>接下来写代码去加载dex中的Activity</h4><ul>
+<li><p>如果继续按照上一节相同的代码去加载Activity的话会出现找不到dex中的方法的问题，无法启动我们的目标Activity</p>
+</li>
+<li><p>这个问题有两个解决方案：</p>
+<ol>
+<li><p><strong>替换</strong>系统组件的类加载器为我们的DexClassloader，同时设置DexClassLoader的parent节点为系统组件类加载器也就是pathClassLoader</p>
+<img src="/2023/08/24/%E5%8A%A0%E5%A3%B3APP%E8%BF%90%E8%A1%8C%E6%B5%81%E7%A8%8B%E5%92%8CClassLoader%E4%BF%AE%E6%AD%A3/image-20230824223243415.png" class="" title="image-20230824223243415">
+</li>
+<li><p>打破原有的双亲关系，在系统组件类加载器和BootClassLoader的中间<em>插入</em>我们自己的DexClassLoader</p>
+<ul>
+<li><p>这种方法和双亲委派密切相关，不替换原来组件的mClassLoader，保持原来的mClassLoader。但是呢如果再当前app进程的BootClassLoader和PathClassLoader之间插入我们的dexClassLoader，那在接下来启动其它的组件的时候，就会由于双亲委派虽然找不到pathClassLoader但是它的父节点是能找得到的。这种方法不需要通过繁琐的反射过程一步一步找到主键的mClassLoader。</p>
+<img src="/2023/08/24/%E5%8A%A0%E5%A3%B3APP%E8%BF%90%E8%A1%8C%E6%B5%81%E7%A8%8B%E5%92%8CClassLoader%E4%BF%AE%E6%AD%A3/image-20230824223416570.png" class="" title="image-20230824223416570"></li>
+</ul>
+</li>
+</ol>
+</li>
+<li><p>第一种解决方法的代码：<strong>load03_java</strong></p>
+<pre><code class="java">package com.kanxue.load03_java;
+
+import androidx.annotation.NonNull;
+import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import android.os.Bundle;
+import android.util.ArrayMap;
+import android.util.Log;
+
+import java.io.File;
+import java.lang.ref.WeakReference;
+import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+
+import android.Manifest;
+
+import dalvik.system.DexClassLoader;
+
+public class MainActivity extends AppCompatActivity {
+
+    private static final int PERMISSION_REQUEST_CODE = 1;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        // 检查是否已经获得外部存储权限
+        if (Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                // 请求权限
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                        PERMISSION_REQUEST_CODE);
+            } else {
+                // 已经有权限，执行操作
+                performAction();
+            }
+        }
+    }
+
+    // 处理权限请求结果
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            if (grantResults.length &gt; 0 &amp;&amp; grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // 用户授予了权限，执行操作
+                performAction();
+            } else {
+                // 用户拒绝了权限，可以做一些处理，比如显示一个提示信息
+                Log.d("Permission", "External storage permission denied");
+            }
+        }
+    }
+
+    // 在获得权限后执行的操作
+    private void performAction() {
+        // 在这里执行加载DEX文件并启动Activity的操作
+        startTestActivity(this, "/sdcard/4.dex");
+    }
+
+    // 用于替换类加载器的方法
+    public void replaceClassLoader(ClassLoader classLoader) {
+        try {
+            // 加载 android.app.ActivityThread 类
+            Class&lt;?&gt; ActivityThreadClazz = classLoader.loadClass("android.app.ActivityThread");
+
+            // 获取 currentActivityThread 静态方法
+            Method currentActivityThreadMethod = ActivityThreadClazz.getDeclaredMethod("currentActivityThread");
+            currentActivityThreadMethod.setAccessible(true);
+
+            // 调用 currentActivityThread 方法，获取 ActivityThread 实例
+            Object activityThread = currentActivityThreadMethod.invoke(null);
+
+            // 获取 ActivityThread 类中的 mPackages 字段
+            Field mPackagesField = ActivityThreadClazz.getDeclaredField("mPackages");
+            mPackagesField.setAccessible(true);
+
+            // 获取 mPackages 字段在 activityThread 实例中的值，它是一个 ArrayMap 对象
+            ArrayMap mPackagesObj = (ArrayMap) mPackagesField.get(activityThread);
+
+            // 从 mPackages 中获取对当前应用程序包的 WeakReference 引用
+            WeakReference wr = (WeakReference) mPackagesObj.get(this.getPackageName());
+
+            // 获取 WeakReference 中的实际对象，这是 LoadedApk 类的一个实例
+            Object loadApkObj = wr.get();
+
+            // 加载 android.app.LoadedApk 类
+            Class loadedApkClazz = classLoader.loadClass("android.app.LoadedApk");
+
+            // 获取 LoadedApk 类中的 mClassLoader 字段
+            Field mClassLoaderField = loadedApkClazz.getDeclaredField("mClassLoader");
+            mClassLoaderField.setAccessible(true);
+
+            // 将 LoadedApk 实例的 mClassLoader 字段设置为传入的类加载器
+            mClassLoaderField.set(loadApkObj, classLoader);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        } catch (InvocationTargetException e) {
+            e.printStackTrace();
+        } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void startTestActivity(Context context, String dexfilepath) {
+        File optfile = context.getDir("opt_dex", 0);
+
+        File libfile = context.getDir("lib_path", 0);
+
+        ClassLoader parentClassloader = MainActivity.class.getClassLoader();
+        ClassLoader tmpClassloader = context.getClassLoader();
+
+        DexClassLoader dexClassLoader = new DexClassLoader(
+                dexfilepath,
+                optfile.getAbsolutePath(),
+                libfile.getAbsolutePath(),
+                MainActivity.class.getClassLoader());
+
+        replaceClassLoader(dexClassLoader);
+
+        Class&lt;?&gt; clazz = null;
+        try {
+            clazz = dexClassLoader.loadClass("com.kanxue.test01_java.TestActivity");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        context.startActivity(new Intent(context, clazz));
+    }
+}
+</code></pre>
+<p><strong>test01_java</strong></p>
+<pre><code class="java">package com.kanxue.test01_java;
+
+import android.app.Activity;
+import android.os.Bundle;
+import android.util.Log;
+
+import androidx.appcompat.app.AppCompatActivity;
+
+public class TestActivity extends Activity {
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        // setContentView(R.layout.activity_main);
+        Log.i("xiaoeryu","i am TestActivity.onCreate");
+    }
+}
+</code></pre>
+<p><strong>执行结果</strong></p>
+<img src="/2023/08/24/%E5%8A%A0%E5%A3%B3APP%E8%BF%90%E8%A1%8C%E6%B5%81%E7%A8%8B%E5%92%8CClassLoader%E4%BF%AE%E6%AD%A3/image-20230824223613663.png" class="" title="image-20230824223613663">
+</li>
+<li><p>第二种解决方法：<strong>load04</strong></p>
+<pre><code class="java">package com.kanxue.load04;
+
+import androidx.annotation.NonNull;
+import android.app.Activity;
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
+
+import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.os.Build;
+import android.os.Bundle;
+import android.util.Log;
+
+import java.io.File;
+import java.lang.reflect.Field;
+
+import android.Manifest;
+
+import dalvik.system.DexClassLoader;
+
+// 第二种方法：打破原有的双亲关系，在系统组件类加载器和BootClassLoader的中间插入我们自己的DexClassLoader
+
+public class MainActivity extends Activity {
+
+    private static final int PERMISSION_REQUEST_CODE = 1;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_main);
+
+        // 检查是否已经获得外部存储权限
+        if (Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.M) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE) != PackageManager.PERMISSION_GRANTED) {
+                // 请求权限
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.READ_EXTERNAL_STORAGE},
+                        PERMISSION_REQUEST_CODE);
+            } else {
+                // 已经有权限，执行操作
+                performAction();
+            }
+        }
+    }
+
+    // 处理权限请求结果
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        if (requestCode == PERMISSION_REQUEST_CODE) {
+            if (grantResults.length &gt; 0 &amp;&amp; grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                // 用户授予了权限，执行操作
+                performAction();
+            } else {
+                // 用户拒绝了权限，可以做一些处理，比如显示一个提示信息
+                Log.d("Permission", "External storage permission denied");
+            }
+        }
+    }
+
+    // 在获得权限后执行的操作
+    private void performAction() {
+        // 在这里执行加载DEX文件并启动Activity的操作
+        startTestActivitySecondlyMethod(this, "/sdcard/5.dex");
+    }
+
+
+    public void startTestActivitySecondlyMethod(Context context, String dexfilepath) {
+        File optfile = context.getDir("opt_dex", 0);
+        File libfile = context.getDir("lib_path", 0);
+
+        ClassLoader pathClassloader = MainActivity.class.getClassLoader();
+        ClassLoader bootClassloader = MainActivity.class.getClassLoader().getParent();
+
+        DexClassLoader dexClassLoader = new DexClassLoader(
+                dexfilepath,
+                optfile.getAbsolutePath(),
+                libfile.getAbsolutePath(),
+                bootClassloader);
+
+        try {
+            Field parentField = ClassLoader.class.getDeclaredField("parent");
+            parentField.setAccessible(true);
+            parentField.set(pathClassloader, dexClassLoader);
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+        Class&lt;?&gt; clazz = null;
+        try {
+            clazz = dexClassLoader.loadClass("com.xiaoeryu.test04.TestActivity");
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        context.startActivity(new Intent(context, clazz));
+    }
+}
+</code></pre>
+<p><strong>test04</strong></p>
+<pre><code class="java">package com.xiaoeryu.test04;
+
+import android.app.Activity;
+import android.os.Bundle;
+import android.util.Log;
+
+public class TestActivity extends Activity {
+    @Override
+    protected void onCreate(Bundle savedInstanceState){
+        super.onCreate(savedInstanceState);
+        Log.i("xiaoeryu", "i am from TestActivity.onCreate");
+    }
+}
+</code></pre>
+<ul>
+<li><p>这个代码除了要注意前面的几点之外还要把constraintlayout降一下级，不然运行的时候会有库版本冲突的问题</p>
+<img src="/2023/08/24/%E5%8A%A0%E5%A3%B3APP%E8%BF%90%E8%A1%8C%E6%B5%81%E7%A8%8B%E5%92%8CClassLoader%E4%BF%AE%E6%AD%A3/image-20230824223840687.png" class="" title="image-20230824223840687">
+</li>
+<li><p>这两种方案都可以解决加载dex中Activity的问题，相对来说第一种再加壳厂商中比较常用，通过替换app组件的ClassLoader: mClassLoader来实现，让插件类具有生命周期。这两种方案都要用大量的反射相关的api来实现。</p>
+</li>
+</ul>
+</li>
+</ul>
+<p>参考内容：<a target="_blank" rel="noopener" href="https://bbs.kanxue.com/thread-252630.htm#msg_header_h2_1">FART：ART环境下基于主动调用的自动化脱壳方案</a></p>
+</article><section class="jump-container is-flex is-justify-content-space-between my-6"><!-- em is empty placeholder--><em></em><a class="button is-default" href="/2023/08/19/ClassLoader%E5%92%8C%E5%8A%A8%E6%80%81%E5%8A%A0%E8%BD%BD/" title="ClassLoader和动态加载"><span class="has-text-weight-semibold">下一页: ClassLoader和动态加载</span><i class="iconfont icon-next ml-2 has-text-grey"></i></a></section><article class="mt-6 comment-container"><script async repo="Haojen/Claudia-theme-blog" src="https://utteranc.es/client.js" issue-term="pathname" theme="preferred-color-scheme"></script></article><article class="mt-6 comment-container" id="vcomments"></article></div></div></main></main><footer class="is-flex is-flex-direction-column is-align-items-center is-flex-shrink-0 is-family-serif"><section class="sns-container"><a title="twitter" target="_blank" rel="noopener nofollow" href="//twitter.com//"><i class="iconfont icon-twitter"></i></a><!-- Github--><a title="github" target="_blank" rel="noopener nofollow" href="//github.com/xiaoeryu"><i class="iconfont icon-github"></i></a><!-- Ins--><a title="instagram" target="_blank" rel="noopener nofollow" href="//www.instagram.com//"><i class="iconfont icon-ins"></i></a><!-- RSS--><!-- 知乎--><!-- 领英--><!-- 脸书--><a title="facebook" target="_blank" rel="noopener nofollow" href="//www.facebook.com//"><i class="iconfont icon-tian7_facebook"></i></a></section><p><span>Copyright ©</span><span> xiaoeryu 2023</span></p><div class="is-flex is-justify-content-center is-flex-wrap-wrap"><p>Powered by Hexo &verbar;&nbsp;</p><p class="is-flex is-justify-content-center"><a title="Hexo theme author" target="_blank" rel="noopener" href="//github.com/haojen">Theme by Haojen&nbsp;</a></p><div style="margin-top: 2px"><a class="github-button" title="github-button" target="_blank" rel="noopener" href="https://github.com/haojen/hexo-theme-Claudia" data-color-scheme="no-preference: light; light: light; dark: dark;" data-show-count="true"></a></div></div><div><span></span></div></footer><script async defer src="https://buttons.github.io/buttons.js"></script><script src="/js/jquery-3.6.1.min.js"></script><script src="/js/jquery-fancybox.min.js"></script><script src="/js/img_zoom.js"></script><script src="/js/post.js"></script></body></html>
