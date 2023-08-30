@@ -13,26 +13,29 @@
     
     <!--- Seo Part-->
     
-    <link rel="canonical" href="https://xiaoeeyu.github.io/2023/08/19/逆向分析和脱壳的意义/"/>
+    <link rel="canonical" href="https://xiaoeeyu.github.io/2023/08/26/一二三代壳和壳技术分类识别/"/>
     <meta name="robots" content="index,follow">
     <meta name="googlebot" content="index,follow">
     <meta name="revisit-after" content="1 days">
     
-        <meta name="description" content="这里是脱壳的一些碎碎念和FART脱壳机的使用流程">
+        <meta name="description" content="动态加载动态加载是DEX加壳和插件化热更新的一个基础（动态加载就是用到的时候再去加载，也叫懒加载用不到的时候是不会去加载的）。 比如说阿里的AndFix还有HotFix，腾讯的tinker、美团Robust等这些热修复框架的基础。动态加载还有热更新可以很方便的解决APP的快速迭代和更新的一个难题。从而避免了每次一发布新版本就需要用户来全量下载APP然后才能更新的过程。这样的话一方面可以提升用户体验">
 <meta property="og:type" content="article">
-<meta property="og:title" content="逆向分析和脱壳的意义">
-<meta property="og:url" content="https://xiaoeeyu.github.io/2023/08/19/%E9%80%86%E5%90%91%E5%88%86%E6%9E%90%E5%92%8C%E8%84%B1%E5%A3%B3%E7%9A%84%E6%84%8F%E4%B9%89/index.html">
+<meta property="og:title" content="一二三代壳和壳技术分类识别">
+<meta property="og:url" content="https://xiaoeeyu.github.io/2023/08/26/%E4%B8%80%E4%BA%8C%E4%B8%89%E4%BB%A3%E5%A3%B3%E5%92%8C%E5%A3%B3%E6%8A%80%E6%9C%AF%E5%88%86%E7%B1%BB%E8%AF%86%E5%88%AB/index.html">
 <meta property="og:site_name" content="xiaoeryu">
-<meta property="og:description" content="这里是脱壳的一些碎碎念和FART脱壳机的使用流程">
+<meta property="og:description" content="动态加载动态加载是DEX加壳和插件化热更新的一个基础（动态加载就是用到的时候再去加载，也叫懒加载用不到的时候是不会去加载的）。 比如说阿里的AndFix还有HotFix，腾讯的tinker、美团Robust等这些热修复框架的基础。动态加载还有热更新可以很方便的解决APP的快速迭代和更新的一个难题。从而避免了每次一发布新版本就需要用户来全量下载APP然后才能更新的过程。这样的话一方面可以提升用户体验">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/08/19/%E9%80%86%E5%90%91%E5%88%86%E6%9E%90%E5%92%8C%E8%84%B1%E5%A3%B3%E7%9A%84%E6%84%8F%E4%B9%89/image-20230819100828350.png">
-<meta property="article:published_time" content="2023-08-19T01:30:26.000Z">
-<meta property="article:modified_time" content="2023-08-26T09:10:23.704Z">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/08/26/%E4%B8%80%E4%BA%8C%E4%B8%89%E4%BB%A3%E5%A3%B3%E5%92%8C%E5%A3%B3%E6%8A%80%E6%9C%AF%E5%88%86%E7%B1%BB%E8%AF%86%E5%88%AB/image-20230826205542089.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/08/26/%E4%B8%80%E4%BA%8C%E4%B8%89%E4%BB%A3%E5%A3%B3%E5%92%8C%E5%A3%B3%E6%8A%80%E6%9C%AF%E5%88%86%E7%B1%BB%E8%AF%86%E5%88%AB/image-20230826205601630.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/08/26/%E4%B8%80%E4%BA%8C%E4%B8%89%E4%BB%A3%E5%A3%B3%E5%92%8C%E5%A3%B3%E6%8A%80%E6%9C%AF%E5%88%86%E7%B1%BB%E8%AF%86%E5%88%AB/image-20230830091130178.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/08/26/%E4%B8%80%E4%BA%8C%E4%B8%89%E4%BB%A3%E5%A3%B3%E5%92%8C%E5%A3%B3%E6%8A%80%E6%9C%AF%E5%88%86%E7%B1%BB%E8%AF%86%E5%88%AB/image-20230830094656757.png">
+<meta property="article:published_time" content="2023-08-26T13:00:35.000Z">
+<meta property="article:modified_time" content="2023-08-30T02:13:51.691Z">
 <meta property="article:author" content="xiaoeryu">
-<meta property="article:tag" content="Android脱壳">
+<meta property="article:tag" content="Android加壳">
 <meta property="article:tag" content="学习笔记">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://xiaoeeyu.github.io/2023/08/19/%E9%80%86%E5%90%91%E5%88%86%E6%9E%90%E5%92%8C%E8%84%B1%E5%A3%B3%E7%9A%84%E6%84%8F%E4%B9%89/image-20230819100828350.png">
+<meta name="twitter:image" content="https://xiaoeeyu.github.io/2023/08/26/%E4%B8%80%E4%BA%8C%E4%B8%89%E4%BB%A3%E5%A3%B3%E5%92%8C%E5%A3%B3%E6%8A%80%E6%9C%AF%E5%88%86%E7%B1%BB%E8%AF%86%E5%88%AB/image-20230826205542089.png">
     
     
     <!--- Icon Part-->
@@ -44,7 +47,7 @@
     
     <title>
         
-            逆向分析和脱壳的意义 -
+            一二三代壳和壳技术分类识别 -
         
         xiaoeryu
     </title>
@@ -214,7 +217,7 @@
 
         <div class="article-title">
             
-                <h1 class="article-title-regular">逆向分析和脱壳的意义</h1>
+                <h1 class="article-title-regular">一二三代壳和壳技术分类识别</h1>
             
             </div>
             
@@ -236,15 +239,15 @@
                         <div class="article-meta-info">
     <span class="article-date article-meta-item">
         <i class="fa-regular fa-pen-fancy"></i>&nbsp;
-        <span class="desktop">2023-08-19 09:30:26</span>
-        <span class="mobile">2023-08-19 09:30:26</span>
+        <span class="desktop">2023-08-26 21:35</span>
+        <span class="mobile">2023-08-26 21:35</span>
         <span class="hover-info">创建</span>
     </span>
     
         <span class="article-date article-meta-item">
             <i class="fa-regular fa-wrench"></i>&nbsp;
-            <span class="desktop">2023-08-26 17:10:23</span>
-            <span class="mobile">2023-08-26 17:10:23</span>
+            <span class="desktop">2023-08-30 10:13:51</span>
+            <span class="mobile">2023-08-30 10:13:51</span>
             <span class="hover-info">更新</span>
         </span>
     
@@ -272,7 +275,7 @@
             <ul>
                 
                     <li>
-                        <a href="/tags/Android%E8%84%B1%E5%A3%B3/">Android脱壳</a>&nbsp;
+                        <a href="/tags/Android%E5%8A%A0%E5%A3%B3/">Android加壳</a>&nbsp;
                     </li>
                 
                     <li>
@@ -302,73 +305,86 @@
 
 
         <div class="article-content markdown-body">
-            <p>这里是脱壳的一些碎碎念和FART脱壳机的使用流程</p>
-<span id="more"></span>
+            <h3 id="动态加载"><a href="#动态加载" class="headerlink" title="动态加载"></a>动态加载</h3><p>动态加载是DEX加壳和插件化热更新的一个基础（动态加载就是用到的时候再去加载，也叫懒加载用不到的时候是不会去加载的）。</p>
+<p>比如说阿里的AndFix还有HotFix，腾讯的tinker、美团Robust等这些热修复框架的基础。动态加载还有热更新可以很方便的解决APP的快速迭代和更新的一个难题。从而避免了每次一发布新版本就需要用户来全量下载APP然后才能更新的过程。这样的话一方面可以提升用户体验，另一方面也可以快速的完成的bug的修复。但是如果只应用动态加载技术，是没有办法完成相关插件类当中的组件的这一个正常的运行。因为动态加载的DEX不具有生命周期的特征，APP中的Activity、Service等组件无法正常工作，它只能够完成一般函数的调用。归根结底是因为组件的Classloader和我们使用的DexClassloader不具备双亲委派的相关特征，导致PathClassloader没有办法找到这些DEX中使用的Activity、Service等相关的组件类，因此就需要对Classloader进行修正（例如上一篇文章中第一种方法中的replaceClassLoader()），这是加壳APP必然要做的一步，而在这步骤当中可以通常使用两种解决方案。</p>
+<h4 id="回顾一下昨天的两种方案"><a href="#回顾一下昨天的两种方案" class="headerlink" title="回顾一下昨天的两种方案"></a>回顾一下昨天的两种方案</h4><ul>
+<li><p>第一种解决方案：</p>
+<p>通过修改系统组件类的Classloader也就是说这个mClassloader，可以通过反射去一步步的找到它然后再替换掉。替换成我们的DexClassloader，这样的话我们就可以找到我们插件DEX当中的相关的类信息了</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/08/26/%E4%B8%80%E4%BA%8C%E4%B8%89%E4%BB%A3%E5%A3%B3%E5%92%8C%E5%A3%B3%E6%8A%80%E6%9C%AF%E5%88%86%E7%B1%BB%E8%AF%86%E5%88%AB/image-20230826205542089.png" class="" title="image-20230826205542089">
+</li>
+<li><p>第二种解决方案：</p>
+<p>不需要改变这个mClassloader，只需要在PathClassloader和BootClassloader当中插入我们的DexClassloader。那这样的话由于双亲委派的原理，系统组件的这个mClassloader就可以找到我们自定义的这个类信息了。</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/08/26/%E4%B8%80%E4%BA%8C%E4%B8%89%E4%BB%A3%E5%A3%B3%E5%92%8C%E5%A3%B3%E6%8A%80%E6%9C%AF%E5%88%86%E7%B1%BB%E8%AF%86%E5%88%AB/image-20230826205601630.png" class="" title="image-20230826205601630">
 
-<h2 id="查壳"><a href="#查壳" class="headerlink" title="查壳"></a>查壳</h2><ul>
-<li>app解压看文件也能看出来是否加壳</li>
-<li>用Android killer等工具也能查看：AndroidManifest.xml里面有入口包名，但是找不到这个文件可能是dex加壳了当然也可能是解析错误，一半都可以看到包名特征（这类工具还有：GDA、jadx。。。）</li>
-<li>现在国内应用商城大部分应用都加壳了，除了一些大型应用和对效率要求比较高的应用，googleplay倒是没有强制要求加壳。苹果商店加的是苹果的壳，自动脱壳机就能脱。</li>
-</ul>
-<h2 id="逆向"><a href="#逆向" class="headerlink" title="逆向"></a>逆向</h2><ul>
-<li>逆向分析过程中的点：<ol>
-<li>持之以恒的精神：更多的时候是死磕专业安全人员编写的代码。</li>
-<li>耐心：因为分析的东西比较多包括混淆、加壳、so文件等等保护手段。尽量在每次分析过程中都有所提高，而不是去进行一些重复的工作。</li>
-</ol>
-</li>
-<li>一些时候安全软件可能会把加壳的应用识别为木马</li>
-<li>一些书籍：<ul>
-<li>非虫《Android软件安全与逆向分析》（对逆向分析怎么做有一个大概的流程）</li>
-<li>姜维《Android应用安全防护和逆向分析》（偏向应用方面，对加壳的手段为什么这么加壳有一定的了解，以及未来的发展前景有一定估计）</li>
-<li>邓凡平《深入理解Android：Java虚拟机ART》（难度比较大：可以先看能看懂的地方。主要从源码的角度去看ART的实现，如果能看懂这本书，那么ART对于我们来说也就是一些C/C++代码了可以很轻松的进行定制来跟踪记录app的运行轨迹可以做自己的应用沙盒来辅助逆向分析可以事半功倍）</li>
+<ul>
+<li>上面的这两种方案，DEX动态加载和Classloader的修正，是当前所有加壳手段的一个基础。有了这个DEX动态加载和Classloader的修正我们就有了这个加壳技术。接下来看下一代壳二代壳三代壳究竟是一个什么技术，为什么这么发展。</li>
 </ul>
 </li>
-<li>一定要会正向开发才能做好逆向分析，比如什么是四大组件？app的运行流程？等等。。</li>
-<li>攻防一体，只有先懂得了加壳原理才知道为什么别人这么脱壳，甚至是定制属于自己的脱壳手段，写一个类似于FART的脱壳工具</li>
-<li>逆向分析的一般流程：<ol>
-<li>使用自动化检测工具检测apk是否加壳，或者用反编译工具判断是否加壳</li>
-<li>如果加壳，需要对apk进行脱壳</li>
-<li>使用jeb、jadx、apktool等反编译工具对apk进行反编译</li>
-<li>先依据静态分析中得到的关键字符串、关键api调用等方法快速定位需要分析的关键函数和流程</li>
-<li>如果依据简单的字符串、关键api无法快速定位，这时候apk可能是用了字符串加密、反射调用等手段，此时可结合hook、动态调试等</li>
-<li>定位到关键函数后，再根据是java实现还是jni实现进行一步步分析，如果是java实现的话往往根据静态的分析就能得出结果，如果是在so中的函数那么分析难度会较大一些。</li>
-</ol>
+</ul>
+<h4 id="什么是一代壳二代壳三代壳"><a href="#什么是一代壳二代壳三代壳" class="headerlink" title="什么是一代壳二代壳三代壳"></a>什么是一代壳二代壳三代壳</h4><ul>
+<li><p>一代壳：Dex加密</p>
+<ul>
+<li>Dex字符串加密资源加密对抗反编译反调试自定义DexClassLoader</li>
+<li>因为第一代壳在内存中是一个整体所以定位到之后的脱壳是比较容易的</li>
+</ul>
+</li>
+<li><p>第二代壳：Dex抽取与So加固</p>
+<ul>
+<li>对抗第一代壳常见的脱壳法Dex Method代码抽取到外部（通常企业版）Dex动态加载So加密</li>
+<li>首先是对Dex整体做了一个保护，其次对Dex中一些比较重要的函数代码进行了一个抽取，这样加载后的Dex并不是一个完整的在这样的情况下dump下来也是不完整的dex</li>
+</ul>
+</li>
+<li><p>第三代壳：Dex动态解密与So混淆</p>
+<ul>
+<li>Dex Method代码动态解密、So代码膨胀混淆，对抗之前出现的所有脱壳法</li>
+<li>我们的某些函数只有在被调用和加载的时候才执行，也就是说DEX在内存中始终不是一个完整的状态</li>
+</ul>
+</li>
+<li><p>第四代壳：VMP和Dex2C</p>
+<ul>
+<li>vmp壳的特征就是java函数的Native化</li>
+</ul>
+</li>
+<li><p>未来：现在的VMP实际上是一个smali指令集的VMP，还不是一个真正意义上的VMP。可能在未来随着手机性能的进一步提升可能会出现在arm指令级别的VMP，甚至多指令集和异构的也会有。</p>
 </li>
 </ul>
-<h2 id="使用FART脱壳机进行脱壳"><a href="#使用FART脱壳机进行脱壳" class="headerlink" title="使用FART脱壳机进行脱壳"></a>使用FART脱壳机进行脱壳</h2><h3 id="制作脱壳机"><a href="#制作脱壳机" class="headerlink" title="制作脱壳机"></a>制作脱壳机</h3><ul>
-<li><p>本次脱壳机设备：nexus5</p>
+<h4 id="VMP和dex2c保护的区别"><a href="#VMP和dex2c保护的区别" class="headerlink" title="VMP和dex2c保护的区别"></a>VMP和dex2c保护的区别</h4><ul>
+<li><p>VMP保护的函数注册地址是相同的，因为对于加VMP壳的函数来说它们都需要解释器去还原，如果每一个函数都有一个解释器的话，那SO会膨胀到无法接受的地步。所以它们必然会共用一个解释器，所以它们函数的注册地址是相同的</p>
 </li>
-<li><p>制作脱壳机流程</p>
+<li><p>dex2c不同</p>
+</li>
+</ul>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/08/26/%E4%B8%80%E4%BA%8C%E4%B8%89%E4%BB%A3%E5%A3%B3%E5%92%8C%E5%A3%B3%E6%8A%80%E6%9C%AF%E5%88%86%E7%B1%BB%E8%AF%86%E5%88%AB/image-20230830091130178.png" class="" title="image-20230830091130178">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2023/08/26/%E4%B8%80%E4%BA%8C%E4%B8%89%E4%BB%A3%E5%A3%B3%E5%92%8C%E5%A3%B3%E6%8A%80%E6%9C%AF%E5%88%86%E7%B1%BB%E8%AF%86%E5%88%AB/image-20230830094656757.png" class="" title="image-20230830094656757">
+
+<ul>
+<li><p>注册地址相同可以判断应该是VMP壳，通过动态调试去看函数的处理逻辑如果处理流程差别不大应该是VMP，反之如果区别很大每个函数的处理逻辑不同那很可能就是Dex2C的壳。</p>
+</li>
+<li><p>dex整体加壳是一个基础防护</p>
 <ol>
-<li><p>先进入bootloader</p>
-<p><code>adb reboot bootloader</code></p>
-</li>
-<li><p>执行FART的对应设备型号的镜像刷入脱壳机</p>
-<ul>
-<li>执行镜像中的<strong>flash-all.bat</strong>文件</li>
-</ul>
-</li>
+<li>文件加载：定位解密文件是关键；</li>
+<li>内存加载：加载时机和内存起始地址是关键；</li>
+<li>通用方案：dex打开和优化的流程以及产出的odex、dex2oat编译的流程和生成的oat文件等等</li>
 </ol>
 </li>
-</ul>
-<h3 id="使用脱壳机"><a href="#使用脱壳机" class="headerlink" title="使用脱壳机"></a>使用脱壳机</h3><ul>
-<li><p>直接安装apk，并执行就可以了</p>
-<ul>
-<li><p>需要注意的点</p>
+<li><p>函数抽取是中阶防护</p>
 <ol>
-<li>是本次使用的脱壳机镜像需要在手机设置里面给app读写读写文件权限</li>
-<li>测试的时候有个app没有文件读写的功能，所以没法给读写权限所以脱壳失败，因为没法写入到存储卡</li>
-<li>这个版本的脱壳机将脱壳文件写在了**/sdcard/fart/**目录下</li>
+<li><p>类加载和函数执行前的流程解密；</p>
+</li>
+<li><p>函数执行中动态自解密（这种加密方式的效果更好一点）；</p>
+<p>方案：关注被抽取的函数的执行流程是关键，定位被抽取的函数的恢复时机即可</p>
+</li>
 </ol>
 </li>
-<li><p>如果权限正常执行apk后就会在**/sdcard/fart/**目录下生成脱壳后的文件</p>
-<img lazyload="" src="/images/loading.svg" data-src="/2023/08/19/%E9%80%86%E5%90%91%E5%88%86%E6%9E%90%E5%92%8C%E8%84%B1%E5%A3%B3%E7%9A%84%E6%84%8F%E4%B9%89/image-20230819100828350.png" class="" title="image-20230819100828350"></li>
-</ul>
+<li><p>VMP和dex2C是高级防护</p>
+<ol>
+<li><p>VMP：定位解释器是关键，找到映射关系便可恢复；</p>
 </li>
-<li><p>脱壳出来的dex的魔术头可能会被抹掉导致反编译工具不识别</p>
-<ul>
-<li>有这种情况就打开一个正常的dex文件，把它的前八个字节替换过来就好了</li>
-</ul>
+<li><p>dex2c：基础是编译原理，进行了从smali到C的等价语义转换，彻底还原难度巨大靠人工来做几乎是不可能的；</p>
+<p>通用解决方案：关注JNI相关的api调用时关键，也是分析VMP和dex2c保护的函数的逻辑的关键。</p>
+</li>
+</ol>
 </li>
 </ul>
 
@@ -378,18 +394,18 @@
             <div class="post-copyright-info">
                 <div class="article-copyright-info-container">
     <ul>
-        <li><strong>标题:</strong> 逆向分析和脱壳的意义</li>
+        <li><strong>标题:</strong> 一二三代壳和壳技术分类识别</li>
         <li><strong>作者:</strong> xiaoeryu</li>
         <li><strong>创建于
-                :</strong> 2023-08-19 09:30:26</li>
+                :</strong> 2023-08-26 21:00:35</li>
         
             <li>
                 <strong>更新于
-                    :</strong> 2023-08-26 17:10:23
+                    :</strong> 2023-08-30 10:13:51
             </li>
         
         <li>
-            <strong>链接:</strong> https://github.com/xiaoeryu/2023/08/19/逆向分析和脱壳的意义/
+            <strong>链接:</strong> https://github.com/xiaoeryu/2023/08/26/一二三代壳和壳技术分类识别/
         </li>
         <li>
             <strong>
@@ -410,7 +426,7 @@
             <ul class="post-tags-box">
                 
                     <li class="tag-item">
-                        <a href="/tags/Android%E8%84%B1%E5%A3%B3/">#Android脱壳</a>&nbsp;
+                        <a href="/tags/Android%E5%8A%A0%E5%A3%B3/">#Android加壳</a>&nbsp;
                     </li>
                 
                     <li class="tag-item">
@@ -425,29 +441,14 @@
         
             <div class="article-nav">
                 
-                    <div class="article-prev">
-                        <a class="prev"
-                        rel="prev"
-                        href="/2023/08/19/ClassLoader%E5%92%8C%E5%8A%A8%E6%80%81%E5%8A%A0%E8%BD%BD/"
-                        >
-                            <span class="left arrow-icon flex justify-center items-center">
-                                <i class="fa-solid fa-chevron-left"></i>
-                            </span>
-                            <span class="title flex justify-center items-center">
-                                <span class="post-nav-title-item">ClassLoader和动态加载</span>
-                                <span class="post-nav-item">上一篇</span>
-                            </span>
-                        </a>
-                    </div>
-                
                 
                     <div class="article-next">
                         <a class="next"
                         rel="next"
-                        href="/2023/07/09/ios15-7-5%E8%B6%8A%E7%8B%B1/"
+                        href="/2023/08/24/%E5%8A%A0%E5%A3%B3APP%E8%BF%90%E8%A1%8C%E6%B5%81%E7%A8%8B%E5%92%8CClassLoader%E4%BF%AE%E6%AD%A3/"
                         >
                             <span class="title flex justify-center items-center">
-                                <span class="post-nav-title-item">ios15.7.5越狱</span>
+                                <span class="post-nav-title-item">加壳APP运行流程和ClassLoader修正</span>
                                 <span class="post-nav-item">下一篇</span>
                             </span>
                             <span class="right arrow-icon flex justify-center items-center">
@@ -512,8 +513,8 @@
             <div class="post-toc-wrap">
     <div class="post-toc">
         <div class="toc-title">此页目录</div>
-        <div class="page-title">逆向分析和脱壳的意义</div>
-        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%9F%A5%E5%A3%B3"><span class="nav-text">查壳</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%86%E5%90%91"><span class="nav-text">逆向</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8FART%E8%84%B1%E5%A3%B3%E6%9C%BA%E8%BF%9B%E8%A1%8C%E8%84%B1%E5%A3%B3"><span class="nav-text">使用FART脱壳机进行脱壳</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%B6%E4%BD%9C%E8%84%B1%E5%A3%B3%E6%9C%BA"><span class="nav-text">制作脱壳机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BD%BF%E7%94%A8%E8%84%B1%E5%A3%B3%E6%9C%BA"><span class="nav-text">使用脱壳机</span></a></li></ol></li></ol>
+        <div class="page-title">一二三代壳和壳技术分类识别</div>
+        <ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A8%E6%80%81%E5%8A%A0%E8%BD%BD"><span class="nav-text">动态加载</span></a></li></ol>
 
     </div>
 </div>
