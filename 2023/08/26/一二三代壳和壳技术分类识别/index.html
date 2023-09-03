@@ -30,7 +30,7 @@
 <meta property="og:image" content="https://xiaoeeyu.github.io/2023/08/26/%E4%B8%80%E4%BA%8C%E4%B8%89%E4%BB%A3%E5%A3%B3%E5%92%8C%E5%A3%B3%E6%8A%80%E6%9C%AF%E5%88%86%E7%B1%BB%E8%AF%86%E5%88%AB/image-20230830091130178.png">
 <meta property="og:image" content="https://xiaoeeyu.github.io/2023/08/26/%E4%B8%80%E4%BA%8C%E4%B8%89%E4%BB%A3%E5%A3%B3%E5%92%8C%E5%A3%B3%E6%8A%80%E6%9C%AF%E5%88%86%E7%B1%BB%E8%AF%86%E5%88%AB/image-20230830094656757.png">
 <meta property="article:published_time" content="2023-08-26T13:00:35.000Z">
-<meta property="article:modified_time" content="2023-08-30T02:13:51.691Z">
+<meta property="article:modified_time" content="2023-09-03T16:35:15.318Z">
 <meta property="article:author" content="xiaoeryu">
 <meta property="article:tag" content="Android加壳">
 <meta property="article:tag" content="学习笔记">
@@ -246,8 +246,8 @@
     
         <span class="article-date article-meta-item">
             <i class="fa-regular fa-wrench"></i>&nbsp;
-            <span class="desktop">2023-08-30 10:13:51</span>
-            <span class="mobile">2023-08-30 10:13:51</span>
+            <span class="desktop">2023-09-04 00:35:15</span>
+            <span class="mobile">2023-09-04 00:35:15</span>
             <span class="hover-info">更新</span>
         </span>
     
@@ -307,7 +307,7 @@
         <div class="article-content markdown-body">
             <h3 id="动态加载"><a href="#动态加载" class="headerlink" title="动态加载"></a>动态加载</h3><p>动态加载是DEX加壳和插件化热更新的一个基础（动态加载就是用到的时候再去加载，也叫懒加载用不到的时候是不会去加载的）。</p>
 <p>比如说阿里的AndFix还有HotFix，腾讯的tinker、美团Robust等这些热修复框架的基础。动态加载还有热更新可以很方便的解决APP的快速迭代和更新的一个难题。从而避免了每次一发布新版本就需要用户来全量下载APP然后才能更新的过程。这样的话一方面可以提升用户体验，另一方面也可以快速的完成的bug的修复。但是如果只应用动态加载技术，是没有办法完成相关插件类当中的组件的这一个正常的运行。因为动态加载的DEX不具有生命周期的特征，APP中的Activity、Service等组件无法正常工作，它只能够完成一般函数的调用。归根结底是因为组件的Classloader和我们使用的DexClassloader不具备双亲委派的相关特征，导致PathClassloader没有办法找到这些DEX中使用的Activity、Service等相关的组件类，因此就需要对Classloader进行修正（例如上一篇文章中第一种方法中的replaceClassLoader()），这是加壳APP必然要做的一步，而在这步骤当中可以通常使用两种解决方案。</p>
-<h4 id="回顾一下昨天的两种方案"><a href="#回顾一下昨天的两种方案" class="headerlink" title="回顾一下昨天的两种方案"></a>回顾一下昨天的两种方案</h4><ul>
+<h4 id="回顾一下上一章的两种方案"><a href="#回顾一下上一章的两种方案" class="headerlink" title="回顾一下上一章的两种方案"></a>回顾一下上一章的两种方案</h4><ul>
 <li><p>第一种解决方案：</p>
 <p>通过修改系统组件类的Classloader也就是说这个mClassloader，可以通过反射去一步步的找到它然后再替换掉。替换成我们的DexClassloader，这样的话我们就可以找到我们插件DEX当中的相关的类信息了</p>
 <img lazyload="" src="/images/loading.svg" data-src="/2023/08/26/%E4%B8%80%E4%BA%8C%E4%B8%89%E4%BB%A3%E5%A3%B3%E5%92%8C%E5%A3%B3%E6%8A%80%E6%9C%AF%E5%88%86%E7%B1%BB%E8%AF%86%E5%88%AB/image-20230826205542089.png" class="" title="image-20230826205542089">
@@ -401,7 +401,7 @@
         
             <li>
                 <strong>更新于
-                    :</strong> 2023-08-30 10:13:51
+                    :</strong> 2023-09-04 00:35:15
             </li>
         
         <li>
