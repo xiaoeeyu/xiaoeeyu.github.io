@@ -55,7 +55,7 @@
 <meta property="og:image" content="https://xiaoeeyu.github.io/2023/09/04/Dalvik%E4%B8%8B%E4%B8%80%E4%BB%A3%E5%A3%B3%E7%9A%84%E9%80%9A%E7%94%A8%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/63e1f836d04b4287bf78de4ebef824f3.png">
 <meta property="og:image" content="https://xiaoeeyu.github.io/2023/09/04/Dalvik%E4%B8%8B%E4%B8%80%E4%BB%A3%E5%A3%B3%E7%9A%84%E9%80%9A%E7%94%A8%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/ac9d2c8c4908415bbb602018631e792b.png">
 <meta property="article:published_time" content="2023-09-03T16:07:34.000Z">
-<meta property="article:modified_time" content="2023-09-03T16:30:12.047Z">
+<meta property="article:modified_time" content="2023-09-09T03:49:00.230Z">
 <meta property="article:author" content="xiaoeryu">
 <meta property="article:tag" content="Android脱壳">
 <meta property="article:tag" content="学习笔记">
@@ -272,8 +272,8 @@
     
         <span class="article-date article-meta-item">
             <i class="fa-regular fa-wrench"></i>&nbsp;
-            <span class="desktop">2023-09-04 00:30:12</span>
-            <span class="mobile">2023-09-04 00:30:12</span>
+            <span class="desktop">2023-09-09 11:49</span>
+            <span class="mobile">2023-09-09 11:49</span>
             <span class="hover-info">更新</span>
         </span>
     
@@ -338,7 +338,7 @@
             <p>本节主要分析在Dalvik时代怎么做到把壳脱下来的，通过<strong>Android 4.x</strong>的源码跟踪一下系统帮我们加载dex时候的流程，分析一下脱壳的原理和时机。</p>
 <span id="more"></span>
 
-<h3 id="Dalvik下DexClassLoader加载dex源码流程分析"><a href="#Dalvik下DexClassLoader加载dex源码流程分析" class="headerlink" title="Dalvik下DexClassLoader加载dex源码流程分析"></a>Dalvik下DexClassLoader加载dex源码流程分析</h3><p><a class="link" target="_blank" rel="noopener" href="http://androidxref.com/">源码网址 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<h2 id="Dalvik下DexClassLoader加载dex源码流程分析"><a href="#Dalvik下DexClassLoader加载dex源码流程分析" class="headerlink" title="Dalvik下DexClassLoader加载dex源码流程分析"></a>Dalvik下DexClassLoader加载dex源码流程分析</h2><p><a class="link" target="_blank" rel="noopener" href="http://androidxref.com/">源码网址 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
 <img lazyload="" src="/images/loading.svg" data-src="/2023/09/04/Dalvik%E4%B8%8B%E4%B8%80%E4%BB%A3%E5%A3%B3%E7%9A%84%E9%80%9A%E7%94%A8%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/541a0875d28a486e802c19d42d9ea07d.png" class="" title="84070f0817edd69f1ec2c8dec32410f7.png">
 
 <p>在libcore中查找DexClassLoader函数</p>
@@ -394,7 +394,7 @@
 <ul>
 <li>到这里我们看里面调用函数的名字就知道它进入了Native层来处理，是使用C/C++来实现的，再往下等后面学习NDK开发的时候还会涉及到这些。</li>
 </ul>
-<h4 id="查找CPP源码"><a href="#查找CPP源码" class="headerlink" title="查找CPP源码"></a>查找CPP源码</h4><h5 id="第一种方法"><a href="#第一种方法" class="headerlink" title="第一种方法"></a>第一种方法</h5><p>我们在Android源码当中检索cpp的时候实际上每一个java类他当中的GNI实现是有一个规律的</p>
+<h3 id="查找CPP源码"><a href="#查找CPP源码" class="headerlink" title="查找CPP源码"></a>查找CPP源码</h3><h4 id="第一种方法"><a href="#第一种方法" class="headerlink" title="第一种方法"></a>第一种方法</h4><p>我们在Android源码当中检索cpp的时候实际上每一个java类他当中的GNI实现是有一个规律的</p>
 <img lazyload="" src="/images/loading.svg" data-src="/2023/09/04/Dalvik%E4%B8%8B%E4%B8%80%E4%BB%A3%E5%A3%B3%E7%9A%84%E9%80%9A%E7%94%A8%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/5013afa2630f4d52bb42a6b085afc86e.png" class="" title="8e17976db0b4b23f45049cd0bd1f5af9.png">
 
 <ul>
@@ -407,7 +407,7 @@
 </ul>
 <img lazyload="" src="/images/loading.svg" data-src="/2023/09/04/Dalvik%E4%B8%8B%E4%B8%80%E4%BB%A3%E5%A3%B3%E7%9A%84%E9%80%9A%E7%94%A8%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/6078b8cc85a04fe39e3cbdaf3e84db49.png" class="" title="fc32fc3530b9f503f9b7607af8852165.png">
 
-<h5 id="第二种方法"><a href="#第二种方法" class="headerlink" title="第二种方法"></a>第二种方法</h5><p>直接在dalvik()中检索这个函数名</p>
+<h4 id="第二种方法"><a href="#第二种方法" class="headerlink" title="第二种方法"></a>第二种方法</h4><p>直接在dalvik()中检索这个函数名</p>
 <img lazyload="" src="/images/loading.svg" data-src="/2023/09/04/Dalvik%E4%B8%8B%E4%B8%80%E4%BB%A3%E5%A3%B3%E7%9A%84%E9%80%9A%E7%94%A8%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/4be8759a925b48be9ea1acb4b1eb1243.png" class="" title="5b7d470877b7244818b59ee8a6a04ccf.png">
 
 <p><strong>找到了CPP</strong><br>进来这个函数之后</p>
@@ -457,7 +457,7 @@
 <ul>
 <li>进去之后这里也包含有起始地址和长度</li>
 </ul>
-<h6 id="Dalvik下通用脱壳方案"><a href="#Dalvik下通用脱壳方案" class="headerlink" title="Dalvik下通用脱壳方案"></a>Dalvik下通用脱壳方案</h6><ul>
+<h5 id="Dalvik下通用脱壳方案"><a href="#Dalvik下通用脱壳方案" class="headerlink" title="Dalvik下通用脱壳方案"></a>Dalvik下通用脱壳方案</h5><ul>
 <li><p>在Dalvik下有很多的通用脱壳教程就是对dexFileParse()、dvmDexFileOpenPartial()这两个函数下断点或者进行hook然后取出第一个和第二个参数</p>
 </li>
 <li><p>第一个参数就是要dump的起始地址，第二个参数就是要dump的内存区域的长度</p>
@@ -512,7 +512,7 @@
         
             <li>
                 <strong>更新于
-                    :</strong> 2023-09-04 00:30:12
+                    :</strong> 2023-09-09 11:49:00
             </li>
         
         <li>
@@ -629,7 +629,7 @@
     <div class="post-toc">
         <div class="toc-title">此页目录</div>
         <div class="page-title">Dalvik下一代壳的通用解决方案</div>
-        <ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Dalvik%E4%B8%8BDexClassLoader%E5%8A%A0%E8%BD%BDdex%E6%BA%90%E7%A0%81%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%90"><span class="nav-text">Dalvik下DexClassLoader加载dex源码流程分析</span></a></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Dalvik%E4%B8%8BDexClassLoader%E5%8A%A0%E8%BD%BDdex%E6%BA%90%E7%A0%81%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%90"><span class="nav-text">Dalvik下DexClassLoader加载dex源码流程分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9F%A5%E6%89%BECPP%E6%BA%90%E7%A0%81"><span class="nav-text">查找CPP源码</span></a></li></ol></li></ol>
 
     </div>
 </div>
