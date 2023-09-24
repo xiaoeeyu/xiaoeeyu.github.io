@@ -87,7 +87,7 @@
 <meta property="og:image" content="https://xiaoeeyu.github.io/2023/09/14/ART%E4%B8%8B%E4%B8%80%E4%BB%A3%E5%A3%B3%E9%80%9A%E7%94%A8%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/acaf40b185c045fcaeee04c603e2333a.png">
 <meta property="og:image" content="https://xiaoeeyu.github.io/2023/09/14/ART%E4%B8%8B%E4%B8%80%E4%BB%A3%E5%A3%B3%E9%80%9A%E7%94%A8%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/4e3a19252a3547d19e10ae363f225748.png">
 <meta property="article:published_time" content="2023-09-13T16:09:38.000Z">
-<meta property="article:modified_time" content="2023-09-14T08:35:58.455Z">
+<meta property="article:modified_time" content="2023-09-23T10:15:38.811Z">
 <meta property="article:author" content="xiaoeryu">
 <meta property="article:tag" content="Android脱壳">
 <meta property="article:tag" content="学习笔记">
@@ -305,8 +305,8 @@
     
         <span class="article-date article-meta-item">
             <i class="fa-regular fa-wrench"></i>&nbsp;
-            <span class="desktop">2023-09-14 16:35:58</span>
-            <span class="mobile">2023-09-14 16:35:58</span>
+            <span class="desktop">2023-09-23 18:15:38</span>
+            <span class="mobile">2023-09-23 18:15:38</span>
             <span class="hover-info">更新</span>
         </span>
     
@@ -534,10 +534,9 @@
 
 <ul>
 <li>进来之后看到它执行了ExecAndReturnCode()，继续跟进看一下<img lazyload="" src="/images/loading.svg" data-src="/2023/09/14/ART%E4%B8%8B%E4%B8%80%E4%BB%A3%E5%A3%B3%E9%80%9A%E7%94%A8%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/4fc6a3f1260a40689379e96ecf593afc.png" class="" title="89b1b54df2ed18cdc871cac2ada04ee5.png"></li>
-<li>进来之后，它会创建新的进程来执行execve()来执行Dex2Oat的编译</li>
-<li><strong>这里接下来我们来分析如果壳不执行Dex2Oat的流程</strong></li>
+<li>进来这个函数之后，可以看到源码中创建新的进程来开始执行execve()来执行Dex2Oat的编译。<br><strong>到这里先暂停一下，接下来我们来分析如果这个壳不执行Dex2Oat它的编译流程</strong></li>
 </ul>
-<p><strong>在这个流程当中如果我们把函数的流程进行了修改或者hook，就会导致Dex2Oat流程的结束。如果我们去强制结束这个Dex2Oat的流程是可以让DexClassLoader在第一次加载dex这个过程变得非常的快速，减省去执行Dex2Oat编译花费的时间。如果要实现ART下的函数抽取技术，我们也就需要阻断掉Dex2Oat的流程。这就是ART下的函数抽取实现方案和Dalvik下的区别，因为在Dalvik下不存在Dex2Oat的编译流程。</strong></p>
+<p><strong>在这整个流程当中如果我们把函数执行的流程进行了修改或者hook，就会导致Dex2Oat流程的结束。如果我们去强制结束这个Dex2Oat的流程是可以让DexClassLoader在第一次加载dex这个过程变得非常的快速，减省去执行Dex2Oat编译花费的时间。如果要实现ART下的函数抽取技术，我们也就需要阻断掉Dex2Oat的流程。这就是ART下的函数抽取实现方案和Dalvik下的区别，因为在Dalvik下不存在Dex2Oat的编译流程。</strong></p>
 <p>如果我们阻断这个流程呢，oat文件就无法生成了，就会在前面判断的时候跳转到加载dex文件的分支</p>
 <img lazyload="" src="/images/loading.svg" data-src="/2023/09/14/ART%E4%B8%8B%E4%B8%80%E4%BB%A3%E5%A3%B3%E9%80%9A%E7%94%A8%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/b39c3705ca0e4fd49814759c128364d0.png" class="" title="e7d449b26a5cb3cf37bb2949773f0837.png">
 <img lazyload="" src="/images/loading.svg" data-src="/2023/09/14/ART%E4%B8%8B%E4%B8%80%E4%BB%A3%E5%A3%B3%E9%80%9A%E7%94%A8%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/31e56ded535d46f58f875c328a22be25.png" class="" title="4792f57c18a16f41c851dc9569a25a5d.png">
@@ -782,7 +781,7 @@ pause
         
             <li>
                 <strong>更新于
-                    :</strong> 2023-09-14 16:35:58
+                    :</strong> 2023-09-23 18:15:38
             </li>
         
         <li>
