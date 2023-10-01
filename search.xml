@@ -4,6 +4,33 @@
   
     
     <entry>
+      <title>FART使用场景和流程</title>
+      <link href="/2023/10/01/FART%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%E5%92%8C%E6%B5%81%E7%A8%8B/"/>
+      <url>/2023/10/01/FART%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%E5%92%8C%E6%B5%81%E7%A8%8B/</url>
+      
+        <content type="html"><![CDATA[<p>本章主要介绍一下什么是FART、为什么要使用FART，以及如何使用FART的问题</p><p>FART是一个支持在ART（Android runtime)下使用的脱壳框架，可以用来解决函数抽取壳的问题。支持在Dalvik和ART下运行。</p><span id="more"></span><h2 id="脱壳方式"><a href="#脱壳方式" class="headerlink" title="脱壳方式"></a>脱壳方式</h2><p>现在新一代的Android加壳基本都做了函数抽取实现了函数粒度的加壳，我们之前使用的脱壳组件只能从内存中将dex的整体框架dump出来，如果碰到函数抽取壳，dump下来的函数体都是空的。</p><img lazyload="" src="/images/loading.svg" data-src="/2023/10/01/FART%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%E5%92%8C%E6%B5%81%E7%A8%8B/image-20231001095254872.png" class="" title="image-20231001095254872"><p>FART的解决办法是找到函数体的codeItem将其回填进函数体中，有两种思路可以完成这种回填：</p><ul><li>被动调用：在执行的过程中等待被动调用，因为运行过程中不一定所有的函数都会被调用，所以会有代码覆盖率低的问题</li><li>主动模拟调用：通过构造虚拟调用，让壳误以为app在执行正常的函数调用流程从而达成对dex中所有类函数的虚拟调用。能够覆盖dex中所有的函数，修复更完整。修复的准确度和主动调用链的构造深度有关。</li></ul><h2 id="codeItem"><a href="#codeItem" class="headerlink" title="codeItem"></a>codeItem</h2><p>我们知道函数的逻辑代码都在codeItem中，所以我们的重点就在于准确的获取函数的codeItem。</p><img lazyload="" src="/images/loading.svg" data-src="/2023/10/01/FART%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%E5%92%8C%E6%B5%81%E7%A8%8B/image-20231001100415348.png" class="" title="image-20231001100415348"><p>这其中的重点在于获取codeItem的长度，它的长度不是固定的跟try_catch指令列表的大小有关。</p><ul><li><p><strong>没有try_catch：</strong>codeItem长度 = （ushort registersSize ~ uint insnsSize）共16个字节 + uint insnsSize * 2</p><img lazyload="" src="/images/loading.svg" data-src="/2023/10/01/FART%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%E5%92%8C%E6%B5%81%E7%A8%8B/image-20231001100739368.png" class="" title="image-20231001100739368"><ul><li>在这里就是<strong>16 + 10*2 = 36</strong></li></ul></li><li><p><strong>有try_catch：</strong></p><p><strong>codeItem长度 = 16 + uint insns_size*2 + try_catch长度</strong></p><img lazyload="" src="/images/loading.svg" data-src="/2023/10/01/FART%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%E5%92%8C%E6%B5%81%E7%A8%8B/image-20231001102500999.png" class="" title="image-20231001102500999"></li></ul><h2 id="手动修复函数抽取dex"><a href="#手动修复函数抽取dex" class="headerlink" title="手动修复函数抽取dex"></a>手动修复函数抽取dex</h2><p>FART运行之后我们可以得到dex和bin（codeItem）文件</p><img lazyload="" src="/images/loading.svg" data-src="/2023/10/01/FART%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%E5%92%8C%E6%B5%81%E7%A8%8B/image-20231001105254320.png" class="" title="image-20231001105254320"><img lazyload="" src="/images/loading.svg" data-src="/2023/10/01/FART%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%E5%92%8C%E6%B5%81%E7%A8%8B/image-20231001105301966.png" class="" title="image-20231001105301966"><p>手动修复有三种办法：</p><ol><li><p>在GDA中定位到我们要修复的函数（找到函数然后查看其16进制，就能直接定位到函数位置），用定位到的地址在dex中搜索（用010edit打开CTRL+G搜索地址），然后在对应的bin文件中通过搜索找到函数体的codeItem字符串，将codeItem字符串填充到dex文件中。</p></li><li><p>在bin文件中找到五元组中的<em>offset值</em>，将值转为16进制在用010打开的dex中搜索地址，然后将codeItem字符串填充过去。</p></li><li><p>在bin文件中把要修复的函数的codeItem字符串编码拷贝出来解码，将解码后的codeItem覆盖dex文件中原函数<em>offset</em>位置。</p></li></ol><h3 id="手动修复测试"><a href="#手动修复测试" class="headerlink" title="手动修复测试"></a>手动修复测试</h3><p>用FART跑完会dump下来很多的dex文件，可以用命令定位一下函数体在哪个dex中</p><p><code>grep -r "MemoryCache" ./*.txt</code></p><img lazyload="" src="/images/loading.svg" data-src="/2023/10/01/FART%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%E5%92%8C%E6%B5%81%E7%A8%8B/image-20231001111342888.png" class="" title="image-20231001111342888"><p>用GDA打开找一个被抽取的函数进行测试</p><img lazyload="" src="/images/loading.svg" data-src="/2023/10/01/FART%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%E5%92%8C%E6%B5%81%E7%A8%8B/image-20231001160249523.png" class="" title="image-20231001160249523"><p>在bin文件里面搜索<strong>getFunctionName</strong>，将这个函数的base64字符串拷贝出来解码</p><img lazyload="" src="/images/loading.svg" data-src="/2023/10/01/FART%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%E5%92%8C%E6%B5%81%E7%A8%8B/image-20231001180758244.png" class="" title="image-20231001180758244"><p>解码</p><pre><code class="python">import base64def decodeContent(content,filepath): #删除缩进(Tab)    try:        bytearray_str = base64.b64decode(content)        binfile=open(filepath,"ab+")        binfile.write(bytearray_str)        binfile.close()    except Exception as e:        print(e)    returnif __name__ == '__main__':    b64content="CAABAAMAAADkIBoAdwAAABICcQBtaAAADANuEHRoAwAMATkBAwARAiEUEgM1Q/3/RgABA24Q/GcAAAoFOAUFANgDAwEo9G4Q+GcAAAwFHAY8Dm4QXmcGAAwGbiANaGUACgU5Be//bhD4ZwAADAVuENtnBwAMBm4QXmcGAAwGbiANaGUACgU5Bd3/IgI4DhoDPDVwIEtoMgBxAG1oAAAMA24QcWgDAAsDbjBQaDIEDAIaAx4FbiBTaDIADAJuEPlnAAAMA24gU2gyAAwCGgMdBW4gU2gyAAwCbhD6ZwAACgNuIE9oMgAMAhoDjzduIFNoMgAMAm4QW2gCAAwCKJU="    decodeContent(b64content,"checkSize.bin")</code></pre><p>把解码后的hex覆盖dex中的偏移位置</p><img lazyload="" src="/images/loading.svg" data-src="/2023/10/01/FART%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%E5%92%8C%E6%B5%81%E7%A8%8B/image-20231001181055378.png" class="" title="image-20231001181055378"><p>覆盖（注意覆盖的字节数不要弄错）</p><img lazyload="" src="/images/loading.svg" data-src="/2023/10/01/FART%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%E5%92%8C%E6%B5%81%E7%A8%8B/image-20231001181150243.png" class="" title="image-20231001181150243"><p>保存后用GDA查看</p><img lazyload="" src="/images/loading.svg" data-src="/2023/10/01/FART%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%E5%92%8C%E6%B5%81%E7%A8%8B/image-20231001181331324.png" class="" title="image-20231001181331324"><hr><h2 id="FART使用流程"><a href="#FART使用流程" class="headerlink" title="FART使用流程"></a>FART使用流程</h2><p>FART脱壳和定位dex就前面说过了，不再重复</p><p>使用脚本将dex文件修复一下</p><p><code>python fart.py -d XXX.dex -i xxx.bin&gt;&gt;XXX.txt</code></p><img lazyload="" src="/images/loading.svg" data-src="/2023/10/01/FART%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%E5%92%8C%E6%B5%81%E7%A8%8B/image-20231001174246279.png" class="" title="image-20231001174246279"><img lazyload="" src="/images/loading.svg" data-src="/2023/10/01/FART%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%E5%92%8C%E6%B5%81%E7%A8%8B/image-20231001174946682.png" class="" title="image-20231001174946682">]]></content>
+      
+      
+      <categories>
+          
+          <category> Android逆向 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 学习笔记 </tag>
+            
+            <tag> FART脱壳 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>FART中的脱壳点-脱壳组件</title>
       <link href="/2023/09/26/FART%E4%B8%AD%E7%9A%84%E8%84%B1%E5%A3%B3%E7%82%B9-%E8%84%B1%E5%A3%B3%E7%BB%84%E4%BB%B6/"/>
       <url>/2023/09/26/FART%E4%B8%AD%E7%9A%84%E8%84%B1%E5%A3%B3%E7%82%B9-%E8%84%B1%E5%A3%B3%E7%BB%84%E4%BB%B6/</url>

@@ -13,36 +13,39 @@
     
     <!--- Seo Part-->
     
-    <link rel="canonical" href="https://xiaoeeyu.github.io/2023/09/26/fart中的脱壳点-脱壳组件/"/>
+    <link rel="canonical" href="https://xiaoeeyu.github.io/2023/10/01/fart使用场景和流程/"/>
     <meta name="robots" content="index,follow">
     <meta name="googlebot" content="index,follow">
     <meta name="revisit-after" content="1 days">
     
-        <meta name="description" content="上一章对Dalvik和ART下的函数抽取方案进行了分析，本章开始FART框架的解析——本章主要解析FART框架中的脱壳组件">
+        <meta name="description" content="本章主要介绍一下什么是FART、为什么要使用FART，以及如何使用FART的问题 FART是一个支持在ART（Android runtime)下使用的脱壳框架，可以用来解决函数抽取壳的问题。支持在Dalvik和ART下运行。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="FART中的脱壳点-脱壳组件">
-<meta property="og:url" content="https://xiaoeeyu.github.io/2023/09/26/FART%E4%B8%AD%E7%9A%84%E8%84%B1%E5%A3%B3%E7%82%B9-%E8%84%B1%E5%A3%B3%E7%BB%84%E4%BB%B6/index.html">
+<meta property="og:title" content="FART使用场景和流程">
+<meta property="og:url" content="https://xiaoeeyu.github.io/2023/10/01/FART%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%E5%92%8C%E6%B5%81%E7%A8%8B/index.html">
 <meta property="og:site_name" content="xiaoeryu">
-<meta property="og:description" content="上一章对Dalvik和ART下的函数抽取方案进行了分析，本章开始FART框架的解析——本章主要解析FART框架中的脱壳组件">
+<meta property="og:description" content="本章主要介绍一下什么是FART、为什么要使用FART，以及如何使用FART的问题 FART是一个支持在ART（Android runtime)下使用的脱壳框架，可以用来解决函数抽取壳的问题。支持在Dalvik和ART下运行。">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/09/26/FART%E4%B8%AD%E7%9A%84%E8%84%B1%E5%A3%B3%E7%82%B9-%E8%84%B1%E5%A3%B3%E7%BB%84%E4%BB%B6/image-20230926111338303.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/09/26/FART%E4%B8%AD%E7%9A%84%E8%84%B1%E5%A3%B3%E7%82%B9-%E8%84%B1%E5%A3%B3%E7%BB%84%E4%BB%B6/image-20230926114731848.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/09/26/FART%E4%B8%AD%E7%9A%84%E8%84%B1%E5%A3%B3%E7%82%B9-%E8%84%B1%E5%A3%B3%E7%BB%84%E4%BB%B6/image-20230926115204265.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/09/26/FART%E4%B8%AD%E7%9A%84%E8%84%B1%E5%A3%B3%E7%82%B9-%E8%84%B1%E5%A3%B3%E7%BB%84%E4%BB%B6/image-20230926121235169.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/09/26/FART%E4%B8%AD%E7%9A%84%E8%84%B1%E5%A3%B3%E7%82%B9-%E8%84%B1%E5%A3%B3%E7%BB%84%E4%BB%B6/image-20230926121323952.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/09/26/FART%E4%B8%AD%E7%9A%84%E8%84%B1%E5%A3%B3%E7%82%B9-%E8%84%B1%E5%A3%B3%E7%BB%84%E4%BB%B6/image-20230926121411911.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/09/26/FART%E4%B8%AD%E7%9A%84%E8%84%B1%E5%A3%B3%E7%82%B9-%E8%84%B1%E5%A3%B3%E7%BB%84%E4%BB%B6/image-20230926154553095.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/09/26/FART%E4%B8%AD%E7%9A%84%E8%84%B1%E5%A3%B3%E7%82%B9-%E8%84%B1%E5%A3%B3%E7%BB%84%E4%BB%B6/image-20230926155642205.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/09/26/FART%E4%B8%AD%E7%9A%84%E8%84%B1%E5%A3%B3%E7%82%B9-%E8%84%B1%E5%A3%B3%E7%BB%84%E4%BB%B6/image-20230926162456351.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/09/26/FART%E4%B8%AD%E7%9A%84%E8%84%B1%E5%A3%B3%E7%82%B9-%E8%84%B1%E5%A3%B3%E7%BB%84%E4%BB%B6/image-20230926163312190.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/09/26/FART%E4%B8%AD%E7%9A%84%E8%84%B1%E5%A3%B3%E7%82%B9-%E8%84%B1%E5%A3%B3%E7%BB%84%E4%BB%B6/image-20230926163317538.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/09/26/FART%E4%B8%AD%E7%9A%84%E8%84%B1%E5%A3%B3%E7%82%B9-%E8%84%B1%E5%A3%B3%E7%BB%84%E4%BB%B6/image-20230926163851954.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/09/26/FART%E4%B8%AD%E7%9A%84%E8%84%B1%E5%A3%B3%E7%82%B9-%E8%84%B1%E5%A3%B3%E7%BB%84%E4%BB%B6/image-20230926163935009.png">
-<meta property="article:published_time" content="2023-09-26T03:07:23.000Z">
-<meta property="article:modified_time" content="2023-09-26T08:41:59.292Z">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/01/FART%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%E5%92%8C%E6%B5%81%E7%A8%8B/image-20231001095254872.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/01/FART%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%E5%92%8C%E6%B5%81%E7%A8%8B/image-20231001100415348.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/01/FART%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%E5%92%8C%E6%B5%81%E7%A8%8B/image-20231001100739368.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/01/FART%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%E5%92%8C%E6%B5%81%E7%A8%8B/image-20231001102500999.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/01/FART%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%E5%92%8C%E6%B5%81%E7%A8%8B/image-20231001105254320.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/01/FART%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%E5%92%8C%E6%B5%81%E7%A8%8B/image-20231001105301966.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/01/FART%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%E5%92%8C%E6%B5%81%E7%A8%8B/image-20231001111342888.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/01/FART%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%E5%92%8C%E6%B5%81%E7%A8%8B/image-20231001160249523.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/01/FART%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%E5%92%8C%E6%B5%81%E7%A8%8B/image-20231001180758244.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/01/FART%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%E5%92%8C%E6%B5%81%E7%A8%8B/image-20231001181055378.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/01/FART%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%E5%92%8C%E6%B5%81%E7%A8%8B/image-20231001181150243.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/01/FART%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%E5%92%8C%E6%B5%81%E7%A8%8B/image-20231001181331324.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/01/FART%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%E5%92%8C%E6%B5%81%E7%A8%8B/image-20231001174246279.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/01/FART%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%E5%92%8C%E6%B5%81%E7%A8%8B/image-20231001174946682.png">
+<meta property="article:published_time" content="2023-10-01T00:46:59.000Z">
+<meta property="article:modified_time" content="2023-10-01T10:13:58.928Z">
 <meta property="article:author" content="xiaoeryu">
+<meta property="article:tag" content="学习笔记">
+<meta property="article:tag" content="FART脱壳">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://xiaoeeyu.github.io/2023/09/26/FART%E4%B8%AD%E7%9A%84%E8%84%B1%E5%A3%B3%E7%82%B9-%E8%84%B1%E5%A3%B3%E7%BB%84%E4%BB%B6/image-20230926111338303.png">
+<meta name="twitter:image" content="https://xiaoeeyu.github.io/2023/10/01/FART%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%E5%92%8C%E6%B5%81%E7%A8%8B/image-20231001095254872.png">
     
     
     <!--- Icon Part-->
@@ -54,7 +57,7 @@
     
     <title>
         
-            FART中的脱壳点-脱壳组件 -
+            FART使用场景和流程 -
         
         xiaoeryu
     </title>
@@ -224,7 +227,7 @@
 
         <div class="article-title">
             
-                <h1 class="article-title-regular">FART中的脱壳点-脱壳组件</h1>
+                <h1 class="article-title-regular">FART使用场景和流程</h1>
             
             </div>
             
@@ -246,20 +249,51 @@
                         <div class="article-meta-info">
     <span class="article-date article-meta-item">
         <i class="fa-regular fa-pen-fancy"></i>&nbsp;
-        <span class="desktop">2023-09-26 11:07:23</span>
-        <span class="mobile">2023-09-26 11:07:23</span>
+        <span class="desktop">2023-10-01 08:46:59</span>
+        <span class="mobile">2023-10-01 08:46:59</span>
         <span class="hover-info">创建</span>
     </span>
     
         <span class="article-date article-meta-item">
             <i class="fa-regular fa-wrench"></i>&nbsp;
-            <span class="desktop">2023-09-26 16:41:59</span>
-            <span class="mobile">2023-09-26 16:41:59</span>
+            <span class="desktop">2023-10-01 18:13:58</span>
+            <span class="mobile">2023-10-01 18:13:58</span>
             <span class="hover-info">更新</span>
         </span>
     
 
     
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/Android%E9%80%86%E5%90%91/">Android逆向</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">学习笔记</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/FART%E8%84%B1%E5%A3%B3/">FART脱壳</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
     
 
     
@@ -281,117 +315,92 @@
 
 
         <div class="article-content markdown-body">
-            <p>上一章对Dalvik和ART下的函数抽取方案进行了分析，本章开始FART框架的解析——本章主要解析FART框架中的脱壳组件</p>
+            <p>本章主要介绍一下什么是FART、为什么要使用FART，以及如何使用FART的问题</p>
+<p>FART是一个支持在ART（Android runtime)下使用的脱壳框架，可以用来解决函数抽取壳的问题。支持在Dalvik和ART下运行。</p>
 <span id="more"></span>
 
-<h2 id="FART框架"><a href="#FART框架" class="headerlink" title="FART框架"></a>FART框架</h2><h3 id="框架构成"><a href="#框架构成" class="headerlink" title="框架构成"></a>框架构成</h3><img lazyload="" src="/images/loading.svg" data-src="/2023/09/26/FART%E4%B8%AD%E7%9A%84%E8%84%B1%E5%A3%B3%E7%82%B9-%E8%84%B1%E5%A3%B3%E7%BB%84%E4%BB%B6/image-20230926111338303.png" class="" title="image-20230926111338303">
+<h2 id="脱壳方式"><a href="#脱壳方式" class="headerlink" title="脱壳方式"></a>脱壳方式</h2><p>现在新一代的Android加壳基本都做了函数抽取实现了函数粒度的加壳，我们之前使用的脱壳组件只能从内存中将dex的整体框架dump出来，如果碰到函数抽取壳，dump下来的函数体都是空的。</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/01/FART%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%E5%92%8C%E6%B5%81%E7%A8%8B/image-20231001095254872.png" class="" title="image-20231001095254872">
+
+<p>FART的解决办法是找到函数体的codeItem将其回填进函数体中，有两种思路可以完成这种回填：</p>
+<ul>
+<li>被动调用：在执行的过程中等待被动调用，因为运行过程中不一定所有的函数都会被调用，所以会有代码覆盖率低的问题</li>
+<li>主动模拟调用：通过构造虚拟调用，让壳误以为app在执行正常的函数调用流程从而达成对dex中所有类函数的虚拟调用。能够覆盖dex中所有的函数，修复更完整。修复的准确度和主动调用链的构造深度有关。</li>
+</ul>
+<h2 id="codeItem"><a href="#codeItem" class="headerlink" title="codeItem"></a>codeItem</h2><p>我们知道函数的逻辑代码都在codeItem中，所以我们的重点就在于准确的获取函数的codeItem。</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/01/FART%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%E5%92%8C%E6%B5%81%E7%A8%8B/image-20231001100415348.png" class="" title="image-20231001100415348">
+
+<p>这其中的重点在于获取codeItem的长度，它的长度不是固定的跟try_catch指令列表的大小有关。</p>
+<ul>
+<li><p><strong>没有try_catch：</strong>codeItem长度 = （ushort registersSize ~ uint insnsSize）共16个字节 + uint insnsSize * 2</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/01/FART%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%E5%92%8C%E6%B5%81%E7%A8%8B/image-20231001100739368.png" class="" title="image-20231001100739368">
 
 <ul>
-<li><p>框架分为三个组件：</p>
-<p>脱壳组件：脱壳组件可以把dex的整体结构性内容脱下来，如果是函数抽取类型的壳脱下来的函数体是空的</p>
-<p>主动调用组件：通过主动调用让壳自己把抽取的函数代码还原回来，可以用这种方法补完函数体内容</p>
-<p>修复组件：将整体结构和函数内容做一个整合，修复完整的dex</p>
-</li>
-<li><p>FART也是可以脱Dalvik类型的壳的，不过现在Dalvik几乎已经见不到了</p>
-</li>
+<li>在这里就是<strong>16 + 10*2 = 36</strong></li>
 </ul>
-<p>脱壳组件部分可以参考我们前面几章分析源码的时候找到的脱壳点：</p>
-<img lazyload="" src="/images/loading.svg" data-src="/2023/09/26/FART%E4%B8%AD%E7%9A%84%E8%84%B1%E5%A3%B3%E7%82%B9-%E8%84%B1%E5%A3%B3%E7%BB%84%E4%BB%B6/image-20230926114731848.png" class="" title="image-20230926114731848">
-
-<p>dex2oat的编译过程最后会调用CompileMethod()将函数编译为二进制代码</p>
-<img lazyload="" src="/images/loading.svg" data-src="/2023/09/26/FART%E4%B8%AD%E7%9A%84%E8%84%B1%E5%A3%B3%E7%82%B9-%E8%84%B1%E5%A3%B3%E7%BB%84%E4%BB%B6/image-20230926115204265.png" class="" title="image-20230926115204265">
-
-<ul>
-<li>在编译之前会对dex中的方法进行检查，检查符合编译条件的将其编译为二进制代码。在<em>else</em>中看到用来<strong>初始化的方法是不需要进行编译的</strong></li>
+</li>
+<li><p><strong>有try_catch：</strong></p>
+<p><strong>codeItem长度 = 16 + uint insns_size*2 + try_catch长度</strong></p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/01/FART%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%E5%92%8C%E6%B5%81%E7%A8%8B/image-20231001102500999.png" class="" title="image-20231001102500999"></li>
 </ul>
-<h3 id="初始化方法的执行流程"><a href="#初始化方法的执行流程" class="headerlink" title="初始化方法的执行流程"></a>初始化方法的执行流程</h3><p>先暂停捋一下初始化方法的执行流程</p>
-<blockquote>
-<p>在ART下有两种函数执行模式</p>
+<h2 id="手动修复函数抽取dex"><a href="#手动修复函数抽取dex" class="headerlink" title="手动修复函数抽取dex"></a>手动修复函数抽取dex</h2><p>FART运行之后我们可以得到dex和bin（codeItem）文件</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/01/FART%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%E5%92%8C%E6%B5%81%E7%A8%8B/image-20231001105254320.png" class="" title="image-20231001105254320">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/01/FART%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%E5%92%8C%E6%B5%81%E7%A8%8B/image-20231001105301966.png" class="" title="image-20231001105301966">
+
+<p>手动修复有三种办法：</p>
 <ol>
-<li>interpreter模式：由ART下的解释器解释执行</li>
-<li>quick模式：直接运行dex2oat编译生成的arm指令</li>
+<li><p>在GDA中定位到我们要修复的函数（找到函数然后查看其16进制，就能直接定位到函数位置），用定位到的地址在dex中搜索（用010edit打开CTRL+G搜索地址），然后在对应的bin文件中通过搜索找到函数体的codeItem字符串，将codeItem字符串填充到dex文件中。</p>
+</li>
+<li><p>在bin文件中找到五元组中的<em>offset值</em>，将值转为16进制在用010打开的dex中搜索地址，然后将codeItem字符串填充过去。</p>
+</li>
+<li><p>在bin文件中把要修复的函数的codeItem字符串编码拷贝出来解码，将解码后的codeItem覆盖dex文件中原函数<em>offset</em>位置。</p>
+</li>
 </ol>
-<p>不论壳有没有执行dex2oat，它的初始化方法始终是运行在interpreter模式下的。所以它必须经过ART下的解释器去取出code_item中的每一条smali指令，然后解释执行。</p>
-<p>ART的解释器在不同的Android版本中有不同的实现：</p>
-<img lazyload="" src="/images/loading.svg" data-src="/2023/09/26/FART%E4%B8%AD%E7%9A%84%E8%84%B1%E5%A3%B3%E7%82%B9-%E8%84%B1%E5%A3%B3%E7%BB%84%E4%BB%B6/image-20230926121235169.png" class="" title="image-20230926121235169">
+<h3 id="手动修复测试"><a href="#手动修复测试" class="headerlink" title="手动修复测试"></a>手动修复测试</h3><p>用FART跑完会dump下来很多的dex文件，可以用命令定位一下函数体在哪个dex中</p>
+<p><code>grep -r "MemoryCache" ./*.txt</code></p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/01/FART%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%E5%92%8C%E6%B5%81%E7%A8%8B/image-20231001111342888.png" class="" title="image-20231001111342888">
 
-<center>Android 13.0没有这个解释器了</center>
+<p>用GDA打开找一个被抽取的函数进行测试</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/01/FART%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%E5%92%8C%E6%B5%81%E7%A8%8B/image-20231001160249523.png" class="" title="image-20231001160249523">
 
-<img lazyload="" src="/images/loading.svg" data-src="/2023/09/26/FART%E4%B8%AD%E7%9A%84%E8%84%B1%E5%A3%B3%E7%82%B9-%E8%84%B1%E5%A3%B3%E7%BB%84%E4%BB%B6/image-20230926121323952.png" class="" title="image-20230926121323952">
+<p>在bin文件里面搜索<strong>getFunctionName</strong>，将这个函数的base64字符串拷贝出来解码</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/01/FART%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%E5%92%8C%E6%B5%81%E7%A8%8B/image-20231001180758244.png" class="" title="image-20231001180758244">
 
-<center>Android 12~8</center>
+<p>解码</p>
+<pre><code class="python">import base64
+def decodeContent(content,filepath): #删除缩进(Tab)
+    try:
+        bytearray_str = base64.b64decode(content)
+        binfile=open(filepath,"ab+")
+        binfile.write(bytearray_str)
+        binfile.close()
+    except Exception as e:
+        print(e)
 
-<ul>
-<li>8~12解释器有两种实现，一种是switch结构另一种是汇编结构的。默认使用汇编结构</li>
-</ul>
-<img lazyload="" src="/images/loading.svg" data-src="/2023/09/26/FART%E4%B8%AD%E7%9A%84%E8%84%B1%E5%A3%B3%E7%82%B9-%E8%84%B1%E5%A3%B3%E7%BB%84%E4%BB%B6/image-20230926121411911.png" class="" title="image-20230926121411911">
+    return
 
-<center>Android 7</center>
 
-<ul>
-<li>在7.0中还有另外一种通过go-to跳转表的实现</li>
-</ul>
-</blockquote>
-<p><strong>本次我们的测试设备使用的是Android8.0</strong></p>
-<p>在ART中，每个Java方法（包括构造函数/初始化函数）都有对应的<strong>art method</strong>对象。这个method对象包含了method的信息，例如method的字节码指令、参数类型、返回类型等。</p>
-<p>ART method对象提供了一个<code>GetDexFile</code>方法，可以用来获取当前方法所属的DexFile对象。</p>
-<img lazyload="" src="/images/loading.svg" data-src="/2023/09/26/FART%E4%B8%AD%E7%9A%84%E8%84%B1%E5%A3%B3%E7%82%B9-%E8%84%B1%E5%A3%B3%E7%BB%84%E4%BB%B6/image-20230926154553095.png" class="" title="image-20230926154553095">
-
-<p>可以在源码中查看DexFile对象，里面包含有Begin()和Size()两个函数</p>
-<img lazyload="" src="/images/loading.svg" data-src="/2023/09/26/FART%E4%B8%AD%E7%9A%84%E8%84%B1%E5%A3%B3%E7%82%B9-%E8%84%B1%E5%A3%B3%E7%BB%84%E4%BB%B6/image-20230926155642205.png" class="" title="image-20230926155642205">
-
-<ul>
-<li>有了这两个函数我们就可以获取到当前dex在内存中的起始地址和大小了</li>
-</ul>
-<h3 id="编写脱壳组件"><a href="#编写脱壳组件" class="headerlink" title="编写脱壳组件"></a>编写脱壳组件</h3><p>接下来可以通过这个链条，来dump初始化的时候映射在内存中的dex</p>
-<blockquote>
-<p>通过ART method对象 → GetDexFile获取到DexFile → DexFile中的Begin()和Size()获取到dex</p>
-</blockquote>
-<pre><code class="c++">ArtMethod* artmethod = shadow_frame.GetMethod();
-if(strstr(artmethod-&gt;PrettyMethod().c_str(),"&lt;clinit&gt;")){
-    // inline const DexFile* ArtMethod::GetDexFile()
-    const DexFile* dexfile = artmethod-&gt;GetDexFile();
-    /*
-    const uint8_t* Begin() const {
-    return begin_;
-    }
-
-    size_t Size() const {
-    return size_;
-    }
-    */
-    const uint8_t* begin = dexfile-&gt;Begin();
-    size_t size = dexfile-&gt;Size();
-
-    char dexfilepath[100] = {0};
-    sprintf(dexfilepath, "/sdcard/%d_%d_Excute.dex", (int)size, getpid());
-    int fd = open(dexfilepath, O_CREAT|O_RDWR, 0666);
-    if(fd &gt; 0){
-        int number = write(fd, begin, size);
-        if(number &gt; 0){};
-        close(fd);
-        }
-    }
+if __name__ == '__main__':
+    b64content="CAABAAMAAADkIBoAdwAAABICcQBtaAAADANuEHRoAwAMATkBAwARAiEUEgM1Q/3/RgABA24Q/GcAAAoFOAUFANgDAwEo9G4Q+GcAAAwFHAY8Dm4QXmcGAAwGbiANaGUACgU5Be//bhD4ZwAADAVuENtnBwAMBm4QXmcGAAwGbiANaGUACgU5Bd3/IgI4DhoDPDVwIEtoMgBxAG1oAAAMA24QcWgDAAsDbjBQaDIEDAIaAx4FbiBTaDIADAJuEPlnAAAMA24gU2gyAAwCGgMdBW4gU2gyAAwCbhD6ZwAACgNuIE9oMgAMAhoDjzduIFNoMgAMAm4QW2gCAAwCKJU="
+    decodeContent(b64content,"checkSize.bin")
 </code></pre>
-<img lazyload="" src="/images/loading.svg" data-src="/2023/09/26/FART%E4%B8%AD%E7%9A%84%E8%84%B1%E5%A3%B3%E7%82%B9-%E8%84%B1%E5%A3%B3%E7%BB%84%E4%BB%B6/image-20230926162456351.png" class="" title="image-20230926162456351">
+<p>把解码后的hex覆盖dex中的偏移位置</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/01/FART%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%E5%92%8C%E6%B5%81%E7%A8%8B/image-20231001181055378.png" class="" title="image-20231001181055378">
 
-<h3 id="测试脱壳组件"><a href="#测试脱壳组件" class="headerlink" title="测试脱壳组件"></a>测试脱壳组件</h3><p>将源码重新编译 &gt; 刷入设备 &gt; 运行目标app脱壳</p>
-<ul>
-<li>测试货拉拉那个带函数抽取的壳</li>
-</ul>
-<img lazyload="" src="/images/loading.svg" data-src="/2023/09/26/FART%E4%B8%AD%E7%9A%84%E8%84%B1%E5%A3%B3%E7%82%B9-%E8%84%B1%E5%A3%B3%E7%BB%84%E4%BB%B6/image-20230926163312190.png" class="" title="image-20230926163312190">
+<p>覆盖（注意覆盖的字节数不要弄错）</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/01/FART%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%E5%92%8C%E6%B5%81%E7%A8%8B/image-20231001181150243.png" class="" title="image-20231001181150243">
 
-<img lazyload="" src="/images/loading.svg" data-src="/2023/09/26/FART%E4%B8%AD%E7%9A%84%E8%84%B1%E5%A3%B3%E7%82%B9-%E8%84%B1%E5%A3%B3%E7%BB%84%E4%BB%B6/image-20230926163317538.png" class="" title="image-20230926163317538">
+<p>保存后用GDA查看</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/01/FART%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%E5%92%8C%E6%B5%81%E7%A8%8B/image-20231001181331324.png" class="" title="image-20231001181331324">
 
-<ul>
-<li>整体框架dump没有问题，但是里面的函数体还是空的</li>
-</ul>
-<h3 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h3><p>在ART中有很多地方都可以当作脱壳点，可以参考hanbingle大佬在看雪的帖子：</p>
-<p><a class="link" target="_blank" rel="noopener" href="https://bbs.kanxue.com/thread-254555.htm">拨云见日：安卓APP脱壳的本质以及如何快速发现ART下的脱壳点 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
-<p><a class="link" target="_blank" rel="noopener" href="https://bbs.kanxue.com/thread-254028.htm">FART正餐前甜点：ART下几个通用简单高效的dump内存中dex方法 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
-<img lazyload="" src="/images/loading.svg" data-src="/2023/09/26/FART%E4%B8%AD%E7%9A%84%E8%84%B1%E5%A3%B3%E7%82%B9-%E8%84%B1%E5%A3%B3%E7%BB%84%E4%BB%B6/image-20230926163851954.png" class="" title="image-20230926163851954">
+<hr>
+<h2 id="FART使用流程"><a href="#FART使用流程" class="headerlink" title="FART使用流程"></a>FART使用流程</h2><p>FART脱壳和定位dex就前面说过了，不再重复</p>
+<p>使用脚本将dex文件修复一下</p>
+<p><code>python fart.py -d XXX.dex -i xxx.bin&gt;&gt;XXX.txt</code></p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/01/FART%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%E5%92%8C%E6%B5%81%E7%A8%8B/image-20231001174246279.png" class="" title="image-20231001174246279">
 
-<img lazyload="" src="/images/loading.svg" data-src="/2023/09/26/FART%E4%B8%AD%E7%9A%84%E8%84%B1%E5%A3%B3%E7%82%B9-%E8%84%B1%E5%A3%B3%E7%BB%84%E4%BB%B6/image-20230926163935009.png" class="" title="image-20230926163935009">
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/01/FART%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%E5%92%8C%E6%B5%81%E7%A8%8B/image-20231001174946682.png" class="" title="image-20231001174946682">
 
         </div>
 
@@ -399,18 +408,18 @@ if(strstr(artmethod-&gt;PrettyMethod().c_str(),"&lt;clinit&gt;")){
             <div class="post-copyright-info">
                 <div class="article-copyright-info-container">
     <ul>
-        <li><strong>标题:</strong> FART中的脱壳点-脱壳组件</li>
+        <li><strong>标题:</strong> FART使用场景和流程</li>
         <li><strong>作者:</strong> xiaoeryu</li>
         <li><strong>创建于
-                :</strong> 2023-09-26 11:07:23</li>
+                :</strong> 2023-10-01 08:46:59</li>
         
             <li>
                 <strong>更新于
-                    :</strong> 2023-09-26 16:41:59
+                    :</strong> 2023-10-01 18:13:58
             </li>
         
         <li>
-            <strong>链接:</strong> https://github.com/xiaoeryu/2023/09/26/FART中的脱壳点-脱壳组件/
+            <strong>链接:</strong> https://github.com/xiaoeryu/2023/10/01/FART使用场景和流程/
         </li>
         <li>
             <strong>
@@ -428,35 +437,32 @@ if(strstr(artmethod-&gt;PrettyMethod().c_str(),"&lt;clinit&gt;")){
         
 
         
+            <ul class="post-tags-box">
+                
+                    <li class="tag-item">
+                        <a href="/tags/%E5%AD%A6%E4%B9%A0%E7%AC%94%E8%AE%B0/">#学习笔记</a>&nbsp;
+                    </li>
+                
+                    <li class="tag-item">
+                        <a href="/tags/FART%E8%84%B1%E5%A3%B3/">#FART脱壳</a>&nbsp;
+                    </li>
+                
+            </ul>
+        
 
         
 
         
             <div class="article-nav">
                 
-                    <div class="article-prev">
-                        <a class="prev"
-                        rel="prev"
-                        href="/2023/10/01/FART%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%E5%92%8C%E6%B5%81%E7%A8%8B/"
-                        >
-                            <span class="left arrow-icon flex justify-center items-center">
-                                <i class="fa-solid fa-chevron-left"></i>
-                            </span>
-                            <span class="title flex justify-center items-center">
-                                <span class="post-nav-title-item">FART使用场景和流程</span>
-                                <span class="post-nav-item">上一篇</span>
-                            </span>
-                        </a>
-                    </div>
-                
                 
                     <div class="article-next">
                         <a class="next"
                         rel="next"
-                        href="/2023/09/22/ART%E4%B8%8B%E6%8A%BD%E5%8F%96%E5%A3%B3%E5%AE%9E%E7%8E%B0/"
+                        href="/2023/09/26/FART%E4%B8%AD%E7%9A%84%E8%84%B1%E5%A3%B3%E7%82%B9-%E8%84%B1%E5%A3%B3%E7%BB%84%E4%BB%B6/"
                         >
                             <span class="title flex justify-center items-center">
-                                <span class="post-nav-title-item">ART下抽取壳实现</span>
+                                <span class="post-nav-title-item">FART中的脱壳点-脱壳组件</span>
                                 <span class="post-nav-item">下一篇</span>
                             </span>
                             <span class="right arrow-icon flex justify-center items-center">
@@ -521,8 +527,8 @@ if(strstr(artmethod-&gt;PrettyMethod().c_str(),"&lt;clinit&gt;")){
             <div class="post-toc-wrap">
     <div class="post-toc">
         <div class="toc-title">此页目录</div>
-        <div class="page-title">FART中的脱壳点-脱壳组件</div>
-        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#FART%E6%A1%86%E6%9E%B6"><span class="nav-text">FART框架</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A1%86%E6%9E%B6%E6%9E%84%E6%88%90"><span class="nav-text">框架构成</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%9D%E5%A7%8B%E5%8C%96%E6%96%B9%E6%B3%95%E7%9A%84%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B"><span class="nav-text">初始化方法的执行流程</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BC%96%E5%86%99%E8%84%B1%E5%A3%B3%E7%BB%84%E4%BB%B6"><span class="nav-text">编写脱壳组件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E8%84%B1%E5%A3%B3%E7%BB%84%E4%BB%B6"><span class="nav-text">测试脱壳组件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%90%8E%E8%AE%B0"><span class="nav-text">后记</span></a></li></ol></li></ol>
+        <div class="page-title">FART使用场景和流程</div>
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%84%B1%E5%A3%B3%E6%96%B9%E5%BC%8F"><span class="nav-text">脱壳方式</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#codeItem"><span class="nav-text">codeItem</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%89%8B%E5%8A%A8%E4%BF%AE%E5%A4%8D%E5%87%BD%E6%95%B0%E6%8A%BD%E5%8F%96dex"><span class="nav-text">手动修复函数抽取dex</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%8B%E5%8A%A8%E4%BF%AE%E5%A4%8D%E6%B5%8B%E8%AF%95"><span class="nav-text">手动修复测试</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#FART%E4%BD%BF%E7%94%A8%E6%B5%81%E7%A8%8B"><span class="nav-text">FART使用流程</span></a></li></ol>
 
     </div>
 </div>
