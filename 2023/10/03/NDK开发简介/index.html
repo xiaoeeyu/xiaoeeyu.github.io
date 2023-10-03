@@ -18,15 +18,31 @@
     <meta name="googlebot" content="index,follow">
     <meta name="revisit-after" content="1 days">
     
-        <meta property="og:type" content="article">
+        <meta name="description" content="记录一些NDK开发的学习笔记，这里记录的方向会更偏向于逆向、安全方面的内容。 什么是NDKJNI：Java Native Interface的缩写，JAVA本地接口的意思 NDK：Native Development Kit（本地开发套件）    可以帮助开发人员快速开发、调试动态库    JNI函数JNI是一个规范    有时候需要编译后保留函数名可以加上extern ”C”，使其按C的方式进行">
+<meta property="og:type" content="article">
 <meta property="og:title" content="NDK开发简介">
 <meta property="og:url" content="https://xiaoeeyu.github.io/2023/10/03/NDK%E5%BC%80%E5%8F%91%E7%AE%80%E4%BB%8B/index.html">
 <meta property="og:site_name" content="xiaoeryu">
+<meta property="og:description" content="记录一些NDK开发的学习笔记，这里记录的方向会更偏向于逆向、安全方面的内容。 什么是NDKJNI：Java Native Interface的缩写，JAVA本地接口的意思 NDK：Native Development Kit（本地开发套件）    可以帮助开发人员快速开发、调试动态库    JNI函数JNI是一个规范    有时候需要编译后保留函数名可以加上extern ”C”，使其按C的方式进行">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/03/NDK%E5%BC%80%E5%8F%91%E7%AE%80%E4%BB%8B/image-20231003092634874.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/03/NDK%E5%BC%80%E5%8F%91%E7%AE%80%E4%BB%8B/image-20231003093000349.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/03/NDK%E5%BC%80%E5%8F%91%E7%AE%80%E4%BB%8B/image-20231003093054836.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/03/NDK%E5%BC%80%E5%8F%91%E7%AE%80%E4%BB%8B/image-20231003093230322.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/03/NDK%E5%BC%80%E5%8F%91%E7%AE%80%E4%BB%8B/image-20231003093236354.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/03/NDK%E5%BC%80%E5%8F%91%E7%AE%80%E4%BB%8B/image-20231003093242378.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/03/NDK%E5%BC%80%E5%8F%91%E7%AE%80%E4%BB%8B/image-20231003093321674.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/03/NDK%E5%BC%80%E5%8F%91%E7%AE%80%E4%BB%8B/image-20231003093324954.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/03/NDK%E5%BC%80%E5%8F%91%E7%AE%80%E4%BB%8B/image-20231003093348658.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/03/NDK%E5%BC%80%E5%8F%91%E7%AE%80%E4%BB%8B/image-20231003093642632.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/03/NDK%E5%BC%80%E5%8F%91%E7%AE%80%E4%BB%8B/image-20231003093715694.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/03/NDK%E5%BC%80%E5%8F%91%E7%AE%80%E4%BB%8B/image-20231003093856500.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/03/NDK%E5%BC%80%E5%8F%91%E7%AE%80%E4%BB%8B/image-20231003094120836.png">
 <meta property="article:published_time" content="2023-10-03T01:04:30.000Z">
-<meta property="article:modified_time" content="2023-10-03T01:04:30.529Z">
+<meta property="article:modified_time" content="2023-10-03T01:41:43.421Z">
 <meta property="article:author" content="xiaoeryu">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://xiaoeeyu.github.io/2023/10/03/NDK%E5%BC%80%E5%8F%91%E7%AE%80%E4%BB%8B/image-20231003092634874.png">
     
     
     <!--- Icon Part-->
@@ -236,8 +252,8 @@
     
         <span class="article-date article-meta-item">
             <i class="fa-regular fa-wrench"></i>&nbsp;
-            <span class="desktop">2023-10-03 09:04:30</span>
-            <span class="mobile">2023-10-03 09:04:30</span>
+            <span class="desktop">2023-10-03 09:41:43</span>
+            <span class="mobile">2023-10-03 09:41:43</span>
             <span class="hover-info">更新</span>
         </span>
     
@@ -264,7 +280,54 @@
 
 
         <div class="article-content markdown-body">
-            
+            <p>记录一些NDK开发的学习笔记，这里记录的方向会更偏向于逆向、安全方面的内容。</p>
+<h3 id="什么是NDK"><a href="#什么是NDK" class="headerlink" title="什么是NDK"></a>什么是NDK</h3><p>JNI：Java Native Interface的缩写，JAVA本地接口的意思</p>
+<p>NDK：Native Development Kit（本地开发套件）</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/03/NDK%E5%BC%80%E5%8F%91%E7%AE%80%E4%BB%8B/image-20231003092634874.png" class="" title="image-20231003092634874">
+
+<ul>
+<li>可以帮助开发人员快速开发、调试动态库</li>
+</ul>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/03/NDK%E5%BC%80%E5%8F%91%E7%AE%80%E4%BB%8B/image-20231003093000349.png" class="" title="image-20231003093000349">
+
+<h3 id="JNI函数"><a href="#JNI函数" class="headerlink" title="JNI函数"></a>JNI函数</h3><p>JNI是一个规范</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/03/NDK%E5%BC%80%E5%8F%91%E7%AE%80%E4%BB%8B/image-20231003093054836.png" class="" title="image-20231003093054836">
+
+<ul>
+<li>有时候需要编译后保留函数名可以加上<em>extern ”C”</em>，使其按C的方式进行编译</li>
+</ul>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/03/NDK%E5%BC%80%E5%8F%91%E7%AE%80%E4%BB%8B/image-20231003093230322.png" class="" title="image-20231003093230322">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/03/NDK%E5%BC%80%E5%8F%91%E7%AE%80%E4%BB%8B/image-20231003093236354.png" class="" title="image-20231003093236354">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/03/NDK%E5%BC%80%E5%8F%91%E7%AE%80%E4%BB%8B/image-20231003093242378.png" class="" title="image-20231003093242378">
+
+<h3 id="JNI参数"><a href="#JNI参数" class="headerlink" title="JNI参数"></a>JNI参数</h3><p>静态函数和动态函数实现的时候第二个传参是不同的</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/03/NDK%E5%BC%80%E5%8F%91%E7%AE%80%E4%BB%8B/image-20231003093321674.png" class="" title="image-20231003093321674">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/03/NDK%E5%BC%80%E5%8F%91%E7%AE%80%E4%BB%8B/image-20231003093324954.png" class="" title="image-20231003093324954">
+
+<p>静态成员可以直接通过类名的方式访问调用，非静态函数是不行的</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/03/NDK%E5%BC%80%E5%8F%91%E7%AE%80%E4%BB%8B/image-20231003093348658.png" class="" title="image-20231003093348658">
+
+<ul>
+<li>通过对参数的分析，我们可以知道一个JNI函数它的参数一定是不少于两个的，从第三个参数开始才是属于函数自己的参数</li>
+</ul>
+<h3 id="调用"><a href="#调用" class="headerlink" title="调用"></a>调用</h3><p>在调用C文件中的函数的时候要显式的加上<em>extern “C”</em></p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/03/NDK%E5%BC%80%E5%8F%91%E7%AE%80%E4%BB%8B/image-20231003093642632.png" class="" title="image-20231003093642632">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/03/NDK%E5%BC%80%E5%8F%91%E7%AE%80%E4%BB%8B/image-20231003093715694.png" class="" title="image-20231003093715694">
+
+<ul>
+<li>因为如果不加的话编译器会默认按C++的方式进行编译，在函数名称粉碎之后就链接不到了。</li>
+</ul>
+<p><strong>变量类型</strong></p>
+<p>在前面加上 <strong>j</strong></p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/03/NDK%E5%BC%80%E5%8F%91%E7%AE%80%E4%BB%8B/image-20231003093856500.png" class="" title="image-20231003093856500">
+
+<h3 id="测试"><a href="#测试" class="headerlink" title="测试"></a>测试</h3><p>执行成功：测试的时候注意一下系统版本</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/03/NDK%E5%BC%80%E5%8F%91%E7%AE%80%E4%BB%8B/image-20231003094120836.png" class="" title="image-20231003094120836">
+
         </div>
 
         
@@ -278,7 +341,7 @@
         
             <li>
                 <strong>更新于
-                    :</strong> 2023-10-03 09:04:30
+                    :</strong> 2023-10-03 09:41:43
             </li>
         
         <li>
@@ -379,7 +442,7 @@
     <div class="post-toc">
         <div class="toc-title">此页目录</div>
         <div class="page-title">NDK开发简介</div>
-        
+        <ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFNDK"><span class="nav-text">什么是NDK</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JNI%E5%87%BD%E6%95%B0"><span class="nav-text">JNI函数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#JNI%E5%8F%82%E6%95%B0"><span class="nav-text">JNI参数</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B0%83%E7%94%A8"><span class="nav-text">调用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95"><span class="nav-text">测试</span></a></li></ol>
 
     </div>
 </div>
