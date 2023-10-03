@@ -500,7 +500,7 @@
     
     
     <entry>
-      <title>32. 平坦模型</title>
+      <title>平坦模型</title>
       <link href="/2022/12/11/32-%E5%B9%B3%E5%9D%A6%E6%A8%A1%E5%9E%8B/"/>
       <url>/2022/12/11/32-%E5%B9%B3%E5%9D%A6%E6%A8%A1%E5%9E%8B/</url>
       
@@ -509,16 +509,14 @@
       
       <categories>
           
-          <category> Windows保护模式 </category>
-          
-          <category> 二进制 </category>
+          <category> X86汇编语言：实模式到保护模式 </category>
           
       </categories>
       
       
         <tags>
             
-            <tag> X86汇编语言：实模式到保护模式 </tag>
+            <tag> x86平坦模型 </tag>
             
         </tags>
       
@@ -527,7 +525,7 @@
     
     
     <entry>
-      <title>31. 分页和动态页面分配</title>
+      <title>分页和动态页面分配</title>
       <link href="/2022/12/11/31-%E5%88%86%E9%A1%B5%E5%92%8C%E5%8A%A8%E6%80%81%E9%A1%B5%E9%9D%A2%E5%88%86%E9%85%8D/"/>
       <url>/2022/12/11/31-%E5%88%86%E9%A1%B5%E5%92%8C%E5%8A%A8%E6%80%81%E9%A1%B5%E9%9D%A2%E5%88%86%E9%85%8D/</url>
       
@@ -536,16 +534,14 @@
       
       <categories>
           
-          <category> Windows保护模式 </category>
-          
-          <category> 二进制 </category>
+          <category> X86汇编语言：实模式到保护模式 </category>
           
       </categories>
       
       
         <tags>
             
-            <tag> X86汇编语言：实模式到保护模式 </tag>
+            <tag> x86分页 </tag>
             
         </tags>
       
@@ -554,7 +550,7 @@
     
     
     <entry>
-      <title>30-中断和异常的处理与抢占式多任务</title>
+      <title>中断和异常的处理与抢占式多任务</title>
       <link href="/2022/12/11/30-%E4%B8%AD%E6%96%AD%E5%92%8C%E5%BC%82%E5%B8%B8%E7%9A%84%E5%A4%84%E7%90%86%E4%B8%8E%E6%8A%A2%E5%8D%A0%E5%BC%8F%E5%A4%9A%E4%BB%BB%E5%8A%A1/"/>
       <url>/2022/12/11/30-%E4%B8%AD%E6%96%AD%E5%92%8C%E5%BC%82%E5%B8%B8%E7%9A%84%E5%A4%84%E7%90%86%E4%B8%8E%E6%8A%A2%E5%8D%A0%E5%BC%8F%E5%A4%9A%E4%BB%BB%E5%8A%A1/</url>
       
@@ -563,16 +559,14 @@
       
       <categories>
           
-          <category> Windows保护模式 </category>
-          
-          <category> 二进制 </category>
+          <category> X86汇编语言：实模式到保护模式 </category>
           
       </categories>
       
       
         <tags>
             
-            <tag> X86汇编语言：实模式到保护模式 </tag>
+            <tag> x86中断和异常 </tag>
             
         </tags>
       
@@ -581,7 +575,7 @@
     
     
     <entry>
-      <title>29. 协同式任务切换</title>
+      <title>协同式任务切换</title>
       <link href="/2022/12/11/29-%E5%8D%8F%E5%90%8C%E5%BC%8F%E4%BB%BB%E5%8A%A1%E5%88%87%E6%8D%A2/"/>
       <url>/2022/12/11/29-%E5%8D%8F%E5%90%8C%E5%BC%8F%E4%BB%BB%E5%8A%A1%E5%88%87%E6%8D%A2/</url>
       
@@ -590,16 +584,14 @@
       
       <categories>
           
-          <category> Windows保护模式 </category>
-          
-          <category> 二进制 </category>
+          <category> X86汇编语言：实模式到保护模式 </category>
           
       </categories>
       
       
         <tags>
             
-            <tag> X86汇编语言：实模式到保护模式 </tag>
+            <tag> x86协同式任务切换 </tag>
             
         </tags>
       
@@ -608,7 +600,7 @@
     
     
     <entry>
-      <title>28. 特权级和特权级保护</title>
+      <title>特权级和特权级保护</title>
       <link href="/2022/12/11/28-%E7%89%B9%E6%9D%83%E7%BA%A7%E5%92%8C%E7%89%B9%E6%9D%83%E7%BA%A7%E4%BF%9D%E6%8A%A4/"/>
       <url>/2022/12/11/28-%E7%89%B9%E6%9D%83%E7%BA%A7%E5%92%8C%E7%89%B9%E6%9D%83%E7%BA%A7%E4%BF%9D%E6%8A%A4/</url>
       
@@ -617,16 +609,14 @@
       
       <categories>
           
-          <category> Windows保护模式 </category>
-          
-          <category> 二进制 </category>
+          <category> X86汇编语言：实模式到保护模式 </category>
           
       </categories>
       
       
         <tags>
             
-            <tag> X86汇编语言：实模式到保护模式 </tag>
+            <tag> x86特权级和特权级保护 </tag>
             
         </tags>
       
@@ -635,7 +625,7 @@
     
     
     <entry>
-      <title>27. 任务和任务的创建</title>
+      <title>任务和任务的创建</title>
       <link href="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/"/>
       <url>/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/</url>
       
@@ -644,16 +634,14 @@
       
       <categories>
           
-          <category> Windows保护模式 </category>
-          
-          <category> 二进制 </category>
+          <category> X86汇编语言：实模式到保护模式 </category>
           
       </categories>
       
       
         <tags>
             
-            <tag> X86汇编语言：实模式到保护模式 </tag>
+            <tag> x86内核任务系统 </tag>
             
         </tags>
       
@@ -662,7 +650,7 @@
     
     
     <entry>
-      <title>26. 用户程序编程接口及其实现</title>
+      <title>用户程序编程接口及其实现</title>
       <link href="/2022/12/11/26-%E7%94%A8%E6%88%B7%E7%A8%8B%E5%BA%8F%E7%BC%96%E7%A8%8B%E6%8E%A5%E5%8F%A3%E5%8F%8A%E5%85%B6%E5%AE%9E%E7%8E%B0/"/>
       <url>/2022/12/11/26-%E7%94%A8%E6%88%B7%E7%A8%8B%E5%BA%8F%E7%BC%96%E7%A8%8B%E6%8E%A5%E5%8F%A3%E5%8F%8A%E5%85%B6%E5%AE%9E%E7%8E%B0/</url>
       
@@ -671,16 +659,14 @@
       
       <categories>
           
-          <category> Windows保护模式 </category>
-          
-          <category> 二进制 </category>
+          <category> X86汇编语言：实模式到保护模式 </category>
           
       </categories>
       
       
         <tags>
             
-            <tag> X86汇编语言：实模式到保护模式 </tag>
+            <tag> 用户程序编程接口及其实现 </tag>
             
         </tags>
       
@@ -689,7 +675,7 @@
     
     
     <entry>
-      <title>25. 保护模式程序的动态加载和执行</title>
+      <title>保护模式程序的动态加载和执行</title>
       <link href="/2022/12/11/25-%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F%E7%A8%8B%E5%BA%8F%E7%9A%84%E5%8A%A8%E6%80%81%E5%8A%A0%E8%BD%BD%E5%92%8C%E6%89%A7%E8%A1%8C/"/>
       <url>/2022/12/11/25-%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F%E7%A8%8B%E5%BA%8F%E7%9A%84%E5%8A%A8%E6%80%81%E5%8A%A0%E8%BD%BD%E5%92%8C%E6%89%A7%E8%A1%8C/</url>
       
@@ -698,16 +684,14 @@
       
       <categories>
           
-          <category> Windows保护模式 </category>
-          
-          <category> 二进制 </category>
+          <category> X86汇编语言：实模式到保护模式 </category>
           
       </categories>
       
       
         <tags>
             
-            <tag> X86汇编语言：实模式到保护模式 </tag>
+            <tag> 保护模式下的动态加载和执行 </tag>
             
         </tags>
       
@@ -716,7 +700,7 @@
     
     
     <entry>
-      <title>24-存储器的保护</title>
+      <title>存储器的保护</title>
       <link href="/2022/12/11/24-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4/"/>
       <url>/2022/12/11/24-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4/</url>
       
@@ -725,16 +709,14 @@
       
       <categories>
           
-          <category> Windows保护模式 </category>
-          
-          <category> 二进制 </category>
+          <category> X86汇编语言：实模式到保护模式 </category>
           
       </categories>
       
       
         <tags>
             
-            <tag> X86汇编语言：实模式到保护模式 </tag>
+            <tag> X86存储器及其保护 </tag>
             
         </tags>
       
@@ -743,7 +725,7 @@
     
     
     <entry>
-      <title>23-指令的格式及其操作尺寸</title>
+      <title>指令的格式及其操作尺寸</title>
       <link href="/2022/12/11/23-%E6%8C%87%E4%BB%A4%E7%9A%84%E6%A0%BC%E5%BC%8F%E5%8F%8A%E5%85%B6%E6%93%8D%E4%BD%9C%E5%B0%BA%E5%AF%B8/"/>
       <url>/2022/12/11/23-%E6%8C%87%E4%BB%A4%E7%9A%84%E6%A0%BC%E5%BC%8F%E5%8F%8A%E5%85%B6%E6%93%8D%E4%BD%9C%E5%B0%BA%E5%AF%B8/</url>
       
@@ -752,16 +734,16 @@
       
       <categories>
           
-          <category> Windows保护模式 </category>
-          
-          <category> 二进制 </category>
+          <category> X86汇编语言：实模式到保护模式 </category>
           
       </categories>
       
       
         <tags>
             
-            <tag> X86汇编语言：实模式到保护模式 </tag>
+            <tag> X86寄存器指令格式 </tag>
+            
+            <tag> X86描述符 </tag>
             
         </tags>
       
@@ -770,25 +752,23 @@
     
     
     <entry>
-      <title>22-进入保护模式</title>
+      <title>进入保护模式</title>
       <link href="/2022/12/11/22-%E8%BF%9B%E5%85%A5%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F/"/>
       <url>/2022/12/11/22-%E8%BF%9B%E5%85%A5%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F/</url>
       
-        <content type="html"><![CDATA[<ol><li><p>保护模式是要保护什么</p><span id="more"></span><img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/22-%E8%BF%9B%E5%85%A5%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F/17acce13de7fa801e5431f34b95e4867.png" class="" title="17acce13de7fa801e5431f34b95e4867"></li><li><p>全局描述符表GDT和全局描述符表GDTR</p><img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/22-%E8%BF%9B%E5%85%A5%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F/157c9ec465396fb8b62c7a2978d4dbc5-166832631434711.png" class="" title="描述符表"><p>保护模式下: 对内存的访问让然使用段地址和偏移地址, 但是, 在每个段能够访问之前, 必须先进性登记</p></li></ol><ul><li>超出范围的访问会产生一个内部异常的中断</li><li>和一个段有关的信息需要八个字节(64位)来描述, 称之为段描述符, 而在内存中存放这些描述符的地方就叫做描述符表<ul><li>全局描述符表(GDT): 顾名思义是为整个计算机硬件系统服务的, 进入保护模式之前由系统定义</li><li>(GDTR): 描述符表寄存器(48位)<img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/22-%E8%BF%9B%E5%85%A5%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F/21d28d9a8682eb20c1fc1f0938ba542a-166832631434713.png" class="" title="GDTR"></li></ul></li></ul><ol start="3"><li>准备创建全局描述符表</li></ol><ul><li>寻址GDT起始地址的方法<ul><li>从CS段主引导程序0x7c00+gdt_base获取到GDT的起始地址, 然后除以16分别讲余数和商放入dx和ax中(16位(除数)<em>(dx高位和ax低位拼接)(被除数)ax(商)dx(余数))</em></li></ul></li></ul><pre><code>             ;计算GDT所在的逻辑段地址         mov ax,[cs:gdt_base+0x7c00]        ;低16位         mov dx,[cs:gdt_base+0x7c00+0x02]   ;高16位         mov bx,16         div bx         mov ds,ax                          ;令DS指向该段以进行操作         mov bx,dx                          ;段内起始偏移地址    </code></pre><img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/22-%E8%BF%9B%E5%85%A5%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F/029bee4356257f4d8734737427d4815c-166832631434712.png" class=""><center>gdt_base是相对于主引导程序的偏移偏移处存放的是我们自定义的GDT表地址</center><ol start="4"><li><p>描述符的分类<br>描述符像是一个索引或者标签</p><img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/22-%E8%BF%9B%E5%85%A5%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F/64dca01d9aaef20ad3fc23c38cf90fce-166832631434714.png" class="" title="描述符"><img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/22-%E8%BF%9B%E5%85%A5%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F/e50691a47afce4f90646d6c746fd58b2-166832631434716.png" class=""><img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/22-%E8%BF%9B%E5%85%A5%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F/b343ae3ebbe2b9f4f2029b61fa263798-166832631434715.png" class=""></li><li><p>存储器的段描述符- 段的类型和基地址</p><ol><li>每个描述符占八个字节也就是64位<ol><li>如果S=1则当前描述符是存储器的段描述符<img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/22-%E8%BF%9B%E5%85%A5%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F/e5f98567154b1d8b3b15d8220e5c52ea-166832631434717.png" class="" title="段描述符格式"></li></ol></li></ol></li><li><p>存储器的段描述符-段界限及访问控制</p><img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/22-%E8%BF%9B%E5%85%A5%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F/fb8dc67c0a729b770d438eab61806921-166832631434718.png" class="" title="描述符的段界限"></li><li><p>安装存储器的段描述符</p><img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/22-%E8%BF%9B%E5%85%A5%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F/6a09e183989807ba111d49b25cb34200-166832631434819.png" class="" title="段描述符对齐"></li><li><p>加载全局描述符表寄存器GDTR</p><ol><li>lgdt指令<img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/22-%E8%BF%9B%E5%85%A5%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F/1b2a40a6372b98fe0840ad30357b939b-166832631434820.png" class="" title="lgdt"></li></ol></li></ol><pre><code>             ;初始化描述符表寄存器GDTR         mov word [cs: gdt_size+0x7c00],15  ;描述符表的界限（总字节数减一）         lgdt [cs: gdt_size+0x7c00] </code></pre><ol start="9"><li><p>开启处理器的第21跟地址线A20<br>通过在第21跟地址线加与门来控制输出, 在现在的CPU上已经废弃</p></li><li><p>通过设置寄存器CR0的PE位进入保护模式</p><ol><li>将CR0的第一个比特位置1打开保护模式的开关</li></ol></li><li><p>描述符高速缓存器和保护模式下的内存访问</p><ol><li>将段选择子传送到段选择器后处理器会到描述符表中取出指定的描述符然后将描述符的内容传送到描述符高速缓存器</li><li>将段选择子传送到段选择器, 将描述符中的索引号乘以8得到在描述符表中的偏移量(因为TI位是0所以是从GDT中找)加上GDTR中的线性基地址, 得到一个线性地址从GDT表中取出描述符, 然后将描述符的内容传送到描述符高速缓存器中</li></ol></li><li><p>在调试器中观察实模式和保护模式的内存访问</p><ol><li>在32位的实模式下也是使用高速缓存器保存基地址, 写入的时候会自动用偏移加上基地址去寻址</li></ol></li></ol>]]></content>
+        <content type="html"><![CDATA[<ol><li><p>保护模式是要保护什么</p><span id="more"></span><img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/22-%E8%BF%9B%E5%85%A5%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F/17acce13de7fa801e5431f34b95e4867.png" class="" title="17acce13de7fa801e5431f34b95e4867"></li><li><p>全局描述符表<strong>GDT</strong>和全局描述符表寄存器<strong>GDTR</strong></p><img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/22-%E8%BF%9B%E5%85%A5%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F/157c9ec465396fb8b62c7a2978d4dbc5-166832631434711.png" class="" title="描述符表"><p>保护模式下: 对内存的访问让然使用段地址和偏移地址, 但是, 在每个段能够访问之前, 必须先进性登记</p></li></ol><ul><li>超出范围的访问会产生一个内部异常的中断</li><li>和一个段有关的信息需要八个字节(64位)来描述, 称之为段描述符, 而在内存中存放这些描述符的地方就叫做描述符表<ul><li>全局描述符表(GDT): 顾名思义是为整个计算机硬件系统服务的, 进入保护模式之前由系统定义</li><li>(GDTR): 描述符表寄存器(48位)<img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/22-%E8%BF%9B%E5%85%A5%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F/21d28d9a8682eb20c1fc1f0938ba542a-166832631434713.png" class="" title="GDTR"></li></ul></li></ul><ol start="3"><li>准备创建全局描述符表</li></ol><ul><li>寻址GDT起始地址的方法<ul><li>从CS段主引导程序0x7c00+gdt_base获取到GDT的起始地址, 然后除以16分别讲余数和商放入dx和ax中(16位(除数)<em>(dx高位和ax低位拼接)(被除数)ax(商)dx(余数))</em></li></ul></li></ul><pre><code>             ;计算GDT所在的逻辑段地址         mov ax,[cs:gdt_base+0x7c00]        ;低16位         mov dx,[cs:gdt_base+0x7c00+0x02]   ;高16位         mov bx,16         div bx         mov ds,ax                          ;令DS指向该段以进行操作         mov bx,dx                          ;段内起始偏移地址    </code></pre><img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/22-%E8%BF%9B%E5%85%A5%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F/029bee4356257f4d8734737427d4815c-166832631434712.png" class=""><center>gdt_base是相对于主引导程序的偏移偏移处存放的是我们自定义的GDT表地址</center><ol start="4"><li><p>描述符的分类<br>描述符像是一个索引或者标签</p><img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/22-%E8%BF%9B%E5%85%A5%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F/64dca01d9aaef20ad3fc23c38cf90fce-166832631434714.png" class="" title="描述符"><img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/22-%E8%BF%9B%E5%85%A5%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F/e50691a47afce4f90646d6c746fd58b2-166832631434716.png" class=""><img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/22-%E8%BF%9B%E5%85%A5%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F/b343ae3ebbe2b9f4f2029b61fa263798-166832631434715.png" class=""></li><li><p>存储器的段描述符- 段的类型和基地址</p><ol><li>每个描述符占八个字节也就是64位<ol><li>如果S=1则当前描述符是存储器的段描述符<img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/22-%E8%BF%9B%E5%85%A5%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F/e5f98567154b1d8b3b15d8220e5c52ea-166832631434717.png" class="" title="段描述符格式"></li></ol></li></ol></li><li><p>存储器的段描述符-段界限及访问控制</p><img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/22-%E8%BF%9B%E5%85%A5%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F/fb8dc67c0a729b770d438eab61806921-166832631434718.png" class="" title="描述符的段界限"></li><li><p>安装存储器的段描述符</p><img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/22-%E8%BF%9B%E5%85%A5%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F/6a09e183989807ba111d49b25cb34200-166832631434819.png" class="" title="段描述符对齐"></li><li><p>加载全局描述符表寄存器GDTR</p><ol><li>lgdt指令<img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/22-%E8%BF%9B%E5%85%A5%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F/1b2a40a6372b98fe0840ad30357b939b-166832631434820.png" class="" title="lgdt"></li></ol></li></ol><pre><code>             ;初始化描述符表寄存器GDTR         mov word [cs: gdt_size+0x7c00],15  ;描述符表的界限（总字节数减一）         lgdt [cs: gdt_size+0x7c00] </code></pre><ol start="9"><li><p>开启处理器的第21跟地址线A20<br>通过在第21跟地址线加与门来控制输出, 在现在的CPU上已经废弃</p></li><li><p>通过设置寄存器CR0的PE位进入保护模式</p><ol><li>将CR0的第一个比特位置1打开保护模式的开关</li></ol></li><li><p>描述符高速缓存器和保护模式下的内存访问</p><ol><li>将段选择子传送到段选择器后处理器会到描述符表中取出指定的描述符然后将描述符的内容传送到描述符高速缓存器</li><li>将段选择子传送到段选择器, 将描述符中的索引号乘以8得到在描述符表中的偏移量(因为TI位是0所以是从GDT中找)加上GDTR中的线性基地址, 得到一个线性地址从GDT表中取出描述符, 然后将描述符的内容传送到描述符高速缓存器中</li></ol></li><li><p>在调试器中观察实模式和保护模式的内存访问</p><ol><li>在32位的实模式下也是使用高速缓存器保存基地址, 写入的时候会自动用偏移加上基地址去寻址</li></ol></li></ol>]]></content>
       
       
       <categories>
           
-          <category> 二进制 </category>
-          
-          <category> Windows保护模式 </category>
+          <category> X86汇编语言：实模式到保护模式 </category>
           
       </categories>
       
       
         <tags>
             
-            <tag> X86汇编语言：实模式到保护模式 </tag>
+            <tag> X86描述符表 </tag>
             
         </tags>
       
@@ -879,6 +859,33 @@
       <title>资本主义和社会主义</title>
       <link href="/2021/06/08/xiaoeryu%E7%9A%84%E9%9A%8F%E7%AC%94/"/>
       <url>/2021/06/08/xiaoeryu%E7%9A%84%E9%9A%8F%E7%AC%94/</url>
+      
+        <content type="html"><![CDATA[<h1 id="2021-x2F-6-x2F-8"><a href="#2021-x2F-6-x2F-8" class="headerlink" title="2021/6/8"></a>2021/6/8</h1><p>马克思认为资本主义发展方向，是资本占有的社会化，走向社会主义，从资本占有的角度来说就是社会资本主义。其中的关键是，资本占有的载体不是私人为主，而应该是公有制前提下的国家持有和社会占有。是社会化占比更高的国家-社会混合型经济。</p><span id="more"></span><p>社会资本主义的承载主体，可以是社会企业、合作社、集体所有的股份公司、全员持股公司等等。</p><p>这个意义上，国有企业、社会企业、集体经济都是属于社会资本的范畴。</p><p>国有企业如果被变相搞私有化，就是假的社会资本。</p>]]></content>
+      
+      
+      <categories>
+          
+          <category> 社会科学 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> 资本主义 </tag>
+            
+            <tag> 哲学 </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
+      <title>资本主义和社会主义</title>
+      <link href="/2021/06/08/%E8%B5%84%E6%9C%AC%E4%B8%BB%E4%B9%89%E5%92%8C%E7%A4%BE%E4%BC%9A%E4%B8%BB%E4%B9%89/"/>
+      <url>/2021/06/08/%E8%B5%84%E6%9C%AC%E4%B8%BB%E4%B9%89%E5%92%8C%E7%A4%BE%E4%BC%9A%E4%B8%BB%E4%B9%89/</url>
       
         <content type="html"><![CDATA[<h1 id="2021-x2F-6-x2F-8"><a href="#2021-x2F-6-x2F-8" class="headerlink" title="2021/6/8"></a>2021/6/8</h1><p>马克思认为资本主义发展方向，是资本占有的社会化，走向社会主义，从资本占有的角度来说就是社会资本主义。其中的关键是，资本占有的载体不是私人为主，而应该是公有制前提下的国家持有和社会占有。是社会化占比更高的国家-社会混合型经济。</p><span id="more"></span><p>社会资本主义的承载主体，可以是社会企业、合作社、集体所有的股份公司、全员持股公司等等。</p><p>这个意义上，国有企业、社会企业、集体经济都是属于社会资本的范畴。</p><p>国有企业如果被变相搞私有化，就是假的社会资本。</p>]]></content>
       
@@ -1182,7 +1189,7 @@
       <link href="/2021/05/24/ARM%E6%B1%87%E7%BC%96%E7%AC%94%E8%AE%B0/"/>
       <url>/2021/05/24/ARM%E6%B1%87%E7%BC%96%E7%AC%94%E8%AE%B0/</url>
       
-        <content type="html"><![CDATA[<h2 id="ARM汇编的一些知识"><a href="#ARM汇编的一些知识" class="headerlink" title="ARM汇编的一些知识"></a>ARM汇编的一些知识</h2><h3 id="寄存器数量"><a href="#寄存器数量" class="headerlink" title="寄存器数量"></a>寄存器数量</h3><p>ARM处理器一共有37个32位寄存器。<br>30个为“通用“寄存器： r0-r14<br>未分组：r0-r7，即只有一个寄存器<br>分 组：r8-r14，即有多个同名寄存器<br>r8-r12 ：两个<br>r13-r14：6个 r13(sp),R14(lr)<br>1个固定的程序计数器 ： pc (又称r15)<br>6个为状态寄存器 ： cpsr spsr<br>不能被同时访问,一种模式下最多同时访问18个寄存器</p><span id="more"></span><h3 id="不同模式下访问的寄存器"><a href="#不同模式下访问的寄存器" class="headerlink" title="不同模式下访问的寄存器"></a>不同模式下访问的寄存器</h3><img lazyload="" src="/images/loading.svg" data-src="/2021/05/24/ARM%E6%B1%87%E7%BC%96%E7%AC%94%E8%AE%B0/dec5072d-4029-4f77-ba02-4db3edea2f3a.png" class="" title="img"><h3 id="寄存器用途"><a href="#寄存器用途" class="headerlink" title="寄存器用途"></a>寄存器用途</h3><p>sp(r13) - 堆栈指针<br>lr(r14) - 连接寄存器<br>调用子程序时存放调用地址,存放返回地址<br>pc(r15) - 程序计数器,相当于windows的EIP<br>(1)跳转到指定地址<br>mov pc,lr// 直接修改pc ，完成跳转<br>bx lr // 跳转到 lr保存的地址</p><p>(2)在函数入口保存寄存器信息<br>stmfd sp!, {r11,lr} // 保存大括号中的寄存器到栈中，从右往左</p><p>(3)使用ldm指令修改pc,完成函数返回<br>ldmfd sp!, {r11,pc} // 将栈中数据依次加载到寄存器中，从左往右</p><p>cpsr – 当前程序状态寄存器<br>spsr–备份的程序状态寄存器</p><h3 id="条件执行后缀"><a href="#条件执行后缀" class="headerlink" title="条件执行后缀"></a>条件执行后缀</h3><img lazyload="" src="/images/loading.svg" data-src="/2021/05/24/ARM%E6%B1%87%E7%BC%96%E7%AC%94%E8%AE%B0/976cd38d-47ac-4158-b029-2d8df50def19.png" class="" title="img"><h3 id="ARM的指令流水线"><a href="#ARM的指令流水线" class="headerlink" title="ARM的指令流水线"></a>ARM的指令流水线</h3><img lazyload="" src="/images/loading.svg" data-src="/2021/05/24/ARM%E6%B1%87%E7%BC%96%E7%AC%94%E8%AE%B0/06750ce2-c439-4dc2-97f1-676ed097cef4.png" class="" title="img"><p>ARM指令 当前执行的PC和与看到的PC相差8<br>即 看汇编时，需要 pc+8 才是真正的pc</p>]]></content>
+        <content type="html"><![CDATA[<h2 id="ARM汇编的一些知识"><a href="#ARM汇编的一些知识" class="headerlink" title="ARM汇编的一些知识"></a>ARM汇编的一些知识</h2><h3 id="寄存器数量"><a href="#寄存器数量" class="headerlink" title="寄存器数量"></a>寄存器数量</h3><p>ARM处理器一共有37个32位寄存器。<br>30个为“通用“寄存器： r0-r14<br>未分组：r0-r7，即只有一个寄存器<br>分 组：r8-r14，即有多个同名寄存器<br>r8-r12 ：两个<br>r13-r14：6个 r13(sp),R14(lr)<br>1个固定的程序计数器 ： pc (又称r15)<br>6个为状态寄存器 ： cpsr spsr<br>不能被同时访问,一种模式下最多同时访问18个寄存器</p><span id="more"></span><h3 id="不同模式下访问的寄存器"><a href="#不同模式下访问的寄存器" class="headerlink" title="不同模式下访问的寄存器"></a>不同模式下访问的寄存器</h3><img lazyload="" src="/images/loading.svg" data-src="/2021/05/24/ARM%E6%B1%87%E7%BC%96%E7%AC%94%E8%AE%B0/dec5072d-4029-4f77-ba02-4db3edea2f3a.png" class="" title="img"><h3 id="寄存器用途"><a href="#寄存器用途" class="headerlink" title="寄存器用途"></a>寄存器用途</h3><p>sp(r13) - 堆栈指针<br>lr(r14) - 连接寄存器<br>调用子程序时存放调用地址,存放返回地址<br>pc(r15) - 程序计数器,相当于windows的EIP<br>(1)跳转到指定地址<br>mov pc,lr// 直接修改pc ，完成跳转<br>bx lr // 跳转到 lr保存的地址</p><p>(2)在函数入口保存寄存器信息<br>stmfd sp!, {r11,lr} // 保存大括号中的寄存器到栈中，从右往左</p><p>(3)使用ldm指令修改pc,完成函数返回<br>ldmfd sp!, {r11,pc} // 将栈中数据依次加载到寄存器中，从左往右</p><p>cpsr – 当前程序状态寄存器<br>spsr–备份的程序状态寄存器</p><h3 id="条件执行后缀"><a href="#条件执行后缀" class="headerlink" title="条件执行后缀"></a>条件执行后缀</h3><img lazyload="" src="/images/loading.svg" data-src="/2021/05/24/ARM%E6%B1%87%E7%BC%96%E7%AC%94%E8%AE%B0/976cd38d-47ac-4158-b029-2d8df50def19.png" class="" title="img"><h3 id="ARM的指令流水线"><a href="#ARM的指令流水线" class="headerlink" title="ARM的指令流水线"></a>ARM的指令流水线</h3><img lazyload="" src="/images/loading.svg" data-src="/2021/05/24/ARM%E6%B1%87%E7%BC%96%E7%AC%94%E8%AE%B0/06750ce2-c439-4dc2-97f1-676ed097cef4.png" class="" title="img">]]></content>
       
       
       <categories>
@@ -1314,7 +1321,7 @@
       
       <categories>
           
-          <category> linux </category>
+          <category> 工具 </category>
           
       </categories>
       

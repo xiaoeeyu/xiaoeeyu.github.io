@@ -20,7 +20,7 @@
     
         <meta name="description" content="01. 本章的目标和内容提要引入保护模式、描述符、描述符表等并没有对用户程序的编写增加什么负担  因为对于系统来说这些是必须的，对于运行在系统上的程序来说不需要关心这些">
 <meta property="og:type" content="article">
-<meta property="og:title" content="25. 保护模式程序的动态加载和执行">
+<meta property="og:title" content="保护模式程序的动态加载和执行">
 <meta property="og:url" content="https://xiaoeeyu.github.io/2022/12/11/25-%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F%E7%A8%8B%E5%BA%8F%E7%9A%84%E5%8A%A8%E6%80%81%E5%8A%A0%E8%BD%BD%E5%92%8C%E6%89%A7%E8%A1%8C/index.html">
 <meta property="og:site_name" content="xiaoeryu">
 <meta property="og:description" content="01. 本章的目标和内容提要引入保护模式、描述符、描述符表等并没有对用户程序的编写增加什么负担  因为对于系统来说这些是必须的，对于运行在系统上的程序来说不需要关心这些">
@@ -59,9 +59,9 @@
 <meta property="og:image" content="https://xiaoeeyu.github.io/2022/12/11/25-%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F%E7%A8%8B%E5%BA%8F%E7%9A%84%E5%8A%A8%E6%80%81%E5%8A%A0%E8%BD%BD%E5%92%8C%E6%89%A7%E8%A1%8C/196c7eb008b6f6764d38d54857bbfa46.png">
 <meta property="og:image" content="https://xiaoeeyu.github.io/2022/12/11/25-%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F%E7%A8%8B%E5%BA%8F%E7%9A%84%E5%8A%A8%E6%80%81%E5%8A%A0%E8%BD%BD%E5%92%8C%E6%89%A7%E8%A1%8C/0df1110c1d014a7245f3fcb33df9f078.png">
 <meta property="article:published_time" content="2022-12-11T14:43:00.000Z">
-<meta property="article:modified_time" content="2023-07-11T02:06:02.235Z">
+<meta property="article:modified_time" content="2023-10-03T03:11:12.926Z">
 <meta property="article:author" content="xiaoeryu">
-<meta property="article:tag" content="X86汇编语言：实模式到保护模式">
+<meta property="article:tag" content="保护模式下的动态加载和执行">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://xiaoeeyu.github.io/2022/12/11/25-%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F%E7%A8%8B%E5%BA%8F%E7%9A%84%E5%8A%A8%E6%80%81%E5%8A%A0%E8%BD%BD%E5%92%8C%E6%89%A7%E8%A1%8C/9bb28704b96ba84ebdd5cd6715a3c693.png">
     
@@ -75,7 +75,7 @@
     
     <title>
         
-            25. 保护模式程序的动态加载和执行 -
+            保护模式程序的动态加载和执行 -
         
         xiaoeryu
     </title>
@@ -244,7 +244,7 @@
 
         <div class="article-title">
             
-                <h1 class="article-title-regular">25. 保护模式程序的动态加载和执行</h1>
+                <h1 class="article-title-regular">保护模式程序的动态加载和执行</h1>
             
             </div>
             
@@ -273,8 +273,8 @@
     
         <span class="article-date article-meta-item">
             <i class="fa-regular fa-wrench"></i>&nbsp;
-            <span class="desktop">2023-07-11 10:06:02</span>
-            <span class="mobile">2023-07-11 10:06:02</span>
+            <span class="desktop">2023-10-03 11:11:12</span>
+            <span class="mobile">2023-10-03 11:11:12</span>
             <span class="hover-info">更新</span>
         </span>
     
@@ -288,17 +288,7 @@
                     
                         
                         <li>
-                            <a href="/categories/Windows%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F/">Windows保护模式</a>&nbsp;
-                        </li>
-                    
-                    
-                
-                    
-                        
-                            <li>></li>
-                        
-                        <li>
-                            <a href="/categories/Windows%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F/%E4%BA%8C%E8%BF%9B%E5%88%B6/">二进制</a>&nbsp;
+                            <a href="/categories/X86%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80%EF%BC%9A%E5%AE%9E%E6%A8%A1%E5%BC%8F%E5%88%B0%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F/">X86汇编语言：实模式到保护模式</a>&nbsp;
                         </li>
                     
                     
@@ -312,7 +302,7 @@
             <ul>
                 
                     <li>
-                        <a href="/tags/X86%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80%EF%BC%9A%E5%AE%9E%E6%A8%A1%E5%BC%8F%E5%88%B0%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F/">X86汇编语言：实模式到保护模式</a>&nbsp;
+                        <a href="/tags/%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F%E4%B8%8B%E7%9A%84%E5%8A%A8%E6%80%81%E5%8A%A0%E8%BD%BD%E5%92%8C%E6%89%A7%E8%A1%8C/">保护模式下的动态加载和执行</a>&nbsp;
                     </li>
                 
             </ul>
@@ -993,14 +983,14 @@ return_point:                           ;用户程序返回点
             <div class="post-copyright-info">
                 <div class="article-copyright-info-container">
     <ul>
-        <li><strong>标题:</strong> 25. 保护模式程序的动态加载和执行</li>
+        <li><strong>标题:</strong> 保护模式程序的动态加载和执行</li>
         <li><strong>作者:</strong> xiaoeryu</li>
         <li><strong>创建于
                 :</strong> 2022-12-11 22:43:00</li>
         
             <li>
                 <strong>更新于
-                    :</strong> 2023-07-11 10:06:02
+                    :</strong> 2023-10-03 11:11:12
             </li>
         
         <li>
@@ -1025,7 +1015,7 @@ return_point:                           ;用户程序返回点
             <ul class="post-tags-box">
                 
                     <li class="tag-item">
-                        <a href="/tags/X86%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80%EF%BC%9A%E5%AE%9E%E6%A8%A1%E5%BC%8F%E5%88%B0%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F/">#X86汇编语言：实模式到保护模式</a>&nbsp;
+                        <a href="/tags/%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F%E4%B8%8B%E7%9A%84%E5%8A%A8%E6%80%81%E5%8A%A0%E8%BD%BD%E5%92%8C%E6%89%A7%E8%A1%8C/">#保护模式下的动态加载和执行</a>&nbsp;
                     </li>
                 
             </ul>
@@ -1045,7 +1035,7 @@ return_point:                           ;用户程序返回点
                                 <i class="fa-solid fa-chevron-left"></i>
                             </span>
                             <span class="title flex justify-center items-center">
-                                <span class="post-nav-title-item">26. 用户程序编程接口及其实现</span>
+                                <span class="post-nav-title-item">用户程序编程接口及其实现</span>
                                 <span class="post-nav-item">上一篇</span>
                             </span>
                         </a>
@@ -1058,7 +1048,7 @@ return_point:                           ;用户程序返回点
                         href="/2022/12/11/24-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4/"
                         >
                             <span class="title flex justify-center items-center">
-                                <span class="post-nav-title-item">24-存储器的保护</span>
+                                <span class="post-nav-title-item">存储器的保护</span>
                                 <span class="post-nav-item">下一篇</span>
                             </span>
                             <span class="right arrow-icon flex justify-center items-center">
@@ -1123,7 +1113,7 @@ return_point:                           ;用户程序返回点
             <div class="post-toc-wrap">
     <div class="post-toc">
         <div class="toc-title">此页目录</div>
-        <div class="page-title">25. 保护模式程序的动态加载和执行</div>
+        <div class="page-title">保护模式程序的动态加载和执行</div>
         <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#01-%E6%9C%AC%E7%AB%A0%E7%9A%84%E7%9B%AE%E6%A0%87%E5%92%8C%E5%86%85%E5%AE%B9%E6%8F%90%E8%A6%81"><span class="nav-text">01. 本章的目标和内容提要</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#02-%E5%86%85%E6%A0%B8%E7%9A%84%E7%BB%93%E6%9E%84%E5%92%8C%E5%8A%A0%E8%BD%BD%E5%89%8D%E7%9A%84%E5%87%86%E5%A4%87%E5%B7%A5%E4%BD%9C"><span class="nav-text">02. 内核的结构和加载前的准备工作</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#03-%E5%87%86%E5%A4%87%E4%B8%BA%E5%86%85%E6%A0%B8%E7%9A%84%E6%AF%8F%E4%B8%AA%E6%AE%B5%E5%88%9B%E5%BB%BA%E5%92%8C%E5%AE%89%E8%A3%85%E6%8F%8F%E8%BF%B0%E7%AC%A6"><span class="nav-text">03. 准备为内核的每个段创建和安装描述符</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#04-%E6%AE%B5%E6%8F%8F%E8%BF%B0%E7%AC%A6%E7%9A%84%E5%88%9B%E5%BB%BA%E5%92%8CBSWAP%E6%8C%87%E4%BB%A4"><span class="nav-text">04. 段描述符的创建和BSWAP指令</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#05-%E8%BF%9B%E5%85%A5%E5%86%85%E6%A0%B8%E6%89%A7%E8%A1%8C"><span class="nav-text">05. 进入内核执行</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#06-%E8%BF%9B%E5%85%A5%E5%86%85%E6%A0%B8%E4%B9%8B%E5%90%8E%E6%98%BE%E7%A4%BA%E6%96%87%E6%9C%AC"><span class="nav-text">06. 进入内核之后显示文本</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#07-%E7%94%A8CPUID%E6%8C%87%E4%BB%A4%E6%98%BE%E7%A4%BA%E5%A4%84%E7%90%86%E5%99%A8%E5%93%81%E7%89%8C%E4%BF%A1%E6%81%AF%E5%B9%B6%E6%98%BE%E7%A4%BA"><span class="nav-text">07. 用CPUID指令显示处理器品牌信息并显示</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#08-%E5%87%86%E5%A4%87%E5%8A%A0%E8%BD%BD%E7%94%A8%E6%88%B7%E7%A8%8B%E5%BA%8F"><span class="nav-text">08. 准备加载用户程序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#09-%E9%A2%84%E8%AF%BB%E7%94%A8%E6%88%B7%E7%A8%8B%E5%BA%8F%E5%B9%B6%E5%BE%97%E5%88%B0%E5%AE%83%E7%9A%84%E5%A4%A7%E5%B0%8F"><span class="nav-text">09. 预读用户程序并得到它的大小</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#10-%E6%9D%A1%E4%BB%B6%E4%BC%A0%E9%80%81%E7%B0%87CMOVcc"><span class="nav-text">10. 条件传送簇CMOVcc</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#11-%E8%AE%A1%E7%AE%97%E4%BB%A5512%E5%AD%97%E8%8A%82%E4%B8%BA%E5%8D%95%E4%BD%8D%E7%9A%84%E7%94%A8%E6%88%B7%E7%A8%8B%E5%BA%8F%E6%80%BB%E9%95%BF%E5%BA%A6"><span class="nav-text">11. 计算以512字节为单位的用户程序总长度</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#12-%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D%E7%9A%84%E5%9F%BA%E6%9C%AC%E7%AD%96%E7%95%A5%E5%92%8C%E6%96%B9%E6%B3%95"><span class="nav-text">12. 内存分配的基本策略和方法</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#13-%E5%86%85%E5%AD%98%E5%88%86%E9%85%8D%E7%9A%84%E7%AE%80%E6%98%93%E5%AE%9E%E7%8E%B0%E8%BF%87%E7%A8%8B"><span class="nav-text">13. 内存分配的简易实现过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#14-%E5%8A%A0%E8%BD%BD%E7%94%A8%E6%88%B7%E7%A8%8B%E5%BA%8F"><span class="nav-text">14. 加载用户程序</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#15-%E5%87%86%E5%A4%87%E5%AE%89%E8%A3%85%E7%94%A8%E6%88%B7%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%AE%B5%E6%8F%8F%E8%BF%B0%E7%AC%A6"><span class="nav-text">15. 准备安装用户程序的段描述符</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#16-%E7%94%A8SGDT%E5%92%8CMOVZX%E6%8C%87%E4%BB%A4%E7%A1%AE%E5%AE%9AGDT%E7%9A%84%E4%BD%8D%E7%BD%AE"><span class="nav-text">16. 用SGDT和MOVZX指令确定GDT的位置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#17-%E5%AE%89%E8%A3%85%E6%96%B0%E6%8F%8F%E8%BF%B0%E7%AC%A6%E5%B9%B6%E7%94%9F%E6%88%90%E9%80%89%E6%8B%A9%E5%AD%90"><span class="nav-text">17. 安装新描述符并生成选择子</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#18-%E5%AE%89%E8%A3%85%E7%94%A8%E6%88%B7%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%AE%B5%E6%8F%8F%E8%BF%B0%E7%AC%A6%E5%B9%B6%E5%9B%9E%E5%A1%AB%E9%80%89%E6%8B%A9%E5%AD%90"><span class="nav-text">18. 安装用户程序的段描述符并回填选择子</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#19-%E7%94%A8%E6%88%B7%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%89%A7%E8%A1%8C%E5%92%8C%E9%80%80%E5%87%BA"><span class="nav-text">19. 用户程序的执行和退出</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#20-%E5%9C%A8%E8%99%9A%E6%8B%9F%E6%9C%BA%E4%B8%8A%E8%A7%82%E5%AF%9F%E5%86%85%E6%A0%B8%E7%9A%84%E5%8A%A0%E8%BD%BD%E4%BB%A5%E5%8F%8A%E7%94%A8%E6%88%B7%E7%A8%8B%E5%BA%8F%E7%9A%84%E6%89%A7%E8%A1%8C%E4%B8%8E%E6%8E%A8%E5%87%BA"><span class="nav-text">20. 在虚拟机上观察内核的加载以及用户程序的执行与推出</span></a></li></ol>
 
     </div>

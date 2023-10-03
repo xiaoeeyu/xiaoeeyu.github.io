@@ -20,7 +20,7 @@
     
         <meta name="description" content="1. 特权级保护的必要性和特权保护机制用描述符实施段与段之间的隔离和保护，建立在程序之间分工协作的基础上，首先用户程序需要在内核的支持下运行而不能独立运行。 内核需要加载和重定位用户程序，为用户程序每个段创建描述符，将段选择子回填到用户程序的头部中，因为这个原因用户程序只能访问自己的代码段、数据段和栈段。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="28. 特权级和特权级保护">
+<meta property="og:title" content="特权级和特权级保护">
 <meta property="og:url" content="https://xiaoeeyu.github.io/2022/12/11/28-%E7%89%B9%E6%9D%83%E7%BA%A7%E5%92%8C%E7%89%B9%E6%9D%83%E7%BA%A7%E4%BF%9D%E6%8A%A4/index.html">
 <meta property="og:site_name" content="xiaoeryu">
 <meta property="og:description" content="1. 特权级保护的必要性和特权保护机制用描述符实施段与段之间的隔离和保护，建立在程序之间分工协作的基础上，首先用户程序需要在内核的支持下运行而不能独立运行。 内核需要加载和重定位用户程序，为用户程序每个段创建描述符，将段选择子回填到用户程序的头部中，因为这个原因用户程序只能访问自己的代码段、数据段和栈段。">
@@ -81,9 +81,9 @@
 <meta property="og:image" content="https://xiaoeeyu.github.io/2022/12/11/28-%E7%89%B9%E6%9D%83%E7%BA%A7%E5%92%8C%E7%89%B9%E6%9D%83%E7%BA%A7%E4%BF%9D%E6%8A%A4/f0955c31ac0d10e20deec392c7112361.png">
 <meta property="og:image" content="https://xiaoeeyu.github.io/2022/12/11/28-%E7%89%B9%E6%9D%83%E7%BA%A7%E5%92%8C%E7%89%B9%E6%9D%83%E7%BA%A7%E4%BF%9D%E6%8A%A4/0b667250859c67753ffa8d22eea56c58.png">
 <meta property="article:published_time" content="2022-12-11T14:46:00.000Z">
-<meta property="article:modified_time" content="2023-07-11T02:07:16.748Z">
+<meta property="article:modified_time" content="2023-10-03T03:10:42.146Z">
 <meta property="article:author" content="xiaoeryu">
-<meta property="article:tag" content="X86汇编语言：实模式到保护模式">
+<meta property="article:tag" content="x86特权级和特权级保护">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://xiaoeeyu.github.io/2022/12/11/28-%E7%89%B9%E6%9D%83%E7%BA%A7%E5%92%8C%E7%89%B9%E6%9D%83%E7%BA%A7%E4%BF%9D%E6%8A%A4/b419bbd59816da11bea31176df362915.png">
     
@@ -97,7 +97,7 @@
     
     <title>
         
-            28. 特权级和特权级保护 -
+            特权级和特权级保护 -
         
         xiaoeryu
     </title>
@@ -266,7 +266,7 @@
 
         <div class="article-title">
             
-                <h1 class="article-title-regular">28. 特权级和特权级保护</h1>
+                <h1 class="article-title-regular">特权级和特权级保护</h1>
             
             </div>
             
@@ -295,8 +295,8 @@
     
         <span class="article-date article-meta-item">
             <i class="fa-regular fa-wrench"></i>&nbsp;
-            <span class="desktop">2023-07-11 10:07:16</span>
-            <span class="mobile">2023-07-11 10:07:16</span>
+            <span class="desktop">2023-10-03 11:10:42</span>
+            <span class="mobile">2023-10-03 11:10:42</span>
             <span class="hover-info">更新</span>
         </span>
     
@@ -310,17 +310,7 @@
                     
                         
                         <li>
-                            <a href="/categories/Windows%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F/">Windows保护模式</a>&nbsp;
-                        </li>
-                    
-                    
-                
-                    
-                        
-                            <li>></li>
-                        
-                        <li>
-                            <a href="/categories/Windows%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F/%E4%BA%8C%E8%BF%9B%E5%88%B6/">二进制</a>&nbsp;
+                            <a href="/categories/X86%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80%EF%BC%9A%E5%AE%9E%E6%A8%A1%E5%BC%8F%E5%88%B0%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F/">X86汇编语言：实模式到保护模式</a>&nbsp;
                         </li>
                     
                     
@@ -334,7 +324,7 @@
             <ul>
                 
                     <li>
-                        <a href="/tags/X86%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80%EF%BC%9A%E5%AE%9E%E6%A8%A1%E5%BC%8F%E5%88%B0%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F/">X86汇编语言：实模式到保护模式</a>&nbsp;
+                        <a href="/tags/x86%E7%89%B9%E6%9D%83%E7%BA%A7%E5%92%8C%E7%89%B9%E6%9D%83%E7%BA%A7%E4%BF%9D%E6%8A%A4/">x86特权级和特权级保护</a>&nbsp;
                     </li>
                 
             </ul>
@@ -783,14 +773,14 @@
             <div class="post-copyright-info">
                 <div class="article-copyright-info-container">
     <ul>
-        <li><strong>标题:</strong> 28. 特权级和特权级保护</li>
+        <li><strong>标题:</strong> 特权级和特权级保护</li>
         <li><strong>作者:</strong> xiaoeryu</li>
         <li><strong>创建于
                 :</strong> 2022-12-11 22:46:00</li>
         
             <li>
                 <strong>更新于
-                    :</strong> 2023-07-11 10:07:16
+                    :</strong> 2023-10-03 11:10:42
             </li>
         
         <li>
@@ -815,7 +805,7 @@
             <ul class="post-tags-box">
                 
                     <li class="tag-item">
-                        <a href="/tags/X86%E6%B1%87%E7%BC%96%E8%AF%AD%E8%A8%80%EF%BC%9A%E5%AE%9E%E6%A8%A1%E5%BC%8F%E5%88%B0%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F/">#X86汇编语言：实模式到保护模式</a>&nbsp;
+                        <a href="/tags/x86%E7%89%B9%E6%9D%83%E7%BA%A7%E5%92%8C%E7%89%B9%E6%9D%83%E7%BA%A7%E4%BF%9D%E6%8A%A4/">#x86特权级和特权级保护</a>&nbsp;
                     </li>
                 
             </ul>
@@ -835,7 +825,7 @@
                                 <i class="fa-solid fa-chevron-left"></i>
                             </span>
                             <span class="title flex justify-center items-center">
-                                <span class="post-nav-title-item">29. 协同式任务切换</span>
+                                <span class="post-nav-title-item">协同式任务切换</span>
                                 <span class="post-nav-item">上一篇</span>
                             </span>
                         </a>
@@ -848,7 +838,7 @@
                         href="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/"
                         >
                             <span class="title flex justify-center items-center">
-                                <span class="post-nav-title-item">27. 任务和任务的创建</span>
+                                <span class="post-nav-title-item">任务和任务的创建</span>
                                 <span class="post-nav-item">下一篇</span>
                             </span>
                             <span class="right arrow-icon flex justify-center items-center">
@@ -913,7 +903,7 @@
             <div class="post-toc-wrap">
     <div class="post-toc">
         <div class="toc-title">此页目录</div>
-        <div class="page-title">28. 特权级和特权级保护</div>
+        <div class="page-title">特权级和特权级保护</div>
         <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#1-%E7%89%B9%E6%9D%83%E7%BA%A7%E4%BF%9D%E6%8A%A4%E7%9A%84%E5%BF%85%E8%A6%81%E6%80%A7%E5%92%8C%E7%89%B9%E6%9D%83%E4%BF%9D%E6%8A%A4%E6%9C%BA%E5%88%B6"><span class="nav-text">1. 特权级保护的必要性和特权保护机制</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#02-%E5%BD%93%E5%89%8D%E7%89%B9%E6%9D%83%E7%BA%A7CPL"><span class="nav-text">02. 当前特权级CPL</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#03-%E6%8F%8F%E8%BF%B0%E7%89%B9%E6%9D%83%E7%BA%A7DPL"><span class="nav-text">03. 描述特权级DPL</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#04-%E4%BB%BB%E5%8A%A1%E5%85%AC%E5%85%B1%E9%83%A8%E5%88%86%E5%92%8C%E7%A7%81%E6%9C%89%E9%83%A8%E5%88%86%E7%9A%84%E7%89%B9%E6%9D%83%E7%BA%A7%E5%88%92%E5%88%86"><span class="nav-text">04. 任务公共部分和私有部分的特权级划分</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#05-%E4%BE%9D%E4%BB%8E%E7%9A%84%E4%BB%A3%E7%A0%81%E6%AE%B5"><span class="nav-text">05. 依从的代码段</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#06-%E9%97%A8%E6%8F%8F%E8%BF%B0%E7%AC%A6%E5%92%8C%E8%B0%83%E7%94%A8%E9%97%A8"><span class="nav-text">06. 门描述符和调用门</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#07-%E6%9C%AC%E7%AB%A0%E7%A8%8B%E5%BA%8F%E8%AF%B4%E6%98%8E%E5%8F%8A%E7%89%B9%E6%9D%83%E7%BA%A7%E6%A3%80%E6%9F%A5%E7%9A%84%E6%97%B6%E6%9C%BA"><span class="nav-text">07. 本章程序说明及特权级检查的时机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#08-%E8%AF%B7%E6%B1%82%E7%89%B9%E6%9D%83%E7%BA%A7RPL"><span class="nav-text">08. 请求特权级RPL</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#09-%E8%AF%B7%E6%B1%82%E7%89%B9%E6%9D%83%E7%BA%A7%E8%B0%83%E6%95%B4%E6%8C%87%E4%BB%A4ARPL"><span class="nav-text">09. 请求特权级调整指令ARPL</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#10-%E4%B8%80%E8%88%AC%E6%83%85%E5%86%B5%E4%B8%8B%E7%9A%84%E8%AF%B7%E6%B1%82%E7%89%B9%E6%9D%83%E7%BA%A7%E8%AE%BE%E7%BD%AE"><span class="nav-text">10. 一般情况下的请求特权级设置</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#11-%E4%B8%BA%E5%86%85%E6%A0%B8%E6%8E%A5%E5%8F%A3%E4%BE%8B%E7%A8%8B%E5%88%9B%E5%BB%BA%E8%B0%83%E7%94%A8%E9%97%A8"><span class="nav-text">11. 为内核接口例程创建调用门</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#12-%E8%B0%83%E7%94%A8%E9%97%A8%E6%B5%8B%E8%AF%95%E5%92%8C%E8%B0%83%E7%94%A8%E9%97%A8%E8%BD%AC%E7%A7%BB%E8%BF%87%E7%A8%8B"><span class="nav-text">12. 调用门测试和调用门转移过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#13-%E9%80%9A%E8%BF%87%E8%B0%83%E7%94%A8%E9%97%A8%E5%AE%9E%E6%96%BD%E7%94%B1%E4%BD%8E%E7%89%B9%E6%9D%83%E7%BA%A7%E5%88%B0%E9%AB%98%E7%89%B9%E6%9D%83%E7%BA%A7%E7%9A%84%E8%BD%AC%E7%A7%BB"><span class="nav-text">13. 通过调用门实施由低特权级到高特权级的转移</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#14-%E9%80%9A%E8%BF%87%E8%B0%83%E7%94%A8%E9%97%A8%E8%BD%AC%E7%A7%BB%E6%8E%A7%E5%88%B6%E6%97%B6%E7%9A%84%E6%A0%88%E5%88%87%E6%8D%A2%E8%BF%87%E7%A8%8B"><span class="nav-text">14. 通过调用门转移控制时的栈切换过程</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#15-%E9%80%9A%E8%BF%87%E8%B0%83%E7%94%A8%E9%97%A8%E8%BD%AC%E7%A7%BB%E6%8E%A7%E5%88%B6%E5%B9%B6%E8%BF%94%E5%9B%9E%E7%9A%84%E5%AE%8C%E6%95%B4%E6%8F%8F%E8%BF%B0"><span class="nav-text">15. 通过调用门转移控制并返回的完整描述</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#16-%E5%88%9B%E5%BB%BA0%E3%80%811%E3%80%812%E7%89%B9%E6%9D%83%E7%BA%A7%E7%9A%84%E6%A0%88%E5%B9%B6%E7%99%BB%E8%AE%B0%E5%9C%A8TSS%E4%B8%AD"><span class="nav-text">16. 创建0、1、2特权级的栈并登记在TSS中</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#17-%E9%80%9A%E8%BF%87%E6%A8%A1%E6%8B%9F%E8%B0%83%E7%94%A8%E9%97%A8%E8%BF%94%E5%9B%9E%E8%BF%9B%E5%85%A5%E7%94%A8%E6%88%B7%E7%A8%8B%E5%BA%8F%E6%89%A7%E8%A1%8C"><span class="nav-text">17. 通过模拟调用门返回进入用户程序执行</span></a></li></ol>
 
     </div>
