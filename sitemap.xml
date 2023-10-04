@@ -1,0 +1,686 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  
+  <url>
+    <loc>https://xiaoeeyu.github.io/2022/12/11/31-%E5%88%86%E9%A1%B5%E5%92%8C%E5%8A%A8%E6%80%81%E9%A1%B5%E9%9D%A2%E5%88%86%E9%85%8D/</loc>
+    
+    <lastmod>2023-10-04T08:56:25.948Z</lastmod>
+    
+    <date>1670770140000</date>
+    <title>分页和动态页面分配 | xiaoeryu</title>
+    
+    <desc>01. 保护模式下的段式虚拟内存管理</desc>
+  </url>
+  
+  <url>
+    <loc>https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/</loc>
+    
+    <lastmod>2023-10-04T03:46:42.246Z</lastmod>
+    
+    <date>1696388942000</date>
+    <title>Android刷机+抓包环境配置 | xiaoeryu</title>
+    
+    <desc></desc>
+  </url>
+  
+  <url>
+    <loc>https://xiaoeeyu.github.io/2023/10/03/NDK%E5%BC%80%E5%8F%91%E7%AE%80%E4%BB%8B/</loc>
+    
+    <lastmod>2023-10-04T03:42:36.984Z</lastmod>
+    
+    <date>1696295070000</date>
+    <title>NDK开发简介 | xiaoeryu</title>
+    
+    <desc>记录一些NDK开发的基础问题，这里记录的方向会更偏向于逆向、安全方面的内容。</desc>
+  </url>
+  
+  <url>
+    <loc>https://xiaoeeyu.github.io/2021/05/24/ARM%E6%B1%87%E7%BC%96%E7%AC%94%E8%AE%B0/</loc>
+    
+    <lastmod>2023-10-04T03:06:07.661Z</lastmod>
+    
+    <date>1621844434000</date>
+    <title>ARM汇编笔记 | xiaoeryu</title>
+    
+    <desc>ARM汇编的一些知识寄存器数量ARM处理器一共有37个32位寄存器。30个为“通用“寄存器： r0-r14未分组：r0-r7，即只有一个寄存器分 组：r8-r14，即有多个同名寄存器r8-r12 ：两个r13-r14：6个 r13(sp),R14(lr)1个固定的程序计数器 ： pc (又称r15)6个为状态寄存器 ： cpsr spsr不能被同时访问,一种模式下最多同时访问18个寄存器</desc>
+  </url>
+  
+  <url>
+    <loc>https://xiaoeeyu.github.io/2022/09/08/010EDIT%E7%A0%B4%E8%A7%A3-%E6%B3%A8%E5%86%8C%E6%9C%BA/</loc>
+    
+    <lastmod>2023-10-04T01:30:04.586Z</lastmod>
+    
+    <date>1662568351747</date>
+    <title>010EDIT破解&注册机 | xiaoeryu</title>
+    
+    <desc>010edit是一款非常好用的二进制文本编辑器，但是这款软件不是免费的，so让我们来分析一下它的算法，写一下注册机。</desc>
+  </url>
+  
+  <url>
+    <loc>https://xiaoeeyu.github.io/2022/12/11/32-%E5%B9%B3%E5%9D%A6%E6%A8%A1%E5%9E%8B/</loc>
+    
+    <lastmod>2023-10-03T05:00:27.342Z</lastmod>
+    
+    <date>1670770200000</date>
+    <title>平坦模型 | xiaoeryu</title>
+    
+    <desc>01. 为什么要引入平坦模型及平坦模型的特点传统的分段模型：未开启分页机制</desc>
+  </url>
+  
+  <url>
+    <loc>https://xiaoeeyu.github.io/2022/12/11/30-%E4%B8%AD%E6%96%AD%E5%92%8C%E5%BC%82%E5%B8%B8%E7%9A%84%E5%A4%84%E7%90%86%E4%B8%8E%E6%8A%A2%E5%8D%A0%E5%BC%8F%E5%A4%9A%E4%BB%BB%E5%8A%A1/</loc>
+    
+    <lastmod>2023-10-03T05:00:20.683Z</lastmod>
+    
+    <date>1670770080000</date>
+    <title>中断和异常的处理与抢占式多任务 | xiaoeryu</title>
+    
+    <desc>1. 中断和异常概述协同式任务切换不一定要通过一个专门的接口例程进行，也可以用一般的例程进行。</desc>
+  </url>
+  
+  <url>
+    <loc>https://xiaoeeyu.github.io/2022/12/11/29-%E5%8D%8F%E5%90%8C%E5%BC%8F%E4%BB%BB%E5%8A%A1%E5%88%87%E6%8D%A2/</loc>
+    
+    <lastmod>2023-10-03T05:00:13.978Z</lastmod>
+    
+    <date>1670770020000</date>
+    <title>协同式任务切换 | xiaoeryu</title>
+    
+    <desc>01. 任务和任务切换概述多任务系统中，每个任务都有自己的任务状态段TSS和局部描述符表LDT，当前任务是由任务寄存器TR指示，指向当前任务的任务状态段TSS、局部描述符表寄存器LDTR也指向当前局部描述符表LDT。</desc>
+  </url>
+  
+  <url>
+    <loc>https://xiaoeeyu.github.io/2022/12/11/28-%E7%89%B9%E6%9D%83%E7%BA%A7%E5%92%8C%E7%89%B9%E6%9D%83%E7%BA%A7%E4%BF%9D%E6%8A%A4/</loc>
+    
+    <lastmod>2023-10-03T05:00:06.396Z</lastmod>
+    
+    <date>1670769960000</date>
+    <title>特权级和特权级保护 | xiaoeryu</title>
+    
+    <desc>1. 特权级保护的必要性和特权保护机制用描述符实施段与段之间的隔离和保护，建立在程序之间分工协作的基础上，首先用户程序需要在内核的支持下运行而不能独立运行。 内核需要加载和重定位用户程序，为用户程序每个段创建描述符，将段选择子回填到用户程序的头部中，因为这个原因用户程序只能访问自己的代码段、数据段和栈段。</desc>
+  </url>
+  
+  <url>
+    <loc>https://xiaoeeyu.github.io/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/</loc>
+    
+    <lastmod>2023-10-03T04:59:58.960Z</lastmod>
+    
+    <date>1670769900000</date>
+    <title>任务和任务的创建 | xiaoeryu</title>
+    
+    <desc>01. 任务：概念和组成内核时对整个计算机系统进行管理，管理软件和硬件。内核可以加载用户程序，对用户程序进行重定位，用户程序终止后还可以回收用户程序的资源，在编程时位用户程序提供API。</desc>
+  </url>
+  
+  <url>
+    <loc>https://xiaoeeyu.github.io/2022/12/11/26-%E7%94%A8%E6%88%B7%E7%A8%8B%E5%BA%8F%E7%BC%96%E7%A8%8B%E6%8E%A5%E5%8F%A3%E5%8F%8A%E5%85%B6%E5%AE%9E%E7%8E%B0/</loc>
+    
+    <lastmod>2023-10-03T04:59:52.010Z</lastmod>
+    
+    <date>1670769840000</date>
+    <title>用户程序编程接口及其实现 | xiaoeryu</title>
+    
+    <desc>01.内核与用户程序之间的栈切换问题从内核进入用户程序时，使用的是call far指令，这是一个过程调用指令，是需要使用retf指令返回的。过程调用需要隐式的栈操作，使用栈来保存返回地址，因此当call far指令执行时需要将下一条指令的地址压入当前正在使用的栈中保存，也就是内核的栈中。</desc>
+  </url>
+  
+  <url>
+    <loc>https://xiaoeeyu.github.io/2022/12/11/25-%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F%E7%A8%8B%E5%BA%8F%E7%9A%84%E5%8A%A8%E6%80%81%E5%8A%A0%E8%BD%BD%E5%92%8C%E6%89%A7%E8%A1%8C/</loc>
+    
+    <lastmod>2023-10-03T04:59:44.176Z</lastmod>
+    
+    <date>1670769780000</date>
+    <title>保护模式程序的动态加载和执行 | xiaoeryu</title>
+    
+    <desc>01. 本章的目标和内容提要引入保护模式、描述符、描述符表等并没有对用户程序的编写增加什么负担 因为对于系统来说这些是必须的，对于运行在系统上的程序来说不需要关心这些</desc>
+  </url>
+  
+  <url>
+    <loc>https://xiaoeeyu.github.io/2022/12/11/24-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4/</loc>
+    
+    <lastmod>2023-10-03T04:59:36.159Z</lastmod>
+    
+    <date>1670769720000</date>
+    <title>存储器的保护 | xiaoeryu</title>
+    
+    <desc>01. MOV DS, AX和 MOV DS, EAX这两条指令计算GDT的逻辑段地址,使用64位除法指令: eax(商)保存段地址, edx(余数)保存偏移div r/m32</desc>
+  </url>
+  
+  <url>
+    <loc>https://xiaoeeyu.github.io/2022/12/11/23-%E6%8C%87%E4%BB%A4%E7%9A%84%E6%A0%BC%E5%BC%8F%E5%8F%8A%E5%85%B6%E6%93%8D%E4%BD%9C%E5%B0%BA%E5%AF%B8/</loc>
+    
+    <lastmod>2023-10-03T04:59:18.241Z</lastmod>
+    
+    <date>1670769660000</date>
+    <title>指令的格式及其操作尺寸 | xiaoeryu</title>
+    
+    <desc>01. 80286的16位保护模式 80286的寄存器和8086有同样的寄存器</desc>
+  </url>
+  
+  <url>
+    <loc>https://xiaoeeyu.github.io/2022/12/11/22-%E8%BF%9B%E5%85%A5%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F/</loc>
+    
+    <lastmod>2023-10-03T04:58:48.811Z</lastmod>
+    
+    <date>1670769600000</date>
+    <title>进入保护模式 | xiaoeryu</title>
+    
+    <desc>保护模式是要保护什么</desc>
+  </url>
+  
+  <url>
+    <loc>https://xiaoeeyu.github.io/2023/09/26/FART%E4%B8%AD%E7%9A%84%E8%84%B1%E5%A3%B3%E7%82%B9-%E8%84%B1%E5%A3%B3%E7%BB%84%E4%BB%B6/</loc>
+    
+    <lastmod>2023-10-03T03:32:42.155Z</lastmod>
+    
+    <date>1695697643000</date>
+    <title>FART中的脱壳点-脱壳组件 | xiaoeryu</title>
+    
+    <desc>上一章对Dalvik和ART下的函数抽取方案进行了分析，本章开始FART框架的解析——本章主要解析FART框架中的脱壳组件</desc>
+  </url>
+  
+  <url>
+    <loc>https://xiaoeeyu.github.io/2021/05/20/go%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F%E8%AE%BE%E7%BD%AE/</loc>
+    
+    <lastmod>2023-10-03T02:43:22.702Z</lastmod>
+    
+    <date>1621479370000</date>
+    <title>go环境变量设置 | xiaoeryu</title>
+    
+    <desc>question： linux下设置go环境变量之后，再次打开新的终端或者重启后环境变量会失效需要重新source /etc/profile 后才能生效</desc>
+  </url>
+  
+  <url>
+    <loc>https://xiaoeeyu.github.io/2023/10/01/FART%E4%BD%BF%E7%94%A8%E5%9C%BA%E6%99%AF%E5%92%8C%E6%B5%81%E7%A8%8B/</loc>
+    
+    <lastmod>2023-10-02T07:53:20.745Z</lastmod>
+    
+    <date>1696121219000</date>
+    <title>FART使用场景和流程 | xiaoeryu</title>
+    
+    <desc>本章主要介绍一下什么是FART、为什么要使用FART，以及如何使用FART的问题 FART是一个支持在ART（Android runtime)下使用的脱壳框架，可以用来解决函数抽取壳的问题。支持在Dalvik和ART下运行。</desc>
+  </url>
+  
+  <url>
+    <loc>https://xiaoeeyu.github.io/2023/09/22/ART%E4%B8%8B%E6%8A%BD%E5%8F%96%E5%A3%B3%E5%AE%9E%E7%8E%B0/</loc>
+    
+    <lastmod>2023-09-26T03:34:05.308Z</lastmod>
+    
+    <date>1695396512000</date>
+    <title>ART下抽取壳实现 | xiaoeryu</title>
+    
+    <desc>函数抽取壳出现之后基本宣告一代壳整体保护的结束，由此进入到二代壳的时代。 接下来我们来分析一下二代壳的原理，看它在Dalvik&amp;ART下分别是怎么实现函数抽取的，以及如何脱二代壳。</desc>
+  </url>
+  
+  <url>
+    <loc>https://xiaoeeyu.github.io/2023/09/14/ART%E4%B8%8B%E4%B8%80%E4%BB%A3%E5%A3%B3%E9%80%9A%E7%94%A8%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/</loc>
+    
+    <lastmod>2023-09-23T10:15:38.811Z</lastmod>
+    
+    <date>1694621378000</date>
+    <title>ART下一代壳通用解决方案 | xiaoeryu</title>
+    
+    <desc>虽然Dalvik的脱壳方案对现在的一些壳还有作用，不过它只能解决一些整体性加壳的加壳方案，所以接下来来了解一下ART下脱壳的原理 本章我们主要把从InMemoryDexClassLoader到DexClassLoader(进行dex2oat和直接加载dex)流程中涉及到的脱壳点过了一遍，并修改编译Android源码，测试了对一代壳的脱壳（未进行函数抽取）。</desc>
+  </url>
+  
+  <url>
+    <loc>https://xiaoeeyu.github.io/2023/09/04/Dalvik%E4%B8%8B%E4%B8%80%E4%BB%A3%E5%A3%B3%E7%9A%84%E9%80%9A%E7%94%A8%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/</loc>
+    
+    <lastmod>2023-09-14T01:41:07.542Z</lastmod>
+    
+    <date>1693757254000</date>
+    <title>Dalvik下一代壳的通用解决方案 | xiaoeryu</title>
+    
+    <desc>本节主要分析在Dalvik时代怎么做到把壳脱下来的，通过Android 4.x的源码跟踪一下系统帮我们加载dex时候的流程，分析一下脱壳的原理和时机。</desc>
+  </url>
+  
+  <url>
+    <loc>https://xiaoeeyu.github.io/2023/08/26/%E4%B8%80%E4%BA%8C%E4%B8%89%E4%BB%A3%E5%A3%B3%E5%92%8C%E5%A3%B3%E6%8A%80%E6%9C%AF%E5%88%86%E7%B1%BB%E8%AF%86%E5%88%AB/</loc>
+    
+    <lastmod>2023-09-03T16:35:15.318Z</lastmod>
+    
+    <date>1693054835000</date>
+    <title>一二三代壳和壳技术分类识别 | xiaoeryu</title>
+    
+    <desc></desc>
+  </url>
+  
+  <url>
+    <loc>https://xiaoeeyu.github.io/2023/08/24/%E5%8A%A0%E5%A3%B3APP%E8%BF%90%E8%A1%8C%E6%B5%81%E7%A8%8B%E5%92%8CClassLoader%E4%BF%AE%E6%AD%A3/</loc>
+    
+    <lastmod>2023-08-26T14:39:52.184Z</lastmod>
+    
+    <date>1692866462000</date>
+    <title>加壳APP运行流程和ClassLoader修正 | xiaoeryu</title>
+    
+    <desc>本章内容主要基于分析Android 8.0源码，来学习APP的启动流程和APP加壳原理以及运行流程，以及写代码怎么去从sd卡加载其它dex中的Activity，不涉及加密解密的操作。</desc>
+  </url>
+  
+  <url>
+    <loc>https://xiaoeeyu.github.io/2023/08/19/ClassLoader%E5%92%8C%E5%8A%A8%E6%80%81%E5%8A%A0%E8%BD%BD/</loc>
+    
+    <lastmod>2023-08-26T13:50:42.484Z</lastmod>
+    
+    <date>1692412349000</date>
+    <title>ClassLoader和动态加载 | xiaoeryu</title>
+    
+    <desc>本章是加壳的一些前置原理，主要是基于Android8.0中ClassLoader的双亲委派模式原理和代码验证以及动态加载的代码验证</desc>
+  </url>
+  
+  <url>
+    <loc>https://xiaoeeyu.github.io/2023/08/19/%E9%80%86%E5%90%91%E5%88%86%E6%9E%90%E5%92%8C%E8%84%B1%E5%A3%B3%E7%9A%84%E6%84%8F%E4%B9%89/</loc>
+    
+    <lastmod>2023-08-26T09:10:23.704Z</lastmod>
+    
+    <date>1692408626000</date>
+    <title>逆向分析和脱壳的意义 | xiaoeryu</title>
+    
+    <desc>这里是脱壳的一些碎碎念和FART脱壳机的使用流程</desc>
+  </url>
+  
+  <url>
+    <loc>https://xiaoeeyu.github.io/2023/07/07/CTF006/</loc>
+    
+    <lastmod>2023-08-25T10:44:07.555Z</lastmod>
+    
+    <date>1688741400000</date>
+    <title>CTF006 | xiaoeryu</title>
+    
+    <desc>本节主要内容是通过分析题目中的so文件加密，去写出反解脚本计算flag</desc>
+  </url>
+  
+  <url>
+    <loc>https://xiaoeeyu.github.io/2021/06/08/%E8%B5%84%E6%9C%AC%E4%B8%BB%E4%B9%89%E5%92%8C%E7%A4%BE%E4%BC%9A%E4%B8%BB%E4%B9%89/</loc>
+    
+    <lastmod>2023-08-19T02:21:24.854Z</lastmod>
+    
+    <date>1623125133000</date>
+    <title>资本主义和社会主义 | xiaoeryu</title>
+    
+    <desc>2021/6/8马克思认为资本主义发展方向，是资本占有的社会化，走向社会主义，从资本占有的角度来说就是社会资本主义。其中的关键是，资本占有的载体不是私人为主，而应该是公有制前提下的国家持有和社会占有。是社会化占比更高的国家-社会混合型经济。</desc>
+  </url>
+  
+  <url>
+    <loc>https://xiaoeeyu.github.io/2023/07/09/ios15-7-5%E8%B6%8A%E7%8B%B1/</loc>
+    
+    <lastmod>2023-08-19T02:17:46.558Z</lastmod>
+    
+    <date>1688892466000</date>
+    <title>ios15.7.5越狱 | xiaoeryu</title>
+    
+    <desc></desc>
+  </url>
+  
+  <url>
+    <loc>https://xiaoeeyu.github.io/2023/07/09/RSA%E5%8A%A0%E8%A7%A3%E5%AF%86-iBuck/</loc>
+    
+    <lastmod>2023-07-09T07:50:12.267Z</lastmod>
+    
+    <date>1688888068000</date>
+    <title>RSA加解密-iBuck | xiaoeryu</title>
+    
+    <desc></desc>
+  </url>
+  
+  <url>
+    <loc>https://xiaoeeyu.github.io/2021/05/24/%E4%B8%80%E6%9E%9A%E7%AE%80%E5%8D%95%E7%9A%84%E6%9C%AA%E7%9F%A5%E5%A3%B3/</loc>
+    
+    <lastmod>2023-07-09T07:23:13.949Z</lastmod>
+    
+    <date>1621841344000</date>
+    <title>一枚简单的未知壳 | xiaoeryu</title>
+    
+    <desc>工具&amp;环境: 工具 系统环境 PEID win7_x86 OD IDA imporREC 查壳先用PEID扫了一下发现什么都没有扫到</desc>
+  </url>
+  
+  <url>
+    <loc>https://xiaoeeyu.github.io/2021/05/20/exploit%E7%BC%96%E5%86%99%E7%B3%BB%E5%88%972%EF%BC%9A%E6%A0%88%E6%BA%A2%E5%87%BA%EF%BC%8C%E8%B7%B3%E8%BD%AC%E8%87%B3shellcode/</loc>
+    
+    <lastmod>2023-07-09T07:19:07.992Z</lastmod>
+    
+    <date>1621477645000</date>
+    <title>exploit编写系列2：栈溢出，跳转至shellcode | xiaoeryu</title>
+    
+    <desc>exploit编写系列2：栈溢出，跳转至shellcode这篇blog是为了学习如何用各种方式去构造栈溢出类型漏洞的exp 执行shellcode的多种方法： jump/call 寄存器 pop return push return jmp[reg + offset] blind return jmp code SHE call</desc>
+  </url>
+  
+  <url>
+    <loc>https://xiaoeeyu.github.io/2021/05/19/CVE-2010-2883-Adobe-Reader-TTF%E5%AD%97%E4%BD%93SING%E8%A1%A8%E6%A0%88%E6%BA%A2%E5%87%BA%E6%BC%8F%E6%B4%9E/</loc>
+    
+    <lastmod>2023-07-09T07:18:47.665Z</lastmod>
+    
+    <date>1621435364000</date>
+    <title>CVE-2010-2883 Adobe Reader TTF字体SING表栈溢出漏洞 | xiaoeryu</title>
+    
+    <desc>0x1：漏洞描述​ CVE-2010-2883是Adobe Reader和Acrobat中的CoolType.dll库在解析字体文件SING表中的uniqueName项时存在的栈溢出漏洞，用户受骗打开了特制的PDF文件就有可能导致执行任意代码。 0x2：分析环境 推荐使用的环境 备注 操作系统 Windows XP SP3 简体中文版 虚拟机 VMware 调试器 OD 反汇编器 IDA Pro </desc>
+  </url>
+  
+  <url>
+    <loc>https://xiaoeeyu.github.io/2021/05/20/exploit%E7%BC%96%E5%86%99%E7%B3%BB%E5%88%971-Easy-RM-to-MP3-%E6%BC%8F%E6%B4%9E%E8%B0%83%E8%AF%95/</loc>
+    
+    <lastmod>2023-07-09T07:18:10.766Z</lastmod>
+    
+    <date>1621477332000</date>
+    <title>exploit编写系列1:Easy RM to MP3 漏洞调试 | xiaoeryu</title>
+    
+    <desc>Easy RM to MP3 漏洞调试0X00 前言分析这个漏洞主要是为了学习怎么通过调试并编写溢出类型漏洞的EXP 0X01 分析环境 调试环境 版本 系统版本 XP_sp3 Easy RM to MP3 2.7.3.700 windbg 6.12</desc>
+  </url>
+  
+  <url>
+    <loc>https://xiaoeeyu.github.io/2021/06/07/%E5%BE%AE%E4%BF%A1%E9%98%B2%E6%92%A4%E5%9B%9E/</loc>
+    
+    <lastmod>2023-07-09T07:16:34.870Z</lastmod>
+    
+    <date>1623057052000</date>
+    <title>微信防撤回 | xiaoeryu</title>
+    
+    <desc>目标阻止PC版微信消息撤回</desc>
+  </url>
+  
+  <url>
+    <loc>https://xiaoeeyu.github.io/2023/07/09/CTF001/</loc>
+    
+    <lastmod>2023-07-09T07:01:32.369Z</lastmod>
+    
+    <date>1688885738000</date>
+    <title>CTF001 | xiaoeryu</title>
+    
+    <desc></desc>
+  </url>
+  
+  <url>
+    <loc>https://xiaoeeyu.github.io/2023/07/09/CTF002/</loc>
+    
+    <lastmod>2023-07-09T06:57:56.990Z</lastmod>
+    
+    <date>1688885323000</date>
+    <title>CTF002 | xiaoeryu</title>
+    
+    <desc></desc>
+  </url>
+  
+  <url>
+    <loc>https://xiaoeeyu.github.io/2023/07/09/CTF003/</loc>
+    
+    <lastmod>2023-07-09T06:48:13.506Z</lastmod>
+    
+    <date>1688884990000</date>
+    <title>CTF003 | xiaoeryu</title>
+    
+    <desc></desc>
+  </url>
+  
+  <url>
+    <loc>https://xiaoeeyu.github.io/2023/07/09/CTF004/</loc>
+    
+    <lastmod>2023-07-08T17:59:31.832Z</lastmod>
+    
+    <date>1688836541000</date>
+    <title>CTF004 | xiaoeryu</title>
+    
+    <desc></desc>
+  </url>
+  
+  <url>
+    <loc>https://xiaoeeyu.github.io/2023/07/08/CTF005/</loc>
+    
+    <lastmod>2023-07-08T17:29:46.937Z</lastmod>
+    
+    <date>1688820339000</date>
+    <title>CTF005 | xiaoeryu</title>
+    
+    <desc></desc>
+  </url>
+  
+  <url>
+    <loc>https://xiaoeeyu.github.io/2021/05/19/CVE-2012-0158/</loc>
+    
+    <lastmod>2022-11-15T02:09:48.396Z</lastmod>
+    
+    <date>1621434803000</date>
+    <title>CVE-2012-0158 | xiaoeryu</title>
+    
+    <desc>一、漏洞信息1. 漏洞简述 漏洞编号：CVE-2012-0158 漏洞类型：栈溢出 漏洞影响：信息泄露 该漏洞一直是office漏洞史上的经典案例。该漏洞首次发现于2015年6月，目标主要为东南亚国家和地区，此次攻击事件被命名为“Lotus Blossom”行动。该行动从2012~2015持续了三年之久。 黑客组织在此次间谍行动中，主要通过构造恶意Office文档诱使目标上钩，从而在对方的计算机上</desc>
+  </url>
+  
+  <url>
+    <loc>https://xiaoeeyu.github.io/2021/05/24/Ocean-Lotus%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/</loc>
+    
+    <lastmod>2022-11-14T14:15:42.252Z</lastmod>
+    
+    <date>1621842717000</date>
+    <title>Ocean Lotus样本分析 | xiaoeryu</title>
+    
+    <desc>0x00样本简介​ 该样本是2018年5月份国内某安全厂商威胁情报系统捕获的一起针对中国及其他东亚地区国家政府、科研单位领域的攻击样本，该APT组织确认为APT-32（海莲花OceanLotus）。​ 此次攻击载体选用的是.doc后缀的rtf文件，该rtf文件通过利用漏洞CVE-2017-11882释放恶意文件到本地并加载执行。其释放文件利用了白加黑的组合加载手法逃避杀软的查杀，在运行过程中并无我</desc>
+  </url>
+  
+  <url>
+    <loc>https://xiaoeeyu.github.io/2021/05/19/mm%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/</loc>
+    
+    <lastmod>2022-11-14T14:15:30.667Z</lastmod>
+    
+    <date>1621436066000</date>
+    <title>mm木马分析 | xiaoeryu</title>
+    
+    <desc>0x00 样本信息 文件名称：mm.exe MD5：37eec1a29d316ed1e5e766b599dc32a1 SHA-1：75f098d6b3f217aba4c068b12896c332216fc6b3 Authentihash：1b17d4d13c65fed36321aec54f2dc9b214308bbc82821659f83e445b93d1962e Imphash：9e932de2</desc>
+  </url>
+  
+  <url>
+    <loc>https://xiaoeeyu.github.io/2021/05/21/HW%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/</loc>
+    
+    <lastmod>2022-11-14T14:15:14.441Z</lastmod>
+    
+    <date>1621593146000</date>
+    <title>HW样本分析 | xiaoeryu</title>
+    
+    <desc>0x00 样本信息​ HW期间拿到的一个样本，用了lnk的启动方式。运行后会启动隐藏属性的exe和dll文件，进行后续的内存解密操作后用域前置的方法执行外联操作。</desc>
+  </url>
+  
+  <url>
+    <loc>https://xiaoeeyu.github.io/2022/11/14/Andromeda%E6%9C%A8%E9%A9%AC%E5%88%86%E6%9E%90/</loc>
+    
+    <lastmod>2022-11-14T14:14:52.562Z</lastmod>
+    
+    <date>1668434518000</date>
+    <title>Andromeda木马分析 | xiaoeryu</title>
+    
+    <desc>样本简介 MD5 文件类型 44ff2421bbd7918c6ad68da4fa276e02 exe</desc>
+  </url>
+  
+  <url>
+    <loc>https://xiaoeeyu.github.io/2021/05/20/winDbg%E5%AE%89%E8%A3%85mona/</loc>
+    
+    <lastmod>2022-11-14T13:18:35.913Z</lastmod>
+    
+    <date>1621479914000</date>
+    <title>winXP安装mona | xiaoeryu</title>
+    
+    <desc>Windows XP，32位 从https://github.com/corelan/windbglib/raw/master/pykd/pykd.zip下载pykd.zip 解压后获得2个文件：pykd.pyd和vcredist_x86.exe 使用管理员权限运行vcredist_x86.exe并接受默认值。 将pykd.pyd复制到 C:\Program Files\Debugging Too</desc>
+  </url>
+  
+  <url>
+    <loc>https://xiaoeeyu.github.io/about/index.html</loc>
+    
+    <lastmod>2022-11-14T08:25:58.684Z</lastmod>
+    
+    <date>1668413696000</date>
+    <title>about | xiaoeryu</title>
+    
+    <desc></desc>
+  </url>
+  
+  <url>
+    <loc>https://xiaoeeyu.github.io/2021/05/20/%E5%A0%86%E7%BB%93%E6%9E%84/</loc>
+    
+    <lastmod>2022-11-13T03:31:16.303Z</lastmod>
+    
+    <date>1621473506000</date>
+    <title>堆结构 | xiaoeryu</title>
+    
+    <desc>堆结构堆与栈的区别： 栈空间是在程序设计时已经规定好怎么使用，使用多少内存空间的。 堆是一种在程序运行时动态分配的内存。 堆是需要程序员自己通过malloc、new等函数自己申请的，根据程序的运行环境和申请的大小也有可能申请失败。 一般我们通过一个堆指针来使用所申请到的堆内存，进行读、写、释放等操作。 使用完成后需要把堆指针传给释放函数（free、delete）来回收这片内存，否则会造成内存泄漏。</desc>
+  </url>
+  
+  <url>
+    <loc>https://xiaoeeyu.github.io/2021/06/09/VMware%E9%97%AE%E9%A2%98%E6%B1%87%E6%80%BB/</loc>
+    
+    <lastmod>2021-06-09T03:02:21.142Z</lastmod>
+    
+    <date>1623206102000</date>
+    <title>VMware问题汇总 | xiaoeryu</title>
+    
+    <desc>恢复快照出错有时候在恢复快照的时候会出现找不到所需文件，无法恢复快照的问题</desc>
+  </url>
+  
+  <url>
+    <loc>https://xiaoeeyu.github.io/2021/06/07/Cobalt-Strike-%E5%8D%81-%E5%8F%AF%E6%8C%81%E7%BB%AD%E5%90%8E%E9%97%A8%E7%9A%84%E4%BD%BF%E7%94%A8/</loc>
+    
+    <lastmod>2021-06-07T07:59:56.811Z</lastmod>
+    
+    <date>1623036984000</date>
+    <title>Cobalt-Strike-十-可持续后门的使用 | xiaoeryu</title>
+    
+    <desc>服务自启动</desc>
+  </url>
+  
+  <url>
+    <loc>https://xiaoeeyu.github.io/2021/06/03/Cobalt-Strike-%E4%B9%9D-%E5%85%8D%E6%9D%80/</loc>
+    
+    <lastmod>2021-06-06T14:47:07.362Z</lastmod>
+    
+    <date>1622711449000</date>
+    <title>Cobalt-Strike-九 免杀（一） | xiaoeryu</title>
+    
+    <desc>Veil免杀安装网上有很多的安装方法：安装很简单输入命令sudo apt install veil然后一直确定下一步就可以了，安装时间较长</desc>
+  </url>
+  
+  <url>
+    <loc>https://xiaoeeyu.github.io/2021/06/02/Cobalt-Strike-%E5%85%AB-%E6%9D%83%E9%99%90%E6%8F%90%E5%8D%87/</loc>
+    
+    <lastmod>2021-06-02T16:01:30.922Z</lastmod>
+    
+    <date>1622625781000</date>
+    <title>Cobalt-Strike-八 提权 | xiaoeryu</title>
+    
+    <desc>提权顾名思义简单来说就是将普通用户的权限提升至管理员权限</desc>
+  </url>
+  
+  <url>
+    <loc>https://xiaoeeyu.github.io/2021/06/01/Cobalt-Strike-%E4%B8%83/</loc>
+    
+    <lastmod>2021-06-02T09:13:00.087Z</lastmod>
+    
+    <date>1622559972000</date>
+    <title>Cobalt-Strike-七 Cobalt Strike鱼叉钓鱼 | xiaoeryu</title>
+    
+    <desc>鱼叉钓鱼鱼叉式网络钓鱼 （Spear phishing）指一种源于亚洲与东欧只针对特定目标进行攻击的网络钓鱼攻击 。 鱼叉式网络钓鱼攻击针对特定组织内的特定目标个体。电子威胁 形势已发生了极大变化，从大量的垃圾邮件转向具有针对性的电 子邮件网络钓鱼活动，后者可对全球组织造成重大的财务、品牌和 运营损失。 例如，攻击者更加关注 高管和其他具有管理员权限的雇员，诱使其启动恶意软件，让犯罪 分子进入公司</desc>
+  </url>
+  
+  <url>
+    <loc>https://xiaoeeyu.github.io/2021/05/31/Cobalt-Strike-%E5%85%AD/</loc>
+    
+    <lastmod>2021-06-01T15:18:50.619Z</lastmod>
+    
+    <date>1622467592000</date>
+    <title>Cobalt-Strike-六 | xiaoeryu</title>
+    
+    <desc>Cobalt Strike进行钓鱼攻击一. 生成后门</desc>
+  </url>
+  
+  <url>
+    <loc>https://xiaoeeyu.github.io/2021/05/28/Cobalt-Strike-%E5%9B%9B/</loc>
+    
+    <lastmod>2021-05-31T13:12:36.636Z</lastmod>
+    
+    <date>1622180771000</date>
+    <title>Cobalt-Strike-四 | xiaoeryu</title>
+    
+    <desc>Cobalt Strike用户驱动攻击使用cs生成木马让目标机上线后 有很多用户驱动攻击的模块可以使用</desc>
+  </url>
+  
+  <url>
+    <loc>https://xiaoeeyu.github.io/2021/05/28/Cobalt-Strike-%E4%BA%94/</loc>
+    
+    <lastmod>2021-05-31T13:01:49.320Z</lastmod>
+    
+    <date>1622213455000</date>
+    <title>Cobalt-Strike-五 | xiaoeryu</title>
+    
+    <desc>Cobalt Strike会话管理测试环境 系统 服务 ip kali teamserver1 192.168.3.51 kali teamserver2 192.168.3.8 win7 target 192.168.3.49 winXP target 192.168.3.52</desc>
+  </url>
+  
+  <url>
+    <loc>https://xiaoeeyu.github.io/2021/05/26/Cobalt-Strike-%E4%B8%89/</loc>
+    
+    <lastmod>2021-05-31T04:06:34.053Z</lastmod>
+    
+    <date>1621995981000</date>
+    <title>Cobalt Strike(三) | xiaoeryu</title>
+    
+    <desc>Cobalt Strike DNS Beacon的使用与原理这一节实验需要有一台公网vps和一个域名</desc>
+  </url>
+  
+  <url>
+    <loc>https://xiaoeeyu.github.io/2021/05/24/Cobalt-Strike%E4%BD%BF%E7%94%A8%EF%BC%88%E4%B8%80%EF%BC%89/</loc>
+    
+    <lastmod>2021-05-26T09:32:31.722Z</lastmod>
+    
+    <date>1621850148000</date>
+    <title>Cobalt Strike使用（一） | xiaoeryu</title>
+    
+    <desc>基本使用简介：​ Cobalt Strike作为一款GUI的框架式渗透工具，集成了端口转发、服务扫描、自动化溢出、多模式端口监听、exe\dll\java木马生成、office宏病毒生成、木马捆绑；钓鱼攻击包括：站点克隆、目标信息获取、java执行、浏览器自动攻击等等。</desc>
+  </url>
+  
+  <url>
+    <loc>https://xiaoeeyu.github.io/2021/05/25/Cobalt-Strike-%E4%BA%8C/</loc>
+    
+    <lastmod>2021-05-25T15:05:29.469Z</lastmod>
+    
+    <date>1621932052000</date>
+    <title>Cobalt Strike(二) | xiaoeryu</title>
+    
+    <desc>Cobalt Strike重定器域名：kali123.com dns服务器 ：192.168.3.40 csserver(kali)：192.168.3.8 k.kali.com Ubuntu：192.168.3.42</desc>
+  </url>
+  
+  <url>
+    <loc>https://xiaoeeyu.github.io/404.html</loc>
+    
+    <lastmod>2021-05-20T07:23:28.318Z</lastmod>
+    
+    <date>1463828039000</date>
+    <title>404-找不到页面 | xiaoeryu</title>
+    
+    <desc></desc>
+  </url>
+  
+  <url>
+    <loc>https://xiaoeeyu.github.io/2021/05/20/CVE-2009-0927-PDF%E4%B8%AD%E7%9A%84JS/</loc>
+    
+    <lastmod>2021-05-20T02:10:01.836Z</lastmod>
+    
+    <date>1621474622000</date>
+    <title>CVE-2009-0927:PDF中的JS | xiaoeryu</title>
+    
+    <desc>0x00：分析环境 使用的环境 备注 操作系统 Windows XP SP3 Vmware 16 Adobe Reader版本 9.0中文版 动态调试 OllyDbg v2.01 用的原版的OD其它的OD可能会断不下来 静态调试 IDA7.0</desc>
+  </url>
+  
+  <url>
+    <loc>https://xiaoeeyu.github.io/categories/index.html</loc>
+    
+    <lastmod>2021-05-19T08:13:09.765Z</lastmod>
+    
+    <date>1621411976000</date>
+    <title>categories | xiaoeryu</title>
+    
+    <desc></desc>
+  </url>
+  
+  <url>
+    <loc>https://xiaoeeyu.github.io/tags/index.html</loc>
+    
+    <lastmod>2021-05-19T08:11:34.133Z</lastmod>
+    
+    <date>1621411853000</date>
+    <title>tags | xiaoeryu</title>
+    
+    <desc></desc>
+  </url>
+  
+</urlset>
