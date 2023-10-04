@@ -13,26 +13,43 @@
     
     <!--- Seo Part-->
     
-    <link rel="canonical" href="https://xiaoeeyu.github.io/2021/05/24/arm汇编笔记/"/>
+    <link rel="canonical" href="https://xiaoeeyu.github.io/2023/10/04/android刷机-抓包环境配置/"/>
     <meta name="robots" content="index,follow">
     <meta name="googlebot" content="index,follow">
     <meta name="revisit-after" content="1 days">
     
-        <meta name="description" content="ARM汇编的一些知识寄存器数量ARM处理器一共有37个32位寄存器。30个为“通用“寄存器： r0-r14未分组：r0-r7，即只有一个寄存器分 组：r8-r14，即有多个同名寄存器r8-r12 ：两个r13-r14：6个 r13(sp),R14(lr)1个固定的程序计数器 ： pc (又称r15)6个为状态寄存器 ： cpsr spsr不能被同时访问,一种模式下最多同时访问18个寄存器">
+        <meta name="description" content="设备：Pixel XL 镜像：Android10 抓包环境：Lsposed + fiddler 刷入镜像下载镜像 并解压   将手机进入bootloader模式 开机状态可以使用命令adb reboot bootloader直接进入 关机可以直接按住电源键+音量下键进入  执行flash-all.s刷机  刷机完成 ROOT先在开发者模式打开USB调试开关  安装Magisk下载Magisk 现在">
 <meta property="og:type" content="article">
-<meta property="og:title" content="ARM汇编笔记">
-<meta property="og:url" content="https://xiaoeeyu.github.io/2021/05/24/ARM%E6%B1%87%E7%BC%96%E7%AC%94%E8%AE%B0/index.html">
+<meta property="og:title" content="Android刷机+抓包环境配置">
+<meta property="og:url" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/index.html">
 <meta property="og:site_name" content="xiaoeryu">
-<meta property="og:description" content="ARM汇编的一些知识寄存器数量ARM处理器一共有37个32位寄存器。30个为“通用“寄存器： r0-r14未分组：r0-r7，即只有一个寄存器分 组：r8-r14，即有多个同名寄存器r8-r12 ：两个r13-r14：6个 r13(sp),R14(lr)1个固定的程序计数器 ： pc (又称r15)6个为状态寄存器 ： cpsr spsr不能被同时访问,一种模式下最多同时访问18个寄存器">
+<meta property="og:description" content="设备：Pixel XL 镜像：Android10 抓包环境：Lsposed + fiddler 刷入镜像下载镜像 并解压   将手机进入bootloader模式 开机状态可以使用命令adb reboot bootloader直接进入 关机可以直接按住电源键+音量下键进入  执行flash-all.s刷机  刷机完成 ROOT先在开发者模式打开USB调试开关  安装Magisk下载Magisk 现在">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2021/05/24/ARM%E6%B1%87%E7%BC%96%E7%AC%94%E8%AE%B0/dec5072d-4029-4f77-ba02-4db3edea2f3a.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2021/05/24/ARM%E6%B1%87%E7%BC%96%E7%AC%94%E8%AE%B0/976cd38d-47ac-4158-b029-2d8df50def19.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2021/05/24/ARM%E6%B1%87%E7%BC%96%E7%AC%94%E8%AE%B0/06750ce2-c439-4dc2-97f1-676ed097cef4.png">
-<meta property="article:published_time" content="2021-05-24T08:20:34.000Z">
-<meta property="article:modified_time" content="2023-10-04T03:06:07.661Z">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/a4cd7f6de8dc443c9980acee79e9741b.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/a76805cdef144f7095e4825e5b658e49.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/ecad2747929040459f2e8493a9119071.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/12604ffaeb2347ceab722cd88a3c3933.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/1e400ef78079400c8430e7464c21df43.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/f848fc1d2e9c4533b4eb1e0c436c9551.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/e69c6ffabb2d40b2b5aee4acb69e20ac.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/de47521ef65e4c36808242065efaea8f.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/6f5ef72746244259a2efaec320865d4f.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/a5c0bbef2a994a418645a09edac4bac3.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/54a900ad116444c59fccec41454b8a1b.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/ba1e2632fdc84716afaac61da9c8201f.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/8d5754c6b5834055ab39886d623af152.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/e38d4f7f3f50499ea0c748e8d3be11a0.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/7d1f65fbdd3c486a9887089ce92c4393.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/image-20231004111707549.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/e030a98bf6ca43dcb5c961cdba97729e.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/a4b569d9c68c40a3b60698935c7a0eab.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/917422b659024a99bfeb5dac99f7de65.png">
+<meta property="article:published_time" content="2023-10-04T03:09:02.000Z">
+<meta property="article:modified_time" content="2023-10-04T03:26:24.854Z">
 <meta property="article:author" content="xiaoeryu">
+<meta property="article:tag" content="Android刷机+抓包环境">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://xiaoeeyu.github.io/2021/05/24/ARM%E6%B1%87%E7%BC%96%E7%AC%94%E8%AE%B0/dec5072d-4029-4f77-ba02-4db3edea2f3a.png">
+<meta name="twitter:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/a4cd7f6de8dc443c9980acee79e9741b.png">
     
     
     <!--- Icon Part-->
@@ -44,7 +61,7 @@
     
     <title>
         
-            ARM汇编笔记 -
+            Android刷机+抓包环境配置 -
         
         xiaoeryu
     </title>
@@ -213,7 +230,7 @@
 
         <div class="article-title">
             
-                <h1 class="article-title-regular">ARM汇编笔记</h1>
+                <h1 class="article-title-regular">Android刷机+抓包环境配置</h1>
             
             </div>
             
@@ -235,15 +252,15 @@
                         <div class="article-meta-info">
     <span class="article-date article-meta-item">
         <i class="fa-regular fa-pen-fancy"></i>&nbsp;
-        <span class="desktop">2021-05-24 16:20:34</span>
-        <span class="mobile">2021-05-24 16:20:34</span>
+        <span class="desktop">2023-10-04 11:09:02</span>
+        <span class="mobile">2023-10-04 11:09:02</span>
         <span class="hover-info">创建</span>
     </span>
     
         <span class="article-date article-meta-item">
             <i class="fa-regular fa-wrench"></i>&nbsp;
-            <span class="desktop">2023-10-04 11:06:07</span>
-            <span class="mobile">2023-10-04 11:06:07</span>
+            <span class="desktop">2023-10-04 11:26:24</span>
+            <span class="mobile">2023-10-04 11:26:24</span>
             <span class="hover-info">更新</span>
         </span>
     
@@ -257,7 +274,7 @@
                     
                         
                         <li>
-                            <a href="/categories/ARM%E6%B1%87%E7%BC%96/">ARM汇编</a>&nbsp;
+                            <a href="/categories/%E5%88%B7%E6%9C%BA/">刷机</a>&nbsp;
                         </li>
                     
                     
@@ -265,6 +282,17 @@
             </ul>
         </span>
     
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83/">Android刷机+抓包环境</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
     
 
     
@@ -286,19 +314,88 @@
 
 
         <div class="article-content markdown-body">
-            <h2 id="ARM汇编的一些知识"><a href="#ARM汇编的一些知识" class="headerlink" title="ARM汇编的一些知识"></a>ARM汇编的一些知识</h2><h3 id="寄存器数量"><a href="#寄存器数量" class="headerlink" title="寄存器数量"></a>寄存器数量</h3><p>ARM处理器一共有37个32位寄存器。<br>30个为“通用“寄存器： r0-r14<br>未分组：r0-r7，即只有一个寄存器<br>分 组：r8-r14，即有多个同名寄存器<br>r8-r12 ：两个<br>r13-r14：6个 r13(sp),R14(lr)<br>1个固定的程序计数器 ： pc (又称r15)<br>6个为状态寄存器 ： cpsr spsr<br>不能被同时访问,一种模式下最多同时访问18个寄存器</p>
-<span id="more"></span>
+            <p>设备：Pixel XL</p>
+<p>镜像：Android10</p>
+<p>抓包环境：Lsposed + fiddler</p>
+<h2 id="刷入镜像"><a href="#刷入镜像" class="headerlink" title="刷入镜像"></a>刷入镜像</h2><h4 id="下载镜像并解压"><a href="#下载镜像并解压" class="headerlink" title="下载镜像并解压"></a><a class="link" target="_blank" rel="noopener" href="https://dl.google.com/dl/android/aosp/marlin-ota-qp1a.191005.007.a1-eea9b8dd.zip?hl=zh-cn">下载镜像 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>并解压</h4><img lazyload="" src="/images/loading.svg" data-src="/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/a4cd7f6de8dc443c9980acee79e9741b.png" class="" title="fe13d07737febe2d3f7b857ff4dab08b.png">
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/a76805cdef144f7095e4825e5b658e49.png" class="" title="6caf5a7a9378ffbbb3df3fd747f8fc3e.png">
 
-<h3 id="不同模式下访问的寄存器"><a href="#不同模式下访问的寄存器" class="headerlink" title="不同模式下访问的寄存器"></a>不同模式下访问的寄存器</h3><img lazyload="" src="/images/loading.svg" data-src="/2021/05/24/ARM%E6%B1%87%E7%BC%96%E7%AC%94%E8%AE%B0/dec5072d-4029-4f77-ba02-4db3edea2f3a.png" class="" title="img">
+<h4 id="将手机进入bootloader模式"><a href="#将手机进入bootloader模式" class="headerlink" title="将手机进入bootloader模式"></a>将手机进入bootloader模式</h4><ul>
+<li>开机状态可以使用命令<code>adb reboot bootloader</code>直接进入</li>
+<li>关机可以直接按住<code>电源键+音量下键</code>进入</li>
+</ul>
+<h4 id="执行flash-all-s刷机"><a href="#执行flash-all-s刷机" class="headerlink" title="执行flash-all.s刷机"></a>执行flash-all.s刷机</h4><img lazyload="" src="/images/loading.svg" data-src="/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/ecad2747929040459f2e8493a9119071.png" class="" title="a2d0bea367a10635583957077b588129.png">
 
-<h3 id="寄存器用途"><a href="#寄存器用途" class="headerlink" title="寄存器用途"></a>寄存器用途</h3><p>sp(r13) - 堆栈指针<br>lr(r14) - 连接寄存器<br>调用子程序时存放调用地址,存放返回地址<br>pc(r15) - 程序计数器,相当于windows的EIP<br>(1)跳转到指定地址<br>mov pc,lr// 直接修改pc ，完成跳转<br>bx lr // 跳转到 lr保存的地址</p>
-<p>(2)在函数入口保存寄存器信息<br>stmfd sp!, {r11,lr} // 保存大括号中的寄存器到栈中，从右往左</p>
-<p>(3)使用ldm指令修改pc,完成函数返回<br>ldmfd sp!, {r11,pc} // 将栈中数据依次加载到寄存器中，从左往右</p>
-<p>cpsr – 当前程序状态寄存器<br>spsr–备份的程序状态寄存器</p>
-<h3 id="条件执行后缀"><a href="#条件执行后缀" class="headerlink" title="条件执行后缀"></a>条件执行后缀</h3><img lazyload="" src="/images/loading.svg" data-src="/2021/05/24/ARM%E6%B1%87%E7%BC%96%E7%AC%94%E8%AE%B0/976cd38d-47ac-4158-b029-2d8df50def19.png" class="" title="img">
+<p>刷机完成</p>
+<h2 id="ROOT"><a href="#ROOT" class="headerlink" title="ROOT"></a>ROOT</h2><h4 id="先在开发者模式打开USB调试开关"><a href="#先在开发者模式打开USB调试开关" class="headerlink" title="先在开发者模式打开USB调试开关"></a>先在开发者模式打开USB调试开关</h4><img lazyload="" src="/images/loading.svg" data-src="/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/12604ffaeb2347ceab722cd88a3c3933.png" class="" title="966c0f010eb47dc870b0511763627f3d.png">
 
-<h3 id="ARM的指令流水线"><a href="#ARM的指令流水线" class="headerlink" title="ARM的指令流水线"></a>ARM的指令流水线</h3><img lazyload="" src="/images/loading.svg" data-src="/2021/05/24/ARM%E6%B1%87%E7%BC%96%E7%AC%94%E8%AE%B0/06750ce2-c439-4dc2-97f1-676ed097cef4.png" class="" title="img">
+<h3 id="安装Magisk"><a href="#安装Magisk" class="headerlink" title="安装Magisk"></a>安装Magisk</h3><p><a class="link" target="_blank" rel="noopener" href="https://github.com/topjohnwu/Magisk/releases/download/v26.1/Magisk-v26.1.apk">下载Magisk <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>现在最新版的是26.1</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/1e400ef78079400c8430e7464c21df43.png" class="" title="57d20caf186b109994d1e0b9af51974a.png">
 
+<p><code>adb install .\Magisk-v26.1.apk</code></p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/f848fc1d2e9c4533b4eb1e0c436c9551.png" class="" title="d0455a866ebc44752d136c1109a45531.png">
+
+<h3 id="刷入boot-img"><a href="#刷入boot-img" class="headerlink" title="刷入boot.img"></a>刷入boot.img</h3><p>解压镜像里面的<code>.zip</code>包，获取boot.img</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/e69c6ffabb2d40b2b5aee4acb69e20ac.png" class="" title="f3ddcef9c5ce432de097ee2572996d55.png">
+
+<p>确保手机开启了A/B系统更新（不开好像有一定可能变砖）</p>
+<pre><code class="css"> adb shell getprop ro.build.ab_update
+ adb shell getprop ro.build.system_root_image
+</code></pre>
+<p>将<code>boot.img</code>push到sd卡</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/de47521ef65e4c36808242065efaea8f.png" class="" title="d907bb012984352712e71eb678da1cd5.png">
+
+<p>打开Margisk选择安装 → 选择并修补一个文件 → 选择刚刚push的<code>boot.img</code> → 开始</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/6f5ef72746244259a2efaec320865d4f.png" class="" title="1af9ea2a0939053851b8ab5ca758f211.png">
+
+<p>点击保存，并将生成的文件拉取下来</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/a5c0bbef2a994a418645a09edac4bac3.png" class="" title="8836e82cc8c8068ef8e02f29817f9447.png">
+
+<p>然后将其刷入boot分区中</p>
+<ul>
+<li><ol>
+<li><p>进入fastboot模式<code>adb reboot fastboot</code>，如果命令进入失败手动关机后按住<strong>开机键+音量减</strong>进入</p>
+</li>
+<li><p>输入命令刷入<code> fastboot flash boot .\magisk_patched-26100_TDHKz.img</code></p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/54a900ad116444c59fccec41454b8a1b.png" class="" title="ec4eabed226dcda5335aec66312f6870.png">
+
+<ul>
+<li><code>adb reboot fastboot</code>如果命令不生效的话，可以手动进入或者用<code>adb reboot bootloader</code></li>
+</ul>
+</li>
+</ol>
+</li>
+</ul>
+<p>重启手机 → 打开Magisk → 安装 → 直接安装 →  重启</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/ba1e2632fdc84716afaac61da9c8201f.png" class="" title="c49df6951d4a8e297e6704f6a1530fd8.png">
+
+<p>此时就root成功可以获取root权限了。</p>
+<h2 id="配置抓包环境"><a href="#配置抓包环境" class="headerlink" title="配置抓包环境"></a>配置抓包环境</h2><h3 id="安装Lsposed"><a href="#安装Lsposed" class="headerlink" title="安装Lsposed"></a>安装Lsposed</h3><p><a class="link" target="_blank" rel="noopener" href="https://github.com/LSPosed/LSPosed/releases">下载新版zip包 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>，打开Magisk设置的zygisk开关并重启生效</p>
+<p>将下载好的zip包push到手机</p>
+<p>打开Magisk模块，从本地安装</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/8d5754c6b5834055ab39886d623af152.png" class="" title="c459462f02e78f1be281fdac3d301ca5.png">
+
+<h3 id="安装插件"><a href="#安装插件" class="headerlink" title="安装插件"></a>安装插件</h3><p><a class="link" target="_blank" rel="noopener" href="https://github.com/ViRb3/TrustMeAlready/releases">TrustMeAlready <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>，下载apk后安装就可以</p>
+<h4 id="安装frida证书"><a href="#安装frida证书" class="headerlink" title="安装frida证书"></a>安装frida证书</h4><ul>
+<li><p>在fiddler选项里面配置监听端口</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/e38d4f7f3f50499ea0c748e8d3be11a0.png" class="" title="f47cd1e5b3e81eab1ec94d9f0b2cd026.png">
+</li>
+<li><p>在手机浏览器下载并安装证书</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/7d1f65fbdd3c486a9887089ce92c4393.png" class="" title="fa655bc1892042ff4211b62ba0182062.png">
+</li>
+<li><p><strong>（如果没有安装成功，打开设置在WLAN偏好设置中安装证书）</strong></p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/image-20231004111707549.png" class="" title="image-20231004111707549">
+</li>
+<li><p>配置wifi代理，需要和运行fiddler的电脑在同一个局域网</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/e030a98bf6ca43dcb5c961cdba97729e.png" class="" title="7bd5cb5d3fa4e5ec026a3a41bfcfefc2.png">
+</li>
+<li><p>打开LSPosed启用TrustMeAlready</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/a4b569d9c68c40a3b60698935c7a0eab.png" class="" title="9a5f7a5225ee5c9088799bcf2da7fcd2.png">
+</li>
+<li><p>即可抓取https数据包</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/917422b659024a99bfeb5dac99f7de65.png" class="" title="7af87ae5897b0a9a73a091fafb83509c.png"></li>
+</ul>
+<p><strong>burp和Charles配置也是类似</strong></p>
 
         </div>
 
@@ -306,18 +403,18 @@
             <div class="post-copyright-info">
                 <div class="article-copyright-info-container">
     <ul>
-        <li><strong>标题:</strong> ARM汇编笔记</li>
+        <li><strong>标题:</strong> Android刷机+抓包环境配置</li>
         <li><strong>作者:</strong> xiaoeryu</li>
         <li><strong>创建于
-                :</strong> 2021-05-24 16:20:34</li>
+                :</strong> 2023-10-04 11:09:02</li>
         
             <li>
                 <strong>更新于
-                    :</strong> 2023-10-04 11:06:07
+                    :</strong> 2023-10-04 11:26:24
             </li>
         
         <li>
-            <strong>链接:</strong> https://github.com/xiaoeryu/2021/05/24/ARM汇编笔记/
+            <strong>链接:</strong> https://github.com/xiaoeryu/2023/10/04/Android刷机-抓包环境配置/
         </li>
         <li>
             <strong>
@@ -335,35 +432,28 @@
         
 
         
+            <ul class="post-tags-box">
+                
+                    <li class="tag-item">
+                        <a href="/tags/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83/">#Android刷机+抓包环境</a>&nbsp;
+                    </li>
+                
+            </ul>
+        
 
         
 
         
             <div class="article-nav">
                 
-                    <div class="article-prev">
-                        <a class="prev"
-                        rel="prev"
-                        href="/2021/05/24/Cobalt-Strike%E4%BD%BF%E7%94%A8%EF%BC%88%E4%B8%80%EF%BC%89/"
-                        >
-                            <span class="left arrow-icon flex justify-center items-center">
-                                <i class="fa-solid fa-chevron-left"></i>
-                            </span>
-                            <span class="title flex justify-center items-center">
-                                <span class="post-nav-title-item">Cobalt Strike使用（一）</span>
-                                <span class="post-nav-item">上一篇</span>
-                            </span>
-                        </a>
-                    </div>
-                
                 
                     <div class="article-next">
                         <a class="next"
                         rel="next"
-                        href="/2021/05/24/Ocean-Lotus%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/"
+                        href="/2023/10/03/NDK%E5%BC%80%E5%8F%91%E7%AE%80%E4%BB%8B/"
                         >
                             <span class="title flex justify-center items-center">
-                                <span class="post-nav-title-item">Ocean Lotus样本分析</span>
+                                <span class="post-nav-title-item">NDK开发简介</span>
                                 <span class="post-nav-item">下一篇</span>
                             </span>
                             <span class="right arrow-icon flex justify-center items-center">
@@ -428,8 +518,8 @@
             <div class="post-toc-wrap">
     <div class="post-toc">
         <div class="toc-title">此页目录</div>
-        <div class="page-title">ARM汇编笔记</div>
-        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#ARM%E6%B1%87%E7%BC%96%E7%9A%84%E4%B8%80%E4%BA%9B%E7%9F%A5%E8%AF%86"><span class="nav-text">ARM汇编的一些知识</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%84%E5%AD%98%E5%99%A8%E6%95%B0%E9%87%8F"><span class="nav-text">寄存器数量</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8D%E5%90%8C%E6%A8%A1%E5%BC%8F%E4%B8%8B%E8%AE%BF%E9%97%AE%E7%9A%84%E5%AF%84%E5%AD%98%E5%99%A8"><span class="nav-text">不同模式下访问的寄存器</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AF%84%E5%AD%98%E5%99%A8%E7%94%A8%E9%80%94"><span class="nav-text">寄存器用途</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9D%A1%E4%BB%B6%E6%89%A7%E8%A1%8C%E5%90%8E%E7%BC%80"><span class="nav-text">条件执行后缀</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#ARM%E7%9A%84%E6%8C%87%E4%BB%A4%E6%B5%81%E6%B0%B4%E7%BA%BF"><span class="nav-text">ARM的指令流水线</span></a></li></ol></li></ol>
+        <div class="page-title">Android刷机+抓包环境配置</div>
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%B7%E5%85%A5%E9%95%9C%E5%83%8F"><span class="nav-text">刷入镜像</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ROOT"><span class="nav-text">ROOT</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85Magisk"><span class="nav-text">安装Magisk</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%B7%E5%85%A5boot-img"><span class="nav-text">刷入boot.img</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83"><span class="nav-text">配置抓包环境</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85Lsposed"><span class="nav-text">安装Lsposed</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E6%8F%92%E4%BB%B6"><span class="nav-text">安装插件</span></a></li></ol></li></ol>
 
     </div>
 </div>
