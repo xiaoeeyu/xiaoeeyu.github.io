@@ -18,17 +18,19 @@
     <meta name="googlebot" content="index,follow">
     <meta name="revisit-after" content="1 days">
     
-        <meta name="description" content="恢复快照出错有时候在恢复快照的时候会出现找不到所需文件，无法恢复快照的问题">
+        <meta name="description" content="记录一下，VMware使用过程中出现的问题以及解决方法">
 <meta property="og:type" content="article">
 <meta property="og:title" content="VMware问题汇总">
 <meta property="og:url" content="https://xiaoeeyu.github.io/2021/06/09/VMware%E9%97%AE%E9%A2%98%E6%B1%87%E6%80%BB/index.html">
 <meta property="og:site_name" content="xiaoeryu">
-<meta property="og:description" content="恢复快照出错有时候在恢复快照的时候会出现找不到所需文件，无法恢复快照的问题">
+<meta property="og:description" content="记录一下，VMware使用过程中出现的问题以及解决方法">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://xiaoeeyu.github.io/2021/06/09/VMware%E9%97%AE%E9%A2%98%E6%B1%87%E6%80%BB/image-20210609104305024.png">
 <meta property="og:image" content="https://xiaoeeyu.github.io/2021/06/09/VMware%E9%97%AE%E9%A2%98%E6%B1%87%E6%80%BB/1614876729(1).png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2021/06/09/VMware%E9%97%AE%E9%A2%98%E6%B1%87%E6%80%BB/image-20231005110249523.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2021/06/09/VMware%E9%97%AE%E9%A2%98%E6%B1%87%E6%80%BB/image-20231005111256641.png">
 <meta property="article:published_time" content="2021-06-09T02:35:02.000Z">
-<meta property="article:modified_time" content="2021-06-09T03:02:21.142Z">
+<meta property="article:modified_time" content="2023-10-05T03:13:21.842Z">
 <meta property="article:author" content="xiaoeryu">
 <meta property="article:tag" content="VMware">
 <meta name="twitter:card" content="summary">
@@ -242,8 +244,8 @@
     
         <span class="article-date article-meta-item">
             <i class="fa-regular fa-wrench"></i>&nbsp;
-            <span class="desktop">2021-06-09 11:02:21</span>
-            <span class="mobile">2021-06-09 11:02:21</span>
+            <span class="desktop">2023-10-05 11:13:21</span>
+            <span class="mobile">2023-10-05 11:13:21</span>
             <span class="hover-info">更新</span>
         </span>
     
@@ -297,14 +299,27 @@
 
 
         <div class="article-content markdown-body">
-            <h1 id="恢复快照出错"><a href="#恢复快照出错" class="headerlink" title="恢复快照出错"></a>恢复快照出错</h1><p>有时候在恢复快照的时候会出现找不到所需文件，无法恢复快照的问题</p>
+            <p>记录一下，VMware使用过程中出现的问题以及解决方法</p>
 <span id="more"></span>
 
+<h3 id="恢复快照出错"><a href="#恢复快照出错" class="headerlink" title="恢复快照出错"></a>恢复快照出错</h3><p>有时候在恢复快照的时候会出现找不到所需文件，无法恢复快照的问题</p>
 <p>找到虚拟机的.vmx文件将第一个<code>scsi0.present</code>字段改为<code>FALSE</code>之后再恢复快照即可</p>
 <img lazyload="" src="/images/loading.svg" data-src="/2021/06/09/VMware%E9%97%AE%E9%A2%98%E6%B1%87%E6%80%BB/image-20210609104305024.png" class="" title="image-20210609104305024">
 
-<h1 id="安装vmtools按钮灰色无法安装vmtools"><a href="#安装vmtools按钮灰色无法安装vmtools" class="headerlink" title="安装vmtools按钮灰色无法安装vmtools"></a>安装vmtools按钮灰色无法安装vmtools</h1><p>将存储设置都改为自动检测即可</p>
+<h3 id="安装vmtools按钮灰色无法安装vmtools"><a href="#安装vmtools按钮灰色无法安装vmtools" class="headerlink" title="安装vmtools按钮灰色无法安装vmtools"></a>安装vmtools按钮灰色无法安装vmtools</h3><p>将存储设置都改为自动检测即可，重新开机就可以重新安装vmtools了</p>
 <img lazyload="" src="/images/loading.svg" data-src="/2021/06/09/VMware%E9%97%AE%E9%A2%98%E6%B1%87%E6%80%BB/1614876729(1).png" class="" title="1614876729(1)">
+
+
+
+<p>如果ubuntu22.04安装的vmtools不起作用，试试安装<code>open-vm-tools-desktop</code></p>
+<p><code>sudo apt-get install open-vm-tools-desktop</code></p>
+<p>安装之后<mark>重启切换用户到<strong>xorg</strong></mark></p>
+<img lazyload="" src="/images/loading.svg" data-src="/2021/06/09/VMware%E9%97%AE%E9%A2%98%E6%B1%87%E6%80%BB/image-20231005110249523.png" class="" title="image-20231005110249523">
+
+<ul>
+<li>有时候重启切换用户不生效，就注销用户重新切换一下</li>
+</ul>
+<img lazyload="" src="/images/loading.svg" data-src="/2021/06/09/VMware%E9%97%AE%E9%A2%98%E6%B1%87%E6%80%BB/image-20231005111256641.png" class="" title="image-20231005111256641">
 
         </div>
 
@@ -319,7 +334,7 @@
         
             <li>
                 <strong>更新于
-                    :</strong> 2021-06-09 11:02:21
+                    :</strong> 2023-10-05 11:13:21
             </li>
         
         <li>
@@ -443,7 +458,7 @@
     <div class="post-toc">
         <div class="toc-title">此页目录</div>
         <div class="page-title">VMware问题汇总</div>
-        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E6%81%A2%E5%A4%8D%E5%BF%AB%E7%85%A7%E5%87%BA%E9%94%99"><span class="nav-text">恢复快照出错</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#%E5%AE%89%E8%A3%85vmtools%E6%8C%89%E9%92%AE%E7%81%B0%E8%89%B2%E6%97%A0%E6%B3%95%E5%AE%89%E8%A3%85vmtools"><span class="nav-text">安装vmtools按钮灰色无法安装vmtools</span></a></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%81%A2%E5%A4%8D%E5%BF%AB%E7%85%A7%E5%87%BA%E9%94%99"><span class="nav-text">恢复快照出错</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85vmtools%E6%8C%89%E9%92%AE%E7%81%B0%E8%89%B2%E6%97%A0%E6%B3%95%E5%AE%89%E8%A3%85vmtools"><span class="nav-text">安装vmtools按钮灰色无法安装vmtools</span></a></li></ol>
 
     </div>
 </div>
