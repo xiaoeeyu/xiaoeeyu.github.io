@@ -251,7 +251,7 @@
                         <div class="label">分类</div>
                     </a>
                     <a class="item" href="/archives">
-                        <div class="number">60</div>
+                        <div class="number">61</div>
                         <div class="label">文章</div>
                     </a>
                 </div>
@@ -268,6 +268,60 @@
                 
                     <div class="home-content-container">
     <ul class="home-article-list">
+        
+            <li class="home-article-item">
+
+                
+
+                
+
+                
+
+                <h3 class="home-article-title">
+                    <a href="/2021/05/24/ARM%E6%B1%87%E7%BC%96%E7%AC%94%E8%AE%B0/">
+                        ARM汇编笔记
+                    </a>
+                </h3>
+
+                <div class="home-article-content markdown-body">
+                    
+                        <h2 id="ARM汇编的一些知识"><a href="#ARM汇编的一些知识" class="headerlink" title="ARM汇编的一些知识"></a>ARM汇编的一些知识</h2><h3 id="寄存器数量"><a href="#寄存器数量" class="headerlink" title="寄存器数量"></a>寄存器数量</h3><p>ARM处理器一共有37个32位寄存器。<br>30个为“通用“寄存器： r0-r14<br>未分组：r0-r7，即只有一个寄存器<br>分 组：r8-r14，即有多个同名寄存器<br>r8-r12 ：两个<br>r13-r14：6个 r13(sp),R14(lr)<br>1个固定的程序计数器 ： pc (又称r15)<br>6个为状态寄存器 ： cpsr spsr<br>不能被同时访问,一种模式下最多同时访问18个寄存器</p>
+                    
+                </div>
+
+                <div class="home-article-meta-info-container">
+    <div class="home-article-meta-info">
+        <span><i class="fa-solid fa-calendars"></i>&nbsp;
+            <span class="home-article-date" data-date="Mon May 24 2021 16:20:34 GMT+0800">
+                
+                    2021-05-24
+                
+            </span>
+        </span>
+        
+            <span class="home-article-category">
+                <i class="fa-solid fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/ARM%E6%B1%87%E7%BC%96/">ARM汇编</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+        
+        
+    </div>
+
+    <a href="/2021/05/24/ARM%E6%B1%87%E7%BC%96%E7%AC%94%E8%AE%B0/">阅读全文<span class="seo-reader-text">ARM汇编笔记</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
+</div>
+
+            </li>
         
             <li class="home-article-item">
 
@@ -1270,91 +1324,11 @@ regsvr32 msdia90.dll
 
             </li>
         
-            <li class="home-article-item">
-
-                
-
-                
-
-                
-
-                <h3 class="home-article-title">
-                    <a href="/2021/05/19/CVE-2012-0158/">
-                        CVE-2012-0158
-                    </a>
-                </h3>
-
-                <div class="home-article-content markdown-body">
-                    
-                        <h2 id="一、漏洞信息"><a href="#一、漏洞信息" class="headerlink" title="一、漏洞信息"></a>一、漏洞信息</h2><h3 id="1-漏洞简述"><a href="#1-漏洞简述" class="headerlink" title="1. 漏洞简述"></a>1. 漏洞简述</h3><ul>
-<li>漏洞编号：CVE-2012-0158</li>
-<li>漏洞类型：栈溢出</li>
-<li>漏洞影响：信息泄露</li>
-<li>该漏洞一直是office漏洞史上的经典案例。该漏洞首次发现于2015年6月，目标主要为东南亚国家和地区，此次攻击事件被命名为“Lotus Blossom”行动。该行动从2012~2015持续了三年之久。</li>
-<li>黑客组织在此次间谍行动中，主要通过构造恶意Office文档诱使目标上钩，从而在对方的计算机上植入木马，窃取机密信息。</li>
-</ul>
-<h3 id="2-组件概述"><a href="#2-组件概述" class="headerlink" title="2. 组件概述"></a>2. 组件概述</h3><p>2012-0158是一个经典的栈溢出漏洞，成因在于office在解析activeX控件时调用系统的MSCOMCTL.OCX库中存在栈溢出漏洞，导致可被用于执行任意代码。</p>
-<h3 id="3-漏洞影响"><a href="#3-漏洞影响" class="headerlink" title="3. 漏洞影响"></a>3. 漏洞影响</h3><p>操作系统：XP SP3 ~ WIN7</p>
-<p>office版本：2003 ~ 2010</p>
-                    
-                </div>
-
-                <div class="home-article-meta-info-container">
-    <div class="home-article-meta-info">
-        <span><i class="fa-solid fa-calendars"></i>&nbsp;
-            <span class="home-article-date" data-date="Wed May 19 2021 22:33:23 GMT+0800">
-                
-                    2021-05-19
-                
-            </span>
-        </span>
-        
-            <span class="home-article-category">
-                <i class="fa-solid fa-folders"></i>&nbsp;
-            <ul>
-                
-                
-                    
-                        
-                        <li>
-                            <a href="/categories/%E4%BA%8C%E8%BF%9B%E5%88%B6/">二进制</a>&nbsp;
-                        </li>
-                    
-                    
-                
-            </ul>
-        </span>
-        
-        
-            <span class="home-article-tag">
-                <i class="fa-solid fa-tags"></i>&nbsp;
-                <ul>
-                    
-                        <li>
-                            
-                            <a href="/tags/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/">漏洞分析</a>&nbsp;
-                        </li>
-                    
-                        <li>
-                            | 
-                            <a href="/tags/office%E6%BC%8F%E6%B4%9E/">office漏洞</a>&nbsp;
-                        </li>
-                    
-                </ul>
-            </span>
-        
-    </div>
-
-    <a href="/2021/05/19/CVE-2012-0158/">阅读全文<span class="seo-reader-text">CVE-2012-0158</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
-</div>
-
-            </li>
-        
     </ul>
 
     <div class="home-paginator">
         <div class="paginator">
-    <a class="extend prev" rel="prev" href="/page/4/"><i class="fa-regular fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span>
+    <a class="extend prev" rel="prev" href="/page/4/"><i class="fa-regular fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/3/">3</a><a class="page-number" href="/page/4/">4</a><span class="page-number current">5</span><a class="page-number" href="/page/6/">6</a><a class="extend next" rel="next" href="/page/6/"><i class="fa-regular fa-angle-right"></i></a>
 </div>
 
     </div>
