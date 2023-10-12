@@ -13,39 +13,35 @@
     
     <!--- Seo Part-->
     
-    <link rel="canonical" href="https://xiaoeeyu.github.io/2023/10/10/java反射/"/>
+    <link rel="canonical" href="https://xiaoeeyu.github.io/2023/10/12/javavm与jnienv/"/>
     <meta name="robots" content="index,follow">
     <meta name="googlebot" content="index,follow">
     <meta name="revisit-after" content="1 days">
     
-        <meta name="description" content="写代码测试了一下JAVA反射">
+        <meta name="description" content="上一章简单测试了一下Java的反射，这章我们来测试一下JavaVM和JNIEnv">
 <meta property="og:type" content="article">
-<meta property="og:title" content="JAVA反射">
-<meta property="og:url" content="https://xiaoeeyu.github.io/2023/10/10/JAVA%E5%8F%8D%E5%B0%84/index.html">
+<meta property="og:title" content="JavaVM与JNIEnv">
+<meta property="og:url" content="https://xiaoeeyu.github.io/2023/10/12/JavaVM%E4%B8%8EJNIEnv/index.html">
 <meta property="og:site_name" content="xiaoeryu">
-<meta property="og:description" content="写代码测试了一下JAVA反射">
+<meta property="og:description" content="上一章简单测试了一下Java的反射，这章我们来测试一下JavaVM和JNIEnv">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/10/JAVA%E5%8F%8D%E5%B0%84/image-20231010014651140.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/10/JAVA%E5%8F%8D%E5%B0%84/image-20231010014725497.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/10/JAVA%E5%8F%8D%E5%B0%84/image-20231010014739104.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/10/JAVA%E5%8F%8D%E5%B0%84/image-20231010014801504.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/10/JAVA%E5%8F%8D%E5%B0%84/image-20231010014808623.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/10/JAVA%E5%8F%8D%E5%B0%84/image-20231010014815673.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/10/JAVA%E5%8F%8D%E5%B0%84/image-20231010014822784.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/10/JAVA%E5%8F%8D%E5%B0%84/image-20231010014828767.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/10/JAVA%E5%8F%8D%E5%B0%84/image-20231010014833735.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/10/JAVA%E5%8F%8D%E5%B0%84/image-20231010014855385.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/10/JAVA%E5%8F%8D%E5%B0%84/image-20231010014948175.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/10/JAVA%E5%8F%8D%E5%B0%84/image-20231010015018997.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/10/JAVA%E5%8F%8D%E5%B0%84/image-20231010015038472.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/10/JAVA%E5%8F%8D%E5%B0%84/image-20231010015049285.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/10/JAVA%E5%8F%8D%E5%B0%84/image-20231012014949471.png">
-<meta property="article:published_time" content="2023-10-09T17:45:41.000Z">
-<meta property="article:modified_time" content="2023-10-12T04:19:18.571Z">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/12/JavaVM%E4%B8%8EJNIEnv/image-20231012012150087.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/12/JavaVM%E4%B8%8EJNIEnv/image-20231012013953259.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/12/JavaVM%E4%B8%8EJNIEnv/image-20231012014049408.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/12/JavaVM%E4%B8%8EJNIEnv/image-20231012014219741.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/12/JavaVM%E4%B8%8EJNIEnv/image-20231012014321768.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/12/JavaVM%E4%B8%8EJNIEnv/image-20231012015307574.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/12/JavaVM%E4%B8%8EJNIEnv/image-20231012015313275.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/12/JavaVM%E4%B8%8EJNIEnv/image-20231012015340930.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/12/JavaVM%E4%B8%8EJNIEnv/image-20231012015343790.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/12/JavaVM%E4%B8%8EJNIEnv/image-20231012020427432.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/12/JavaVM%E4%B8%8EJNIEnv/image-20231012015348275.png">
+<meta property="article:published_time" content="2023-10-11T17:19:06.000Z">
+<meta property="article:modified_time" content="2023-10-12T04:21:02.774Z">
 <meta property="article:author" content="xiaoeryu">
-<meta property="article:tag" content="JAVA反射">
+<meta property="article:tag" content="JavaVM与JNIEnv">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://xiaoeeyu.github.io/2023/10/10/JAVA%E5%8F%8D%E5%B0%84/image-20231010014651140.png">
+<meta name="twitter:image" content="https://xiaoeeyu.github.io/2023/10/12/JavaVM%E4%B8%8EJNIEnv/image-20231012012150087.png">
     
     
     <!--- Icon Part-->
@@ -57,7 +53,7 @@
     
     <title>
         
-            JAVA反射 -
+            JavaVM与JNIEnv -
         
         xiaoeryu
     </title>
@@ -226,7 +222,7 @@
 
         <div class="article-title">
             
-                <h1 class="article-title-regular">JAVA反射</h1>
+                <h1 class="article-title-regular">JavaVM与JNIEnv</h1>
             
             </div>
             
@@ -248,15 +244,15 @@
                         <div class="article-meta-info">
     <span class="article-date article-meta-item">
         <i class="fa-regular fa-pen-fancy"></i>&nbsp;
-        <span class="desktop">2023-10-10 01:45:41</span>
-        <span class="mobile">2023-10-10 01:45:41</span>
+        <span class="desktop">2023-10-12 01:19:06</span>
+        <span class="mobile">2023-10-12 01:19:06</span>
         <span class="hover-info">创建</span>
     </span>
     
         <span class="article-date article-meta-item">
             <i class="fa-regular fa-wrench"></i>&nbsp;
-            <span class="desktop">2023-10-12 12:19:18</span>
-            <span class="mobile">2023-10-12 12:19:18</span>
+            <span class="desktop">2023-10-12 12:21:02</span>
+            <span class="mobile">2023-10-12 12:21:02</span>
             <span class="hover-info">更新</span>
         </span>
     
@@ -284,7 +280,7 @@
             <ul>
                 
                     <li>
-                        <a href="/tags/JAVA%E5%8F%8D%E5%B0%84/">JAVA反射</a>&nbsp;
+                        <a href="/tags/JavaVM%E4%B8%8EJNIEnv/">JavaVM与JNIEnv</a>&nbsp;
                     </li>
                 
             </ul>
@@ -310,70 +306,109 @@
 
 
         <div class="article-content markdown-body">
-            <p>写代码测试了一下JAVA反射</p>
+            <p>上一章简单测试了一下Java的反射，这章我们来测试一下JavaVM和JNIEnv</p>
 <span id="more"></span>
 
-<h3 id="Java反射的相关类"><a href="#Java反射的相关类" class="headerlink" title="Java反射的相关类"></a>Java反射的相关类</h3><img lazyload="" src="/images/loading.svg" data-src="/2023/10/10/JAVA%E5%8F%8D%E5%B0%84/image-20231010014651140.png" class="" title="image-20231010014651140">
+<h2 id="回顾一下Java反射"><a href="#回顾一下Java反射" class="headerlink" title="回顾一下Java反射"></a>回顾一下Java反射</h2><img lazyload="" src="/images/loading.svg" data-src="/2023/10/12/JavaVM%E4%B8%8EJNIEnv/image-20231012012150087.png" class="" title="image-20231012012150087">
 
-<p>Class类</p>
-<img lazyload="" src="/images/loading.svg" data-src="/2023/10/10/JAVA%E5%8F%8D%E5%B0%84/image-20231010014725497.png" class="" title="image-20231010014725497">
-
-<p>拿到Class之后可以获取它的属性</p>
-<img lazyload="" src="/images/loading.svg" data-src="/2023/10/10/JAVA%E5%8F%8D%E5%B0%84/image-20231010014739104.png" class="" title="image-20231010014739104">
-
-<img lazyload="" src="/images/loading.svg" data-src="/2023/10/10/JAVA%E5%8F%8D%E5%B0%84/image-20231010014801504.png" class="" title="image-20231010014801504">
-
-<img lazyload="" src="/images/loading.svg" data-src="/2023/10/10/JAVA%E5%8F%8D%E5%B0%84/image-20231010014808623.png" class="" title="image-20231010014808623">
-
-<img lazyload="" src="/images/loading.svg" data-src="/2023/10/10/JAVA%E5%8F%8D%E5%B0%84/image-20231010014815673.png" class="" title="image-20231010014815673">
-
-<img lazyload="" src="/images/loading.svg" data-src="/2023/10/10/JAVA%E5%8F%8D%E5%B0%84/image-20231010014822784.png" class="" title="image-20231010014822784">
-
-<img lazyload="" src="/images/loading.svg" data-src="/2023/10/10/JAVA%E5%8F%8D%E5%B0%84/image-20231010014828767.png" class="" title="image-20231010014828767">
-
-<img lazyload="" src="/images/loading.svg" data-src="/2023/10/10/JAVA%E5%8F%8D%E5%B0%84/image-20231010014833735.png" class="" title="image-20231010014833735">
-
-<p>Java封装</p>
-<img lazyload="" src="/images/loading.svg" data-src="/2023/10/10/JAVA%E5%8F%8D%E5%B0%84/image-20231010014855385.png" class="" title="image-20231010014855385">
-
-<h3 id="Java反射"><a href="#Java反射" class="headerlink" title="Java反射"></a>Java反射</h3><p>写<a class="link" target="_blank" rel="noopener" href="https://github.com/xiaoeeyu/ReflectionTest">代码 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>测试一下Java反射中用到的一些api的使用方法</p>
-<p><strong>新建一个类来定义一些Field和函数</strong></p>
-<img lazyload="" src="/images/loading.svg" data-src="/2023/10/10/JAVA%E5%8F%8D%E5%B0%84/image-20231010014948175.png" class="" title="image-20231010014948175">
-
-<p>在主函数中去通过反射调用，测试一下（测试变量调用）</p>
-<img lazyload="" src="/images/loading.svg" data-src="/2023/10/10/JAVA%E5%8F%8D%E5%B0%84/image-20231010015018997.png" class="" title="image-20231010015018997">
-
-<ul>
-<li>如果是StaticField那么它是属于类的，可以直接通过类调用</li>
-<li>如果是PrivateField那么它是属于实例的，需要实例化之后调用</li>
-<li>如果是Private还需要修改访问权限<code>setAccessible(true);   // 通过取消权限检查来修改访问限制</code></li>
-</ul>
-<p>在主函数中去通过反射调用，测试一下（测试函数调用）</p>
-<img lazyload="" src="/images/loading.svg" data-src="/2023/10/10/JAVA%E5%8F%8D%E5%B0%84/image-20231010015038472.png" class="" title="image-20231010015038472">
-
-<ul>
-<li>跟变量的调用方式是一样的</li>
-</ul>
-<p>以及在native中调用的流程也是一样的，只是使用的api不同</p>
-<img lazyload="" src="/images/loading.svg" data-src="/2023/10/10/JAVA%E5%8F%8D%E5%B0%84/image-20231010015049285.png" class="" title="image-20231010015049285">
-
-<ul>
-<li><p>对比</p>
 <blockquote>
-<p>获取类名：<code>Test.class</code>&gt;<code>env-&gt;FindClass</code></p>
-<p>获取FieldID：<code>testClazz.getDeclaredField</code>&gt;<code>env-&gt;GetStaticFieldID</code></p>
-<p>获取值：<code>publicStaticField_field.get</code>&gt;<code>env-&gt;GetStaticObjectField</code></p>
+<p>在我们使用NDK访问java类中的方法的时候，流程也是差不多一样的</p>
+<p>找到类名-&gt;jFieldID/jmethodID（等于是Java当中的GetField）-&gt;通过GetObjectField获取到Java类中的函数或值</p>
 </blockquote>
-</li>
-</ul>
-<h6 id="native使用C和C-编写会略有不同"><a href="#native使用C和C-编写会略有不同" class="headerlink" title="native使用C和C++编写会略有不同"></a>native使用C和C++编写会略有不同</h6><img lazyload="" src="/images/loading.svg" data-src="/2023/10/10/JAVA%E5%8F%8D%E5%B0%84/image-20231012014949471.png" class="" title="image-20231012014949471">
+<p>在调用函数的时候也要注意，如果类中没有同名函数可以不用传递参数。如果存在同名函数就需要将参数一并传递</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/12/JavaVM%E4%B8%8EJNIEnv/image-20231012013953259.png" class="" title="image-20231012013953259">
+
+<p>函数描述符</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/12/JavaVM%E4%B8%8EJNIEnv/image-20231012014049408.png" class="" title="image-20231012014049408">
+
+<h2 id="JavaVM和JNIEnv"><a href="#JavaVM和JNIEnv" class="headerlink" title="JavaVM和JNIEnv"></a>JavaVM和JNIEnv</h2><img lazyload="" src="/images/loading.svg" data-src="/2023/10/12/JavaVM%E4%B8%8EJNIEnv/image-20231012014219741.png" class="" title="image-20231012014219741">
 
 <blockquote>
-<p>用C实现的话，函数调用的第一个参数要传入<strong>JNIEnv</strong>*</p>
-<ul>
-<li>因为在<strong>jni.h</strong>中的声明不同，所以C在使用这些api的时候需要传入env作为第一个参数，还有C里面没有<strong>String</strong>所以字符串要改为<strong>char</strong>*之类的改动</li>
-<li>总体来说C要比C++更麻烦一些，不如C++简洁</li>
-</ul>
+<p>JavaVM结构体里面包含了5个方法</p>
+</blockquote>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/12/JavaVM%E4%B8%8EJNIEnv/image-20231012014321768.png" class="" title="image-20231012014321768">
+
+<blockquote>
+<p>JNIEnv结构体里面包含了非常多的方法可以调用</p>
+</blockquote>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/12/JavaVM%E4%B8%8EJNIEnv/image-20231012015307574.png" class="" title="image-20231012015307574">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/12/JavaVM%E4%B8%8EJNIEnv/image-20231012015313275.png" class="" title="image-20231012015313275">
+
+<h3 id="怎么获取JavaVM和JNIEnv"><a href="#怎么获取JavaVM和JNIEnv" class="headerlink" title="怎么获取JavaVM和JNIEnv"></a>怎么获取JavaVM和JNIEnv</h3><img lazyload="" src="/images/loading.svg" data-src="/2023/10/12/JavaVM%E4%B8%8EJNIEnv/image-20231012015340930.png" class="" title="image-20231012015340930">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/12/JavaVM%E4%B8%8EJNIEnv/image-20231012015343790.png" class="" title="image-20231012015343790">
+
+<h4 id="第一种方法：在JNI-OnLoad中获取"><a href="#第一种方法：在JNI-OnLoad中获取" class="headerlink" title="第一种方法：在JNI_OnLoad中获取"></a>第一种方法：在JNI_OnLoad中获取</h4><pre><code class="C++">    globalVM = vm;
+    __android_log_print(4, "xiaoeryu-&gt;jni", "JNI_OnLoad(JavaVM* vm, void* reserved)-&gt;%p", vm);
+
+    __android_log_print(4, "xiaoeryu-&gt;jni", "jni-&gt;%s", "JNI_OnLoad is called");
+    jint result = 0;
+
+    JNIEnv *env = nullptr;
+    if (vm-&gt;GetEnv((void **)&amp;env, JNI_VERSION_1_6) == JNI_OK){
+        __android_log_print(4, "xiaoeryu-&gt;jni", "jni-&gt;%s", "vm-&gt;GetEnv((void **)&amp;env, JNI_VERSION_1_6) success");
+    }
+    __android_log_print(4, "xiaoeryu-&gt;jni", "GetEnv((void **)&amp;env, JNI_VERSION_1_6)-&gt;%p", env);
+</code></pre>
+<h4 id="第二种方法：通过JNI函数的传参获取"><a href="#第二种方法：通过JNI函数的传参获取" class="headerlink" title="第二种方法：通过JNI函数的传参获取"></a>第二种方法：通过JNI函数的传参获取</h4><img lazyload="" src="/images/loading.svg" data-src="/2023/10/12/JavaVM%E4%B8%8EJNIEnv/image-20231012020427432.png" class="" title="image-20231012020427432">
+
+<h4 id="第三种方法：在子线程中获取"><a href="#第三种方法：在子线程中获取" class="headerlink" title="第三种方法：在子线程中获取"></a>第三种方法：在子线程中获取</h4><pre><code class="C++">    // 在子线程中调用JNIEnv的接口
+    JNIEnv *threadenv = nullptr;
+    globalVM-&gt;AttachCurrentThread(&amp;threadenv, nullptr);
+    if (globalVM-&gt;GetEnv((void **)&amp;threadenv, JNI_VERSION_1_6) == JNI_OK){
+        __android_log_print(4, "xiaoeryu-&gt;jni", "jni-&gt;%s", "(globalVM-&gt;GetEnv((void **)&amp;threadenv, JNI_VERSION_1_6) success");
+        jstring jstring1 = threadenv-&gt;NewStringUTF("threadtest jstring");
+        const char* content = threadenv-&gt;GetStringUTFChars(jstring1, nullptr);
+        __android_log_print(4, "xiaoeryu-&gt;jni", "jni-&gt;%s", content);
+        threadenv-&gt;ReleaseStringUTFChars(jstring1, content);
+    } else{
+        __android_log_print(4, "xiaoeryu-&gt;jni", "jni-&gt;%s", "(globalVM-&gt;GetEnv((void **)&amp;threadenv, JNI_VERSION_1_6) failed");
+    }
+</code></pre>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/12/JavaVM%E4%B8%8EJNIEnv/image-20231012015348275.png" class="" title="image-20231012015348275">
+
+<blockquote>
+<p> JNIEnv是与线程相关的，每一个线程都有自己的env</p>
+</blockquote>
+<h2 id="native子线程无法加载app自己的Class"><a href="#native子线程无法加载app自己的Class" class="headerlink" title="native子线程无法加载app自己的Class"></a>native子线程无法加载app自己的Class</h2><p>通过pthread_create之类的方法在native层创建了子线程,则在这个子线程中FindClass方法查不到我们Apk中定义的class。会返回0并且在Java层抛出ClassNotFoundException:</p>
+<blockquote>
+<p>因为在子线程中使用<code>FindClass</code>方法，他将会使用与当前线程关联的类加载器进行类查找。就可能会导致子线程中无法找到在主线程中加载的类。</p>
+</blockquote>
+<p>通过Exception可以捕获到具体的异常</p>
+<pre><code class="C++">//     jclass TestJclass = threadenv-&gt;FindClass("com/xiaoeryu/reflectiontest/Test");
+//    threadenv-&gt;ExceptionDescribe();
+//    threadenv-&gt;ExceptionClear();
+</code></pre>
+<h3 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法"></a>解决办法</h3><p>这里使用一种通用的解决办法：</p>
+<p>通过在主线程中使用<code>FindClass</code>找到类的<code>jclass</code>对象，然后将这个对象传递给子线程使用。</p>
+<p><strong>举个栗子</strong></p>
+<pre><code class="C++">// 在主线程中
+jclass TestJclass = env-&gt;FindClass("com/xiaoeryu/reflectiontest/Test");
+jobject appClassloader = env-&gt;NewGlobalRef(TestJclass);
+
+// 在子线程中
+void *threadtest(void* args){
+    JNIEnv *threadenv = nullptr;
+    globalVM-&gt;AttachCurrentThread(&amp;threadenv, nullptr);
+
+    jclass TestJclass = (jclass)args; // 使用主线程中找到的类引用
+    // 继续使用 TestJclass 进行其他 JNI 操作
+
+    globalVM-&gt;DetachCurrentThread();
+    pthread_exit(0);
+}
+
+// 创建子线程时传递类的引用
+pthread_t thread;
+pthread_create(&amp;thread, nullptr, threadtest, appClassloader);
+pthread_join(thread, nullptr);
+
+// 在主线程中删除全局引用
+env-&gt;DeleteGlobalRef(appClassloader);
+</code></pre>
+<blockquote>
+<p>当然在类外定义一个全局变量，在主类中赋值然后再子类中使用也是可以的，但是使用<code>NewGlobalRef</code> 更灵活、更方便控制。</p>
 </blockquote>
 
         </div>
@@ -382,18 +417,18 @@
             <div class="post-copyright-info">
                 <div class="article-copyright-info-container">
     <ul>
-        <li><strong>标题:</strong> JAVA反射</li>
+        <li><strong>标题:</strong> JavaVM与JNIEnv</li>
         <li><strong>作者:</strong> xiaoeryu</li>
         <li><strong>创建于
-                :</strong> 2023-10-10 01:45:41</li>
+                :</strong> 2023-10-12 01:19:06</li>
         
             <li>
                 <strong>更新于
-                    :</strong> 2023-10-12 12:19:18
+                    :</strong> 2023-10-12 12:21:02
             </li>
         
         <li>
-            <strong>链接:</strong> https://github.com/xiaoeryu/2023/10/10/JAVA反射/
+            <strong>链接:</strong> https://github.com/xiaoeryu/2023/10/12/JavaVM与JNIEnv/
         </li>
         <li>
             <strong>
@@ -414,7 +449,7 @@
             <ul class="post-tags-box">
                 
                     <li class="tag-item">
-                        <a href="/tags/JAVA%E5%8F%8D%E5%B0%84/">#JAVA反射</a>&nbsp;
+                        <a href="/tags/JavaVM%E4%B8%8EJNIEnv/">#JavaVM与JNIEnv</a>&nbsp;
                     </li>
                 
             </ul>
@@ -425,29 +460,14 @@
         
             <div class="article-nav">
                 
-                    <div class="article-prev">
-                        <a class="prev"
-                        rel="prev"
-                        href="/2023/10/12/JavaVM%E4%B8%8EJNIEnv/"
-                        >
-                            <span class="left arrow-icon flex justify-center items-center">
-                                <i class="fa-solid fa-chevron-left"></i>
-                            </span>
-                            <span class="title flex justify-center items-center">
-                                <span class="post-nav-title-item">JavaVM与JNIEnv</span>
-                                <span class="post-nav-item">上一篇</span>
-                            </span>
-                        </a>
-                    </div>
-                
                 
                     <div class="article-next">
                         <a class="next"
                         rel="next"
-                        href="/2023/10/06/%E5%9B%BD%E5%AE%B6%E8%AE%A4%E5%90%8C%E6%84%9F%E7%9A%84%E6%9E%84%E5%BB%BA/"
+                        href="/2023/10/10/JAVA%E5%8F%8D%E5%B0%84/"
                         >
                             <span class="title flex justify-center items-center">
-                                <span class="post-nav-title-item">国家认同感的构建</span>
+                                <span class="post-nav-title-item">JAVA反射</span>
                                 <span class="post-nav-item">下一篇</span>
                             </span>
                             <span class="right arrow-icon flex justify-center items-center">
@@ -512,8 +532,8 @@
             <div class="post-toc-wrap">
     <div class="post-toc">
         <div class="toc-title">此页目录</div>
-        <div class="page-title">JAVA反射</div>
-        <ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Java%E5%8F%8D%E5%B0%84%E7%9A%84%E7%9B%B8%E5%85%B3%E7%B1%BB"><span class="nav-text">Java反射的相关类</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Java%E5%8F%8D%E5%B0%84"><span class="nav-text">Java反射</span></a></li></ol>
+        <div class="page-title">JavaVM与JNIEnv</div>
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9E%E9%A1%BE%E4%B8%80%E4%B8%8BJava%E5%8F%8D%E5%B0%84"><span class="nav-text">回顾一下Java反射</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JavaVM%E5%92%8CJNIEnv"><span class="nav-text">JavaVM和JNIEnv</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%8E%E4%B9%88%E8%8E%B7%E5%8F%96JavaVM%E5%92%8CJNIEnv"><span class="nav-text">怎么获取JavaVM和JNIEnv</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#native%E5%AD%90%E7%BA%BF%E7%A8%8B%E6%97%A0%E6%B3%95%E5%8A%A0%E8%BD%BDapp%E8%87%AA%E5%B7%B1%E7%9A%84Class"><span class="nav-text">native子线程无法加载app自己的Class</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95"><span class="nav-text">解决办法</span></a></li></ol></li></ol>
 
     </div>
 </div>
