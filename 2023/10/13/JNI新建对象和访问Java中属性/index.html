@@ -13,35 +13,27 @@
     
     <!--- Seo Part-->
     
-    <link rel="canonical" href="https://xiaoeeyu.github.io/2023/10/12/javavm与jnienv/"/>
+    <link rel="canonical" href="https://xiaoeeyu.github.io/2023/10/13/jni新建对象和访问java中属性/"/>
     <meta name="robots" content="index,follow">
     <meta name="googlebot" content="index,follow">
     <meta name="revisit-after" content="1 days">
     
-        <meta name="description" content="上一章简单测试了一下Java的反射，这章我们来测试一下JavaVM和JNIEnv">
+        <meta name="description" content="JNI中对象的创建   使用NewObject()和AllocObject()两种方式创建JAVA对象  extern &quot;C&quot; JNIEXPORT void JNICALL Java_com_xiaoeryu_reflectiontest_MainActivity_newObject(JNIEnv *env, jobject thiz) {     &#x2F;&#x2F; TODO: implement newOb">
 <meta property="og:type" content="article">
-<meta property="og:title" content="JavaVM与JNIEnv">
-<meta property="og:url" content="https://xiaoeeyu.github.io/2023/10/12/JavaVM%E4%B8%8EJNIEnv/index.html">
+<meta property="og:title" content="JNI新建对象和访问Java中属性">
+<meta property="og:url" content="https://xiaoeeyu.github.io/2023/10/13/JNI%E6%96%B0%E5%BB%BA%E5%AF%B9%E8%B1%A1%E5%92%8C%E8%AE%BF%E9%97%AEJava%E4%B8%AD%E5%B1%9E%E6%80%A7/index.html">
 <meta property="og:site_name" content="xiaoeryu">
-<meta property="og:description" content="上一章简单测试了一下Java的反射，这章我们来测试一下JavaVM和JNIEnv">
+<meta property="og:description" content="JNI中对象的创建   使用NewObject()和AllocObject()两种方式创建JAVA对象  extern &quot;C&quot; JNIEXPORT void JNICALL Java_com_xiaoeryu_reflectiontest_MainActivity_newObject(JNIEnv *env, jobject thiz) {     &#x2F;&#x2F; TODO: implement newOb">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/12/JavaVM%E4%B8%8EJNIEnv/image-20231012012150087.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/12/JavaVM%E4%B8%8EJNIEnv/image-20231012013953259.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/12/JavaVM%E4%B8%8EJNIEnv/image-20231012014049408.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/12/JavaVM%E4%B8%8EJNIEnv/image-20231012014219741.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/12/JavaVM%E4%B8%8EJNIEnv/image-20231012014321768.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/12/JavaVM%E4%B8%8EJNIEnv/image-20231012015307574.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/12/JavaVM%E4%B8%8EJNIEnv/image-20231012015313275.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/12/JavaVM%E4%B8%8EJNIEnv/image-20231012015340930.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/12/JavaVM%E4%B8%8EJNIEnv/image-20231012015343790.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/12/JavaVM%E4%B8%8EJNIEnv/image-20231012020427432.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/12/JavaVM%E4%B8%8EJNIEnv/image-20231012015348275.png">
-<meta property="article:published_time" content="2023-10-11T17:19:06.000Z">
-<meta property="article:modified_time" content="2023-10-13T16:28:32.942Z">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/13/JNI%E6%96%B0%E5%BB%BA%E5%AF%B9%E8%B1%A1%E5%92%8C%E8%AE%BF%E9%97%AEJava%E4%B8%AD%E5%B1%9E%E6%80%A7/image-20231013232950958.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/13/JNI%E6%96%B0%E5%BB%BA%E5%AF%B9%E8%B1%A1%E5%92%8C%E8%AE%BF%E9%97%AEJava%E4%B8%AD%E5%B1%9E%E6%80%A7/image-20231013215030981.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/13/JNI%E6%96%B0%E5%BB%BA%E5%AF%B9%E8%B1%A1%E5%92%8C%E8%AE%BF%E9%97%AEJava%E4%B8%AD%E5%B1%9E%E6%80%A7/image-20231013223718644.png">
+<meta property="article:published_time" content="2023-10-13T15:27:03.000Z">
+<meta property="article:modified_time" content="2023-10-13T16:28:42.487Z">
 <meta property="article:author" content="xiaoeryu">
-<meta property="article:tag" content="JavaVM与JNIEnv">
+<meta property="article:tag" content="JNI对象创建&amp;访问">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://xiaoeeyu.github.io/2023/10/12/JavaVM%E4%B8%8EJNIEnv/image-20231012012150087.png">
+<meta name="twitter:image" content="https://xiaoeeyu.github.io/2023/10/13/JNI%E6%96%B0%E5%BB%BA%E5%AF%B9%E8%B1%A1%E5%92%8C%E8%AE%BF%E9%97%AEJava%E4%B8%AD%E5%B1%9E%E6%80%A7/image-20231013232950958.png">
     
     
     <!--- Icon Part-->
@@ -53,7 +45,7 @@
     
     <title>
         
-            JavaVM与JNIEnv -
+            JNI新建对象和访问Java中属性 -
         
         xiaoeryu
     </title>
@@ -222,7 +214,7 @@
 
         <div class="article-title">
             
-                <h1 class="article-title-regular">JavaVM与JNIEnv</h1>
+                <h1 class="article-title-regular">JNI新建对象和访问Java中属性</h1>
             
             </div>
             
@@ -244,15 +236,15 @@
                         <div class="article-meta-info">
     <span class="article-date article-meta-item">
         <i class="fa-regular fa-pen-fancy"></i>&nbsp;
-        <span class="desktop">2023-10-12 01:19:06</span>
-        <span class="mobile">2023-10-12 01:19:06</span>
+        <span class="desktop">2023-10-13 23:27:03</span>
+        <span class="mobile">2023-10-13 23:27:03</span>
         <span class="hover-info">创建</span>
     </span>
     
         <span class="article-date article-meta-item">
             <i class="fa-regular fa-wrench"></i>&nbsp;
-            <span class="desktop">2023-10-14 00:28:32</span>
-            <span class="mobile">2023-10-14 00:28:32</span>
+            <span class="desktop">2023-10-14 00:28:42</span>
+            <span class="mobile">2023-10-14 00:28:42</span>
             <span class="hover-info">更新</span>
         </span>
     
@@ -280,7 +272,7 @@
             <ul>
                 
                     <li>
-                        <a href="/tags/JavaVM%E4%B8%8EJNIEnv/">JavaVM与JNIEnv</a>&nbsp;
+                        <a href="/tags/JNI%E5%AF%B9%E8%B1%A1%E5%88%9B%E5%BB%BA-%E8%AE%BF%E9%97%AE/">JNI对象创建&amp;访问</a>&nbsp;
                     </li>
                 
             </ul>
@@ -306,111 +298,230 @@
 
 
         <div class="article-content markdown-body">
-            <p>上一章简单测试了一下Java的反射，这章我们来测试一下JavaVM和JNIEnv</p>
-<span id="more"></span>
+            <h2 id="JNI中对象的创建"><a href="#JNI中对象的创建" class="headerlink" title="JNI中对象的创建"></a>JNI中对象的创建</h2><img lazyload="" src="/images/loading.svg" data-src="/2023/10/13/JNI%E6%96%B0%E5%BB%BA%E5%AF%B9%E8%B1%A1%E5%92%8C%E8%AE%BF%E9%97%AEJava%E4%B8%AD%E5%B1%9E%E6%80%A7/image-20231013232950958.png" class="" title="image-20231013232950958">
 
-<h2 id="回顾一下Java反射"><a href="#回顾一下Java反射" class="headerlink" title="回顾一下Java反射"></a>回顾一下Java反射</h2><img lazyload="" src="/images/loading.svg" data-src="/2023/10/12/JavaVM%E4%B8%8EJNIEnv/image-20231012012150087.png" class="" title="image-20231012012150087">
-
-<blockquote>
-<p>在我们使用NDK访问java类中的方法的时候，流程也是差不多一样的</p>
-<p>找到类名-&gt;jFieldID/jmethodID（等于是Java当中的GetField）-&gt;通过GetObjectField获取到Java类中的函数或值</p>
-</blockquote>
-<p>在调用函数的时候也要注意，如果类中没有同名函数可以不用传递参数。如果存在同名函数就需要将参数一并传递</p>
-<img lazyload="" src="/images/loading.svg" data-src="/2023/10/12/JavaVM%E4%B8%8EJNIEnv/image-20231012013953259.png" class="" title="image-20231012013953259">
-
-<p>函数描述符</p>
-<img lazyload="" src="/images/loading.svg" data-src="/2023/10/12/JavaVM%E4%B8%8EJNIEnv/image-20231012014049408.png" class="" title="image-20231012014049408">
-
-<h2 id="JavaVM和JNIEnv"><a href="#JavaVM和JNIEnv" class="headerlink" title="JavaVM和JNIEnv"></a>JavaVM和JNIEnv</h2><img lazyload="" src="/images/loading.svg" data-src="/2023/10/12/JavaVM%E4%B8%8EJNIEnv/image-20231012014219741.png" class="" title="image-20231012014219741">
-
-<blockquote>
-<p>JavaVM结构体里面包含了5个方法</p>
-</blockquote>
-<img lazyload="" src="/images/loading.svg" data-src="/2023/10/12/JavaVM%E4%B8%8EJNIEnv/image-20231012014321768.png" class="" title="image-20231012014321768">
-
-<blockquote>
-<p>JNIEnv结构体里面包含了非常多的方法可以调用</p>
-</blockquote>
-<img lazyload="" src="/images/loading.svg" data-src="/2023/10/12/JavaVM%E4%B8%8EJNIEnv/image-20231012015307574.png" class="" title="image-20231012015307574">
-
-<img lazyload="" src="/images/loading.svg" data-src="/2023/10/12/JavaVM%E4%B8%8EJNIEnv/image-20231012015313275.png" class="" title="image-20231012015313275">
-
-<h3 id="怎么获取JavaVM和JNIEnv"><a href="#怎么获取JavaVM和JNIEnv" class="headerlink" title="怎么获取JavaVM和JNIEnv"></a>怎么获取JavaVM和JNIEnv</h3><img lazyload="" src="/images/loading.svg" data-src="/2023/10/12/JavaVM%E4%B8%8EJNIEnv/image-20231012015340930.png" class="" title="image-20231012015340930">
-
-<img lazyload="" src="/images/loading.svg" data-src="/2023/10/12/JavaVM%E4%B8%8EJNIEnv/image-20231012015343790.png" class="" title="image-20231012015343790">
-
-<h4 id="第一种方法：在JNI-OnLoad中获取"><a href="#第一种方法：在JNI-OnLoad中获取" class="headerlink" title="第一种方法：在JNI_OnLoad中获取"></a>第一种方法：在JNI_OnLoad中获取</h4><pre><code class="C++">    globalVM = vm;
-    __android_log_print(4, "xiaoeryu-&gt;jni", "JNI_OnLoad(JavaVM* vm, void* reserved)-&gt;%p", vm);
-
-    __android_log_print(4, "xiaoeryu-&gt;jni", "jni-&gt;%s", "JNI_OnLoad is called");
-    jint result = 0;
-
-    JNIEnv *env = nullptr;
-    if (vm-&gt;GetEnv((void **)&amp;env, JNI_VERSION_1_6) == JNI_OK){
-        __android_log_print(4, "xiaoeryu-&gt;jni", "jni-&gt;%s", "vm-&gt;GetEnv((void **)&amp;env, JNI_VERSION_1_6) success");
+<ul>
+<li>使用NewObject()和AllocObject()两种方式创建JAVA对象</li>
+</ul>
+<pre><code class="C++">extern "C"
+JNIEXPORT void JNICALL
+Java_com_xiaoeryu_reflectiontest_MainActivity_newObject(JNIEnv *env, jobject thiz) {
+    // TODO: implement newObject()
+    // 使用函数NewObject来创建JAVA对象
+    jclass TestJclass = env-&gt;FindClass("com/xiaoeryu/reflectiontest/Test");
+    // public Test(String arg)
+    jmethodID con_mid = env-&gt;GetMethodID(TestJclass, "&lt;init&gt;", "(Ljava/lang/String;)V");
+    jstring arg = env-&gt;NewStringUTF("I am From jni");
+    // jobject NewObject(jclass clazz, jmethodID methodID, ...)
+    jobject testobj = env-&gt;NewObject(TestJclass, con_mid, arg);
+    if (testobj != nullptr){
+        __android_log_print(4, "xiaoeryu-&gt;jni", "jni-&gt;%s", "NewObject success!");
     }
-    __android_log_print(4, "xiaoeryu-&gt;jni", "GetEnv((void **)&amp;env, JNI_VERSION_1_6)-&gt;%p", env);
-</code></pre>
-<h4 id="第二种方法：通过JNI函数的传参获取"><a href="#第二种方法：通过JNI函数的传参获取" class="headerlink" title="第二种方法：通过JNI函数的传参获取"></a>第二种方法：通过JNI函数的传参获取</h4><img lazyload="" src="/images/loading.svg" data-src="/2023/10/12/JavaVM%E4%B8%8EJNIEnv/image-20231012020427432.png" class="" title="image-20231012020427432">
 
-<h4 id="第三种方法：在子线程中获取"><a href="#第三种方法：在子线程中获取" class="headerlink" title="第三种方法：在子线程中获取"></a>第三种方法：在子线程中获取</h4><pre><code class="C++">    // 在子线程中调用JNIEnv的接口
-    JNIEnv *threadenv = nullptr;
-    globalVM-&gt;AttachCurrentThread(&amp;threadenv, nullptr);
-    if (globalVM-&gt;GetEnv((void **)&amp;threadenv, JNI_VERSION_1_6) == JNI_OK){
-        __android_log_print(4, "xiaoeryu-&gt;jni", "jni-&gt;%s", "(globalVM-&gt;GetEnv((void **)&amp;threadenv, JNI_VERSION_1_6) success");
-        jstring jstring1 = threadenv-&gt;NewStringUTF("threadtest jstring");
-        const char* content = threadenv-&gt;GetStringUTFChars(jstring1, nullptr);
-        __android_log_print(4, "xiaoeryu-&gt;jni", "jni-&gt;%s", content);
-        threadenv-&gt;ReleaseStringUTFChars(jstring1, content);
-    } else{
-        __android_log_print(4, "xiaoeryu-&gt;jni", "jni-&gt;%s", "(globalVM-&gt;GetEnv((void **)&amp;threadenv, JNI_VERSION_1_6) failed");
+    // AllocObject
+    jobject testobj1 = env-&gt;AllocObject(TestJclass);
+    jstring arg1 = env-&gt;NewStringUTF("I am From Jni-&gt;AllocObject");
+    env-&gt;CallNonvirtualVoidMethod(testobj1, TestJclass, con_mid, arg1);
+    if (testobj1 != nullptr){
+        __android_log_print(4, "xiaoeryu-&gt;jni", "jni-&gt;%s", "AllocObject success!");
     }
-</code></pre>
-<img lazyload="" src="/images/loading.svg" data-src="/2023/10/12/JavaVM%E4%B8%8EJNIEnv/image-20231012015348275.png" class="" title="image-20231012015348275">
-
-<blockquote>
-<p> JNIEnv是与线程相关的，每一个线程都有自己的env</p>
-</blockquote>
-<h2 id="native子线程无法加载app自己的Class"><a href="#native子线程无法加载app自己的Class" class="headerlink" title="native子线程无法加载app自己的Class"></a>native子线程无法加载app自己的Class</h2><p>通过pthread_create之类的方法在native层创建了子线程,则在这个子线程中FindClass方法查不到我们Apk中定义的class。会返回0并且在Java层抛出ClassNotFoundException:</p>
-<blockquote>
-<p>因为在子线程中使用<code>FindClass</code>方法，他将会使用与当前线程关联的类加载器进行类查找。就可能会导致子线程中无法找到在主线程中加载的类。</p>
-</blockquote>
-<p>通过Exception可以捕获到具体的异常</p>
-<pre><code class="C++">//     jclass TestJclass = threadenv-&gt;FindClass("com/xiaoeryu/reflectiontest/Test");
-//    threadenv-&gt;ExceptionDescribe();
-//    threadenv-&gt;ExceptionClear();
-</code></pre>
-<h3 id="解决办法"><a href="#解决办法" class="headerlink" title="解决办法"></a>解决办法</h3><p>这里使用一种通用的解决办法：</p>
-<p>通过在主线程中使用<code>FindClass</code>找到类的<code>jclass</code>对象，然后将这个对象传递给子线程使用。</p>
-<p><strong>举个栗子</strong></p>
-<pre><code class="C++">// 在主线程中
-jclass TestJclass = env-&gt;FindClass("com/xiaoeryu/reflectiontest/Test");
-jobject appClassloader = env-&gt;NewGlobalRef(TestJclass);
-
-// 在子线程中
-void *threadtest(void* args){
-    JNIEnv *threadenv = nullptr;
-    globalVM-&gt;AttachCurrentThread(&amp;threadenv, nullptr);
-
-    jclass TestJclass = (jclass)args; // 使用主线程中找到的类引用
-    // 继续使用 TestJclass 进行其他 JNI 操作
-
-    globalVM-&gt;DetachCurrentThread();
-    pthread_exit(0);
 }
+</code></pre>
+<h2 id="JNI中访问类对象属性"><a href="#JNI中访问类对象属性" class="headerlink" title="JNI中访问类对象属性"></a>JNI中访问类对象属性</h2><blockquote>
+<p>Java中有public和private</p>
+<p>在JNI中只分静态属性和非静态属性</p>
+</blockquote>
+<h3 id="Static属性"><a href="#Static属性" class="headerlink" title="Static属性"></a>Static属性</h3><h4 id="获取Static属性"><a href="#获取Static属性" class="headerlink" title="获取Static属性"></a>获取Static属性</h4><ul>
+<li>获取静态属性接口（有八种基础数据类型+一种引用数据类型）</li>
+</ul>
+<pre><code class="C++">    jobject GetStaticObjectField(jclass clazz, jfieldID fieldID)
+    { return functions-&gt;GetStaticObjectField(this, clazz, fieldID); }
+    jboolean GetStaticBooleanField(jclass clazz, jfieldID fieldID)
+    { return functions-&gt;GetStaticBooleanField(this, clazz, fieldID); }
+    jbyte GetStaticByteField(jclass clazz, jfieldID fieldID)
+    { return functions-&gt;GetStaticByteField(this, clazz, fieldID); }
+    jchar GetStaticCharField(jclass clazz, jfieldID fieldID)
+    { return functions-&gt;GetStaticCharField(this, clazz, fieldID); }
+    jshort GetStaticShortField(jclass clazz, jfieldID fieldID)
+    { return functions-&gt;GetStaticShortField(this, clazz, fieldID); }
+    jint GetStaticIntField(jclass clazz, jfieldID fieldID)
+    { return functions-&gt;GetStaticIntField(this, clazz, fieldID); }
+    jlong GetStaticLongField(jclass clazz, jfieldID fieldID)
+    { return functions-&gt;GetStaticLongField(this, clazz, fieldID); }
+    jfloat GetStaticFloatField(jclass clazz, jfieldID fieldID)
+    { return functions-&gt;GetStaticFloatField(this, clazz, fieldID); }
+    jdouble GetStaticDoubleField(jclass clazz, jfieldID fieldID)
+    { return functions-&gt;GetStaticDoubleField(this, clazz, fieldID); }
+</code></pre>
+<ul>
+<li>获取静态属性code</li>
+</ul>
+<pre><code class="C++">extern "C"
+JNIEXPORT void JNICALL
+Java_com_xiaoeryu_reflectiontest_MainActivity_getStaticField(JNIEnv *env, jobject thiz) {
+// public static
+    jclass TestJclass = env-&gt;FindClass("com/xiaoeryu/reflectiontest/Test");
+    // public static String publicStaticField = "i am a public StaticField";
+    jfieldID publicStaticField_id = env-&gt;GetStaticFieldID(TestJclass, "publicStaticField", "Ljava/lang/String;");
+    jstring publicStaticField_obj = static_cast&lt;jstring&gt;(env-&gt;GetStaticObjectField(TestJclass, publicStaticField_id));
+    const char *publicStaticField_content = env-&gt;GetStringUTFChars(publicStaticField_obj, nullptr);
 
-// 创建子线程时传递类的引用
-pthread_t thread;
-pthread_create(&amp;thread, nullptr, threadtest, appClassloader);
-pthread_join(thread, nullptr);
+    __android_log_print(4, "xiaoeryu-&gt;jni", "publicStaticField_obj_jni-&gt;%s", publicStaticField_content);
 
-// 在主线程中删除全局引用
-env-&gt;DeleteGlobalRef(appClassloader);
+    // private static String priviteStaticField = "i am a private StaticField";
+    jfieldID privateStaticField_id = env-&gt;GetStaticFieldID(TestJclass, "priviteStaticField", "Ljava/lang/String;");
+    jstring privateStaticField_obj = static_cast&lt;jstring&gt;(env-&gt;GetStaticObjectField(TestJclass, privateStaticField_id));
+    const char *privateStaticField_content = env-&gt;GetStringUTFChars(privateStaticField_obj, nullptr);
+
+    __android_log_print(4, "xiaoeryu-&gt;jni", "privateStaticField_obj_jni-&gt;%s", privateStaticField_content);
+
+    // public static int publicStaticField_int = 100;
+    jfieldID publicStaticField_int_id = env-&gt;GetStaticFieldID(TestJclass, "publicStaticField_int", "I");
+    jint publicStaticField_int_value = env-&gt;GetStaticIntField(TestJclass, publicStaticField_int_id);
+
+    __android_log_print(4, "xiaoeryu-&gt;jni", "publicStaticField_int_value_jni-&gt;%d", publicStaticField_int_value);
+}
 </code></pre>
 <blockquote>
-<p>当然在类外定义一个全局变量，在主类中赋值然后再子类中使用也是可以的，但是使用<code>NewGlobalRef</code> 更灵活、更方便控制。</p>
+<p>在native中访问java类中的私有静态属性需不需要修改权限都可以直接获取，在获取不同类型数据的时候换不同的接口就行例如<code>GetStaticFieldID/GetStaticIntField</code>等</p>
 </blockquote>
-<p><a class="link" target="_blank" rel="noopener" href="https://github.com/xiaoeeyu/ReflectionTest_JavaVM_JNIEnv">代码地址 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<h4 id="设置Static属性"><a href="#设置Static属性" class="headerlink" title="设置Static属性"></a>设置Static属性</h4><ul>
+<li>设置静态类属性接口</li>
+</ul>
+<pre><code class="C++">    void SetStaticObjectField(jclass clazz, jfieldID fieldID, jobject value)
+    { functions-&gt;SetStaticObjectField(this, clazz, fieldID, value); }
+    void SetStaticBooleanField(jclass clazz, jfieldID fieldID, jboolean value)
+    { functions-&gt;SetStaticBooleanField(this, clazz, fieldID, value); }
+    void SetStaticByteField(jclass clazz, jfieldID fieldID, jbyte value)
+    { functions-&gt;SetStaticByteField(this, clazz, fieldID, value); }
+    void SetStaticCharField(jclass clazz, jfieldID fieldID, jchar value)
+    { functions-&gt;SetStaticCharField(this, clazz, fieldID, value); }
+    void SetStaticShortField(jclass clazz, jfieldID fieldID, jshort value)
+    { functions-&gt;SetStaticShortField(this, clazz, fieldID, value); }
+    void SetStaticIntField(jclass clazz, jfieldID fieldID, jint value)
+    { functions-&gt;SetStaticIntField(this, clazz, fieldID, value); }
+    void SetStaticLongField(jclass clazz, jfieldID fieldID, jlong value)
+    { functions-&gt;SetStaticLongField(this, clazz, fieldID, value); }
+    void SetStaticFloatField(jclass clazz, jfieldID fieldID, jfloat value)
+    { functions-&gt;SetStaticFloatField(this, clazz, fieldID, value); }
+    void SetStaticDoubleField(jclass clazz, jfieldID fieldID, jdouble value)
+    { functions-&gt;SetStaticDoubleField(this, clazz, fieldID, value); }
+</code></pre>
+<p>设置静态属性code</p>
+<pre><code class="C++">    jclass TestJclass = env-&gt;FindClass("com/xiaoeryu/reflectiontest/Test");
+    jfieldID publicStaticField_id = env-&gt;GetStaticFieldID(TestJclass, "publicStaticField", "Ljava/lang/String;");
+
+    jstring setjstring = env-&gt;NewStringUTF("modified by jni");
+    env-&gt;SetStaticObjectField(TestJclass, publicStaticField_id, setjstring);
+    jstring publicStaticField_obj = static_cast&lt;jstring&gt;(env-&gt;GetStaticObjectField(TestJclass, publicStaticField_id));
+...
+    // public static int publicStaticField_int = 100;
+    jfieldID publicStaticField_int_id = env-&gt;GetStaticFieldID(TestJclass, "publicStaticField_int", "I");
+
+    // void SetStaticIntField(jclass clazz, jfieldID fieldID, jint value)
+    env-&gt;SetStaticIntField(TestJclass, publicStaticField_int_id, 20);
+
+    jint publicStaticField_int_value = env-&gt;GetStaticIntField(TestJclass, publicStaticField_int_id);
+
+    __android_log_print(4, "xiaoeryu-&gt;jni", "publicStaticField_int_value_jni-&gt;%d", publicStaticField_int_value);
+</code></pre>
+<h3 id="非Static属性"><a href="#非Static属性" class="headerlink" title="非Static属性"></a>非Static属性</h3><img lazyload="" src="/images/loading.svg" data-src="/2023/10/13/JNI%E6%96%B0%E5%BB%BA%E5%AF%B9%E8%B1%A1%E5%92%8C%E8%AE%BF%E9%97%AEJava%E4%B8%AD%E5%B1%9E%E6%80%A7/image-20231013215030981.png" class="" title="image-20231013215030981">
+
+<blockquote>
+<p>这里新版编译器有可能报错，但是不影响编译执行</p>
+</blockquote>
+<h4 id="获取-amp-设置非静态私有属性"><a href="#获取-amp-设置非静态私有属性" class="headerlink" title="获取&amp;设置非静态私有属性"></a>获取&amp;设置非静态私有属性</h4><ul>
+<li>设置非静态私有类属性接口</li>
+</ul>
+<pre><code class="C++">    void SetObjectField(jobject obj, jfieldID fieldID, jobject value)
+    { functions-&gt;SetObjectField(this, obj, fieldID, value); }
+    void SetBooleanField(jobject obj, jfieldID fieldID, jboolean value)
+    { functions-&gt;SetBooleanField(this, obj, fieldID, value); }
+    void SetByteField(jobject obj, jfieldID fieldID, jbyte value)
+    { functions-&gt;SetByteField(this, obj, fieldID, value); }
+    void SetCharField(jobject obj, jfieldID fieldID, jchar value)
+    { functions-&gt;SetCharField(this, obj, fieldID, value); }
+    void SetShortField(jobject obj, jfieldID fieldID, jshort value)
+    { functions-&gt;SetShortField(this, obj, fieldID, value); }
+    void SetIntField(jobject obj, jfieldID fieldID, jint value)
+    { functions-&gt;SetIntField(this, obj, fieldID, value); }
+    void SetLongField(jobject obj, jfieldID fieldID, jlong value)
+    { functions-&gt;SetLongField(this, obj, fieldID, value); }
+    void SetFloatField(jobject obj, jfieldID fieldID, jfloat value)
+    { functions-&gt;SetFloatField(this, obj, fieldID, value); }
+    void SetDoubleField(jobject obj, jfieldID fieldID, jdouble value)
+    { functions-&gt;SetDoubleField(this, obj, fieldID, value); }
+</code></pre>
+<ul>
+<li>设置非静态私有属性和数组类型</li>
+</ul>
+<pre><code class="C++">extern "C"
+JNIEXPORT void JNICALL
+Java_com_xiaoeryu_reflectiontest_MainActivity_getNonStaticField(JNIEnv *env, jobject thiz, jobject testobj) {
+    // private String privateField = "i am a private Field";
+    jclass TestJclass = env-&gt;FindClass("com/xiaoeryu/reflectiontest/Test");
+    jfieldID privateField_fid = env-&gt;GetFieldID(TestJclass, "privateField", "Ljava/lang/String;");
+    //    jobject GetObjectField(jobject obj, jfieldID fieldID)
+    jstring privateField_obj = static_cast&lt;jstring&gt;(env-&gt;GetObjectField(testobj, privateField_fid));
+
+//    const char *priviteField_content = env-&gt;GetStringUTFChars(privateField_obj, nullptr);
+//    __android_log_print(4, "xiaoeryu-&gt;jni", "privateField_obj_jni-&gt;%s", priviteField_content);
+
+    // 修改private String
+    jstring newString = env-&gt;NewStringUTF("Modified by jni");
+    env-&gt;SetObjectField(testobj, privateField_fid, newString);
+
+    privateField_obj = static_cast&lt;jstring&gt;(env-&gt;GetObjectField(testobj, privateField_fid));
+
+    const char *priviteField_content = env-&gt;GetStringUTFChars(privateField_obj, nullptr);
+    __android_log_print(4, "xiaoeryu-&gt;jni", "privateField_obj_jni-&gt;%s", priviteField_content);
+
+    // GetIntField
+    // private int privateField_int = 100;
+    jfieldID privateField_int_fid = env-&gt;GetFieldID(TestJclass, "privateField_int", "I");
+    jint privateField_int_value = env-&gt;GetIntField(testobj, privateField_int_fid);
+
+    __android_log_print(4, "xiaoeryu-&gt;jni", "prinvateField_int_value_jni-&gt;%d", privateField_int_value);
+
+    // SetIntField
+    env-&gt;SetIntField(testobj, privateField_int_fid, 200);
+    jint privateField_int_setValue = env-&gt;GetIntField(testobj, privateField_int_fid);
+
+    __android_log_print(4, "xiaoeryu-&gt;jni", "privateField_int_vale_jni-&gt;%d", privateField_int_setValue);
+
+    // 数组
+    // public int[] intarray = null;
+    jfieldID intarray_fid = env-&gt;GetFieldID(TestJclass, "intarray", "[I");
+    jintArray intarray_obj = static_cast&lt;jintArray&gt;(env-&gt;GetObjectField(testobj, intarray_fid));
+
+    int arrayLenght = env-&gt;GetArrayLength(intarray_obj);
+
+    __android_log_print(4, "xiaoeryu-&gt;jni", "arrayLenght_jni-&gt;%d", arrayLenght);
+
+    int* array = env-&gt;GetIntArrayElements(intarray_obj, nullptr);
+    for (int i = 0; i &lt; arrayLenght; ++i) {
+        __android_log_print(4, "xiaoeryu-&gt;jni", "array[%d]-&gt;%d", i, array[i]);
+    }
+    // setArray
+    jint jni_array[arrayLenght];
+    for (int j = 0; j &lt; arrayLenght; ++j) {
+        jni_array[j] = arrayLenght - j;
+    }
+    const jint* ptr = jni_array;
+    //     void SetIntArrayRegion(jintArray array, jsize start, jsize len,
+    //        const jint* buf)
+    env-&gt;SetIntArrayRegion(intarray_obj, 0, arrayLenght, ptr);
+
+    int* array_set = env-&gt;GetIntArrayElements(intarray_obj, nullptr);
+    for (int i = 0; i &lt; arrayLenght; ++i) {
+        __android_log_print(4, "xiaoeryu-&gt;jni", "array_set[%d]-&gt;%d", i, array_set[i]);
+    }
+}
+</code></pre>
+<p>访问数组的操作方法</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/13/JNI%E6%96%B0%E5%BB%BA%E5%AF%B9%E8%B1%A1%E5%92%8C%E8%AE%BF%E9%97%AEJava%E4%B8%AD%E5%B1%9E%E6%80%A7/image-20231013223718644.png" class="" title="image-20231013223718644">
+
+<p><a class="link" target="_blank" rel="noopener" href="https://github.com/xiaoeeyu/JNICreateJavaObj_AccessClassObj">代码地址 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
 
         </div>
 
@@ -418,18 +529,18 @@ env-&gt;DeleteGlobalRef(appClassloader);
             <div class="post-copyright-info">
                 <div class="article-copyright-info-container">
     <ul>
-        <li><strong>标题:</strong> JavaVM与JNIEnv</li>
+        <li><strong>标题:</strong> JNI新建对象和访问Java中属性</li>
         <li><strong>作者:</strong> xiaoeryu</li>
         <li><strong>创建于
-                :</strong> 2023-10-12 01:19:06</li>
+                :</strong> 2023-10-13 23:27:03</li>
         
             <li>
                 <strong>更新于
-                    :</strong> 2023-10-14 00:28:32
+                    :</strong> 2023-10-14 00:28:42
             </li>
         
         <li>
-            <strong>链接:</strong> https://github.com/xiaoeryu/2023/10/12/JavaVM与JNIEnv/
+            <strong>链接:</strong> https://github.com/xiaoeryu/2023/10/13/JNI新建对象和访问Java中属性/
         </li>
         <li>
             <strong>
@@ -450,7 +561,7 @@ env-&gt;DeleteGlobalRef(appClassloader);
             <ul class="post-tags-box">
                 
                     <li class="tag-item">
-                        <a href="/tags/JavaVM%E4%B8%8EJNIEnv/">#JavaVM与JNIEnv</a>&nbsp;
+                        <a href="/tags/JNI%E5%AF%B9%E8%B1%A1%E5%88%9B%E5%BB%BA-%E8%AE%BF%E9%97%AE/">#JNI对象创建&amp;访问</a>&nbsp;
                     </li>
                 
             </ul>
@@ -461,29 +572,14 @@ env-&gt;DeleteGlobalRef(appClassloader);
         
             <div class="article-nav">
                 
-                    <div class="article-prev">
-                        <a class="prev"
-                        rel="prev"
-                        href="/2023/10/13/JNI%E6%96%B0%E5%BB%BA%E5%AF%B9%E8%B1%A1%E5%92%8C%E8%AE%BF%E9%97%AEJava%E4%B8%AD%E5%B1%9E%E6%80%A7/"
-                        >
-                            <span class="left arrow-icon flex justify-center items-center">
-                                <i class="fa-solid fa-chevron-left"></i>
-                            </span>
-                            <span class="title flex justify-center items-center">
-                                <span class="post-nav-title-item">JNI新建对象和访问Java中属性</span>
-                                <span class="post-nav-item">上一篇</span>
-                            </span>
-                        </a>
-                    </div>
-                
                 
                     <div class="article-next">
                         <a class="next"
                         rel="next"
-                        href="/2023/10/10/JAVA%E5%8F%8D%E5%B0%84/"
+                        href="/2023/10/12/JavaVM%E4%B8%8EJNIEnv/"
                         >
                             <span class="title flex justify-center items-center">
-                                <span class="post-nav-title-item">JAVA反射</span>
+                                <span class="post-nav-title-item">JavaVM与JNIEnv</span>
                                 <span class="post-nav-item">下一篇</span>
                             </span>
                             <span class="right arrow-icon flex justify-center items-center">
@@ -548,8 +644,8 @@ env-&gt;DeleteGlobalRef(appClassloader);
             <div class="post-toc-wrap">
     <div class="post-toc">
         <div class="toc-title">此页目录</div>
-        <div class="page-title">JavaVM与JNIEnv</div>
-        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%9B%9E%E9%A1%BE%E4%B8%80%E4%B8%8BJava%E5%8F%8D%E5%B0%84"><span class="nav-text">回顾一下Java反射</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JavaVM%E5%92%8CJNIEnv"><span class="nav-text">JavaVM和JNIEnv</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%80%8E%E4%B9%88%E8%8E%B7%E5%8F%96JavaVM%E5%92%8CJNIEnv"><span class="nav-text">怎么获取JavaVM和JNIEnv</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#native%E5%AD%90%E7%BA%BF%E7%A8%8B%E6%97%A0%E6%B3%95%E5%8A%A0%E8%BD%BDapp%E8%87%AA%E5%B7%B1%E7%9A%84Class"><span class="nav-text">native子线程无法加载app自己的Class</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E5%86%B3%E5%8A%9E%E6%B3%95"><span class="nav-text">解决办法</span></a></li></ol></li></ol>
+        <div class="page-title">JNI新建对象和访问Java中属性</div>
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#JNI%E4%B8%AD%E5%AF%B9%E8%B1%A1%E7%9A%84%E5%88%9B%E5%BB%BA"><span class="nav-text">JNI中对象的创建</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#JNI%E4%B8%AD%E8%AE%BF%E9%97%AE%E7%B1%BB%E5%AF%B9%E8%B1%A1%E5%B1%9E%E6%80%A7"><span class="nav-text">JNI中访问类对象属性</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Static%E5%B1%9E%E6%80%A7"><span class="nav-text">Static属性</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%9D%9EStatic%E5%B1%9E%E6%80%A7"><span class="nav-text">非Static属性</span></a></li></ol></li></ol>
 
     </div>
 </div>
