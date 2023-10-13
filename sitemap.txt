@@ -1,5 +1,5 @@
-https://xiaoeeyu.github.io/2023/10/06/%E5%9B%BD%E5%AE%B6%E8%AE%A4%E5%90%8C%E6%84%9F%E7%9A%84%E6%9E%84%E5%BB%BA/
 https://xiaoeeyu.github.io/2023/10/13/JNI%E6%96%B0%E5%BB%BA%E5%AF%B9%E8%B1%A1%E5%92%8C%E8%AE%BF%E9%97%AEJava%E4%B8%AD%E5%B1%9E%E6%80%A7/
+https://xiaoeeyu.github.io/2023/10/06/%E5%9B%BD%E5%AE%B6%E8%AE%A4%E5%90%8C%E6%84%9F%E7%9A%84%E6%9E%84%E5%BB%BA/
 https://xiaoeeyu.github.io/2023/10/12/JavaVM%E4%B8%8EJNIEnv/
 https://xiaoeeyu.github.io/2023/10/10/JAVA%E5%8F%8D%E5%B0%84/
 https://xiaoeeyu.github.io/2021/06/08/%E8%B5%84%E6%9C%AC%E4%B8%BB%E4%B9%89%E5%92%8C%E7%A4%BE%E4%BC%9A%E4%B8%BB%E4%B9%89/
@@ -123,7 +123,8 @@ https://xiaoeeyu.github.io/tags/NDK%E6%80%A7%E8%83%BD/
 https://xiaoeeyu.github.io/tags/%E5%9B%BD%E5%AE%B6%E8%AE%A4%E5%90%8C%E6%84%9F%E6%9E%84%E5%BB%BA/
 https://xiaoeeyu.github.io/tags/JAVA%E5%8F%8D%E5%B0%84/
 https://xiaoeeyu.github.io/tags/JavaVM%E4%B8%8EJNIEnv/
-https://xiaoeeyu.github.io/tags/JNI%E5%AF%B9%E8%B1%A1%E5%88%9B%E5%BB%BA-%E8%AE%BF%E9%97%AE/
+https://xiaoeeyu.github.io/tags/JNI%E5%AF%B9%E8%B1%A1%E5%88%9B%E5%BB%BA/
+https://xiaoeeyu.github.io/tags/%E8%AE%BF%E9%97%AEjava%E7%B1%BB%E4%B8%AD%E7%9A%84%E5%B1%9E%E6%80%A7/
 https://xiaoeeyu.github.io/categories/Windows%E8%BD%AF%E4%BB%B6%E9%80%86%E5%90%91/
 https://xiaoeeyu.github.io/categories/X86%E6%B1%87%E7%BC%96%EF%BC%9A%E5%AE%9E%E6%A8%A1%E5%BC%8F%E5%88%B0%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F/
 https://xiaoeeyu.github.io/categories/ARM%E6%B1%87%E7%BC%96/
