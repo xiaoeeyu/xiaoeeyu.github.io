@@ -2,6 +2,15 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   
   <url>
+    <loc>https://xiaoeeyu.github.io/2023/10/06/%E5%9B%BD%E5%AE%B6%E8%AE%A4%E5%90%8C%E6%84%9F%E7%9A%84%E6%9E%84%E5%BB%BA/</loc>
+    
+    <lastmod>2023-10-13</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://xiaoeeyu.github.io/2023/10/13/JNI%E6%96%B0%E5%BB%BA%E5%AF%B9%E8%B1%A1%E5%92%8C%E8%AE%BF%E9%97%AEJava%E4%B8%AD%E5%B1%9E%E6%80%A7/</loc>
     
     <lastmod>2023-10-13</lastmod>
@@ -23,15 +32,6 @@
     <loc>https://xiaoeeyu.github.io/2023/10/10/JAVA%E5%8F%8D%E5%B0%84/</loc>
     
     <lastmod>2023-10-12</lastmod>
-    
-    <changefreq>monthly</changefreq>
-    <priority>0.6</priority>
-  </url>
-  
-  <url>
-    <loc>https://xiaoeeyu.github.io/2023/10/06/%E5%9B%BD%E5%AE%B6%E8%AE%A4%E5%90%8C%E6%84%9F%E7%9A%84%E6%9E%84%E5%BB%BA/</loc>
-    
-    <lastmod>2023-10-06</lastmod>
     
     <changefreq>monthly</changefreq>
     <priority>0.6</priority>
