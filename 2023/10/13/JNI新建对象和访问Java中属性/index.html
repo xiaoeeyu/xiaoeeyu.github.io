@@ -18,18 +18,18 @@
     <meta name="googlebot" content="index,follow">
     <meta name="revisit-after" content="1 days">
     
-        <meta name="description" content="本章主要写代码测试在JNI中怎么创建Java对象以及访问Java类对象属性">
+        <meta name="description" content="本章主要写代码测试在JNI中使用JNIEnv提供的接口，创建Java对象以及访问Java类中的属性(静态属性、非静态属性、数组)">
 <meta property="og:type" content="article">
 <meta property="og:title" content="JNI新建对象和访问Java中属性">
 <meta property="og:url" content="https://xiaoeeyu.github.io/2023/10/13/JNI%E6%96%B0%E5%BB%BA%E5%AF%B9%E8%B1%A1%E5%92%8C%E8%AE%BF%E9%97%AEJava%E4%B8%AD%E5%B1%9E%E6%80%A7/index.html">
 <meta property="og:site_name" content="xiaoeryu">
-<meta property="og:description" content="本章主要写代码测试在JNI中怎么创建Java对象以及访问Java类对象属性">
+<meta property="og:description" content="本章主要写代码测试在JNI中使用JNIEnv提供的接口，创建Java对象以及访问Java类中的属性(静态属性、非静态属性、数组)">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/13/JNI%E6%96%B0%E5%BB%BA%E5%AF%B9%E8%B1%A1%E5%92%8C%E8%AE%BF%E9%97%AEJava%E4%B8%AD%E5%B1%9E%E6%80%A7/image-20231013232950958.png">
 <meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/13/JNI%E6%96%B0%E5%BB%BA%E5%AF%B9%E8%B1%A1%E5%92%8C%E8%AE%BF%E9%97%AEJava%E4%B8%AD%E5%B1%9E%E6%80%A7/image-20231013215030981.png">
 <meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/13/JNI%E6%96%B0%E5%BB%BA%E5%AF%B9%E8%B1%A1%E5%92%8C%E8%AE%BF%E9%97%AEJava%E4%B8%AD%E5%B1%9E%E6%80%A7/image-20231013223718644.png">
 <meta property="article:published_time" content="2023-10-13T15:27:03.000Z">
-<meta property="article:modified_time" content="2023-10-13T16:42:25.846Z">
+<meta property="article:modified_time" content="2023-10-14T03:14:18.211Z">
 <meta property="article:author" content="xiaoeryu">
 <meta property="article:tag" content="JNI对象创建">
 <meta property="article:tag" content="访问java类中的属性">
@@ -230,7 +230,7 @@
                     <div class="author flex items-center">
                         <span class="name text-default-text-color text-lg font-semibold">xiaoeryu</span>
                         
-                            <span class="author-label ml-1.5 text-xs px-2 py-0.5 rounded-small text-third-text-color border border-shadow-color-1">Lv4</span>
+                            <span class="author-label ml-1.5 text-xs px-2 py-0.5 rounded-small text-third-text-color border border-shadow-color-1">Lv5</span>
                         
                     </div>
                     <div class="meta-info">
@@ -244,8 +244,8 @@
     
         <span class="article-date article-meta-item">
             <i class="fa-regular fa-wrench"></i>&nbsp;
-            <span class="desktop">2023-10-14 00:42:25</span>
-            <span class="mobile">2023-10-14 00:42:25</span>
+            <span class="desktop">2023-10-14 11:14:18</span>
+            <span class="mobile">2023-10-14 11:14:18</span>
             <span class="hover-info">更新</span>
         </span>
     
@@ -303,7 +303,7 @@
 
 
         <div class="article-content markdown-body">
-            <p>本章主要写代码测试在JNI中怎么创建Java对象以及访问Java类对象属性</p>
+            <p>本章主要写代码测试在JNI中使用JNIEnv提供的接口，创建Java对象以及访问Java类中的属性(静态属性、非静态属性、数组)</p>
 <span id="more"></span>
 
 <h2 id="JNI中创建Java对象"><a href="#JNI中创建Java对象" class="headerlink" title="JNI中创建Java对象"></a>JNI中创建Java对象</h2><img lazyload="" src="/images/loading.svg" data-src="/2023/10/13/JNI%E6%96%B0%E5%BB%BA%E5%AF%B9%E8%B1%A1%E5%92%8C%E8%AE%BF%E9%97%AEJava%E4%B8%AD%E5%B1%9E%E6%80%A7/image-20231013232950958.png" class="" title="image-20231013232950958">
@@ -335,6 +335,9 @@ Java_com_xiaoeryu_reflectiontest_MainActivity_newObject(JNIEnv *env, jobject thi
     }
 }
 </code></pre>
+<blockquote>
+<p>JNI获取Java中的构造函数的时候，函数名写<init></init></p>
+</blockquote>
 <h2 id="JNI中访问类对象属性"><a href="#JNI中访问类对象属性" class="headerlink" title="JNI中访问类对象属性"></a>JNI中访问类对象属性</h2><blockquote>
 <p>Java中有public和private</p>
 <p>在JNI中只分静态属性和非静态属性</p>
@@ -544,7 +547,7 @@ Java_com_xiaoeryu_reflectiontest_MainActivity_getNonStaticField(JNIEnv *env, job
         
             <li>
                 <strong>更新于
-                    :</strong> 2023-10-14 00:42:25
+                    :</strong> 2023-10-14 11:14:18
             </li>
         
         <li>
@@ -583,6 +586,21 @@ Java_com_xiaoeryu_reflectiontest_MainActivity_getNonStaticField(JNIEnv *env, job
 
         
             <div class="article-nav">
+                
+                    <div class="article-prev">
+                        <a class="prev"
+                        rel="prev"
+                        href="/2023/10/14/JNI%E8%AE%BF%E9%97%AEJava%E7%B1%BB%E5%87%BD%E6%95%B0/"
+                        >
+                            <span class="left arrow-icon flex justify-center items-center">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </span>
+                            <span class="title flex justify-center items-center">
+                                <span class="post-nav-title-item">JNI访问Java类函数</span>
+                                <span class="post-nav-item">上一篇</span>
+                            </span>
+                        </a>
+                    </div>
                 
                 
                     <div class="article-next">
