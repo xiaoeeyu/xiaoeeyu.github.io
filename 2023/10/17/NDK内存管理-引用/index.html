@@ -13,18 +13,34 @@
     
     <!--- Seo Part-->
     
-    <link rel="canonical" href="https://xiaoeeyu.github.io/categories/ndk开发/"/>
+    <link rel="canonical" href="https://xiaoeeyu.github.io/2023/10/17/ndk内存管理-引用/"/>
     <meta name="robots" content="index,follow">
     <meta name="googlebot" content="index,follow">
     <meta name="revisit-after" content="1 days">
     
-        <meta property="og:type" content="website">
-<meta property="og:title" content="xiaoeryu">
-<meta property="og:url" content="https://xiaoeeyu.github.io/categories/NDK%E5%BC%80%E5%8F%91/index.html">
+        <meta name="description" content="NDK中的内存管理除了C&#x2F;C++的new&#x2F;malloc和delete&#x2F;free之外还有JNI引用。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="NDK内存管理-引用">
+<meta property="og:url" content="https://xiaoeeyu.github.io/2023/10/17/NDK%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86-%E5%BC%95%E7%94%A8/index.html">
 <meta property="og:site_name" content="xiaoeryu">
+<meta property="og:description" content="NDK中的内存管理除了C&#x2F;C++的new&#x2F;malloc和delete&#x2F;free之外还有JNI引用。">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/17/NDK%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86-%E5%BC%95%E7%94%A8/image-20231018000134675.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/17/NDK%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86-%E5%BC%95%E7%94%A8/image-20231017155612701.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/17/NDK%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86-%E5%BC%95%E7%94%A8/image-20231017155656045.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/17/NDK%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86-%E5%BC%95%E7%94%A8/image-20231017160104076.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/17/NDK%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86-%E5%BC%95%E7%94%A8/image-20231017161235437.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/17/NDK%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86-%E5%BC%95%E7%94%A8/image-20231017161735432.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/17/NDK%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86-%E5%BC%95%E7%94%A8/image-20231017163638630.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/17/NDK%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86-%E5%BC%95%E7%94%A8/image-20231017163708832.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/17/NDK%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86-%E5%BC%95%E7%94%A8/image-20231017163808889.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/17/NDK%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86-%E5%BC%95%E7%94%A8/image-20231018000431116.png">
+<meta property="article:published_time" content="2023-10-17T15:52:33.000Z">
+<meta property="article:modified_time" content="2023-10-18T14:40:37.145Z">
 <meta property="article:author" content="xiaoeryu">
+<meta property="article:tag" content="JNI内存管理">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://xiaoeeyu.github.io/2023/10/17/NDK%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86-%E5%BC%95%E7%94%A8/image-20231018000134675.png">
     
     
     <!--- Icon Part-->
@@ -36,7 +52,7 @@
     
     <title>
         
-            分类: NDK开发 -
+            NDK内存管理-引用 -
         
         xiaoeryu
     </title>
@@ -200,104 +216,300 @@
             <div class="main-content">
 
                 
-                    <div class="category-container">
-    <div class="category-name">
-        <i class="fa-solid fa-folder"></i>&nbsp;NDK开发
-    </div>
-    <div class="category-post-list">
+                    <div class="post-page-container">
+    <div class="article-content-container">
+
+        <div class="article-title">
+            
+                <h1 class="article-title-regular">NDK内存管理-引用</h1>
+            
+            </div>
+            
+                    
+        
+        
+            <div class="article-header flex flex-row gap-2 items-center">
+                <div class="avatar w-[46px] h-[46px] flex-shrink-0 rounded-medium border border-border-color p-[1px]">
+                    <img src="/images/rabete.jpg">
+                </div>
+                <div class="info flex flex-col justify-between">
+                    <div class="author flex items-center">
+                        <span class="name text-default-text-color text-lg font-semibold">xiaoeryu</span>
+                        
+                            <span class="author-label ml-1.5 text-xs px-2 py-0.5 rounded-small text-third-text-color border border-shadow-color-1">Lv5</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2023-10-17 23:52:33</span>
+        <span class="mobile">2023-10-17 23:52:33</span>
+        <span class="hover-info">创建</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2023-10-18 22:40:37</span>
+            <span class="mobile">2023-10-18 22:40:37</span>
+            <span class="hover-info">更新</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/NDK%E5%BC%80%E5%8F%91/">NDK开发</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/JNI%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/">JNI内存管理</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fa-regular fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
         
 
-<div class="archive-list-container">
-    
-        <section class="archive-item">
-            <div class="archive-item-header">
-                <span class="archive-year">2023</span>
-                <span class="archive-year-post-count">[7]</span>
+        
+
+
+        <div class="article-content markdown-body">
+            <p>NDK中的内存管理除了C/C++的new/malloc和delete/free之外还有JNI引用。</p>
+<span id="more"></span>
+
+<h3 id="Java和C-x2F-C-内存管理的区别"><a href="#Java和C-x2F-C-内存管理的区别" class="headerlink" title="Java和C/C++内存管理的区别"></a>Java和C/C++内存管理的区别</h3><img lazyload="" src="/images/loading.svg" data-src="/2023/10/17/NDK%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86-%E5%BC%95%E7%94%A8/image-20231018000134675.png" class="" title="image-20231018000134675">
+
+<h3 id="三种引用的区别"><a href="#三种引用的区别" class="headerlink" title="三种引用的区别"></a>三种引用的区别</h3><img lazyload="" src="/images/loading.svg" data-src="/2023/10/17/NDK%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86-%E5%BC%95%E7%94%A8/image-20231017155612701.png" class="" title="image-20231017155612701">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/17/NDK%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86-%E5%BC%95%E7%94%A8/image-20231017155656045.png" class="" title="image-20231017155656045">
+
+<blockquote>
+<p>不能在外部定义一个全局变量接受局部引用，在其他函数使用</p>
+</blockquote>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/17/NDK%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86-%E5%BC%95%E7%94%A8/image-20231017160104076.png" class="" title="image-20231017160104076">
+
+<blockquote>
+<p>之前多线程的代码中使用过，例如：</p>
+<pre><code class="C++">jobject appClassloader = env-&gt;NewGlobalRef(TestJclass);
+// 使用方式：用参数传递，或者定义一个全局变量接收也行
+    pthread_create(&amp;thread, nullptr, threadtest, appClassloader);
+
+env-&gt;DeleteGlobalRef(appClassloader);
+</code></pre>
+</blockquote>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/17/NDK%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86-%E5%BC%95%E7%94%A8/image-20231017161235437.png" class="" title="image-20231017161235437">
+
+<blockquote>
+<p>作用域和全局引用是相同的，但是如果内存紧张可能会被ART给释放掉</p>
+</blockquote>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/17/NDK%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86-%E5%BC%95%E7%94%A8/image-20231017161735432.png" class="" title="image-20231017161735432">
+
+<blockquote>
+<p>再JNI种局部引用的创建也是受局部引用表限制的</p>
+<pre><code class="C++">for (int i = 0; i &lt; 2048; ++i) {
+    jstring content = env-&gt;NewStringUTF("test localreference");
+    __android_log_print(4, "xiaoeryu-&gt;jni", "localreference number-&gt;%d", i);
+}
+</code></pre>
+<p>例如这样只创建不删除，有些引用会被自动释放掉</p>
+<p>需要在每次循环结束加上<code>env-&gt;DeleteLocalRef(content);</code></p>
+<p>测试了之后发现加上比之前好点但是也不稳定，有些变量还是会被自动释放掉，所以还是尽量不要这样使用。</p>
+</blockquote>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/17/NDK%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86-%E5%BC%95%E7%94%A8/image-20231017163638630.png" class="" title="image-20231017163638630">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/17/NDK%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86-%E5%BC%95%E7%94%A8/image-20231017163708832.png" class="" title="image-20231017163708832">
+
+<p><strong>EnsureLocalCapacity</strong></p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/17/NDK%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86-%E5%BC%95%E7%94%A8/image-20231017163808889.png" class="" title="image-20231017163808889">
+
+<blockquote>
+<pre><code class="C++">int len = 10;
+if (env-&gt;EnsureLocalCapacity(len) == 0){
+    for (int i = 0; i &lt; len; ++i) {
+        jstring content = env-&gt;NewStringUTF("test EnsureLocalCapacity");
+        __android_log_print(4, "xiaoeryu-&gt;jni", "EnsureLocalCapacity number-&gt;%d", i);
+    }
+}
+</code></pre>
+</blockquote>
+<p><strong>PushLocalFrame/PopLocalFrame</strong></p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/17/NDK%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86-%E5%BC%95%E7%94%A8/image-20231018000431116.png" class="" title="image-20231018000431116">
+
+<blockquote>
+<pre><code class="C++">jobject testPushAndPopLocalFrame(JNIEnv* env){
+    jobject result = nullptr;
+    if (env-&gt;PushLocalFrame(20) == 0){
+        for (int i = 0; i &lt; 18; ++i) {
+            jstring tmp = env-&gt;NewStringUTF("xiaoeryu");
+        }
+        jstring tmp_1 = env-&gt;NewStringUTF("result_1");
+        jstring tmp_2 = env-&gt;NewStringUTF("result_2");
+        result = env-&gt;PopLocalFrame(tmp_1);     // 保留tmp_1
+    }
+    return result;
+}
+</code></pre>
+</blockquote>
+
+        </div>
+
+        
+            <div class="post-copyright-info">
+                <div class="article-copyright-info-container">
+    <ul>
+        <li><strong>标题:</strong> NDK内存管理-引用</li>
+        <li><strong>作者:</strong> xiaoeryu</li>
+        <li><strong>创建于
+                :</strong> 2023-10-17 23:52:33</li>
+        
+            <li>
+                <strong>更新于
+                    :</strong> 2023-10-18 22:40:37
+            </li>
+        
+        <li>
+            <strong>链接:</strong> https://github.com/xiaoeryu/2023/10/17/NDK内存管理-引用/
+        </li>
+        <li>
+            <strong>
+                版权声明:
+            </strong>
+            
+            本文章采用 <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">CC BY-NC-SA 4.0</a> 进行许可。
+            
+
+        </li>
+    </ul>
+</div>
+
             </div>
-            <ul class="article-list">
-              
+        
+
+        
+            <ul class="post-tags-box">
                 
-                    
-                    <li class="article-item" date-is='10-17'>
+                    <li class="tag-item">
+                        <a href="/tags/JNI%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/">#JNI内存管理</a>&nbsp;
+                    </li>
                 
-                
-                    <a href="/2023/10/17/NDK%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86-%E5%BC%95%E7%94%A8/">
-                        <span class="article-title">NDK内存管理-引用</span>
-                    </a>
-                
-              
-                
-                    
-                    <li class="article-item" date-is='10-14'>
-                
-                
-                    <a href="/2023/10/14/JNI%E8%AE%BF%E9%97%AEJava%E7%B1%BB%E5%87%BD%E6%95%B0/">
-                        <span class="article-title">JNI访问Java类函数</span>
-                    </a>
-                
-              
-                
-                    
-                    <li class="article-item" date-is='10-13'>
-                
-                
-                    <a href="/2023/10/13/JNI%E6%96%B0%E5%BB%BA%E5%AF%B9%E8%B1%A1%E5%92%8C%E8%AE%BF%E9%97%AEJava%E4%B8%AD%E5%B1%9E%E6%80%A7/">
-                        <span class="article-title">JNI新建对象和访问Java中属性</span>
-                    </a>
-                
-              
-                
-                    
-                    <li class="article-item" date-is='10-12'>
-                
-                
-                    <a href="/2023/10/12/JavaVM%E4%B8%8EJNIEnv/">
-                        <span class="article-title">JavaVM与JNIEnv</span>
-                    </a>
-                
-              
-                
-                    
-                    <li class="article-item" date-is='10-10'>
-                
-                
-                    <a href="/2023/10/10/JAVA%E5%8F%8D%E5%B0%84/">
-                        <span class="article-title">JAVA反射</span>
-                    </a>
-                
-              
-                
-                    
-                    <li class="article-item" date-is='10-06'>
-                
-                
-                    <a href="/2023/10/06/NDK%E5%BC%80%E5%8F%91%E6%80%A7%E8%83%BD%E6%8F%90%E5%8D%87/">
-                        <span class="article-title">NDK开发性能提升</span>
-                    </a>
-                
-              
-                
-                    
-                    <li class="article-item" date-is='10-03'>
-                
-                
-                    <a href="/2023/10/03/NDK%E5%BC%80%E5%8F%91%E7%AE%80%E4%BB%8B/">
-                        <span class="article-title">NDK开发简介</span>
-                    </a>
-                
-              
             </ul>
-        </section>
+        
+
+        
+
+        
+            <div class="article-nav">
+                
+                
+                    <div class="article-next">
+                        <a class="next"
+                        rel="next"
+                        href="/2023/10/14/JNI%E8%AE%BF%E9%97%AEJava%E7%B1%BB%E5%87%BD%E6%95%B0/"
+                        >
+                            <span class="title flex justify-center items-center">
+                                <span class="post-nav-title-item">JNI访问Java类函数</span>
+                                <span class="post-nav-item">下一篇</span>
+                            </span>
+                            <span class="right arrow-icon flex justify-center items-center">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+
+        
+            <div class="comment-container">
+                <div class="comments-container pjax">
+    <div id="comment-anchor"></div>
+    <div class="comment-area-title">
+        <i class="fa-solid fa-comments"></i>&nbsp;评论
+    </div>
+    
+
+        
+            
+ 
+    <div id="waline"></div>
+    <script type="module"  data-swup-reload-script>
+        import { init } from '/js/libs/waline.mjs';
+
+        function loadWaline() {
+            init({
+                el: '#waline',
+                serverURL: 'https://example.example.com',
+                lang: 'zh-CN',
+                dark: 'body[class~="dark-mode"]',
+                requiredMeta: ['nick','mail'], // cannot customize by theme config, change it yourself
+            });
+        }
+
+        if ('true') {
+            const loadWalineTimeout = setTimeout(() => {
+                loadWaline();
+                clearTimeout(loadWalineTimeout);
+            }, 1000);
+        } else {
+            window.addEventListener('DOMContentLoaded', loadWaline);
+        }
+        
+    </script>
+
+
+
+        
     
 </div>
+
+            </div>
+        
+    </div>
+
+    
+        <div class="toc-content-container">
+            <div class="post-toc-wrap">
+    <div class="post-toc">
+        <div class="toc-title">此页目录</div>
+        <div class="page-title">NDK内存管理-引用</div>
+        <ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#Java%E5%92%8CC-x2F-C-%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-text">Java和C&#x2F;C++内存管理的区别</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%89%E7%A7%8D%E5%BC%95%E7%94%A8%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-text">三种引用的区别</span></a></li></ol>
 
     </div>
 </div>
-<div class="category-paginator">
-    <div class="paginator">
-    <span class="page-number current">1</span>
-</div>
-
+        </div>
+    
 </div>
 
 
@@ -373,6 +585,27 @@
         </div>
     </div>
 
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="article-tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="right-bottom-tools page-aside-toggle">
+                <i class="fa-regular fa-outdent"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+            <li class="go-comment">
+                <i class="fa-regular fa-comments"></i>
+            </li>
+        
+    </ul>
+</div>
+
+        </div>
     
 
     <div class="right-side-tools-container">

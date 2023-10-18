@@ -31,7 +31,7 @@
 <meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/14/JNI%E8%AE%BF%E9%97%AEJava%E7%B1%BB%E5%87%BD%E6%95%B0/image-20231014215852588.png">
 <meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/14/JNI%E8%AE%BF%E9%97%AEJava%E7%B1%BB%E5%87%BD%E6%95%B0/image-20231014174357510.png">
 <meta property="article:published_time" content="2023-10-14T13:38:59.000Z">
-<meta property="article:modified_time" content="2023-10-14T23:24:10.015Z">
+<meta property="article:modified_time" content="2023-10-18T15:18:02.038Z">
 <meta property="article:author" content="xiaoeryu">
 <meta property="article:tag" content="JNI访问Java类函数">
 <meta name="twitter:card" content="summary">
@@ -245,8 +245,8 @@
     
         <span class="article-date article-meta-item">
             <i class="fa-regular fa-wrench"></i>&nbsp;
-            <span class="desktop">2023-10-15 07:24:10</span>
-            <span class="mobile">2023-10-15 07:24:10</span>
+            <span class="desktop">2023-10-18 23:18:02</span>
+            <span class="mobile">2023-10-18 23:18:02</span>
             <span class="hover-info">更新</span>
         </span>
     
@@ -425,15 +425,31 @@ Java_com_xiaoeryu_reflectiontest_MainActivity_callNonStaticFunc(JNIEnv *env, job
 <h4 id="调用父类函数"><a href="#调用父类函数" class="headerlink" title="调用父类函数"></a>调用父类函数</h4><img lazyload="" src="/images/loading.svg" data-src="/2023/10/14/JNI%E8%AE%BF%E9%97%AEJava%E7%B1%BB%E5%87%BD%E6%95%B0/image-20231014174357510.png" class="" title="image-20231014174357510">
 
 <blockquote>
-<p>例如我们如果要把这个父类的onCreate()进行本地化写成JNI函数应该怎么做呢</p>
+<p>例如我们如果要把这个父类的onCreate()以及它里面的一些调用方法进行本地化写成JNI函数应该怎么做呢</p>
 <p>因为它是一个入口函数所以有很多壳会这么做，接下来看一下它是怎么实现的</p>
+<p>PS：新版的布局函数调用出错了，换了老版的布局函数。以后再解决</p>
+<pre><code class="c++">binding = ActivityMainBinding.inflate(getLayoutInflater());
+setContentView(binding.getRoot());
+</code></pre>
+<p>换了老版的</p>
+<pre><code class="c++">setContentView(R.layout.activity_main);
+
+TextView tv = findViewById(R.id.sample_text);
+</code></pre>
 </blockquote>
 <pre><code class="C++">extern "C"
 JNIEXPORT void JNICALL
 Java_com_xiaoeryu_reflectiontest_MainActivity_onCreate(JNIEnv *env, jobject thiz,
                                                        jobject saved_instance_state) {
+//        super.onCreate(savedInstanceState);
+
     // TODO: implement onCreate()
+    // 有三种方法都可以获取到当前类引用
     jclass AppCompatActivity_jclass = env-&gt;FindClass("androidx/appcompat/app/AppCompatActivity");
+    jclass MainActivity_jclass1 = env-&gt;FindClass("com/xiaoeryu/reflectiontest/MainActivity");
+    jclass MainActivity_jclass2 = env-&gt;GetObjectClass(thiz);
+    // 获取父类
+    jclass AppCompatActivity_jclass2 = env-&gt;GetSuperclass(MainActivity_jclass2);
     // protected native void onCreate(Bundle savedInstanceState);
     // super.onCreate(savedInstanceState);
     jmethodID onCreate_mid = env-&gt;GetMethodID(AppCompatActivity_jclass, "onCreate", "(Landroid/os/Bundle;)V");
@@ -454,12 +470,49 @@ Java_com_xiaoeryu_reflectiontest_MainActivity_onCreate(JNIEnv *env, jobject thiz
     jint result = env-&gt;CallStaticIntMethod(LogJclass, Log_i_mid, arg1, arg2);
 
     __android_log_print(4, "xiaoeryu-&gt;jni", "Log_i_mid-&gt;%d", result);
+
+/* setContentView(R.layout.activity_main);
+ * TextView tv = findViewById(R.id.sample_text);
+ * Test testobj = (Test) callInit();
+ * Log.i("xiaoeryu", testobj.flag);
+*/
+    jmethodID setContentView_mid = env-&gt;GetMethodID(MainActivity_jclass2, "setContentView", "(I)V");
+
+    jclass R_layoutjclass = env-&gt;FindClass("com/xiaoeryu/reflectiontest/R$layout");
+    jfieldID activity_main_fieldid = env-&gt;GetStaticFieldID(R_layoutjclass, "activity_main", "I");
+    jint activity_main_value = env-&gt;GetStaticIntField(R_layoutjclass, activity_main_fieldid);
+
+    env-&gt;CallVoidMethod(thiz, setContentView_mid, activity_main_value);
+
+//    TextView tv = findViewById(R.id.sample_text);
+    jmethodID findViewById_mid = env-&gt;GetMethodID(MainActivity_jclass2, "findViewById", "(I)Landroid/view/View;");
+
+    jclass R_idjclass = env-&gt;FindClass("com/xiaoeryu/reflectiontest/R$id");
+    jfieldID sample_text_fieldid = env-&gt;GetStaticFieldID(R_idjclass, "sample_text", "I");
+    jint sample_text_value = env-&gt;GetStaticIntField(R_idjclass, sample_text_fieldid);
+
+    env-&gt;CallObjectMethod(thiz, findViewById_mid, sample_text_value);
+
+    /*
+     * Test testobj = (Test) callInit();
+     * Log.i("xiaoeryu", testobj.flag);
+     * */
+    jmethodID callInit_mid = env-&gt;GetMethodID(MainActivity_jclass2, "callInit", "()Ljava/lang/Object;");
+    jobject testobj = env-&gt;CallObjectMethod(thiz,callInit_mid);
+
+    jclass testjcalss = env-&gt;FindClass("com/xiaoeryu/reflectiontest/Test");
+    jfieldID flagjfield = env-&gt;GetFieldID(testjcalss, "flag", "Ljava/lang/String;");
+    jstring flagvalue = static_cast&lt;jstring&gt;(env-&gt;GetObjectField(testobj, flagjfield));
+
+    jint result_flag = env-&gt;CallStaticIntMethod(LogJclass, Log_i_mid, arg1, flagvalue);
+
+    __android_log_print(4, "xiaoeryu-&gt;jni", "flag-&gt;%d", result_flag);
 }
 </code></pre>
 <blockquote>
-<p>通过对<code>Oncreate</code>的实现可以发现，任意一个Java实现的函数都可以换成JNI来实现</p>
+<p>通过对<code>Oncreate</code>以及它里面调用的实现可以发现，任意一个Java实现的函数都可以换成JNI来实现</p>
 </blockquote>
-<p><a class="link" target="_blank" rel="noopener" href="https://github.com/xiaoeeyu/JNIAccessesJavaClassFunc">代码地址 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<p><a class="link" target="_blank" rel="noopener" href="https://github.com/xiaoeeyu/JNIAccessJavaClassFunc">代码地址 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
 
         </div>
 
@@ -474,7 +527,7 @@ Java_com_xiaoeryu_reflectiontest_MainActivity_onCreate(JNIEnv *env, jobject thiz
         
             <li>
                 <strong>更新于
-                    :</strong> 2023-10-15 07:24:10
+                    :</strong> 2023-10-18 23:18:02
             </li>
         
         <li>
@@ -509,6 +562,21 @@ Java_com_xiaoeryu_reflectiontest_MainActivity_onCreate(JNIEnv *env, jobject thiz
 
         
             <div class="article-nav">
+                
+                    <div class="article-prev">
+                        <a class="prev"
+                        rel="prev"
+                        href="/2023/10/17/NDK%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86-%E5%BC%95%E7%94%A8/"
+                        >
+                            <span class="left arrow-icon flex justify-center items-center">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </span>
+                            <span class="title flex justify-center items-center">
+                                <span class="post-nav-title-item">NDK内存管理-引用</span>
+                                <span class="post-nav-item">上一篇</span>
+                            </span>
+                        </a>
+                    </div>
                 
                 
                     <div class="article-next">
