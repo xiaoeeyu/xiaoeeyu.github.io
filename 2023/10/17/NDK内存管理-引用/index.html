@@ -18,15 +18,14 @@
     <meta name="googlebot" content="index,follow">
     <meta name="revisit-after" content="1 days">
     
-        <meta name="description" content="NDK中的内存管理除了C&#x2F;C++的new&#x2F;malloc和delete&#x2F;free之外还有JNI引用。">
+        <meta name="description" content="NDK中的内存管理：C&#x2F;C++的new&#x2F;malloc和delete&#x2F;free以及JNI引用。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="NDK内存管理-引用">
 <meta property="og:url" content="https://xiaoeeyu.github.io/2023/10/17/NDK%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86-%E5%BC%95%E7%94%A8/index.html">
 <meta property="og:site_name" content="xiaoeryu">
-<meta property="og:description" content="NDK中的内存管理除了C&#x2F;C++的new&#x2F;malloc和delete&#x2F;free之外还有JNI引用。">
+<meta property="og:description" content="NDK中的内存管理：C&#x2F;C++的new&#x2F;malloc和delete&#x2F;free以及JNI引用。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/17/NDK%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86-%E5%BC%95%E7%94%A8/image-20231018000134675.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/17/NDK%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86-%E5%BC%95%E7%94%A8/image-20231017155612701.png">
 <meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/17/NDK%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86-%E5%BC%95%E7%94%A8/image-20231017155656045.png">
 <meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/17/NDK%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86-%E5%BC%95%E7%94%A8/image-20231017160104076.png">
 <meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/17/NDK%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86-%E5%BC%95%E7%94%A8/image-20231017161235437.png">
@@ -36,7 +35,7 @@
 <meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/17/NDK%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86-%E5%BC%95%E7%94%A8/image-20231017163808889.png">
 <meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/17/NDK%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86-%E5%BC%95%E7%94%A8/image-20231018000431116.png">
 <meta property="article:published_time" content="2023-10-17T15:52:33.000Z">
-<meta property="article:modified_time" content="2023-10-18T14:40:37.145Z">
+<meta property="article:modified_time" content="2023-10-19T03:10:39.876Z">
 <meta property="article:author" content="xiaoeryu">
 <meta property="article:tag" content="JNI内存管理">
 <meta name="twitter:card" content="summary">
@@ -85,7 +84,7 @@
     
     <script id="hexo-configurations">
     window.config = {"hostname":"xiaoeeyu.github.io","root":"/","language":"zh-CN","path":"search.xml"};
-    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":true,"lazyload":true,"recommendation":{"enable":false,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"open_graph":true,"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/wallhaven-wqery6-light.webp","dark":"/images/wallhaven-wqery6-dark.webp"},"title":"XIAOERYU","subtitle":{"text":[],"hitokoto":{"enable":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":false,"links":{"github":null,"instagram":null,"zhihu":null,"twitter":null,"email":"xiaoeryu@163.com"},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null}]},"mermaid":{"enable":false,"version":"9.3.0"}},"version":"2.5.0","navbar":{"auto_hide":false,"color":{"left":"#f78736","right":"#367df7","transparency":35},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"}},"search":{"enable":false,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"blur"},"home":{"sidebar":{"enable":true,"position":"left","first_item":"menu","announcement":null,"links":null},"article_date_format":"auto","categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":3}},"footerStart":"2022/8/17 11:45:14"};
+    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":true,"lazyload":true,"recommendation":{"enable":false,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"open_graph":true,"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/wallhaven-wqery6-light.webp","dark":"/images/wallhaven-wqery6-dark.webp"},"title":"XIAOERYU","subtitle":{"text":["明心见性，拨云见日"],"hitokoto":{"enable":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":false,"links":{"github":null,"instagram":null,"zhihu":null,"twitter":null,"email":"xiaoeryu@163.com"},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null}]},"mermaid":{"enable":false,"version":"9.3.0"}},"version":"2.5.0","navbar":{"auto_hide":false,"color":{"left":"#f78736","right":"#367df7","transparency":35},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"}},"search":{"enable":false,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"blur"},"home":{"sidebar":{"enable":true,"position":"left","first_item":"menu","announcement":null,"links":null},"article_date_format":"auto","categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":3}},"footerStart":"2022/8/17 11:45:14"};
     window.lang_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"};
     window.data = {"masonry":false};
   </script>
@@ -250,8 +249,8 @@
     
         <span class="article-date article-meta-item">
             <i class="fa-regular fa-wrench"></i>&nbsp;
-            <span class="desktop">2023-10-18 22:40:37</span>
-            <span class="mobile">2023-10-18 22:40:37</span>
+            <span class="desktop">2023-10-19 11:10:39</span>
+            <span class="mobile">2023-10-19 11:10:39</span>
             <span class="hover-info">更新</span>
         </span>
     
@@ -305,17 +304,21 @@
 
 
         <div class="article-content markdown-body">
-            <p>NDK中的内存管理除了C/C++的new/malloc和delete/free之外还有JNI引用。</p>
+            <p>NDK中的内存管理：C/C++的new/malloc和delete/free以及JNI引用。</p>
 <span id="more"></span>
 
 <h3 id="Java和C-x2F-C-内存管理的区别"><a href="#Java和C-x2F-C-内存管理的区别" class="headerlink" title="Java和C/C++内存管理的区别"></a>Java和C/C++内存管理的区别</h3><img lazyload="" src="/images/loading.svg" data-src="/2023/10/17/NDK%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86-%E5%BC%95%E7%94%A8/image-20231018000134675.png" class="" title="image-20231018000134675">
 
-<h3 id="三种引用的区别"><a href="#三种引用的区别" class="headerlink" title="三种引用的区别"></a>三种引用的区别</h3><img lazyload="" src="/images/loading.svg" data-src="/2023/10/17/NDK%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86-%E5%BC%95%E7%94%A8/image-20231017155612701.png" class="" title="image-20231017155612701">
-
+<h3 id="三种引用的区别"><a href="#三种引用的区别" class="headerlink" title="三种引用的区别"></a>三种引用的区别</h3><p>在JNI规范中定义了三种引用：</p>
+<ul>
+<li>局部引用（LocalReference）</li>
+<li>全局引用（Global Reference）</li>
+<li>若全局引用（Weak Global Reference）</li>
+</ul>
 <img lazyload="" src="/images/loading.svg" data-src="/2023/10/17/NDK%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86-%E5%BC%95%E7%94%A8/image-20231017155656045.png" class="" title="image-20231017155656045">
 
 <blockquote>
-<p>不能在外部定义一个全局变量接受局部引用，在其他函数使用</p>
+<p>因生命周期限制，不能在外部定义一个全局变量接受局部引用，在其他函数使用</p>
 </blockquote>
 <img lazyload="" src="/images/loading.svg" data-src="/2023/10/17/NDK%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86-%E5%BC%95%E7%94%A8/image-20231017160104076.png" class="" title="image-20231017160104076">
 
@@ -351,6 +354,9 @@ env-&gt;DeleteGlobalRef(appClassloader);
 <img lazyload="" src="/images/loading.svg" data-src="/2023/10/17/NDK%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86-%E5%BC%95%E7%94%A8/image-20231017163708832.png" class="" title="image-20231017163708832">
 
 <p><strong>EnsureLocalCapacity</strong></p>
+<ul>
+<li>创建多引用之前可以用EnsureLocalCapacity()测试一下能否创建成功</li>
+</ul>
 <img lazyload="" src="/images/loading.svg" data-src="/2023/10/17/NDK%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86-%E5%BC%95%E7%94%A8/image-20231017163808889.png" class="" title="image-20231017163808889">
 
 <blockquote>
@@ -364,6 +370,9 @@ if (env-&gt;EnsureLocalCapacity(len) == 0){
 </code></pre>
 </blockquote>
 <p><strong>PushLocalFrame/PopLocalFrame</strong></p>
+<ul>
+<li>局部引用堆栈的创建和销毁</li>
+</ul>
 <img lazyload="" src="/images/loading.svg" data-src="/2023/10/17/NDK%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86-%E5%BC%95%E7%94%A8/image-20231018000431116.png" class="" title="image-20231018000431116">
 
 <blockquote>
@@ -395,7 +404,7 @@ if (env-&gt;EnsureLocalCapacity(len) == 0){
         
             <li>
                 <strong>更新于
-                    :</strong> 2023-10-18 22:40:37
+                    :</strong> 2023-10-19 11:10:39
             </li>
         
         <li>
