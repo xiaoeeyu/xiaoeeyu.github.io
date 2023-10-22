@@ -1,0 +1,1048 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    
+    <meta name="author" content="xiaoeryu">
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="https://xiaoeeyu.github.io/2023/10/21/dalvik-art下动态注册原理追踪/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+        <meta name="description" content="在之前的JNI代码中我们都是使用的静态注册，使用extern &quot;C&quot;来编译，这样的代码在编译之后的so文件中仍然会保留原函数名，对APK的安全性有一定影响。 在下面的代码中我们将代码改为静态注册，比较一下和静态注册有何不同。 以及对于改为动态注册的函数我们应该如何去追踪。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Dalvik&#x2F;ART下动态注册原理追踪">
+<meta property="og:url" content="https://xiaoeeyu.github.io/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/index.html">
+<meta property="og:site_name" content="xiaoeryu">
+<meta property="og:description" content="在之前的JNI代码中我们都是使用的静态注册，使用extern &quot;C&quot;来编译，这样的代码在编译之后的so文件中仍然会保留原函数名，对APK的安全性有一定影响。 在下面的代码中我们将代码改为静态注册，比较一下和静态注册有何不同。 以及对于改为动态注册的函数我们应该如何去追踪。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231019153051665.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231021221027648.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231019153303831.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231020014348852.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231020015132363.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231020221300327.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231020223718539.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231020232142297.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231021094617207.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231021095331916.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231021173436019.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231021181032660.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231021180038425.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231021180109175.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231021180753466.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231021181500327.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231021181843637.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231021182403408.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231021182530070.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231021223316896.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231021223340230.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231021223520552.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231021210427169.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231021215743693.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231021215449812.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231021215608057.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231022001832599.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231022161955335.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231022183100163.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231022185024397.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231022191116590.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231022191938961.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231022192112073.png">
+<meta property="article:published_time" content="2023-10-21T14:04:43.000Z">
+<meta property="article:modified_time" content="2023-10-22T12:04:27.447Z">
+<meta property="article:author" content="xiaoeryu">
+<meta property="article:tag" content="JNI函数注册原理与追踪">
+<meta property="article:tag" content="源码修改">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://xiaoeeyu.github.io/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231019153051665.png">
+    
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/rabete.jpg" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/rabete.jpg">
+    <meta name="theme-color" content="#A31F34">
+    <link rel="shortcut icon" href="/images/rabete.jpg">
+    <!--- Page Info-->
+    
+    <title>
+        
+            Dalvik/ART下动态注册原理追踪 -
+        
+        xiaoeryu
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+        
+<link rel="stylesheet" href="/assets/build/styles.css">
+
+    
+
+    
+<link rel="stylesheet" href="/fonts/fonts.css">
+
+    
+<link rel="stylesheet" href="/fonts/Satoshi/satoshi.css">
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+    <!--- Font Part-->
+    
+    
+    
+    
+
+    <!--- Inject Part-->
+    
+    <script id="hexo-configurations">
+    window.config = {"hostname":"xiaoeeyu.github.io","root":"/","language":"zh-CN","path":"search.xml"};
+    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":true,"lazyload":true,"recommendation":{"enable":false,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"open_graph":true,"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/wallhaven-wqery6-light.webp","dark":"/images/wallhaven-wqery6-dark.webp"},"title":"XIAOERYU","subtitle":{"text":["明心见性，拨云见日"],"hitokoto":{"enable":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":false,"links":{"github":null,"instagram":null,"zhihu":null,"twitter":null,"email":"xiaoeryu@163.com"},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null}]},"mermaid":{"enable":false,"version":"9.3.0"}},"version":"2.5.0","navbar":{"auto_hide":false,"color":{"left":"#f78736","right":"#367df7","transparency":35},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"}},"search":{"enable":false,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"blur"},"home":{"sidebar":{"enable":true,"position":"left","first_item":"menu","announcement":null,"links":null},"article_date_format":"auto","categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":3}},"footerStart":"2022/8/17 11:45:14"};
+    window.lang_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"};
+    window.data = {"masonry":false};
+  </script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+<meta name="generator" content="Hexo 6.3.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <span class="swup-progress-icon">
+            <i class="fa-solid fa-circle-notch fa-spin"></i>
+        </span>
+    
+</div>
+
+
+<main class="page-container" id="swup">
+
+    
+
+    <div class="main-content-container">
+
+
+        <div class="main-content-header">
+            <header class="navbar-container">
+    
+    <div class="navbar-content">
+        <div class="left">
+            
+            <a class="logo-title" href="/">
+                
+                xiaoeryu
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-house"></i>
+                                        
+                                        首页
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile drawer -->
+    <div class="navbar-drawer w-full absolute top-0 left-0 bg-background-color">
+        <ul class="drawer-navbar-list flex flex-col justify-start items-center">
+            
+                
+                    <li class="drawer-navbar-item text-base my-1.5 flex justify-center items-center">
+                        <a class="rounded-3xl py-1.5 px-5 hover:border hover:!text-primary active:!text-primary group " 
+                        href="/"  >
+                             
+                                
+                                    <i class="fa-regular fa-house"></i>
+                                
+                                首页
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="main-content-body">
+
+            
+
+            <div class="main-content">
+
+                
+                    <div class="post-page-container">
+    <div class="article-content-container">
+
+        <div class="article-title">
+            
+                <h1 class="article-title-regular">Dalvik/ART下动态注册原理追踪</h1>
+            
+            </div>
+            
+                    
+        
+        
+            <div class="article-header flex flex-row gap-2 items-center">
+                <div class="avatar w-[46px] h-[46px] flex-shrink-0 rounded-medium border border-border-color p-[1px]">
+                    <img src="/images/rabete.jpg">
+                </div>
+                <div class="info flex flex-col justify-between">
+                    <div class="author flex items-center">
+                        <span class="name text-default-text-color text-lg font-semibold">xiaoeryu</span>
+                        
+                            <span class="author-label ml-1.5 text-xs px-2 py-0.5 rounded-small text-third-text-color border border-shadow-color-1">Lv5</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2023-10-21 22:04:43</span>
+        <span class="mobile">2023-10-21 22:04:43</span>
+        <span class="hover-info">创建</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2023-10-22 20:04:27</span>
+            <span class="mobile">2023-10-22 20:04:27</span>
+            <span class="hover-info">更新</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/NDK%E5%BC%80%E5%8F%91/">NDK开发</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/JNI%E5%87%BD%E6%95%B0%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E4%B8%8E%E8%BF%BD%E8%B8%AA/">JNI函数注册原理与追踪</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E6%BA%90%E7%A0%81%E4%BF%AE%E6%94%B9/">源码修改</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fa-regular fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        
+
+
+        <div class="article-content markdown-body">
+            <p>在之前的JNI代码中我们都是使用的静态注册，使用<code>extern "C"</code>来编译，这样的代码在编译之后的so文件中仍然会保留原函数名，对APK的安全性有一定影响。</p>
+<p>在下面的代码中我们将代码改为静态注册，比较一下和静态注册有何不同。</p>
+<p>以及对于改为动态注册的函数我们应该如何去追踪。</p>
+<span id="more"></span>
+
+<h1 id="静态注册与动态注册"><a href="#静态注册与动态注册" class="headerlink" title="静态注册与动态注册"></a>静态注册与动态注册</h1><p>JNI函数被调用前，必须要完成Java与so的绑定：</p>
+<ul>
+<li>被动（静态）：由Dalvik/ART虚拟机在调用前查找并完成地址的绑定</li>
+<li>主动（动态）：由APP自己完成地址的绑定</li>
+</ul>
+<p>静态注册</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231019153051665.png" class="" title="image-20231019153051665">
+
+<p><mark>静态注册的so文件</mark></p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231021221027648.png" class="" title="image-20231021221027648">
+
+<ul>
+<li>例如这个静态注册JNI代码编译后的so文件，用IDA反编译之后就能直接通过搜索函数名定义到函数位置。</li>
+</ul>
+<p>动态注册</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231019153303831.png" class="" title="image-20231019153303831">
+
+
+
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231020014348852.png" class="" title="image-20231020014348852">
+
+<blockquote>
+<p>可以将原来的<code>extern "C"</code>给去掉，函数名无所谓可以随便写就是一个标识</p>
+<p>在JNI_OnLoad中手动绑定</p>
+<pre><code class="C++"> JNINativeMethod jniNativeMethod[] = {
+         {"onCreate", "(Landroid/os/Bundle;)V", (void*)onCreate},
+         {"newObject", "()V", (void*)newObject}
+ };
+ jclass MainActivityjclass = env-&gt;FindClass("com/xiaoeryu/reflectiontest/MainActivity");
+ env-&gt;RegisterNatives(MainActivityjclass, jniNativeMethod, sizeof(jniNativeMethod)/sizeof(JNINativeMethod));
+ jclass tmpjclass = env-&gt;FindClass("com/xiaoeryu/reflectiontest/Test");
+ jclass testjclass = static_cast&lt;jclass&gt;(env-&gt;NewWeakGlobalRef(tmpjclass));
+</code></pre>
+<p>通过<code>RegisterNatives()</code>方法完成手动绑定</p>
+</blockquote>
+<p>在JNI函数前加上<code>__attribute__ ((visibility ("hidden"))) </code>来隐藏符号信息</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231020015132363.png" class="" title="image-20231020015132363">
+
+<p>隐藏了之后就无法在IDA里面直接搜索到这个函数了</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231020221300327.png" class="" title="image-20231020221300327">
+
+<h2 id="Dalvik下动态注册的原理"><a href="#Dalvik下动态注册的原理" class="headerlink" title="Dalvik下动态注册的原理"></a>Dalvik下动态注册的原理</h2><p>查看源码分析一下<code>RegisterNatives</code>的实现</p>
+<blockquote>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231020223718539.png" class="" title="image-20231020223718539">
+
+<ul>
+<li><p>查看其在Android4.4中的实现</p>
+<pre><code class="C++">2453/*
+2454 * Register one or more native functions in one class.
+2455 *
+2456 * This can be called multiple times on the same method, allowing the
+2457 * caller to redefine the method implementation at will.
+2458 */
+2459static jint RegisterNatives(JNIEnv* env, jclass jclazz,
+2460    const JNINativeMethod* methods, jint nMethods)
+2461{
+2462    ScopedJniThreadState ts(env);
+2463
+2464    ClassObject* clazz = (ClassObject*) dvmDecodeIndirectRef(ts.self(), jclazz);
+2465
+2466    if (gDvm.verboseJni) {
+2467        ALOGI("[Registering JNI native methods for class %s]",
+2468            clazz-&gt;descriptor);
+2469    }
+2470
+2471    for (int i = 0; i &lt; nMethods; i++) {
+2472        if (!dvmRegisterJNIMethod(clazz, methods[i].name,
+2473                methods[i].signature, methods[i].fnPtr))
+2474        {
+2475            return JNI_ERR;
+2476        }
+2477    }
+2478    return JNI_OK;
+2479}
+</code></pre>
+</li>
+<li><p>函数参数：</p>
+<ul>
+<li><code>jclass jclazz</code>：表示要注册本地方法的Java类</li>
+<li><code>const JNINativeMethod* methods</code>：是一个指向<code>JNINativeMethod</code>结构体数组的指针，该结构体包含了本地方法的名称、签名和函数指针</li>
+<li><code>jint nMethods</code>：表示要注册的本地方法的数量</li>
+</ul>
+</li>
+<li><p>这个函数的目的是将本地方法与Java类相关联，以便在Java代码中调用这些本地方法。</p>
+</li>
+<li><p>往下分析可以看到具体的实现在<code>dvmRegisterJNIMethod</code>函数中，跟进去看一下</p>
+<pre><code class="C++">static bool dvmRegisterJNIMethod(ClassObject* clazz, const char* methodName,
+                                 const char* signature, void* fnPtr)
+{
+
+    ...
+
+
+    Method* method = dvmFindDirectMethodByDescriptor(clazz, methodName, signature);	// 这个method表示Java函数在Dalvik当中对应的结构体
+
+    ...
+
+    if (method-&gt;nativeFunc != dvmResolveNativeMethod) {
+        /* this is allowed, but unusual */
+        /* 这里表示允许这个JNI函数注册两次，不过不常见*/
+        ALOGV("Note: %s.%s:%s was already registered", clazz-&gt;descriptor, methodName, signature);
+    }
+    method-&gt;fastJni = fastJni;
+    dvmUseJNIBridge(method, fnPtr);
+}
+</code></pre>
+<p>比如说在这里注册的时候可以让它注册两次，可以绑定不同的本地方法。（如果在动态调试APP的时候碰到有JNI函数在不同的时刻注册在了不同的地址，可能就是这种情况）<mark>暂时没发现有啥用</mark></p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231020232142297.png" class="" title="image-20231020232142297">
+</li>
+<li><p>继续往下分析，还可以看到有很多地方都使用到了<code>method</code>结构体，那分析这个有什么用呢？</p>
+<ul>
+<li>我们可以修改源码在调用method的地方添加log，重新编译，然后再运行APP的时候就可以将动态注册的结构体的注册信息打印出来。</li>
+<li>暂时没有运行4.4的设备，而且Dalvik比较少用了就不去修改源码重新编译了，等下分析ART源码跟踪一下在ART中的动态注册的结构体。</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+<h2 id="ART下动态注册的原理"><a href="#ART下动态注册的原理" class="headerlink" title="ART下动态注册的原理"></a>ART下动态注册的原理</h2><p>接下来分析Android8.0的ART源码，并修改源码在关键点加LOG获取动态注册的JNI函数地址。</p>
+<h4 id="ART下动态注册分析"><a href="#ART下动态注册分析" class="headerlink" title="ART下动态注册分析"></a>ART下动态注册分析</h4><img lazyload="" src="/images/loading.svg" data-src="/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231021094617207.png" class="" title="image-20231021094617207">
+
+<p>跟进来之后可以看到函数的实现</p>
+<pre><code class="C++">2148    static jint RegisterNatives(JNIEnv* env, jclass java_class, const JNINativeMethod* methods,
+2149                                jint method_count) {
+2150      return RegisterNativeMethods(env, java_class, methods, method_count, true);
+2151    }
+</code></pre>
+<ul>
+<li>跟进<code>RegisterNativeMethods</code></li>
+</ul>
+<pre><code class="C++">3054  void RegisterNativeMethods(JNIEnv* env, const char* jni_class_name, const JNINativeMethod* methods,
+3055                             jint method_count) {
+3056    ScopedLocalRef&lt;jclass&gt; c(env, env-&gt;FindClass(jni_class_name));
+3057    if (c.get() == nullptr) {
+3058      LOG(FATAL) &lt;&lt; "Couldn't find class: " &lt;&lt; jni_class_name;
+3059    }
+3060    JNI::RegisterNativeMethods(env, c.get(), methods, method_count, false);
+3061  }
+3062  
+3063  }  // namespace art
+</code></pre>
+<ul>
+<li>跟进<code>JNI::RegisterNativeMethods</code></li>
+</ul>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231021095331916.png" class="" title="image-20231021095331916">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231021173436019.png" class="" title="image-20231021173436019">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231021181032660.png" class="" title="image-20231021181032660">
+
+<blockquote>
+<ul>
+<li>对于任意一个在Java类中定义的函数而言，它在调用前都会有一个准备的过程。这个过程中会调用LoadClassMembers完成被加载的过程：遍历当前类中的field和函数，将其准备好。</li>
+</ul>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231021180038425.png" class="" title="image-20231021180038425">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231021180109175.png" class="" title="image-20231021180109175">
+
+<ul>
+<li>在这个遍历过程中会准备好每一个函数的ArtMethod对象</li>
+<li>只有在准备好了之后才能被调用，不论这个函数是Java还是JNI实现</li>
+</ul>
+<p>接下来看一下ArtMethod的定义：</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231021180753466.png" class="" title="image-20231021180753466">
+</blockquote>
+<p>继续之前的<code>JNI::RegisterNativeMethods</code></p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231021181500327.png" class="" title="image-20231021181500327">
+
+<ul>
+<li>跟进<code>RegisterNative()</code></li>
+</ul>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231021181843637.png" class="" title="image-20231021181843637">
+
+<ul>
+<li><p>继续跟进SetEntryPointFromJni()，参数是函数地址</p>
+</li>
+<li><p>看这个名字我们就能发现他是对于JNI入口地址的绑定</p>
+<blockquote>
+<p>在<code>art_method.h</code>里面也有关于<code>EntryPointFromJni</code>的定义</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231021182403408.png" class="" title="image-20231021182403408"></blockquote>
+</li>
+</ul>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231021182530070.png" class="" title="image-20231021182530070">
+
+<ul>
+<li>到这里还可以继续往下分析，<code>SetEntryPointFromJniPtrSize</code>第一个参数是函数地址，第二个参数是运行系统位数</li>
+</ul>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231021223316896.png" class="" title="image-20231021223316896">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231021223340230.png" class="" title="image-20231021223340230">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231021223520552.png" class="" title="image-20231021223520552">
+
+<blockquote>
+<p><mark><strong>以上就是ART下一个函数的动态注册流程</strong></mark></p>
+</blockquote>
+<h3 id="修改源码HOOK"><a href="#修改源码HOOK" class="headerlink" title="修改源码HOOK"></a>修改源码HOOK</h3><p>接下来我们在这些流程中添加一些log信息</p>
+<blockquote>
+<ol>
+<li>RegisterNatives</li>
+<li>RegisterNativeMethods</li>
+<li>jint::RegisterNativeMethods</li>
+<li>RegisterNative</li>
+<li>SetEntryPointFromJni</li>
+<li>。。。</li>
+</ol>
+</blockquote>
+<p>通过在这些函数加LOG日志（<code>LOG(WARNING) &lt;&lt; xxx;</code>）的方法将函数的信息都打印出来</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231021210427169.png" class="" title="image-20231021210427169">
+
+<h6 id="修改完源码之后重新编译"><a href="#修改完源码之后重新编译" class="headerlink" title="修改完源码之后重新编译"></a>修改完源码之后重新编译</h6><blockquote>
+<p><code>source build/envsetup.sh</code></p>
+<p><code>lunch</code>执行后选择要编译的系统版本</p>
+<p><code>time make -x</code>多给几个线程编译会快点</p>
+</blockquote>
+<h6 id="编译完成刷入手机"><a href="#编译完成刷入手机" class="headerlink" title="编译完成刷入手机"></a>编译完成刷入手机</h6><p>在编译的过程中，再来看一下art_method.h中JNI的注册</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231021215743693.png" class="" title="image-20231021215743693">
+
+<ul>
+<li>通过注释我们就可以知道JNI函数最终是注册到了这里</li>
+<li>不过这个地方在不同系统版本的实现会有所不同，这个我们在HOOK的时候要注意</li>
+</ul>
+<blockquote>
+<p>例如：</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231021215449812.png" class="" title="image-20231021215449812">
+
+<center>android-6.0.1</center>
+
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231021215608057.png" class="" title="image-20231021215608057">
+
+<center>android-14.0.0_r2</center>
+</blockquote>
+<h6 id="运行我们的demo"><a href="#运行我们的demo" class="headerlink" title="运行我们的demo"></a>运行我们的demo</h6><img lazyload="" src="/images/loading.svg" data-src="/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231022001832599.png" class="" title="image-20231022001832599">
+
+<blockquote>
+<ul>
+<li><p>可以看到我们标记的第一部分所有绑定的函数都是同一个函数地址：所以这很可能是一个函数跳转表之类的东西</p>
+</li>
+<li><p>懒绑定：对于静态函数来说，第一次编译的时候都绑定在了跳转表的地址，第二次调用的时候才从跳转表查询要调用的函数并绑定，等再次调用的时候就不需要重复查询了。</p>
+</li>
+<li><p>这里面除了标红的onCreate、newObject之外都是静态函数</p>
+</li>
+<li><p>第二部分是我们动态绑定的函数，地址在我们插入LOG的几个位置都打印出来了，从地址长度可以看出来是运行在64位的设备上</p>
+</li>
+</ul>
+</blockquote>
+<h6 id="再拿一个加壳的APP跑一下试试"><a href="#再拿一个加壳的APP跑一下试试" class="headerlink" title="再拿一个加壳的APP跑一下试试"></a>再拿一个加壳的APP跑一下试试</h6><p>执行完过滤一下结果，可以看到加载的函数地址也都打印出来了</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231022161955335.png" class="" title="image-20231022161955335">
+
+<ul>
+<li><strong>说明我们HOOK是成功的</strong></li>
+</ul>
+<hr>
+<h4 id="接下来了解一些so加载过程中，函数执行时机的问题"><a href="#接下来了解一些so加载过程中，函数执行时机的问题" class="headerlink" title="接下来了解一些so加载过程中，函数执行时机的问题"></a>接下来了解一些so加载过程中，函数执行时机的问题</h4><p>在Android里面有两个函数可以加载so文件：</p>
+<ul>
+<li><code>System.loadLibrary</code>，参数只需要传入文件名即可，它内部会自动拼接文件名</li>
+<li><code>System.load</code>，参数需要传入绝对路径</li>
+</ul>
+<p>在项目中<code>JNI_OnLoad</code>函数是执行比较早的，要早于大部分JNI函数的执行时机</p>
+<p>但是在它之前还有两类函数（INIT和INIT_ARRAY）要比它更早执行</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231022183100163.png" class="" title="image-20231022183100163">
+
+<blockquote>
+<p><code>INIT_ARRAY</code>默认是按定义的顺序执行，也可以通过给<code>constructor</code>传入参数，手动设置它的执行顺序</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231022185024397.png" class="" title="image-20231022185024397">
+</blockquote>
+<h6 id="分析编译后生成的apk文件"><a href="#分析编译后生成的apk文件" class="headerlink" title="分析编译后生成的apk文件"></a>分析编译后生成的apk文件</h6><blockquote>
+<p>解压apk分析里面的so文件</p>
+<p>用Ubuntu自带的readelf工具，可以解析so文件</p>
+<pre><code>tom@ubuntu:~/Downloads$ readelf -d libreflectiontest.so 
+
+Dynamic section at offset 0x4bb30 contains 31 entries:
+  Tag        Type                         Name/Value
+ 0x0000000000000001 (NEEDED)             Shared library: [libandroid.so]
+ 0x0000000000000001 (NEEDED)             Shared library: [liblog.so]
+ 0x0000000000000001 (NEEDED)             Shared library: [libm.so]
+ 0x0000000000000001 (NEEDED)             Shared library: [libdl.so]
+ 0x0000000000000001 (NEEDED)             Shared library: [libc.so]
+ 0x000000000000000e (SONAME)             Library soname: [libreflectiontest.so]
+ 0x000000000000001e (FLAGS)              BIND_NOW
+ 0x000000006ffffffb (FLAGS_1)            Flags: NOW
+ 0x0000000000000007 (RELA)               0xb880
+ 0x0000000000000008 (RELASZ)             34992 (bytes)
+ 0x0000000000000009 (RELAENT)            24 (bytes)
+ 0x000000006ffffff9 (RELACOUNT)          992
+ 0x0000000000000017 (JMPREL)             0x14130
+ 0x0000000000000002 (PLTRELSZ)           3912 (bytes)
+ 0x0000000000000003 (PLTGOT)             0x4ce38
+ 0x0000000000000014 (PLTREL)             RELA
+ 0x0000000000000006 (SYMTAB)             0x2f8
+ 0x000000000000000b (SYMENT)             24 (bytes)
+ 0x0000000000000005 (STRTAB)             0x6720
+ 0x000000000000000a (STRSZ)              20829 (bytes)
+ 0x000000006ffffef5 (GNU_HASH)           0x4408
+ 0x0000000000000004 (HASH)               0x5328
+ 0x0000000000000019 (INIT_ARRAY)         0x4cb10	// 这个是我们定义的INIT_ARRAY函数
+ 0x000000000000001b (INIT_ARRAYSZ)       32 (bytes)
+ 0x000000000000001a (FINI_ARRAY)         0x4cb00
+ 0x000000000000001c (FINI_ARRAYSZ)       16 (bytes)
+ 0x000000000000000c (INIT)               0x2146c	// 在IDA里面直接可以搜索INIT函数的位置
+ 0x000000006ffffff0 (VERSYM)             0x3ec8
+ 0x000000006ffffffe (VERNEED)            0x43c4
+ 0x000000006fffffff (VERNEEDNUM)         2
+ 0x0000000000000000 (NULL)               0x0
+</code></pre>
+<p>在IDA里面按G搜索<code>0x2146c</code>这个地址就可以跳转到INIT函数处</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231022191116590.png" class="" title="image-20231022191116590">
+
+<p>再来搜索一下<code>INIT_ARRAY</code>函数</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231022191938961.png" class="" title="image-20231022191938961">
+
+<ul>
+<li><p>这边的几个函数就是我们之前按顺序定义的initarray_3、initarray_2、initarray_1函数</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231022192112073.png" class="" title="image-20231022192112073"></li>
+</ul>
+</blockquote>
+<p>以后我们如果要对一些加壳的SO文件进行分析的时候需要断在_INIT之前就可以用上面这种方法下断点，断下来之后开始动态调试</p>
+
+        </div>
+
+        
+            <div class="post-copyright-info">
+                <div class="article-copyright-info-container">
+    <ul>
+        <li><strong>标题:</strong> Dalvik/ART下动态注册原理追踪</li>
+        <li><strong>作者:</strong> xiaoeryu</li>
+        <li><strong>创建于
+                :</strong> 2023-10-21 22:04:43</li>
+        
+            <li>
+                <strong>更新于
+                    :</strong> 2023-10-22 20:04:27
+            </li>
+        
+        <li>
+            <strong>链接:</strong> https://github.com/xiaoeryu/2023/10/21/Dalvik-ART下动态注册原理追踪/
+        </li>
+        <li>
+            <strong>
+                版权声明:
+            </strong>
+            
+            本文章采用 <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">CC BY-NC-SA 4.0</a> 进行许可。
+            
+
+        </li>
+    </ul>
+</div>
+
+            </div>
+        
+
+        
+            <ul class="post-tags-box">
+                
+                    <li class="tag-item">
+                        <a href="/tags/JNI%E5%87%BD%E6%95%B0%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E4%B8%8E%E8%BF%BD%E8%B8%AA/">#JNI函数注册原理与追踪</a>&nbsp;
+                    </li>
+                
+                    <li class="tag-item">
+                        <a href="/tags/%E6%BA%90%E7%A0%81%E4%BF%AE%E6%94%B9/">#源码修改</a>&nbsp;
+                    </li>
+                
+            </ul>
+        
+
+        
+
+        
+            <div class="article-nav">
+                
+                
+                    <div class="article-next">
+                        <a class="next"
+                        rel="next"
+                        href="/2023/10/17/NDK%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86-%E5%BC%95%E7%94%A8/"
+                        >
+                            <span class="title flex justify-center items-center">
+                                <span class="post-nav-title-item">NDK内存管理-引用</span>
+                                <span class="post-nav-item">下一篇</span>
+                            </span>
+                            <span class="right arrow-icon flex justify-center items-center">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+
+        
+            <div class="comment-container">
+                <div class="comments-container pjax">
+    <div id="comment-anchor"></div>
+    <div class="comment-area-title">
+        <i class="fa-solid fa-comments"></i>&nbsp;评论
+    </div>
+    
+
+        
+            
+ 
+    <div id="waline"></div>
+    <script type="module"  data-swup-reload-script>
+        import { init } from '/js/libs/waline.mjs';
+
+        function loadWaline() {
+            init({
+                el: '#waline',
+                serverURL: 'https://example.example.com',
+                lang: 'zh-CN',
+                dark: 'body[class~="dark-mode"]',
+                requiredMeta: ['nick','mail'], // cannot customize by theme config, change it yourself
+            });
+        }
+
+        if ('true') {
+            const loadWalineTimeout = setTimeout(() => {
+                loadWaline();
+                clearTimeout(loadWalineTimeout);
+            }, 1000);
+        } else {
+            window.addEventListener('DOMContentLoaded', loadWaline);
+        }
+        
+    </script>
+
+
+
+        
+    
+</div>
+
+            </div>
+        
+    </div>
+
+    
+        <div class="toc-content-container">
+            <div class="post-toc-wrap">
+    <div class="post-toc">
+        <div class="toc-title">此页目录</div>
+        <div class="page-title">Dalvik/ART下动态注册原理追踪</div>
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%9D%99%E6%80%81%E6%B3%A8%E5%86%8C%E4%B8%8E%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C"><span class="nav-text">静态注册与动态注册</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Dalvik%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E7%9A%84%E5%8E%9F%E7%90%86"><span class="nav-text">Dalvik下动态注册的原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E7%9A%84%E5%8E%9F%E7%90%86"><span class="nav-text">ART下动态注册的原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E6%BA%90%E7%A0%81HOOK"><span class="nav-text">修改源码HOOK</span></a></li></ol></li></ol></li></ol>
+
+    </div>
+</div>
+        </div>
+    
+</div>
+
+
+
+                
+
+            </div>
+
+            
+
+        </div>
+
+        <div class="main-content-footer">
+            <footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
+    <div class="info-container py-3 text-center">
+        
+        <div class="text-center">
+            &copy;
+            
+              <span>2022</span>
+              -
+            
+            2023&nbsp;&nbsp;<i class="fa-solid fa-heart fa-beat" style="--fa-animation-duration: 0.5s; color: #f54545"></i>&nbsp;&nbsp;<a href="/">xiaoeryu</a>
+        </div>
+        
+            <script data-swup-reload-script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            <div class="relative text-center lg:absolute lg:right-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-right">
+                
+                    <span id="busuanzi_container_site_uv" class="lg:!block">
+                        <span class="text-sm">访问人数</span>
+                        <span id="busuanzi_value_site_uv"></span>
+                    </span>
+                
+                
+                    <span id="busuanzi_container_site_pv" class="lg:!block">
+                        <span class="text-sm">总访问量</span>
+                        <span id="busuanzi_value_site_pv"></span>
+                    </span>
+                
+            </div>
+        
+        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
+            <span class="lg:block text-sm">由 <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a> 驱动</span>
+            <span class="text-sm lg:block">主题&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.5.0</a></span>
+        </div>
+        
+        
+            <div>
+                博客已运行 <span class="odometer" id="runtime_days" ></span> 天 <span class="odometer" id="runtime_hours"></span> 小时 <span class="odometer" id="runtime_minutes"></span> 分钟 <span class="odometer" id="runtime_seconds"></span> 秒
+            </div>
+        
+        
+            <script data-swup-reload-script>
+                try {
+                    function odometer_init() {
+                    const elements = document.querySelectorAll('.odometer');
+                    elements.forEach(el => {
+                        new Odometer({
+                            el,
+                            format: '( ddd).dd',
+                            duration: 200
+                        });
+                    });
+                    }
+                    odometer_init();
+                } catch (error) {}
+            </script>
+        
+        
+        
+    </div>  
+</footer>
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="article-tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="right-bottom-tools page-aside-toggle">
+                <i class="fa-regular fa-outdent"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+            <li class="go-comment">
+                <i class="fa-regular fa-comments"></i>
+            </li>
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-side-tools-container">
+        <div class="side-tools-container">
+    <ul class="hidden-tools-list">
+        <li class="right-bottom-tools tool-font-adjust-plus flex justify-center items-center">
+            <i class="fa-regular fa-magnifying-glass-plus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-font-adjust-minus flex justify-center items-center">
+            <i class="fa-regular fa-magnifying-glass-minus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
+            <i class="fa-regular fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+
+        <li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
+            <i class="fa-regular fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="visible-tools-list">
+        <li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
+            <i class="fa-regular fa-cog fa-spin"></i>
+        </li>
+        
+            <li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
+                <i class="arrow-up fas fa-arrow-up"></i>
+                <span class="percent"></span>
+            </li>
+        
+        
+    </ul>
+</div>
+
+    </div>
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+
+</main>
+
+
+    
+<script src="/js/libs/Swup.min.js"></script>
+
+<script src="/js/libs/SwupSlideTheme.min.js"></script>
+
+<script src="/js/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="/js/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="/js/libs/SwupScrollPlugin.min.js"></script>
+
+<script src="/js/libs/SwupPreloadPlugin.min.js"></script>
+
+<script>
+    const swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+            new SwupPreloadPlugin(),
+        ],
+        containers: ["#swup"],
+    });
+</script>
+
+
+
+
+
+
+
+<script src="/js/tools/imageViewer.js" type="module"></script>
+
+<script src="/js/utils.js" type="module"></script>
+
+<script src="/js/main.js" type="module"></script>
+
+<script src="/js/layouts/navbarShrink.js" type="module"></script>
+
+<script src="/js/tools/scrollTopBottom.js" type="module"></script>
+
+<script src="/js/tools/lightDarkSwitch.js" type="module"></script>
+
+<script src="/js/layouts/categoryList.js" type="module"></script>
+
+
+
+
+
+    
+<script src="/js/tools/codeBlock.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/layouts/lazyload.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/tools/runtime.js"></script>
+
+    
+<script src="/js/libs/odometer.min.js"></script>
+
+    
+<link rel="stylesheet" href="/assets/odometer-theme-minimal.css">
+
+
+
+
+  
+<script src="/js/libs/Typed.min.js"></script>
+
+  
+<script src="/js/plugins/typed.js" type="module"></script>
+
+
+
+
+
+
+
+<div class="post-scripts" data-swup-reload-script>
+    
+        
+<script src="/js/libs/anime.min.js"></script>
+
+        
+<script src="/js/tools/tocToggle.js" type="module"></script>
+
+<script src="/js/layouts/toc.js" type="module"></script>
+
+<script src="/js/plugins/tabs.js" type="module"></script>
+
+    
+</div>
+
+
+</body>
+</html>
