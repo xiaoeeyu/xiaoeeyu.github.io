@@ -18,12 +18,12 @@
     <meta name="googlebot" content="index,follow">
     <meta name="revisit-after" content="1 days">
     
-        <meta name="description" content="在之前的JNI代码中我们都是使用的静态注册，使用extern &quot;C&quot;来编译，这样的代码在编译之后的so文件中仍然会保留原函数名，对APK的安全性有一定影响。 在下面的代码中我们将代码改为静态注册，比较一下和静态注册有何不同。 以及对于改为动态注册的函数我们应该如何去追踪。">
+        <meta name="description" content="在之前的JNI代码中我们都是使用的静态注册，使用extern &quot;C&quot;来编译，这样的代码在编译之后的so文件中仍然会保留原函数名，对APK的安全性有一定影响。 接下来我们尝试一下将静态注册的JNI函数改为动态注册，比较一下和之前有何不同。 以及对于改为动态注册的函数我们应该如何去追踪。">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Dalvik&#x2F;ART下动态注册原理追踪">
 <meta property="og:url" content="https://xiaoeeyu.github.io/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/index.html">
 <meta property="og:site_name" content="xiaoeryu">
-<meta property="og:description" content="在之前的JNI代码中我们都是使用的静态注册，使用extern &quot;C&quot;来编译，这样的代码在编译之后的so文件中仍然会保留原函数名，对APK的安全性有一定影响。 在下面的代码中我们将代码改为静态注册，比较一下和静态注册有何不同。 以及对于改为动态注册的函数我们应该如何去追踪。">
+<meta property="og:description" content="在之前的JNI代码中我们都是使用的静态注册，使用extern &quot;C&quot;来编译，这样的代码在编译之后的so文件中仍然会保留原函数名，对APK的安全性有一定影响。 接下来我们尝试一下将静态注册的JNI函数改为动态注册，比较一下和之前有何不同。 以及对于改为动态注册的函数我们应该如何去追踪。">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231019153051665.png">
 <meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231021221027648.png">
@@ -59,7 +59,7 @@
 <meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231022191938961.png">
 <meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231022192112073.png">
 <meta property="article:published_time" content="2023-10-21T14:04:43.000Z">
-<meta property="article:modified_time" content="2023-10-22T12:04:27.447Z">
+<meta property="article:modified_time" content="2023-10-23T07:04:04.715Z">
 <meta property="article:author" content="xiaoeryu">
 <meta property="article:tag" content="JNI函数注册原理与追踪">
 <meta property="article:tag" content="源码修改">
@@ -274,8 +274,8 @@
     
         <span class="article-date article-meta-item">
             <i class="fa-regular fa-wrench"></i>&nbsp;
-            <span class="desktop">2023-10-22 20:04:27</span>
-            <span class="mobile">2023-10-22 20:04:27</span>
+            <span class="desktop">2023-10-23 15:04:04</span>
+            <span class="mobile">2023-10-23 15:04:04</span>
             <span class="hover-info">更新</span>
         </span>
     
@@ -334,19 +334,24 @@
 
         <div class="article-content markdown-body">
             <p>在之前的JNI代码中我们都是使用的静态注册，使用<code>extern "C"</code>来编译，这样的代码在编译之后的so文件中仍然会保留原函数名，对APK的安全性有一定影响。</p>
-<p>在下面的代码中我们将代码改为静态注册，比较一下和静态注册有何不同。</p>
+<p>接下来我们尝试一下将静态注册的JNI函数改为动态注册，比较一下和之前有何不同。</p>
 <p>以及对于改为动态注册的函数我们应该如何去追踪。</p>
 <span id="more"></span>
 
 <h1 id="静态注册与动态注册"><a href="#静态注册与动态注册" class="headerlink" title="静态注册与动态注册"></a>静态注册与动态注册</h1><p>JNI函数被调用前，必须要完成Java与so的绑定：</p>
 <ul>
-<li>被动（静态）：由Dalvik/ART虚拟机在调用前查找并完成地址的绑定</li>
+<li>被动（静态）：由Dalvik/ART虚拟机在调用前查找并完成地址的绑定<ul>
+<li>静态函数名规则：Java_包名_类名_方法名</li>
+<li>优点：函数名简单明了</li>
+<li>缺点：名字过长、查抓效率不高、安全性降低</li>
+</ul>
+</li>
 <li>主动（动态）：由APP自己完成地址的绑定</li>
 </ul>
 <p>静态注册</p>
 <img lazyload="" src="/images/loading.svg" data-src="/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231019153051665.png" class="" title="image-20231019153051665">
 
-<p><mark>静态注册的so文件</mark></p>
+<p><mark>反编译静态注册的so文件</mark></p>
 <img lazyload="" src="/images/loading.svg" data-src="/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231021221027648.png" class="" title="image-20231021221027648">
 
 <ul>
@@ -654,6 +659,7 @@ Dynamic section at offset 0x4bb30 contains 31 entries:
 </ul>
 </blockquote>
 <p>以后我们如果要对一些加壳的SO文件进行分析的时候需要断在_INIT之前就可以用上面这种方法下断点，断下来之后开始动态调试</p>
+<p><a class="link" target="_blank" rel="noopener" href="https://github.com/xiaoeeyu/JNI_method_track">代码地址 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
 
         </div>
 
@@ -668,7 +674,7 @@ Dynamic section at offset 0x4bb30 contains 31 entries:
         
             <li>
                 <strong>更新于
-                    :</strong> 2023-10-22 20:04:27
+                    :</strong> 2023-10-23 15:04:04
             </li>
         
         <li>
