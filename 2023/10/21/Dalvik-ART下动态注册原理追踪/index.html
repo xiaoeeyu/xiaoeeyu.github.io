@@ -20,7 +20,7 @@
     
         <meta name="description" content="在之前的JNI代码中我们都是使用的静态注册，使用extern &quot;C&quot;来编译，这样的代码在编译之后的so文件中仍然会保留原函数名，对APK的安全性有一定影响。 接下来我们尝试一下将静态注册的JNI函数改为动态注册，比较一下和之前有何不同。 以及对于改为动态注册的函数我们应该如何去追踪。">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Dalvik&#x2F;ART下动态注册原理追踪">
+<meta property="og:title" content="Dalvik&#x2F;ART下JNI方法的动态注册原理与追踪">
 <meta property="og:url" content="https://xiaoeeyu.github.io/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/index.html">
 <meta property="og:site_name" content="xiaoeryu">
 <meta property="og:description" content="在之前的JNI代码中我们都是使用的静态注册，使用extern &quot;C&quot;来编译，这样的代码在编译之后的so文件中仍然会保留原函数名，对APK的安全性有一定影响。 接下来我们尝试一下将静态注册的JNI函数改为动态注册，比较一下和之前有何不同。 以及对于改为动态注册的函数我们应该如何去追踪。">
@@ -59,7 +59,7 @@
 <meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231022191938961.png">
 <meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231022192112073.png">
 <meta property="article:published_time" content="2023-10-21T14:04:43.000Z">
-<meta property="article:modified_time" content="2023-10-23T07:04:04.715Z">
+<meta property="article:modified_time" content="2023-10-23T15:30:42.341Z">
 <meta property="article:author" content="xiaoeryu">
 <meta property="article:tag" content="JNI函数注册原理与追踪">
 <meta property="article:tag" content="源码修改">
@@ -76,7 +76,7 @@
     
     <title>
         
-            Dalvik/ART下动态注册原理追踪 -
+            Dalvik/ART下JNI方法的动态注册原理与追踪 -
         
         xiaoeryu
     </title>
@@ -245,7 +245,7 @@
 
         <div class="article-title">
             
-                <h1 class="article-title-regular">Dalvik/ART下动态注册原理追踪</h1>
+                <h1 class="article-title-regular">Dalvik/ART下JNI方法的动态注册原理与追踪</h1>
             
             </div>
             
@@ -274,8 +274,8 @@
     
         <span class="article-date article-meta-item">
             <i class="fa-regular fa-wrench"></i>&nbsp;
-            <span class="desktop">2023-10-23 15:04:04</span>
-            <span class="mobile">2023-10-23 15:04:04</span>
+            <span class="desktop">2023-10-23 23:30:42</span>
+            <span class="mobile">2023-10-23 23:30:42</span>
             <span class="hover-info">更新</span>
         </span>
     
@@ -432,14 +432,14 @@
 <pre><code class="C++">static bool dvmRegisterJNIMethod(ClassObject* clazz, const char* methodName,
                                  const char* signature, void* fnPtr)
 {
-
+  
     ...
 
 
     Method* method = dvmFindDirectMethodByDescriptor(clazz, methodName, signature);	// 这个method表示Java函数在Dalvik当中对应的结构体
-
+    
     ...
-
+    
     if (method-&gt;nativeFunc != dvmResolveNativeMethod) {
         /* this is allowed, but unusual */
         /* 这里表示允许这个JNI函数注册两次，不过不常见*/
@@ -538,7 +538,7 @@
 <blockquote>
 <p><mark><strong>以上就是ART下一个函数的动态注册流程</strong></mark></p>
 </blockquote>
-<h3 id="修改源码HOOK"><a href="#修改源码HOOK" class="headerlink" title="修改源码HOOK"></a>修改源码HOOK</h3><p>接下来我们在这些流程中添加一些log信息</p>
+<h3 id="修改源码HOOK"><a href="#修改源码HOOK" class="headerlink" title="修改源码HOOK"></a>修改源码HOOK</h3><p>接下来我们在这些流程中添加一些log信息，追踪动态注册的函数</p>
 <blockquote>
 <ol>
 <li>RegisterNatives</li>
@@ -593,6 +593,7 @@
 
 <ul>
 <li><strong>说明我们HOOK是成功的</strong></li>
+<li>但是设备会特别卡，应该在哪里过滤一下会好点</li>
 </ul>
 <hr>
 <h4 id="接下来了解一些so加载过程中，函数执行时机的问题"><a href="#接下来了解一些so加载过程中，函数执行时机的问题" class="headerlink" title="接下来了解一些so加载过程中，函数执行时机的问题"></a>接下来了解一些so加载过程中，函数执行时机的问题</h4><p>在Android里面有两个函数可以加载so文件：</p>
@@ -667,14 +668,14 @@ Dynamic section at offset 0x4bb30 contains 31 entries:
             <div class="post-copyright-info">
                 <div class="article-copyright-info-container">
     <ul>
-        <li><strong>标题:</strong> Dalvik/ART下动态注册原理追踪</li>
+        <li><strong>标题:</strong> Dalvik/ART下JNI方法的动态注册原理与追踪</li>
         <li><strong>作者:</strong> xiaoeryu</li>
         <li><strong>创建于
                 :</strong> 2023-10-21 22:04:43</li>
         
             <li>
                 <strong>更新于
-                    :</strong> 2023-10-23 15:04:04
+                    :</strong> 2023-10-23 23:30:42
             </li>
         
         <li>
@@ -786,7 +787,7 @@ Dynamic section at offset 0x4bb30 contains 31 entries:
             <div class="post-toc-wrap">
     <div class="post-toc">
         <div class="toc-title">此页目录</div>
-        <div class="page-title">Dalvik/ART下动态注册原理追踪</div>
+        <div class="page-title">Dalvik/ART下JNI方法的动态注册原理与追踪</div>
         <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#%E9%9D%99%E6%80%81%E6%B3%A8%E5%86%8C%E4%B8%8E%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C"><span class="nav-text">静态注册与动态注册</span></a><ol class="nav-child"><li class="nav-item nav-level-2"><a class="nav-link" href="#Dalvik%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E7%9A%84%E5%8E%9F%E7%90%86"><span class="nav-text">Dalvik下动态注册的原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E7%9A%84%E5%8E%9F%E7%90%86"><span class="nav-text">ART下动态注册的原理</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E6%BA%90%E7%A0%81HOOK"><span class="nav-text">修改源码HOOK</span></a></li></ol></li></ol></li></ol>
 
     </div>
