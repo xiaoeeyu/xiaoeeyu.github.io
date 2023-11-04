@@ -59,7 +59,7 @@
 <meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231022191938961.png">
 <meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/21/Dalvik-ART%E4%B8%8B%E5%8A%A8%E6%80%81%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E8%BF%BD%E8%B8%AA/image-20231022192112073.png">
 <meta property="article:published_time" content="2023-10-21T14:04:43.000Z">
-<meta property="article:modified_time" content="2023-10-23T15:30:42.341Z">
+<meta property="article:modified_time" content="2023-11-04T03:58:51.630Z">
 <meta property="article:author" content="xiaoeryu">
 <meta property="article:tag" content="JNI函数注册原理与追踪">
 <meta property="article:tag" content="源码修改">
@@ -274,8 +274,8 @@
     
         <span class="article-date article-meta-item">
             <i class="fa-regular fa-wrench"></i>&nbsp;
-            <span class="desktop">2023-10-23 23:30:42</span>
-            <span class="mobile">2023-10-23 23:30:42</span>
+            <span class="desktop">2023-11-04 11:58:51</span>
+            <span class="mobile">2023-11-04 11:58:51</span>
             <span class="hover-info">更新</span>
         </span>
     
@@ -432,14 +432,14 @@
 <pre><code class="C++">static bool dvmRegisterJNIMethod(ClassObject* clazz, const char* methodName,
                                  const char* signature, void* fnPtr)
 {
-  
+    
     ...
 
 
     Method* method = dvmFindDirectMethodByDescriptor(clazz, methodName, signature);	// 这个method表示Java函数在Dalvik当中对应的结构体
-    
+        
     ...
-    
+        
     if (method-&gt;nativeFunc != dvmResolveNativeMethod) {
         /* this is allowed, but unusual */
         /* 这里表示允许这个JNI函数注册两次，不过不常见*/
@@ -675,7 +675,7 @@ Dynamic section at offset 0x4bb30 contains 31 entries:
         
             <li>
                 <strong>更新于
-                    :</strong> 2023-10-23 23:30:42
+                    :</strong> 2023-11-04 11:58:51
             </li>
         
         <li>
@@ -714,6 +714,21 @@ Dynamic section at offset 0x4bb30 contains 31 entries:
 
         
             <div class="article-nav">
+                
+                    <div class="article-prev">
+                        <a class="prev"
+                        rel="prev"
+                        href="/2023/11/04/%E7%9C%8B%E9%9B%AA2W%E8%AF%BE-Frida%E5%BC%80%E5%8F%91%E5%92%8C%E8%B0%83%E8%AF%95%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/"
+                        >
+                            <span class="left arrow-icon flex justify-center items-center">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </span>
+                            <span class="title flex justify-center items-center">
+                                <span class="post-nav-title-item">看雪2W课-Frida开发和调试环境搭建</span>
+                                <span class="post-nav-item">上一篇</span>
+                            </span>
+                        </a>
+                    </div>
                 
                 
                     <div class="article-next">
