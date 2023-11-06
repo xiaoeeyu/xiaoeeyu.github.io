@@ -29,8 +29,10 @@
 <meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/04/%E7%9C%8B%E9%9B%AA2W%E8%AF%BE-Frida%E5%BC%80%E5%8F%91%E5%92%8C%E8%B0%83%E8%AF%95%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20231030182519018.png">
 <meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/04/%E7%9C%8B%E9%9B%AA2W%E8%AF%BE-Frida%E5%BC%80%E5%8F%91%E5%92%8C%E8%B0%83%E8%AF%95%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20231030182536370.png">
 <meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/04/%E7%9C%8B%E9%9B%AA2W%E8%AF%BE-Frida%E5%BC%80%E5%8F%91%E5%92%8C%E8%B0%83%E8%AF%95%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20231104114206505.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/04/%E7%9C%8B%E9%9B%AA2W%E8%AF%BE-Frida%E5%BC%80%E5%8F%91%E5%92%8C%E8%B0%83%E8%AF%95%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20231106204506990.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/04/%E7%9C%8B%E9%9B%AA2W%E8%AF%BE-Frida%E5%BC%80%E5%8F%91%E5%92%8C%E8%B0%83%E8%AF%95%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20231107003447785.png">
 <meta property="article:published_time" content="2023-11-04T02:42:31.000Z">
-<meta property="article:modified_time" content="2023-11-04T12:23:51.225Z">
+<meta property="article:modified_time" content="2023-11-06T16:48:27.280Z">
 <meta property="article:author" content="xiaoeryu">
 <meta property="article:tag" content="Frida逆向与利用自动化">
 <meta name="twitter:card" content="summary">
@@ -244,8 +246,8 @@
     
         <span class="article-date article-meta-item">
             <i class="fa-regular fa-wrench"></i>&nbsp;
-            <span class="desktop">2023-11-04 20:23:51</span>
-            <span class="mobile">2023-11-04 20:23:51</span>
+            <span class="desktop">2023-11-07 00:48:27</span>
+            <span class="mobile">2023-11-07 00:48:27</span>
             <span class="hover-info">更新</span>
         </span>
     
@@ -309,7 +311,7 @@
 <p>检查一下时间如果不对的话也修改一下<code>sudo dpkg-reconfigure tzdata</code></p>
 </blockquote>
 <h4 id="安装配置clash"><a href="#安装配置clash" class="headerlink" title="安装配置clash"></a>安装配置clash</h4><p>这里选择安装<a class="link" target="_blank" rel="noopener" href="https://github.com/Fndroid/clash_for_windows_pkg/releases">桌面版 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
-<p><mark>前两天clash开发的被抓了，回头可能还得换v2ray</mark></p>
+<p><mark>前两天clash删库了，回头可能还得换v2ray</mark></p>
 <p>下载解压到<code>/opt/clash/</code>目录下运行</p>
 <p><code>./cfw</code></p>
 <img lazyload="" src="/images/loading.svg" data-src="/2023/11/04/%E7%9C%8B%E9%9B%AA2W%E8%AF%BE-Frida%E5%BC%80%E5%8F%91%E5%92%8C%E8%B0%83%E8%AF%95%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20231027132822340.png" class="" title="image-20231027132822340">
@@ -326,10 +328,12 @@
 <p>export https_proxy=<a class="link" target="_blank" rel="noopener" href="http://127.0.0.1:7890/">http://127.0.0.1:7890 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
 </blockquote>
 <p><strong>kali网络配置好了，开始配置Frida开发调试环境</strong></p>
-<h2 id="配置调试环境"><a href="#配置调试环境" class="headerlink" title="配置调试环境"></a>配置调试环境</h2><p>依次执行下列命令，一个一个执行</p>
+<h2 id="配置调试环境"><a href="#配置调试环境" class="headerlink" title="配置调试环境"></a>配置调试环境</h2><p>依次执行下列命令，一个一个执行。安装软件的时候切换到root权限安装</p>
 <blockquote>
 <p>更新apt</p>
-<p><code>apt update</code><br>安装中文字体<br><code>apt install xfonts-intl-chinese</code><br>安装微软雅黑<br><code>apt install ttf-wqy-microhei</code><br>安装htop性能监测工具<br><code>apt install htop</code><br>安装网络检测工具，jnettop有时需要将命令行全屏才可以用<br><code>apt install jnettop</code></p>
+<p><code>apt update</code></p>
+<p><code>apt upgrade</code></p>
+<p>安装中文字体<br><code>apt install xfonts-intl-chinese</code><br>安装微软雅黑<br><code>apt install ttf-wqy-microhei</code><br>安装htop性能监测工具<br><code>apt install htop</code><br>安装网络检测工具，jnettop有时需要将命令行全屏才可以用<br><code>apt install jnettop</code></p>
 </blockquote>
 <p>设置代理</p>
 <p><code>nano /etc/proxychains4.conf</code></p>
@@ -345,22 +349,36 @@
 </blockquote>
 <p>增加一行</p>
 <blockquote>
-<p>socks5 {IP} 1080 #这里是给jnettop使用，如果需要VPN代理，可以再下面依次写入，会自动切换不能使用的代理。clash的话不用设置</p>
+<p>socks5 {IP} 1080 #这里是给jnettop使用</p>
+<p>如果需要VPN代理，可以再下面依次写入，会自动切换不能使用的代理。clash的话不用设置</p>
 </blockquote>
 <h6 id="安装pyenv"><a href="#安装pyenv" class="headerlink" title="安装pyenv"></a>安装pyenv</h6><p>推荐自动化安装</p>
 <p><code>curl https://pyenv.run | bash</code></p>
 <p>执行完之后还需要手动配置一下环境变量</p>
 <blockquote>
-<p>加入到环境变量<code>nano ~/.bashrc</code></p>
-<pre><code>export PYENV_ROOT="$HOME/.pyenv"
-command -v pyenv &gt;/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"
-eval "$(pyenv init -)"
-
-eval "$(pyenv virtualenv-init -)"
+<p>加入环境变量<code>nano ~/.bashrc</code></p>
+<pre><code>echo 'export PYENV_ROOT="$HOME/.pyenv"' &gt;&gt; ~/.bashrc
+echo 'command -v pyenv &gt;/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"' &gt;&gt; ~/.bashrc
+echo 'eval "$(pyenv init -)"' &gt;&gt; ~/.bashrc
+</code></pre>
+<p>加入环境变量<code>nano ~/.profile</code></p>
+<pre><code>echo 'export PYENV_ROOT="$HOME/.pyenv"' &gt;&gt; ~/.profile
+echo 'command -v pyenv &gt;/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"' &gt;&gt; ~/.profile
+echo 'eval "$(pyenv init -)"' &gt;&gt; ~/.profile
 </code></pre>
 <p>添加完成之后执行</p>
-<p><code>source ~/.bashrc</code></p>
+<p><code>source ~/.profile</code></p>
 <p><code>exec $SHELL</code></p>
+<ol>
+<li><p>检查您的PATH中：<code>pyenv</code></p>
+<pre><code>which pyenv
+</code></pre>
+</li>
+<li><p>检查 pyenv 的 shims 目录是否在您的 PATH 中：</p>
+<pre><code>echo $PATH | grep --color=auto "$(pyenv root)/shims"
+</code></pre>
+</li>
+</ol>
 <ul>
 <li><p>pyenv的常用命令</p>
 <blockquote>
@@ -381,37 +399,65 @@ eval "$(pyenv virtualenv-init -)"
 <h3 id="安装VSCODE"><a href="#安装VSCODE" class="headerlink" title="安装VSCODE"></a>安装VSCODE</h3><blockquote>
 <p><strong>导入 Microsoft GPG 密钥：</strong> 运行以下命令导入 Microsoft 的 GPG 密钥：</p>
 <pre><code>wget -qO- https://packages.microsoft.com/keys/microsoft.asc | gpg --dearmor &gt; microsoft.gpg
-sudo mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
+mv microsoft.gpg /etc/apt/trusted.gpg.d/microsoft.gpg
 </code></pre>
 <p><strong>添加 VSCode 存储库：</strong> 运行以下命令添加 VSCode 存储库：</p>
-<pre><code>sudo sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main" &gt; /etc/apt/sources.list.d/vscode.list'
+<pre><code>sh -c 'echo "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main" &gt; /etc/apt/sources.list.d/vscode.list'
 </code></pre>
 <p><strong>安装 VSCode：</strong> 更新包列表并安装 VSCode：</p>
-<pre><code>sudo apt-get update
-sudo apt-get install code
+<pre><code>apt update
+apt install code
 </code></pre>
 <p><strong>运行 VSCode：</strong> 安装完成后，你可以通过命令行运行 <code>code</code> 或者在应用程序菜单中找到 Visual Studio Code 并启动它。</p>
 </blockquote>
-<h3 id="安装frida自动提示补全"><a href="#安装frida自动提示补全" class="headerlink" title="安装frida自动提示补全"></a>安装frida自动提示补全</h3><pre><code>git clone git://github.com/oleavr/frida-agent-example.git
+<h3 id="安装frida自动提示补全"><a href="#安装frida自动提示补全" class="headerlink" title="安装frida自动提示补全"></a>安装frida自动提示补全</h3><pre><code>git clone https://github.com/oleavr/frida-agent-example.git
 cd frida-agent-example/
 npm install
-frida -U -f com.example.android --no-pause -l _agent.js
 </code></pre>
-<h3 id="安装frida、objection、frida-dexdump"><a href="#安装frida、objection、frida-dexdump" class="headerlink" title="安装frida、objection、frida-dexdump"></a>安装frida、objection、frida-dexdump</h3><pre><code>pip install frida==12.8.0
+<h3 id="安装frida、objection、frida-dexdump"><a href="#安装frida、objection、frida-dexdump" class="headerlink" title="安装frida、objection、frida-dexdump"></a>安装frida、objection、frida-dexdump</h3><p>可以在一个虚拟环境中安装</p>
+<pre><code>pip install frida==12.8.0
 pip install frida-tools==5.3.0
 pip install objection==1.8.4
 pip install frida-dexdump
 </code></pre>
-<h3 id="安装frida-server端到手机"><a href="#安装frida-server端到手机" class="headerlink" title="安装frida-server端到手机"></a>安装frida-server端到手机</h3><p>在官网下载安装包，<a class="link" target="_blank" rel="noopener" href="https://github.com/frida/frida/releases/12.8.0">官网地址 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>。真机下载arm64-v86版的，手机需要有root权限</p>
-<p>将下载的安装包解压，把里面的文件pull到手机<code>/data/local/tmp/</code>目录下，然后执行下列命令</p>
+<h3 id="安装frida-server端到手机"><a href="#安装frida-server端到手机" class="headerlink" title="安装frida-server端到手机"></a>安装frida-server端到手机</h3><p>在官网下载安装包，<a class="link" target="_blank" rel="noopener" href="https://github.com/frida/frida/releases/12.8.0">官网地址 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>。真机下载<code>frida-server-12.8.0-android-arm64.xz</code>版的，手机需要有root权限</p>
+<p>将下载的安装包解压，把里面的文件push到手机<code>/data/local/tmp/</code>目录下，然后执行下列命令</p>
 <pre><code>adb shell
 su
+cd /data/local/tmp/
 chmod +x frida-server(文件名看版本)
 ./frida-server &amp; (放后台执行就行，不用管它)
 </code></pre>
-<h3 id="测试是否连接成功"><a href="#测试是否连接成功" class="headerlink" title="测试是否连接成功"></a>测试是否连接成功</h3><p><code>frida-ps -Ua</code></p>
+<p>frida -U -f com.example.android –no-pause -l _agent.js</p>
+<h3 id="测试是否连接成功"><a href="#测试是否连接成功" class="headerlink" title="测试是否连接成功"></a>测试是否连接成功</h3><blockquote>
+<p><code>frida-ps -Ua</code></p>
 <img lazyload="" src="/images/loading.svg" data-src="/2023/11/04/%E7%9C%8B%E9%9B%AA2W%E8%AF%BE-Frida%E5%BC%80%E5%8F%91%E5%92%8C%E8%B0%83%E8%AF%95%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20231104114206505.png" class="" title="image-20231104114206505">
 
+<h6 id="可以安装一个WIFI-ADB方便多个终端链接"><a href="#可以安装一个WIFI-ADB方便多个终端链接" class="headerlink" title="可以安装一个WIFI ADB方便多个终端链接"></a>可以安装一个<code>WIFI ADB</code>方便多个终端链接</h6><p>测试：在主机连接设备启动frida</p>
+<pre><code>PS C:\Users\59688&gt; adb shell
+adb server version (40) doesn't match this client (41); killing...
+* daemon started successfully
+marlin:/ $ su
+marlin:/ # cd /data/local/tmp/
+marlin:/data/local/tmp # ls
+frida-server-12.8.0-android-arm64 oat re.frida.server
+marlin:/data/local/tmp # ./frida-server-12.8.0-android-arm64 -l 0.0.0.0:8888 &amp;
+[1] 24264
+</code></pre>
+<p>测试：在虚拟机同时通过<code>WIFI ADB</code>使用frida</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/11/04/%E7%9C%8B%E9%9B%AA2W%E8%AF%BE-Frida%E5%BC%80%E5%8F%91%E5%92%8C%E8%B0%83%E8%AF%95%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20231106204506990.png" class="" title="image-20231106204506990">
+
+<p>测试：写一个函数在虚拟机试一下frida注入</p>
+<pre><code class="js">function main(){
+    Java.perform(function(){
+        console.log("Inside Frida Java Perform !")
+    })
+}
+setImmediate(main)
+</code></pre>
+<p><code>frida -H 192.168.1.8:8888 -f com.android.settings -l 0530.js --no-pause</code></p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/11/04/%E7%9C%8B%E9%9B%AA2W%E8%AF%BE-Frida%E5%BC%80%E5%8F%91%E5%92%8C%E8%B0%83%E8%AF%95%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20231107003447785.png" class="" title="image-20231107003447785">
+</blockquote>
 <h4 id="PS：进行端口转发监听"><a href="#PS：进行端口转发监听" class="headerlink" title="PS：进行端口转发监听"></a>PS：进行端口转发监听</h4><p>有些app可能会检测frida端口，如果检测不到可以转发端口试试</p>
 <pre><code class="shell">//27042端口用于frida-server通信的默认端口号，不转发的话客户端是连接不上服务端。
 adb forward tcp:27042 tcp:27042
@@ -434,7 +480,7 @@ adb forward tcp:27043 tcp:27043
         
             <li>
                 <strong>更新于
-                    :</strong> 2023-11-04 20:23:51
+                    :</strong> 2023-11-07 00:48:27
             </li>
         
         <li>
