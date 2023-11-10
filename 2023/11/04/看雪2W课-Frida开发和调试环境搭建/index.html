@@ -18,21 +18,23 @@
     <meta name="googlebot" content="index,follow">
     <meta name="revisit-after" content="1 days">
     
-        <meta name="description" content="本章记录在kali上配置Frida开发和调试环境">
+        <meta name="description" content="本章记录在kali上配置Frida开发和调试环境，这个环境配置真的相当麻烦，不同版本很容易碰到不兼容的问题需要多注意一下。 下面的安装流程仅限于kali 2023.3版本">
 <meta property="og:type" content="article">
 <meta property="og:title" content="看雪2W课-Frida开发和调试环境搭建">
 <meta property="og:url" content="https://xiaoeeyu.github.io/2023/11/04/%E7%9C%8B%E9%9B%AA2W%E8%AF%BE-Frida%E5%BC%80%E5%8F%91%E5%92%8C%E8%B0%83%E8%AF%95%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/index.html">
 <meta property="og:site_name" content="xiaoeryu">
-<meta property="og:description" content="本章记录在kali上配置Frida开发和调试环境">
+<meta property="og:description" content="本章记录在kali上配置Frida开发和调试环境，这个环境配置真的相当麻烦，不同版本很容易碰到不兼容的问题需要多注意一下。 下面的安装流程仅限于kali 2023.3版本">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/04/%E7%9C%8B%E9%9B%AA2W%E8%AF%BE-Frida%E5%BC%80%E5%8F%91%E5%92%8C%E8%B0%83%E8%AF%95%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20231027132822340.png">
 <meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/04/%E7%9C%8B%E9%9B%AA2W%E8%AF%BE-Frida%E5%BC%80%E5%8F%91%E5%92%8C%E8%B0%83%E8%AF%95%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20231030182519018.png">
 <meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/04/%E7%9C%8B%E9%9B%AA2W%E8%AF%BE-Frida%E5%BC%80%E5%8F%91%E5%92%8C%E8%B0%83%E8%AF%95%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20231030182536370.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/04/%E7%9C%8B%E9%9B%AA2W%E8%AF%BE-Frida%E5%BC%80%E5%8F%91%E5%92%8C%E8%B0%83%E8%AF%95%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20231108222244496.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/04/%E7%9C%8B%E9%9B%AA2W%E8%AF%BE-Frida%E5%BC%80%E5%8F%91%E5%92%8C%E8%B0%83%E8%AF%95%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20231110204055163.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/04/%E7%9C%8B%E9%9B%AA2W%E8%AF%BE-Frida%E5%BC%80%E5%8F%91%E5%92%8C%E8%B0%83%E8%AF%95%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20231110205125668.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/04/%E7%9C%8B%E9%9B%AA2W%E8%AF%BE-Frida%E5%BC%80%E5%8F%91%E5%92%8C%E8%B0%83%E8%AF%95%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20231110192651349.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/04/%E7%9C%8B%E9%9B%AA2W%E8%AF%BE-Frida%E5%BC%80%E5%8F%91%E5%92%8C%E8%B0%83%E8%AF%95%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20231110192743475.png">
 <meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/04/%E7%9C%8B%E9%9B%AA2W%E8%AF%BE-Frida%E5%BC%80%E5%8F%91%E5%92%8C%E8%B0%83%E8%AF%95%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20231108221610087.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/04/%E7%9C%8B%E9%9B%AA2W%E8%AF%BE-Frida%E5%BC%80%E5%8F%91%E5%92%8C%E8%B0%83%E8%AF%95%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20231108002014750.png">
 <meta property="article:published_time" content="2023-11-04T02:42:31.000Z">
-<meta property="article:modified_time" content="2023-11-08T14:25:01.279Z">
+<meta property="article:modified_time" content="2023-11-10T13:10:00.555Z">
 <meta property="article:author" content="xiaoeryu">
 <meta property="article:tag" content="Frida逆向与利用自动化">
 <meta name="twitter:card" content="summary">
@@ -246,8 +248,8 @@
     
         <span class="article-date article-meta-item">
             <i class="fa-regular fa-wrench"></i>&nbsp;
-            <span class="desktop">2023-11-08 22:25:01</span>
-            <span class="mobile">2023-11-08 22:25:01</span>
+            <span class="desktop">2023-11-10 21:10</span>
+            <span class="mobile">2023-11-10 21:10</span>
             <span class="hover-info">更新</span>
         </span>
     
@@ -301,23 +303,24 @@
 
 
         <div class="article-content markdown-body">
-            <p>本章记录在kali上配置Frida开发和调试环境</p>
+            <p>本章记录在kali上配置Frida开发和调试环境，这个环境配置真的相当麻烦，不同版本很容易碰到不兼容的问题需要多注意一下。</p>
+<p>下面的安装流程仅限于<code>kali 2023.3</code>版本</p>
 <span id="more"></span>
 
-<h3 id="安装kali虚拟机"><a href="#安装kali虚拟机" class="headerlink" title="安装kali虚拟机"></a>安装kali虚拟机</h3><p>直接下载<a class="link" target="_blank" rel="noopener" href="https://www.kali.org/get-kali/#kali-virtual-machines">Get Kali | Kali Linux <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>省去安装流程，这里使用的是2023的</p>
+<h2 id="安装kali虚拟机"><a href="#安装kali虚拟机" class="headerlink" title="安装kali虚拟机"></a>安装kali虚拟机</h2><p>直接下载<a class="link" target="_blank" rel="noopener" href="https://cdimage.kali.org/kali-2023.3/kali-linux-2023.3-vmware-amd64.7z">Get Kali | Kali Linux <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a> 的VMware压缩包省去安装流程</p>
 <p>默认账号密码都是<code>kali</code></p>
 <blockquote>
-<p>打开之后先设置一下root密码、修改一下默认字体大小（kali默认的字体都太小了<a class="link" target="_blank" rel="noopener" href="https://blog.csdn.net/zibery/article/details/126975523">修改一下 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>）</p>
+<p>打开之后先设置一下root密码、修改一下默认字体大小（kali默认的字体都太小了<a class="link" target="_blank" rel="noopener" href="https://blog.csdn.net/zibery/article/details/126975523">修改一下 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>）, 安装的时候使用kali账户安装不要使用root账户</p>
 <p>检查一下时间如果不对的话也修改一下<code>sudo dpkg-reconfigure tzdata</code></p>
 </blockquote>
-<h4 id="安装配置clash"><a href="#安装配置clash" class="headerlink" title="安装配置clash"></a>安装配置clash</h4><p>这里选择安装<a class="link" target="_blank" rel="noopener" href="https://github.com/Fndroid/clash_for_windows_pkg/releases">桌面版 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<h2 id="安装配置clash"><a href="#安装配置clash" class="headerlink" title="安装配置clash"></a>安装配置clash</h2><p>这里选择安装<a class="link" target="_blank" rel="noopener" href="https://github.com/Fndroid/clash_for_windows_pkg/releases">桌面版 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
 <p><mark>前两天clash删库了，回头可能还得换v2ray</mark></p>
 <p>下载解压到<code>/opt/clash/</code>目录下运行</p>
 <p><code>./cfw</code></p>
 <img lazyload="" src="/images/loading.svg" data-src="/2023/11/04/%E7%9C%8B%E9%9B%AA2W%E8%AF%BE-Frida%E5%BC%80%E5%8F%91%E5%92%8C%E8%B0%83%E8%AF%95%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20231027132822340.png" class="" title="image-20231027132822340">
 
 <ul>
-<li>运行后把主机clash的配置文件拷贝一份，在Profiles中导入配置文件</li>
+<li>运行后把主机clash的配置文件拷贝一份，在Profiles中导入配置文件. 直接使用url导入会失败不确定什么原因.</li>
 </ul>
 <h6 id="浏览器科学上网配置：修改浏览器代理为手动"><a href="#浏览器科学上网配置：修改浏览器代理为手动" class="headerlink" title="浏览器科学上网配置：修改浏览器代理为手动"></a>浏览器科学上网配置：修改浏览器代理为手动</h6><img lazyload="" src="/images/loading.svg" data-src="/2023/11/04/%E7%9C%8B%E9%9B%AA2W%E8%AF%BE-Frida%E5%BC%80%E5%8F%91%E5%92%8C%E8%B0%83%E8%AF%95%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20231030182519018.png" class="" title="image-20231030182519018">
 
@@ -327,16 +330,22 @@
 <p>export http_proxy=<a class="link" target="_blank" rel="noopener" href="http://127.0.0.1:7890/">http://127.0.0.1:7890 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
 <p>export https_proxy=<a class="link" target="_blank" rel="noopener" href="http://127.0.0.1:7890/">http://127.0.0.1:7890 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
 </blockquote>
-<p><strong>kali网络配置好了，开始配置Frida开发调试环境</strong></p>
-<h2 id="配置调试环境"><a href="#配置调试环境" class="headerlink" title="配置调试环境"></a>配置调试环境</h2><p>依次执行下列命令，一个一个执行。</p>
+<p><strong>clash配置好了，开始配置Frida开发调试环境</strong></p>
+<h2 id="配置调试环境"><a href="#配置调试环境" class="headerlink" title="配置调试环境"></a>配置调试环境</h2><h3 id="网络配置"><a href="#网络配置" class="headerlink" title="网络配置"></a>网络配置</h3><p>依次执行下列命令，一个一个执行。</p>
 <blockquote>
 <p>更新apt</p>
-<p><code>sudo apt update</code></p>
-<p><code>apt upgrade</code></p>
-<p>安装中文字体<br><code>apt install xfonts-intl-chinese</code><br>安装微软雅黑<br><code>apt install ttf-wqy-microhei</code><br>安装htop性能监测工具<br><code>sudo apt install htop</code><br>安装网络检测工具<br><code>sudo apt install jnettop</code></p>
+<pre><code class="bash">sudo apt update
+
+sudo apt upgrade	# 这个可以不用安装太慢了,不影响使用
+</code></pre>
+<p>2023自带的有中文字符集可以不用安装, 其它版本可能还需要安装中文字符集</p>
+<blockquote>
+<p>安装中文字体<br><code>apt install xfonts-intl-chinese</code><br>安装微软雅黑<br><code>apt install ttf-wqy-microhei</code></p>
+</blockquote>
+<p>安装htop性能监测工具<br><code>sudo apt install htop</code><br>安装网络检测工具<br><code>sudo apt install jnettop</code></p>
 </blockquote>
 <p>设置代理</p>
-<p><code>nano /etc/proxychains4.conf</code></p>
+<p><code>sudo nano /etc/proxychains4.conf</code></p>
 <p>需要注释掉这几行</p>
 <blockquote>
 <p>#socks4        127.0.0.1 9050</p>
@@ -350,18 +359,18 @@
 <p>增加一行</p>
 <blockquote>
 <p>socks5 {IP} 1080 #这里是给jnettop使用</p>
-<p>如果需要VPN代理，可以再下面依次写入，会自动切换不能使用的代理。clash的话不用设置</p>
+<p>如果需要VPN代理，可以再下面依次写入，会自动切换不能使用的代理。clash这种订阅链接的话不用设置</p>
 </blockquote>
-<h6 id="安装pyenv"><a href="#安装pyenv" class="headerlink" title="安装pyenv"></a>安装pyenv</h6><p>推荐自动化安装</p>
+<h3 id="安装pyenv"><a href="#安装pyenv" class="headerlink" title="安装pyenv"></a>安装pyenv</h3><p>推荐自动化安装: 网络的话正常使用自动化安装很方便, 手动安装<a class="link" target="_blank" rel="noopener" href="https://github.com/pyenv/pyenv#installation">官网 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>有介绍</p>
 <p><code>curl https://pyenv.run | bash</code></p>
 <p>执行完之后还需要手动配置一下环境变量</p>
 <blockquote>
-<p>加入环境变量<code>nano ~/.bashrc</code></p>
+<p>加入环境变量<code>sudo nano ~/.bashrc</code></p>
 <pre><code>echo 'export PYENV_ROOT="$HOME/.pyenv"' &gt;&gt; ~/.bashrc
 echo 'command -v pyenv &gt;/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"' &gt;&gt; ~/.bashrc
 echo 'eval "$(pyenv init -)"' &gt;&gt; ~/.bashrc
 </code></pre>
-<p>加入环境变量<code>nano ~/.profile</code></p>
+<p>加入环境变量<code>sudo nano ~/.profile</code></p>
 <pre><code>echo 'export PYENV_ROOT="$HOME/.pyenv"' &gt;&gt; ~/.profile
 echo 'command -v pyenv &gt;/dev/null || export PATH="$PYENV_ROOT/bin:$PATH"' &gt;&gt; ~/.profile
 echo 'eval "$(pyenv init -)"' &gt;&gt; ~/.profile
@@ -376,6 +385,11 @@ echo 'eval "$(pyenv init -)"' &gt;&gt; ~/.profile
 </li>
 <li><p>检查 pyenv 的 shims 目录是否在您的 PATH 中：</p>
 <pre><code>echo $PATH | grep --color=auto "$(pyenv root)/shims"
+</code></pre>
+</li>
+<li><p>安装成功之后</p>
+<p>加入环境变量<code>sudo nano ~/.zshrc</code>, 在打开shell的时候可以自动加载pyenv</p>
+<pre><code>source ~/.profile
 </code></pre>
 </li>
 </ol>
@@ -394,10 +408,26 @@ echo 'eval "$(pyenv init -)"' &gt;&gt; ~/.profile
 </blockquote>
 </li>
 </ul>
-<p>PS：使用<code>pyenv install XXX</code>命令安装python的时候可能会报错显示缺少一些库文件，可以先安装一下</p>
+<p>PS：使用<code>pyenv install XXX</code>命令安装python的时候可能会显示缺少一些库文件，可以先安装一下</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/11/04/%E7%9C%8B%E9%9B%AA2W%E8%AF%BE-Frida%E5%BC%80%E5%8F%91%E5%92%8C%E8%B0%83%E8%AF%95%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20231110204055163.png" class="" title="image-20231110204055163">
+
 <blockquote>
-<p><code>sudo apt-get install libbz2-dev libssl-dev</code><br><code>sudo apt-get install libreadline-dev</code></p>
+<pre><code class="bash">sudo apt install libbz2-dev libssl-dev libreadline-dev tk-dev liblzma-dev libtk8.6 liblzma-dev 
+sudo apt install libsqlite3-dev
+</code></pre>
 </blockquote>
+<p>所以在安装<code>pyenv python</code>之前需要先把这些安装包装上</p>
+<ul>
+<li><p>再重新安装就好了</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/11/04/%E7%9C%8B%E9%9B%AA2W%E8%AF%BE-Frida%E5%BC%80%E5%8F%91%E5%92%8C%E8%B0%83%E8%AF%95%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20231110205125668.png" class="" title="image-20231110205125668"></li>
+</ul>
+<p><strong>PS: 如果</strong>在这些包都装上之后<code>pyenv install XXX</code>还报sqlite3的错的话, 就输入下面的指令做一下软连接, 再卸载重新安装</p>
+<pre><code class="bash">cd /home/kali/.pyenv/versions/3.8.0/lib/python3.8/lib-dynload/
+ln -s /usr/lib/python3.11/lib-dynload/_sqlite3.cpython-311-x86_64-linux-gnu.so _sqlite3.so
+</code></pre>
+<ul>
+<li>因为我们后面的frida要安装12.8.0版本的所以python安装3.8.0的就可以</li>
+</ul>
 </blockquote>
 <h3 id="安装adb"><a href="#安装adb" class="headerlink" title="安装adb"></a>安装adb</h3><p><code>sudo apt install google-android-platform-tools-installer</code></p>
 <h3 id="安装VSCODE"><a href="#安装VSCODE" class="headerlink" title="安装VSCODE"></a>安装VSCODE</h3><blockquote>
@@ -418,49 +448,92 @@ sudo apt install code
 cd frida-agent-example/
 npm install
 </code></pre>
-<h3 id="安装frida、objection、frida-dexdump"><a href="#安装frida、objection、frida-dexdump" class="headerlink" title="安装frida、objection、frida-dexdump"></a>安装frida、objection、frida-dexdump</h3><pre><code>pip install frida
-pip install frida-tools
-pip install objection
+<h3 id="安装frida、objection、frida-dexdump"><a href="#安装frida、objection、frida-dexdump" class="headerlink" title="安装frida、objection、frida-dexdump"></a>安装frida、objection、frida-dexdump</h3><pre><code class="bash">pip install frida==12.8.0
+pip install frida-tools==5.3.0
+pip install objection==1.8.4
 pip install frida-dexdump
 </code></pre>
-<h3 id="安装frida-server端到手机"><a href="#安装frida-server端到手机" class="headerlink" title="安装frida-server端到手机"></a>安装frida-server端到手机</h3><p><strong>安装frida-server最好跟主机上安装的版本一致比较好</strong></p>
-<p>在官网下载安装包，<a class="link" target="_blank" rel="noopener" href="https://github.com/frida/frida/releases">官网地址 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>。真机下载<code>frida-server-XXX-android-arm64.xz</code>版的，手机需要有root权限</p>
-<p>将下载的安装包解压，把里面的文件push到手机<code>/data/local/tmp/</code>目录下，然后执行下列命令</p>
-<pre><code>adb shell
-su
-cd /data/local/tmp/
-chmod +x frida-server(文件名看版本)
-./frida-server &amp; (放后台执行就行，不用管它)
-</code></pre>
+<h3 id="安装frida-server端到手机"><a href="#安装frida-server端到手机" class="headerlink" title="安装frida-server端到手机"></a>安装frida-server端到手机</h3><p><strong>安装frida-server最好跟主机上安装的frida版本一致比较好</strong></p>
+<p>在官网下载安装包，<a class="link" target="_blank" rel="noopener" href="https://github.com/frida/frida/releases">官网地址 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>。真机下载<code>frida-server-12.8.0-android-arm64.xz</code>版的，手机需要有root权限.刷机可以参考<a href="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/">之前的文章</a></p>
+<p>将下载的安装包解压，把解压后的文件push到手机<code>/data/local/tmp/</code>目录下</p>
 <h3 id="测试是否连接成功"><a href="#测试是否连接成功" class="headerlink" title="测试是否连接成功"></a>测试是否连接成功</h3><blockquote>
-<p><code>frida-ps -Ua</code></p>
-<img lazyload="" src="/images/loading.svg" data-src="/2023/11/04/%E7%9C%8B%E9%9B%AA2W%E8%AF%BE-Frida%E5%BC%80%E5%8F%91%E5%92%8C%E8%B0%83%E8%AF%95%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20231108222244496.png" class="" title="image-20231108222244496">
+<h5 id="可以安装一个WIFI-ADB方便多个终端链接"><a href="#可以安装一个WIFI-ADB方便多个终端链接" class="headerlink" title="可以安装一个WIFI ADB方便多个终端链接"></a>可以安装一个<code>WIFI ADB</code>方便多个终端链接</h5><img lazyload="" src="/images/loading.svg" data-src="/2023/11/04/%E7%9C%8B%E9%9B%AA2W%E8%AF%BE-Frida%E5%BC%80%E5%8F%91%E5%92%8C%E8%B0%83%E8%AF%95%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20231110192651349.png" class="" title="image-20231110192651349">
 
-<h6 id="可以安装一个WIFI-ADB方便多个终端链接"><a href="#可以安装一个WIFI-ADB方便多个终端链接" class="headerlink" title="可以安装一个WIFI ADB方便多个终端链接"></a>可以安装一个<code>WIFI ADB</code>方便多个终端链接</h6><p>测试：在主机连接设备启动frida</p>
-<pre><code>PS C:\Users\59688&gt; adb shell
-adb server version (40) doesn't match this client (41); killing...
-* daemon started successfully
+<img lazyload="" src="/images/loading.svg" data-src="/2023/11/04/%E7%9C%8B%E9%9B%AA2W%E8%AF%BE-Frida%E5%BC%80%E5%8F%91%E5%92%8C%E8%B0%83%E8%AF%95%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20231110192743475.png" class="" title="image-20231110192743475">
+
+<p>启动手机端frida-server</p>
+<pre><code>┌──(kali㉿kali)-[~]
+└─$ adb shell
 marlin:/ $ su
-marlin:/ # cd /data/local/tmp/
-marlin:/data/local/tmp # ls
-frida-server-12.8.0-android-arm64 oat re.frida.server
-marlin:/data/local/tmp # ./frida-server-12.8.0-android-arm64 -l 0.0.0.0:8888 &amp;
-[1] 24264
+marlin:/ # cd /data/local/tmp/                                                                                                        
+marlin:/data/local/tmp # ./fs-12 -l 0.0.0.0:8888 &amp;                                                                                    
+[1] 28392
+marlin:/data/local/tmp # 
 </code></pre>
-<p>测试：在虚拟机同时通过<code>WIFI ADB</code>使用frida</p>
-<p><code>frida-ps -H 192.168.1.8:8888</code></p>
+<h6 id="测试：通过WIFI-ADB连接frida"><a href="#测试：通过WIFI-ADB连接frida" class="headerlink" title="测试：通过WIFI ADB连接frida"></a>测试：通过<code>WIFI ADB</code>连接frida</h6><p><code>frida-ps -H 192.168.1.8:8888</code></p>
 <img lazyload="" src="/images/loading.svg" data-src="/2023/11/04/%E7%9C%8B%E9%9B%AA2W%E8%AF%BE-Frida%E5%BC%80%E5%8F%91%E5%92%8C%E8%B0%83%E8%AF%95%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20231108221610087.png" class="" title="image-20231108221610087">
 
-<p>测试：写一个函数在虚拟机试一下frida注入</p>
-<pre><code class="js">function main(){
+<h6 id="测试：js脚本注入"><a href="#测试：js脚本注入" class="headerlink" title="测试：js脚本注入"></a>测试：js脚本注入</h6><pre><code class="js">function main(){
     Java.perform(function(){
-        console.log("Inside Frida Java Perform !")
-    })
+        console.log("Inside Frida Java Perform !");
+    });
 }
-setImmediate(main)
+setImmediate(main);
 </code></pre>
-<p><code>frida -H 192.168.1.8:8888 -f com.android.settings -l /path/to/0530.js</code></p>
-<img lazyload="" src="/images/loading.svg" data-src="/2023/11/04/%E7%9C%8B%E9%9B%AA2W%E8%AF%BE-Frida%E5%BC%80%E5%8F%91%E5%92%8C%E8%B0%83%E8%AF%95%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/image-20231108002014750.png" class="" title="image-20231108002014750">
+<p><code>frida -H 192.168.1.8:8888 -f com.android.settings -l /path/0530.js</code></p>
+<pre><code class="bash">┌──(kali㉿kali)-[~/Documents]
+└─$ frida -H 192.168.1.8:8888 -f com.android.settings -l 0530.js
+     ____
+    / _  |   Frida 12.8.0 - A world-class dynamic instrumentation toolkit
+   | (_| |
+    &gt; _  |   Commands:
+   /_/ |_|       help      -&gt; Displays the help system
+   . . . .       object?   -&gt; Display information about 'object'
+   . . . .       exit/quit -&gt; Exit
+   . . . .
+   . . . .   More info at https://www.frida.re/docs/home/
+Spawning `com.android.settings`...                                      
+Inside Frida Java Perform !
+Spawned `com.android.settings`. Use %resume to let the main thread start executing!
+[Remote::com.android.settings]-&gt;  
+</code></pre>
+<h6 id="测试：objection注入"><a href="#测试：objection注入" class="headerlink" title="测试：objection注入"></a>测试：objection注入</h6><pre><code class="bash">┌──(kali㉿kali)-[~/Documents]
+└─$ objection -N -h 192.168.1.8 -p 8888 -g com.android.settings explore
+Using networked device @`192.168.1.8:8888`
+
+
+A newer version of objection is available!
+You have v1.8.4 and v1.11.0 is ready for download.
+
+Upgrade with: pip3 install objection --upgrade
+For more information, please see: https://github.com/sensepost/objection/wiki/Updating
+
+Agent injected and responds ok!
+
+     _   _         _   _
+ ___| |_|_|___ ___| |_|_|___ ___
+| . | . | | -_|  _|  _| | . |   |
+|___|___| |___|___|_| |_|___|_|_|
+      |___|(object)inject(ion) v1.8.4
+
+     Runtime Mobile Exploration
+        by: @leonjza from @sensepost
+
+[tab] for command suggestions
+com.android.settings on (google: 10) [net] # frid                                                                                                                                                                                  
+Unknown or ambiguous command: `frid`. Try `help frid`.
+com.android.settings on (google: 10) [net] # frida                                                                                                                                                                                 
+--------------------  -----------
+Frida Version         12.8.0
+Process Architecture  arm64
+Process Platform      linux
+Debugger Attached     False
+Script Runtime        DUK
+Script Filename       /script1.js
+Frida Heap Size       16.9 MiB
+--------------------  -----------
+com.android.settings on (google: 10) [net] #  
+</code></pre>
 </blockquote>
 <p>其它参考链接：</p>
 <p><a class="link" target="_blank" rel="noopener" href="https://blog.csdn.net/kfyzjd2008/article/details/126786390">看雪2W课-Frida逆向与利用自动化 Frida开发和调试环境搭建 课时1_frida自动化-CSDN博客 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
@@ -479,7 +552,7 @@ setImmediate(main)
         
             <li>
                 <strong>更新于
-                    :</strong> 2023-11-08 22:25:01
+                    :</strong> 2023-11-10 21:10:00
             </li>
         
         <li>
@@ -588,7 +661,7 @@ setImmediate(main)
     <div class="post-toc">
         <div class="toc-title">此页目录</div>
         <div class="page-title">看雪2W课-Frida开发和调试环境搭建</div>
-        <ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85kali%E8%99%9A%E6%8B%9F%E6%9C%BA"><span class="nav-text">安装kali虚拟机</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E8%B0%83%E8%AF%95%E7%8E%AF%E5%A2%83"><span class="nav-text">配置调试环境</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85adb"><span class="nav-text">安装adb</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85VSCODE"><span class="nav-text">安装VSCODE</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85frida%E8%87%AA%E5%8A%A8%E6%8F%90%E7%A4%BA%E8%A1%A5%E5%85%A8"><span class="nav-text">安装frida自动提示补全</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85frida%E3%80%81objection%E3%80%81frida-dexdump"><span class="nav-text">安装frida、objection、frida-dexdump</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85frida-server%E7%AB%AF%E5%88%B0%E6%89%8B%E6%9C%BA"><span class="nav-text">安装frida-server端到手机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E6%98%AF%E5%90%A6%E8%BF%9E%E6%8E%A5%E6%88%90%E5%8A%9F"><span class="nav-text">测试是否连接成功</span></a></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85kali%E8%99%9A%E6%8B%9F%E6%9C%BA"><span class="nav-text">安装kali虚拟机</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E9%85%8D%E7%BD%AEclash"><span class="nav-text">安装配置clash</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E8%B0%83%E8%AF%95%E7%8E%AF%E5%A2%83"><span class="nav-text">配置调试环境</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%BD%91%E7%BB%9C%E9%85%8D%E7%BD%AE"><span class="nav-text">网络配置</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85pyenv"><span class="nav-text">安装pyenv</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85adb"><span class="nav-text">安装adb</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85VSCODE"><span class="nav-text">安装VSCODE</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85frida%E8%87%AA%E5%8A%A8%E6%8F%90%E7%A4%BA%E8%A1%A5%E5%85%A8"><span class="nav-text">安装frida自动提示补全</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85frida%E3%80%81objection%E3%80%81frida-dexdump"><span class="nav-text">安装frida、objection、frida-dexdump</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85frida-server%E7%AB%AF%E5%88%B0%E6%89%8B%E6%9C%BA"><span class="nav-text">安装frida-server端到手机</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E6%98%AF%E5%90%A6%E8%BF%9E%E6%8E%A5%E6%88%90%E5%8A%9F"><span class="nav-text">测试是否连接成功</span></a></li></ol></li></ol>
 
     </div>
 </div>
