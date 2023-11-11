@@ -1,0 +1,1001 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    
+    <meta name="author" content="xiaoeryu">
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="https://xiaoeeyu.github.io/2023/11/11/objection环境、自动化分析和插件/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+        <meta name="description" content="在上一章搭建好了frida和objection环境，本章主要学习一下这些工具怎么使用">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Objection环境、自动化分析和插件">
+<meta property="og:url" content="https://xiaoeeyu.github.io/2023/11/11/Objection%E7%8E%AF%E5%A2%83%E3%80%81%E8%87%AA%E5%8A%A8%E5%8C%96%E5%88%86%E6%9E%90%E5%92%8C%E6%8F%92%E4%BB%B6/index.html">
+<meta property="og:site_name" content="xiaoeryu">
+<meta property="og:description" content="在上一章搭建好了frida和objection环境，本章主要学习一下这些工具怎么使用">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/11/Objection%E7%8E%AF%E5%A2%83%E3%80%81%E8%87%AA%E5%8A%A8%E5%8C%96%E5%88%86%E6%9E%90%E5%92%8C%E6%8F%92%E4%BB%B6/image-20231111205623353.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/11/Objection%E7%8E%AF%E5%A2%83%E3%80%81%E8%87%AA%E5%8A%A8%E5%8C%96%E5%88%86%E6%9E%90%E5%92%8C%E6%8F%92%E4%BB%B6/image-20231111213131765.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/11/Objection%E7%8E%AF%E5%A2%83%E3%80%81%E8%87%AA%E5%8A%A8%E5%8C%96%E5%88%86%E6%9E%90%E5%92%8C%E6%8F%92%E4%BB%B6/image-20231111213320983.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/11/Objection%E7%8E%AF%E5%A2%83%E3%80%81%E8%87%AA%E5%8A%A8%E5%8C%96%E5%88%86%E6%9E%90%E5%92%8C%E6%8F%92%E4%BB%B6/image-20231111163337664.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/11/Objection%E7%8E%AF%E5%A2%83%E3%80%81%E8%87%AA%E5%8A%A8%E5%8C%96%E5%88%86%E6%9E%90%E5%92%8C%E6%8F%92%E4%BB%B6/image-20231111170207935.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/11/Objection%E7%8E%AF%E5%A2%83%E3%80%81%E8%87%AA%E5%8A%A8%E5%8C%96%E5%88%86%E6%9E%90%E5%92%8C%E6%8F%92%E4%BB%B6/image-20231111170756781.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/11/Objection%E7%8E%AF%E5%A2%83%E3%80%81%E8%87%AA%E5%8A%A8%E5%8C%96%E5%88%86%E6%9E%90%E5%92%8C%E6%8F%92%E4%BB%B6/image-20231111171933540.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/11/Objection%E7%8E%AF%E5%A2%83%E3%80%81%E8%87%AA%E5%8A%A8%E5%8C%96%E5%88%86%E6%9E%90%E5%92%8C%E6%8F%92%E4%BB%B6/image-20231111175037981.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/11/Objection%E7%8E%AF%E5%A2%83%E3%80%81%E8%87%AA%E5%8A%A8%E5%8C%96%E5%88%86%E6%9E%90%E5%92%8C%E6%8F%92%E4%BB%B6/image-20231111195143368.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/11/Objection%E7%8E%AF%E5%A2%83%E3%80%81%E8%87%AA%E5%8A%A8%E5%8C%96%E5%88%86%E6%9E%90%E5%92%8C%E6%8F%92%E4%BB%B6/image-20231111195106060.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/11/Objection%E7%8E%AF%E5%A2%83%E3%80%81%E8%87%AA%E5%8A%A8%E5%8C%96%E5%88%86%E6%9E%90%E5%92%8C%E6%8F%92%E4%BB%B6/image-20231111195725856.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/11/Objection%E7%8E%AF%E5%A2%83%E3%80%81%E8%87%AA%E5%8A%A8%E5%8C%96%E5%88%86%E6%9E%90%E5%92%8C%E6%8F%92%E4%BB%B6/image-20231111200443085.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/11/Objection%E7%8E%AF%E5%A2%83%E3%80%81%E8%87%AA%E5%8A%A8%E5%8C%96%E5%88%86%E6%9E%90%E5%92%8C%E6%8F%92%E4%BB%B6/image-20231111201125885.png">
+<meta property="article:published_time" content="2023-11-11T12:13:38.000Z">
+<meta property="article:modified_time" content="2023-11-11T14:14:45.088Z">
+<meta property="article:author" content="xiaoeryu">
+<meta property="article:tag" content="Frida逆向与利用自动化">
+<meta property="article:tag" content="环境搭建">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://xiaoeeyu.github.io/2023/11/11/Objection%E7%8E%AF%E5%A2%83%E3%80%81%E8%87%AA%E5%8A%A8%E5%8C%96%E5%88%86%E6%9E%90%E5%92%8C%E6%8F%92%E4%BB%B6/image-20231111205623353.png">
+    
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/rabete.jpg" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/rabete.jpg">
+    <meta name="theme-color" content="#A31F34">
+    <link rel="shortcut icon" href="/images/rabete.jpg">
+    <!--- Page Info-->
+    
+    <title>
+        
+            Objection环境、自动化分析和插件 -
+        
+        xiaoeryu
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+        
+<link rel="stylesheet" href="/assets/build/styles.css">
+
+    
+
+    
+<link rel="stylesheet" href="/fonts/fonts.css">
+
+    
+<link rel="stylesheet" href="/fonts/Satoshi/satoshi.css">
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+    <!--- Font Part-->
+    
+    
+    
+    
+
+    <!--- Inject Part-->
+    
+    <script id="hexo-configurations">
+    window.config = {"hostname":"xiaoeeyu.github.io","root":"/","language":"zh-CN","path":"search.xml"};
+    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":3,"number":false,"expand":true,"init_open":true},"copyright":true,"lazyload":true,"recommendation":{"enable":false,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/wallhaven-wqery6-light.webp","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"open_graph":true,"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/wallhaven-wqery6-light.webp","dark":"/images/wallhaven-wqery6-dark.webp"},"title":"XIAOERYU","subtitle":{"text":["明心见性，拨云见日"],"hitokoto":{"enable":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":false,"links":{"github":null,"instagram":null,"zhihu":null,"twitter":null,"email":"xiaoeryu@163.com"},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null}]},"mermaid":{"enable":false,"version":"9.3.0"}},"version":"2.5.0","navbar":{"auto_hide":false,"color":{"left":"#f78736","right":"#367df7","transparency":35},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"}},"search":{"enable":false,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"blur"},"home":{"sidebar":{"enable":true,"position":"left","first_item":"menu","announcement":null,"links":null},"article_date_format":"auto","categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":3}},"footerStart":"2022/8/17 11:45:14"};
+    window.lang_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"};
+    window.data = {"masonry":false};
+  </script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+<meta name="generator" content="Hexo 6.3.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <span class="swup-progress-icon">
+            <i class="fa-solid fa-circle-notch fa-spin"></i>
+        </span>
+    
+</div>
+
+
+<main class="page-container" id="swup">
+
+    
+
+    <div class="main-content-container">
+
+
+        <div class="main-content-header">
+            <header class="navbar-container">
+    
+    <div class="navbar-content">
+        <div class="left">
+            
+            <a class="logo-title" href="/">
+                
+                xiaoeryu
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-house"></i>
+                                        
+                                        首页
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile drawer -->
+    <div class="navbar-drawer w-full absolute top-0 left-0 bg-background-color">
+        <ul class="drawer-navbar-list flex flex-col justify-start items-center">
+            
+                
+                    <li class="drawer-navbar-item text-base my-1.5 flex justify-center items-center">
+                        <a class="rounded-3xl py-1.5 px-5 hover:border hover:!text-primary active:!text-primary group " 
+                        href="/"  >
+                             
+                                
+                                    <i class="fa-regular fa-house"></i>
+                                
+                                首页
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="main-content-body">
+
+            
+
+            <div class="main-content">
+
+                
+                    <div class="post-page-container">
+    <div class="article-content-container">
+
+        <div class="article-title">
+            
+                <h1 class="article-title-regular">Objection环境、自动化分析和插件</h1>
+            
+            </div>
+            
+                    
+        
+        
+            <div class="article-header flex flex-row gap-2 items-center">
+                <div class="avatar w-[46px] h-[46px] flex-shrink-0 rounded-medium border border-border-color p-[1px]">
+                    <img src="/images/rabete.jpg">
+                </div>
+                <div class="info flex flex-col justify-between">
+                    <div class="author flex items-center">
+                        <span class="name text-default-text-color text-lg font-semibold">xiaoeryu</span>
+                        
+                            <span class="author-label ml-1.5 text-xs px-2 py-0.5 rounded-small text-third-text-color border border-shadow-color-1">Lv5</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2023-11-11 20:13:38</span>
+        <span class="mobile">2023-11-11 20:13:38</span>
+        <span class="hover-info">创建</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2023-11-11 22:14:45</span>
+            <span class="mobile">2023-11-11 22:14:45</span>
+            <span class="hover-info">更新</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/Android%E9%80%86%E5%90%91/">Android逆向</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/Frida%E9%80%86%E5%90%91%E4%B8%8E%E5%88%A9%E7%94%A8%E8%87%AA%E5%8A%A8%E5%8C%96/">Frida逆向与利用自动化</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/">环境搭建</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fa-regular fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        
+
+
+        <div class="article-content markdown-body">
+            <p>在上一章搭建好了frida和objection环境，本章主要学习一下这些工具怎么使用</p>
+<span id="more"></span>
+
+<h2 id="frida和objection工具的使用"><a href="#frida和objection工具的使用" class="headerlink" title="frida和objection工具的使用"></a>frida和objection工具的使用</h2><p>关于这两个工具的使用，可以参考<a class="link" target="_blank" rel="noopener" href="https://www.anquanke.com/post/id/197657">roysue大佬这篇文章 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>中的内存漫游和hook部分。</p>
+<p>这里只补充记录一点细节：</p>
+<blockquote>
+<ol>
+<li><p>frida和objection都提供的有help</p>
+<pre><code>frida -h	# frida打开help的命令
+
+objection --help	# objection打开help的命令
+</code></pre>
+</li>
+<li><p>检索</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/11/11/Objection%E7%8E%AF%E5%A2%83%E3%80%81%E8%87%AA%E5%8A%A8%E5%8C%96%E5%88%86%E6%9E%90%E5%92%8C%E6%8F%92%E4%BB%B6/image-20231111205623353.png" class="" title="image-20231111205623353">
+
+<ul>
+<li><p>也可以使用cat命令检索objectin.log的文件</p>
+<pre><code class="bash">──(kali㉿kali)-[~]
+└─$ cat .objection/objection.log | grep -i frida
+frida
+Frida Version         12.8.0
+Frida Heap Size       16.9 MiB
+frida
+Frida Version         12.8.0
+Frida Heap Size       16.9 MiB
+frida
+Frida Version         12.8.0
+Frida Heap Size       28.4 MiB
+help frida
+Command: frida
+Usage: frida
+Displays information about Frida. This includes the version of the Frida gadget,
+   frida
+frida-agent-64.so                                                      0x743735e000  20021248 (19.1 MiB)  /data/local/tmp/re.frida.server/frida-agent-64.so
+frida-agent-64.so                                                      0x7435ca6000  20021248 (19.1 MiB)  /data/local/tmp/re.frida.server/frida-agent-64.so
+</code></pre>
+</li>
+</ul>
+</li>
+<li><p>有时候frida-server连接错误需要重启</p>
+<pre><code class="bash">|marlin:/data/local/tmp # netstat -tulpn | grep :8888
+tcp        0      0 0.0.0.0:8888            0.0.0.0:*               LISTEN      9711/fs-12
+tcp       40      0 127.0.0.1:41385         127.0.0.1:8888          ESTABLISHED 27125/com.cz.babySister
+tcp        0      0 127.0.0.1:8888          127.0.0.1:41385         ESTABLISHED 9711/fs-12
+
+marlin:/data/local/tmp # kill -9 9711
+
+marlin:/data/local/tmp # ./fs-12 -l 0.0.0.0:8888 &amp;                                                                                                
+[2] 4204
+[1] - Killed               ./fs -l 0.0.0.0:8888 
+</code></pre>
+</li>
+<li><p>检索activities，并在activities之间跳转</p>
+<pre><code class="bash">┌──(kali㉿kali)-[~]
+└─$ objection -N -h 192.168.1.7 -p 8888 -g com.cz.babySister explore
+Using networked device @`192.168.1.7:8888`
+
+                                                                                                                                                   
+A newer version of objection is available!                                                                                                         
+You have v1.8.4 and v1.11.0 is ready for download.
+                                                                                                                                                   
+Upgrade with: pip3 install objection --upgrade
+For more information, please see: https://github.com/sensepost/objection/wiki/Updating
+
+Agent injected and responds ok!
+
+     _   _         _   _
+ ___| |_|_|___ ___| |_|_|___ ___
+| . | . | | -_|  _|  _| | . |   |
+|___|___| |___|___|_| |_|___|_|_|
+      |___|(object)inject(ion) v1.8.4
+
+     Runtime Mobile Exploration
+        by: @leonjza from @sensepost
+
+[tab] for command suggestions
+com.cz.babySister on (google: 10) [net] # android intent launch_activity com.cz.babySister.activity.MainActivity 
+                                                                                                                                                   
+(agent) Starting activity com.cz.babySister.activity.MainActivity...
+(agent) Activity successfully asked to start.
+com.cz.babySister on (google: 10) [net] # android intent launch_activity com.cz.babySister.activity.MainActivity 
+                                                                                                                                                   
+(agent) Starting activity com.cz.babySister.activity.MainActivity...
+(agent) Activity successfully asked to start.
+
+com.cz.babySister on (google: 10) [net] # android hooking list activities                                                                          
+com.alipay.sdk.app.AlipayResultActivity
+com.alipay.sdk.app.H5AuthActivity
+com.alipay.sdk.app.H5OpenAuthActivity
+com.alipay.sdk.app.H5PayActivity
+com.alipay.sdk.app.PayResultActivity
+com.cz.babySister.activity.MessageActivity	# !!
+...
+com.cz.babySister.activity.JiFenActivity 	# !!
+com.cz.babySister.tencent.TencentSearchActivity
+com.cz.babySister.wxapi.WXEntryActivity
+com.tencent.connect.common.AssistActivity
+com.tencent.smtt.sdk.VideoActivity
+com.tencent.tauth.AuthActivity
+
+Found 55 classes
+com.cz.babySister on (google: 10) [net] # android intent launch_activity com.cz.babySister.activity.MessageActivity 
+                                                                                                                                                   
+(agent) Starting activity com.cz.babySister.activity.MessageActivity...
+(agent) Activity successfully asked to start.
+com.cz.babySister on (google: 10) [net] # android intent launch_activity com.cz.babySister.activity.JiFenActivity 
+                                                                                                                                                   
+(agent) Starting activity com.cz.babySister.activity.JiFenActivity...
+(agent) Activity successfully asked to start.
+com.cz.babySister on (google: 10) [net] #  
+
+</code></pre>
+<ul>
+<li><p>就像这个如果app没有做限制的话，就算没有登陆也可以在这些activity之间进行跳转</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/11/11/Objection%E7%8E%AF%E5%A2%83%E3%80%81%E8%87%AA%E5%8A%A8%E5%8C%96%E5%88%86%E6%9E%90%E5%92%8C%E6%8F%92%E4%BB%B6/image-20231111213131765.png" class="" title="image-20231111213131765">
+</li>
+<li><p>不过这种现在比较少了，大部分app都做了处理</p>
+</li>
+</ul>
+</li>
+<li><p>用frida连接手机的时候，也可以通过<code>jnettop</code>查看连接的ip、端口、流量大小</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/11/11/Objection%E7%8E%AF%E5%A2%83%E3%80%81%E8%87%AA%E5%8A%A8%E5%8C%96%E5%88%86%E6%9E%90%E5%92%8C%E6%8F%92%E4%BB%B6/image-20231111213320983.png" class="" title="image-20231111213320983">
+</li>
+<li><p>取消jobs的命令是<code>jobs kill job ID</code></p>
+<pre><code class="bash">com.android.settings on (google: 10) [net] # jobs list                                                                                
+Job ID       Hooks  Type
+-----------  -----  -----------------------------------------------------------
+7292iblia76     63  watch-class for: android.bluetooth.BluetoothDevice
+k24tk3ywand      1  watch-method for: android.bluetooth.BluetoothDevice.getName
+iargrzfrte       6  watch-method for: java.io.File.$init
+com.android.settings on (google: 10) [net] # jobs kill 7292iblia76                                                        
+com.android.settings on (google: 10) [net] # jobs list                                                                                
+Job ID       Hooks  Type
+-----------  -----  -----------------------------------------------------------
+k24tk3ywand      1  watch-method for: android.bluetooth.BluetoothDevice.getName
+iargrzfrte       6  watch-method for: java.io.File.$init
+</code></pre>
+</li>
+<li><p>对基础库的hook可以得到非常多的信息</p>
+<pre><code class="bash">com.android.settings on (google: 10) [net] # android hooking watch class_method java.io.File.$init --dump-args                        
+(agent) Attempting to watch class java.io.File and method $init.
+(agent) Hooking java.io.File.$init(java.io.File, java.lang.String)
+(agent) Hooking java.io.File.$init(java.lang.String)
+(agent) Hooking java.io.File.$init(java.lang.String, int)
+(agent) Hooking java.io.File.$init(java.lang.String, java.io.File)
+(agent) Hooking java.io.File.$init(java.lang.String, java.lang.String)
+(agent) Hooking java.io.File.$init(java.net.URI)
+(agent) Registering job x8s8vp7qpzc. Type: watch-method for: java.io.File.$init
+com.android.settings on (google: 10) [net] # jobs list                                                                                
+Job ID       Hooks  Type
+-----------  -----  ------------------------------------
+x8s8vp7qpzc      6  watch-method for: java.io.File.$init
+</code></pre>
+<p>例如：在设置里面执行操作</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/11/11/Objection%E7%8E%AF%E5%A2%83%E3%80%81%E8%87%AA%E5%8A%A8%E5%8C%96%E5%88%86%E6%9E%90%E5%92%8C%E6%8F%92%E4%BB%B6/image-20231111163337664.png" class="" title="image-20231111163337664">
+
+<ul>
+<li><code>hook</code>了<code>File</code>构造器的所有重载,，在设置界面随意进出几个子设置界面，可以看到命中很多次该方法的不同重载，每次参数的值也都不同</li>
+</ul>
+</li>
+</ol>
+</blockquote>
+<h2 id="插件使用"><a href="#插件使用" class="headerlink" title="插件使用"></a>插件使用</h2><p>objection和frida都可以加载插件使用。具体情况看插件的readme会说明使用方法</p>
+<h3 id="Wallbreaker使用"><a href="#Wallbreaker使用" class="headerlink" title="Wallbreaker使用"></a>Wallbreaker使用</h3><p><a class="link" target="_blank" rel="noopener" href="https://github.com/hluwa/Wallbreaker.git">下载插件 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>，然后加载就可以使用了</p>
+<pre><code class="bash">┌──(kali㉿kali)-[~/Downloads/Wallbreaker]
+└─$ objection -N -h 192.168.1.3 -p 8888 -g com.android.settings explore
+Using networked device @`192.168.1.3:8888`
+Agent injected and responds ok!
+
+     _   _         _   _
+ ___| |_|_|___ ___| |_|_|___ ___
+| . | . | | -_|  _|  _| | . |   |
+|___|___| |___|___|_| |_|___|_|_|
+      |___|(object)inject(ion) v1.8.4
+
+     Runtime Mobile Exploration
+        by: @leonjza from @sensepost
+
+[tab] for command suggestions
+com.android.settings on (google: 10) [net] # plugin load /home/kali/Downloads/Wallbreaker 
+                                                                                                                                      
+Loaded plugin: wallbreaker
+</code></pre>
+<p>加载完就可以使用了</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/11/11/Objection%E7%8E%AF%E5%A2%83%E3%80%81%E8%87%AA%E5%8A%A8%E5%8C%96%E5%88%86%E6%9E%90%E5%92%8C%E6%8F%92%E4%BB%B6/image-20231111170207935.png" class="" title="image-20231111170207935">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2023/11/11/Objection%E7%8E%AF%E5%A2%83%E3%80%81%E8%87%AA%E5%8A%A8%E5%8C%96%E5%88%86%E6%9E%90%E5%92%8C%E6%8F%92%E4%BB%B6/image-20231111170756781.png" class="" title="image-20231111170756781">
+
+<ul>
+<li>可以查看感兴趣的类的包名、成员变量和属性信息等等，可以对一个类进行一个基本的了解</li>
+</ul>
+<h3 id="frida-dexdump脱壳插件"><a href="#frida-dexdump脱壳插件" class="headerlink" title="frida-dexdump脱壳插件"></a>frida-dexdump脱壳插件</h3><p>下载<a class="link" target="_blank" rel="noopener" href="https://github.com/hluwa/frida-dexdump.git">frida-dexdump脱壳插件 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<blockquote>
+<p>下载的时候我们安装一个带壳的apk等下测试</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/11/11/Objection%E7%8E%AF%E5%A2%83%E3%80%81%E8%87%AA%E5%8A%A8%E5%8C%96%E5%88%86%E6%9E%90%E5%92%8C%E6%8F%92%E4%BB%B6/image-20231111171933540.png" class="" title="image-20231111171933540">
+
+<ul>
+<li><p>安装完之后运行</p>
+</li>
+<li><p>用objection检索一下包中的类名：大部分都已经被壳替换掉了</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/11/11/Objection%E7%8E%AF%E5%A2%83%E3%80%81%E8%87%AA%E5%8A%A8%E5%8C%96%E5%88%86%E6%9E%90%E5%92%8C%E6%8F%92%E4%BB%B6/image-20231111175037981.png" class="" title="image-20231111175037981">
+
+<ul>
+<li>com.cz.babySister.alipay.PayActivity（阿里支付）、com.cz.babySister.interfaces.JiFenInterFaces（积分），可以看到一些登陆注册、支付等activity，不过大部分都被无意义的字母替换掉了</li>
+</ul>
+</li>
+</ul>
+<p><strong>下载完使用脱壳工具frida-dexdump脱壳</strong></p>
+<pre><code class="bash">┌──(kali㉿kali)-[~/Downloads]
+└─$ frida-dexdump -H 192.168.1.3:8888 -f com.cz.babySister     
+
+-----------------------------------------------------------------------------------------------------------------------------------
+                                __      _     _                 _              _                                                    
+                              / _|_ __(_) __| | __ _        __| | _____  ____| |_   _ _ __ ___  _ __                               
+                             | |_| '__| |/ _` |/ _` |_____ / _` |/ _ \ \/ / _` | | | | '_ ` _ \| '_ \                              
+                             |  _| |  | | (_| | (_| |_____| (_| |  __/&gt;  &lt; (_| | |_| | | | | | | |_) |                             
+                             |_| |_|  |_|\__,_|\__,_|      \__,_|\___/_/\_\__,_|\__,_|_| |_| |_| .__/                              
+                                                                                               |_|                                 
+                                               https://github.com/hluwa/frida-dexdump                                              
+-----------------------------------------------------------------------------------------------------------------------------------
+
+Spawning `com.cz.babySister`...                                         
+INFO:Agent:DexDumpAgent&lt;Connection(pid=Session(pid=27125), connected:True), attached=True&gt;: Attach.
+INFO:frida-dexdump:Waiting 5s...
+INFO:frida-dexdump:[+] Searching...
+INFO:frida-dexdump:[*] Successful found 16 dex, used 13 time.
+INFO:frida-dexdump:[+] Starting dump to '/home/kali/Downloads/com.cz.babySister'...
+INFO:frida-dexdump:[+] DexMd5=e00b57c04166adc8236012e872f01df4, SavePath=/home/kali/Downloads/com.cz.babySister/classes.dex, DexSize=0x9e74c
+INFO:frida-dexdump:[+] DexMd5=735418c3b52a60e8497a6746cdd940a0, SavePath=/home/kali/Downloads/com.cz.babySister/classes02.dex, DexSize=0x6c022c
+INFO:frida-dexdump:[+] DexMd5=425e63748a44957ba9000e325479c997, SavePath=/home/kali/Downloads/com.cz.babySister/classes03.dex, DexSize=0x551eb4
+INFO:frida-dexdump:[+] DexMd5=a2fa46881e6a15401a35e782d91a5c30, SavePath=/home/kali/Downloads/com.cz.babySister/classes04.dex, DexSize=0xba28
+INFO:frida-dexdump:[+] DexMd5=c155bf12df19e0f311c4859bb3690be0, SavePath=/home/kali/Downloads/com.cz.babySister/classes05.dex, DexSize=0x35a70
+INFO:frida-dexdump:[+] DexMd5=f1771b68f5f9b168b79ff59ae2daabe4, SavePath=/home/kali/Downloads/com.cz.babySister/classes06.dex, DexSize=0x11c
+INFO:frida-dexdump:[+] DexMd5=7b3196f88e671b759185123f53ac9d13, SavePath=/home/kali/Downloads/com.cz.babySister/classes07.dex, DexSize=0xba28
+Set read permission for memory range: 0x77e532add0-0x77e56d4000
+Set read permission for memory range: 0x77e532add0-0x77e57d0000
+Set read permission for memory range: 0x77e532add0-0x77e5831000
+ERROR:frida-dexdump:[-] Error: access violation accessing 0x77e53ee000
+    at frida/runtime/core.js:144
+    at frida/runtime/message-dispatcher.js:15
+    at c (frida/runtime/message-dispatcher.js:25): {'addr': '0x77e532add0', 'size': 5609016}
+Traceback (most recent call last):
+  File "/home/kali/.pyenv/versions/3.8.0/lib/python3.8/site-packages/frida_dexdump/__main__.py", line 81, in dump
+    bs = self.agent.memory_dump(dex['addr'], dex['size'])
+  File "/home/kali/.pyenv/versions/3.8.0/lib/python3.8/site-packages/frida_dexdump/agent/__init__.py", line 24, in memory_dump
+    return self._rpc.memorydump(base, size)
+  File "/home/kali/.pyenv/versions/3.8.0/lib/python3.8/site-packages/frida/core.py", line 401, in method
+    return script._rpc_request('call', js_name, args, **kwargs)
+  File "/home/kali/.pyenv/versions/3.8.0/lib/python3.8/site-packages/frida/core.py", line 26, in wrapper
+    return f(*args, **kwargs)
+  File "/home/kali/.pyenv/versions/3.8.0/lib/python3.8/site-packages/frida/core.py", line 333, in _rpc_request
+    raise result[2]
+frida.core.RPCException: Error: access violation accessing 0x77e53ee000
+    at frida/runtime/core.js:144
+    at frida/runtime/message-dispatcher.js:15
+    at c (frida/runtime/message-dispatcher.js:25)
+INFO:frida-dexdump:[+] DexMd5=8345c73b46814e1384ff8462248b23af, SavePath=/home/kali/Downloads/com.cz.babySister/classes08.dex, DexSize=0x695a8
+INFO:frida-dexdump:[+] DexMd5=ecf7cddd075183ac84db1677966211d0, SavePath=/home/kali/Downloads/com.cz.babySister/classes09.dex, DexSize=0x1274a4
+INFO:frida-dexdump:[+] DexMd5=e920130e06b5687afe980ddb8e3b4425, SavePath=/home/kali/Downloads/com.cz.babySister/classes10.dex, DexSize=0x1557b4
+INFO:frida-dexdump:[+] DexMd5=fd1b06e77f97579a960bb5029b46cc33, SavePath=/home/kali/Downloads/com.cz.babySister/classes11.dex, DexSize=0x325530
+INFO:frida-dexdump:[+] DexMd5=7e343cbc45b618d05182d74bd61826b2, SavePath=/home/kali/Downloads/com.cz.babySister/classes12.dex, DexSize=0x4b7700
+INFO:frida-dexdump:[+] DexMd5=2dd14f384bfe4741e5a9463e12c79c89, SavePath=/home/kali/Downloads/com.cz.babySister/classes13.dex, DexSize=0xecfc
+INFO:frida-dexdump:[+] DexMd5=b93f8047ed660629c2efe0aef2bbe0e4, SavePath=/home/kali/Downloads/com.cz.babySister/classes14.dex, DexSize=0x63194
+INFO:frida-dexdump:[*] All done...
+</code></pre>
+<ul>
+<li><p>脱完壳之后可以看到脱出来了很多个dex文件</p>
+</li>
+<li><p>我们搜索一下MainActivity在哪个文件里面</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/11/11/Objection%E7%8E%AF%E5%A2%83%E3%80%81%E8%87%AA%E5%8A%A8%E5%8C%96%E5%88%86%E6%9E%90%E5%92%8C%E6%8F%92%E4%BB%B6/image-20231111195143368.png" class="" title="image-20231111195143368"></li>
+</ul>
+<p><strong>使用jadx打开这两个dex文件</strong></p>
+<blockquote>
+<p>打开失败：checksum出错了</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/11/11/Objection%E7%8E%AF%E5%A2%83%E3%80%81%E8%87%AA%E5%8A%A8%E5%8C%96%E5%88%86%E6%9E%90%E5%92%8C%E6%8F%92%E4%BB%B6/image-20231111195106060.png" class="" title="image-20231111195106060">
+
+<ul>
+<li><p>那暂时先把checksum关掉</p>
+<p>位置：File(文件 )&gt; Preferences(首选项)：<strong>快捷键（CTRL+shift+P）</strong></p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/11/11/Objection%E7%8E%AF%E5%A2%83%E3%80%81%E8%87%AA%E5%8A%A8%E5%8C%96%E5%88%86%E6%9E%90%E5%92%8C%E6%8F%92%E4%BB%B6/image-20231111195725856.png" class="" title="image-20231111195725856">
+</li>
+<li><p>再重新打开一遍就可以正常显示了</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/11/11/Objection%E7%8E%AF%E5%A2%83%E3%80%81%E8%87%AA%E5%8A%A8%E5%8C%96%E5%88%86%E6%9E%90%E5%92%8C%E6%8F%92%E4%BB%B6/image-20231111200443085.png" class="" title="image-20231111200443085">
+
+<ul>
+<li>可以直接搜索定位到我们的MainActivity等方法</li>
+</ul>
+</li>
+</ul>
+<p>或者我们使用GDA工具也同样可以打开</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/11/11/Objection%E7%8E%AF%E5%A2%83%E3%80%81%E8%87%AA%E5%8A%A8%E5%8C%96%E5%88%86%E6%9E%90%E5%92%8C%E6%8F%92%E4%BB%B6/image-20231111201125885.png" class="" title="image-20231111201125885">
+</blockquote>
+</blockquote>
+
+        </div>
+
+        
+            <div class="post-copyright-info">
+                <div class="article-copyright-info-container">
+    <ul>
+        <li><strong>标题:</strong> Objection环境、自动化分析和插件</li>
+        <li><strong>作者:</strong> xiaoeryu</li>
+        <li><strong>创建于
+                :</strong> 2023-11-11 20:13:38</li>
+        
+            <li>
+                <strong>更新于
+                    :</strong> 2023-11-11 22:14:45
+            </li>
+        
+        <li>
+            <strong>链接:</strong> https://github.com/xiaoeryu/2023/11/11/Objection环境、自动化分析和插件/
+        </li>
+        <li>
+            <strong>
+                版权声明:
+            </strong>
+            
+            本文章采用 <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0/deed.zh">CC BY-NC-SA 4.0</a> 进行许可。
+            
+
+        </li>
+    </ul>
+</div>
+
+            </div>
+        
+
+        
+            <ul class="post-tags-box">
+                
+                    <li class="tag-item">
+                        <a href="/tags/Frida%E9%80%86%E5%90%91%E4%B8%8E%E5%88%A9%E7%94%A8%E8%87%AA%E5%8A%A8%E5%8C%96/">#Frida逆向与利用自动化</a>&nbsp;
+                    </li>
+                
+                    <li class="tag-item">
+                        <a href="/tags/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/">#环境搭建</a>&nbsp;
+                    </li>
+                
+            </ul>
+        
+
+        
+
+        
+            <div class="article-nav">
+                
+                
+                    <div class="article-next">
+                        <a class="next"
+                        rel="next"
+                        href="/2023/11/04/%E7%9C%8B%E9%9B%AA2W%E8%AF%BE-Frida%E5%BC%80%E5%8F%91%E5%92%8C%E8%B0%83%E8%AF%95%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/"
+                        >
+                            <span class="title flex justify-center items-center">
+                                <span class="post-nav-title-item">Frida开发和调试环境搭建</span>
+                                <span class="post-nav-item">下一篇</span>
+                            </span>
+                            <span class="right arrow-icon flex justify-center items-center">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+
+        
+            <div class="comment-container">
+                <div class="comments-container pjax">
+    <div id="comment-anchor"></div>
+    <div class="comment-area-title">
+        <i class="fa-solid fa-comments"></i>&nbsp;评论
+    </div>
+    
+
+        
+            
+ 
+    <div id="waline"></div>
+    <script type="module"  data-swup-reload-script>
+        import { init } from '/js/libs/waline.mjs';
+
+        function loadWaline() {
+            init({
+                el: '#waline',
+                serverURL: 'https://example.example.com',
+                lang: 'zh-CN',
+                dark: 'body[class~="dark-mode"]',
+                requiredMeta: ['nick','mail'], // cannot customize by theme config, change it yourself
+            });
+        }
+
+        if ('true') {
+            const loadWalineTimeout = setTimeout(() => {
+                loadWaline();
+                clearTimeout(loadWalineTimeout);
+            }, 1000);
+        } else {
+            window.addEventListener('DOMContentLoaded', loadWaline);
+        }
+        
+    </script>
+
+
+
+        
+    
+</div>
+
+            </div>
+        
+    </div>
+
+    
+        <div class="toc-content-container">
+            <div class="post-toc-wrap">
+    <div class="post-toc">
+        <div class="toc-title">此页目录</div>
+        <div class="page-title">Objection环境、自动化分析和插件</div>
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#frida%E5%92%8Cobjection%E5%B7%A5%E5%85%B7%E7%9A%84%E4%BD%BF%E7%94%A8"><span class="nav-text">frida和objection工具的使用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%8F%92%E4%BB%B6%E4%BD%BF%E7%94%A8"><span class="nav-text">插件使用</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Wallbreaker%E4%BD%BF%E7%94%A8"><span class="nav-text">Wallbreaker使用</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#frida-dexdump%E8%84%B1%E5%A3%B3%E6%8F%92%E4%BB%B6"><span class="nav-text">frida-dexdump脱壳插件</span></a></li></ol></li></ol>
+
+    </div>
+</div>
+        </div>
+    
+</div>
+
+
+
+                
+
+            </div>
+
+            
+
+        </div>
+
+        <div class="main-content-footer">
+            <footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
+    <div class="info-container py-3 text-center">
+        
+        <div class="text-center">
+            &copy;
+            
+              <span>2022</span>
+              -
+            
+            2023&nbsp;&nbsp;<i class="fa-solid fa-heart fa-beat" style="--fa-animation-duration: 0.5s; color: #f54545"></i>&nbsp;&nbsp;<a href="/">xiaoeryu</a>
+        </div>
+        
+            <script data-swup-reload-script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            <div class="relative text-center lg:absolute lg:right-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-right">
+                
+                    <span id="busuanzi_container_site_uv" class="lg:!block">
+                        <span class="text-sm">访问人数</span>
+                        <span id="busuanzi_value_site_uv"></span>
+                    </span>
+                
+                
+                    <span id="busuanzi_container_site_pv" class="lg:!block">
+                        <span class="text-sm">总访问量</span>
+                        <span id="busuanzi_value_site_pv"></span>
+                    </span>
+                
+            </div>
+        
+        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
+            <span class="lg:block text-sm">由 <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a> 驱动</span>
+            <span class="text-sm lg:block">主题&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.5.0</a></span>
+        </div>
+        
+        
+            <div>
+                博客已运行 <span class="odometer" id="runtime_days" ></span> 天 <span class="odometer" id="runtime_hours"></span> 小时 <span class="odometer" id="runtime_minutes"></span> 分钟 <span class="odometer" id="runtime_seconds"></span> 秒
+            </div>
+        
+        
+            <script data-swup-reload-script>
+                try {
+                    function odometer_init() {
+                    const elements = document.querySelectorAll('.odometer');
+                    elements.forEach(el => {
+                        new Odometer({
+                            el,
+                            format: '( ddd).dd',
+                            duration: 200
+                        });
+                    });
+                    }
+                    odometer_init();
+                } catch (error) {}
+            </script>
+        
+        
+        
+    </div>  
+</footer>
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="article-tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="right-bottom-tools page-aside-toggle">
+                <i class="fa-regular fa-outdent"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+            <li class="go-comment">
+                <i class="fa-regular fa-comments"></i>
+            </li>
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-side-tools-container">
+        <div class="side-tools-container">
+    <ul class="hidden-tools-list">
+        <li class="right-bottom-tools tool-font-adjust-plus flex justify-center items-center">
+            <i class="fa-regular fa-magnifying-glass-plus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-font-adjust-minus flex justify-center items-center">
+            <i class="fa-regular fa-magnifying-glass-minus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
+            <i class="fa-regular fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+
+        <li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
+            <i class="fa-regular fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="visible-tools-list">
+        <li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
+            <i class="fa-regular fa-cog fa-spin"></i>
+        </li>
+        
+            <li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
+                <i class="arrow-up fas fa-arrow-up"></i>
+                <span class="percent"></span>
+            </li>
+        
+        
+    </ul>
+</div>
+
+    </div>
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+
+</main>
+
+
+    
+<script src="/js/libs/Swup.min.js"></script>
+
+<script src="/js/libs/SwupSlideTheme.min.js"></script>
+
+<script src="/js/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="/js/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="/js/libs/SwupScrollPlugin.min.js"></script>
+
+<script src="/js/libs/SwupPreloadPlugin.min.js"></script>
+
+<script>
+    const swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+            new SwupPreloadPlugin(),
+        ],
+        containers: ["#swup"],
+    });
+</script>
+
+
+
+
+
+
+
+<script src="/js/tools/imageViewer.js" type="module"></script>
+
+<script src="/js/utils.js" type="module"></script>
+
+<script src="/js/main.js" type="module"></script>
+
+<script src="/js/layouts/navbarShrink.js" type="module"></script>
+
+<script src="/js/tools/scrollTopBottom.js" type="module"></script>
+
+<script src="/js/tools/lightDarkSwitch.js" type="module"></script>
+
+<script src="/js/layouts/categoryList.js" type="module"></script>
+
+
+
+
+
+    
+<script src="/js/tools/codeBlock.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/layouts/lazyload.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/tools/runtime.js"></script>
+
+    
+<script src="/js/libs/odometer.min.js"></script>
+
+    
+<link rel="stylesheet" href="/assets/odometer-theme-minimal.css">
+
+
+
+
+  
+<script src="/js/libs/Typed.min.js"></script>
+
+  
+<script src="/js/plugins/typed.js" type="module"></script>
+
+
+
+
+
+
+
+<div class="post-scripts" data-swup-reload-script>
+    
+        
+<script src="/js/libs/anime.min.js"></script>
+
+        
+<script src="/js/tools/tocToggle.js" type="module"></script>
+
+<script src="/js/layouts/toc.js" type="module"></script>
+
+<script src="/js/plugins/tabs.js" type="module"></script>
+
+    
+</div>
+
+
+</body>
+</html>
