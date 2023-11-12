@@ -1102,7 +1102,7 @@
       
       <categories>
           
-          <category> Windows软件逆向 </category>
+          <category> Windows逆向 </category>
           
       </categories>
       
@@ -1181,7 +1181,7 @@
       
       <categories>
           
-          <category> Windows软件逆向 </category>
+          <category> Windows逆向 </category>
           
       </categories>
       
@@ -1584,7 +1584,7 @@
       
         <tags>
             
-            <tag> go </tag>
+            <tag> golang </tag>
             
             <tag> 环境配置 </tag>
             
