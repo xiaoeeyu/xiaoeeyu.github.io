@@ -4,6 +4,33 @@
   
     
     <entry>
+      <title>Frida上手和逆向三段</title>
+      <link href="/2023/11/17/Frida%E4%B8%8A%E6%89%8B%E5%92%8C%E9%80%86%E5%90%91%E4%B8%89%E6%AE%B5/"/>
+      <url>/2023/11/17/Frida%E4%B8%8A%E6%89%8B%E5%92%8C%E9%80%86%E5%90%91%E4%B8%89%E6%AE%B5/</url>
+      
+        <content type="html"><![CDATA[<p>本章主要内容：</p><blockquote><p>Frida基本操作：参数、调用栈、返回值</p><p>Frida精髓：方法重载、参数构造、动静态处理、主动调用、忽略内部细节，直接返回结果</p><p>逆向三段：（hook ・invoke）・rpc</p></blockquote><span id="more"></span><h2 id="编写代码测试hook"><a href="#编写代码测试hook" class="headerlink" title="编写代码测试hook"></a>编写代码测试hook</h2><h6 id="目标Demo源码"><a href="#目标Demo源码" class="headerlink" title="目标Demo源码"></a>目标Demo源码</h6><pre><code class="java">package com.xiaoeryu.lesson4_4;import androidx.appcompat.app.AppCompatActivity;import android.os.Bundle;import android.util.Log;public class MainActivity extends AppCompatActivity {    @Override    protected void onCreate(Bundle savedInstanceState) {        super.onCreate(savedInstanceState);        setContentView(R.layout.activity_main);        while (true){            try {                Thread.sleep(1000);            } catch (InterruptedException e) {                throw new RuntimeException(e);            }            int m = fun(4, 5);        }    }    int fun(int x, int y){        Log.d("xiaoeryu", String.valueOf(x + y));        return x + y;    }}</code></pre><h3 id="hook被调用的fun-函数"><a href="#hook被调用的fun-函数" class="headerlink" title="hook被调用的fun()函数"></a>hook被调用的<code>fun()</code>函数</h3><pre><code class="js">function main(){    Java.perform(function(){        Java.use("com.xiaoeryu.lesson4_4.MainActivity").fun.implementation = function(arg1, arg2){            var result = this.fun(arg1, arg2);            console.log("arg1, arg2, result", arg1, arg2, result);            return result;        }    })}setImmediate(main)</code></pre><h3 id="方法重载hook"><a href="#方法重载hook" class="headerlink" title="方法重载hook"></a>方法重载hook</h3><h6 id="给源码添加一个重载函数，并调用"><a href="#给源码添加一个重载函数，并调用" class="headerlink" title="给源码添加一个重载函数，并调用"></a>给源码添加一个重载函数，并调用</h6><pre><code class="java">    int fun(int x, int y){        Log.d("xiaoeryu", String.valueOf(x + y));        return x + y;    }</code></pre><h6 id="有重载情况下的hook"><a href="#有重载情况下的hook" class="headerlink" title="有重载情况下的hook"></a>有重载情况下的hook</h6><pre><code class="js">function main(){    Java.perform(function(){        // overloading with two parameters        Java.use("com.xiaoeryu.lesson4_4.MainActivity").fun.overload('int', 'int').implementation = function(arg1, arg2){            var result = this.fun(100, 200);    // parameters can be changed            console.log(Java.use("android.util.Log").getStackTraceString(Java.use("java.lang.Throwable").$new()));// print call stack            console.log("arg1, arg2, result", arg1, arg2, result);            return result;        }        // overloading with a one parameter        Java.use("com.xiaoeryu.lesson4_4.MainActivity").fun.overload('java.lang.String').implementation = function(arg1){            var result = this.fun(Java.use('java.lang.String').$new('NIHAO'));  // parameters can be changed            console.log("arg1, result", arg1, result);            return result;        }    })}setImmediate(main)</code></pre><h3 id="主动调用未被调用的函数"><a href="#主动调用未被调用的函数" class="headerlink" title="主动调用未被调用的函数"></a>主动调用未被调用的函数</h3><img lazyload="" src="/images/loading.svg" data-src="/2023/11/17/Frida%E4%B8%8A%E6%89%8B%E5%92%8C%E9%80%86%E5%90%91%E4%B8%89%E6%AE%B5/image-20231117185353103.png" class="" title="image-20231117185353103"><center>图一</center><h6 id="hook方法"><a href="#hook方法" class="headerlink" title="hook方法"></a>hook方法</h6><pre><code class="js">        Java.choose("com.xiaoeryu.lesson4_4.MainActivity",{            onMatch:function(instance){                console.log("found instance: ", instance)                console.log("found instance: ", instance.secret())            },onComplete:function(){}        })</code></pre><h6 id="静态方法"><a href="#静态方法" class="headerlink" title="静态方法"></a>静态方法</h6><img lazyload="" src="/images/loading.svg" data-src="/2023/11/17/Frida%E4%B8%8A%E6%89%8B%E5%92%8C%E9%80%86%E5%90%91%E4%B8%89%E6%AE%B5/image-20231117185612409.png" class="" title="image-20231117185612409"><center>图二</center><p>如果是静态方法的话，会更简单点</p><h6 id="hook方法-1"><a href="#hook方法-1" class="headerlink" title="hook方法"></a>hook方法</h6><pre><code class="js">var result = Java.use("com.xiaoeryu.lesson4_4.MainActivity").secret2();        console.log(result);</code></pre><hr><h3 id="实践"><a href="#实践" class="headerlink" title="实践"></a>实践</h3><p><strong>把各种情况分析完了，用上一章测试用的CTF题目来实践一下</strong></p><p><em>在hook的时候如果是动态方法的话，我们需要去搜索实例，如果是静态方法直接调用就ok</em></p><img lazyload="" src="/images/loading.svg" data-src="/2023/11/17/Frida%E4%B8%8A%E6%89%8B%E5%92%8C%E9%80%86%E5%90%91%E4%B8%89%E6%AE%B5/image-20231117185928058.png" class="" title="image-20231117185928058"><center>图三</center><ul><li><p>用jadx可以看到我们要调用的<code>a方法</code>没有static修饰，是一个动态方法</p></li><li><p>这样的话我们就需要在<code>MainActivity</code>类中去搜索它的实例去调用</p></li></ul><p>上一章已经分析过了，我们要hook的是里面的<code>getWritableDatabase</code>函数</p><img lazyload="" src="/images/loading.svg" data-src="/2023/11/17/Frida%E4%B8%8A%E6%89%8B%E5%92%8C%E9%80%86%E5%90%91%E4%B8%89%E6%AE%B5/image-20231117190515462.png" class="" title="image-20231117190515462"><center>图四</center><ul><li>可以看到这个函数有重载，对于有重载的方法如果我们不确定应该hook哪一个就可以全部都hook</li></ul><h6 id="hook方法-2"><a href="#hook方法-2" class="headerlink" title="hook方法"></a>hook方法</h6><img lazyload="" src="/images/loading.svg" data-src="/2023/11/17/Frida%E4%B8%8A%E6%89%8B%E5%92%8C%E9%80%86%E5%90%91%E4%B8%89%E6%AE%B5/image-20231117192633622.png" class="" title="image-20231117192633622"><center>图五</center><ul><li>可以看到报错提示有重载，修改一下脚本hook这两个重载</li></ul><img lazyload="" src="/images/loading.svg" data-src="/2023/11/17/Frida%E4%B8%8A%E6%89%8B%E5%92%8C%E9%80%86%E5%90%91%E4%B8%89%E6%AE%B5/image-20231117192340047.png" class="" title="image-20231117192340047"><center>图六</center><ul><li>修改完就不报错了，但是因为没有调用所以我们也获取不到想要的信息</li></ul><h6 id="在MainActivity中搜索实例a并调用"><a href="#在MainActivity中搜索实例a并调用" class="headerlink" title="在MainActivity中搜索实例a并调用"></a>在MainActivity中搜索实例a并调用</h6><pre><code class="js">function invoke(){    Java.perform(function(){        Java.choose("com.example.yaphetshan.tencentwelcome.MainActivity", {            onMatch:function(instance){                console.log("found instance ", instance);                console.log("invoke instance.a ", instance.a());            }, onComplete:function(){console.log("search completed!")}        })    })}</code></pre><p>实现完成<code>CTRL+S</code>保存一遍就执行了</p><img lazyload="" src="/images/loading.svg" data-src="/2023/11/17/Frida%E4%B8%8A%E6%89%8B%E5%92%8C%E9%80%86%E5%90%91%E4%B8%89%E6%AE%B5/image-20231117193201460.png" class="" title="image-20231117193201460"><ul><li>可以看到密码已经被我们成功的拿到了</li><li>并且可以看到是通过参数为String的重载拿到的</li><li>顺便也打印它的调用堆栈看一下</li></ul>]]></content>
+      
+      
+      <categories>
+          
+          <category> Android逆向 </category>
+          
+      </categories>
+      
+      
+        <tags>
+            
+            <tag> Frida逆向与利用自动化 </tag>
+            
+            <tag> Frida Hook </tag>
+            
+        </tags>
+      
+    </entry>
+    
+    
+    
+    <entry>
       <title>Objection快速逆向、自动分析和主动调用</title>
       <link href="/2023/11/14/Objection%E5%BF%AB%E9%80%9F%E9%80%86%E5%90%91%E3%80%81%E8%87%AA%E5%8A%A8%E5%88%86%E6%9E%90%E5%92%8C%E4%B8%BB%E5%8A%A8%E8%B0%83%E7%94%A8/"/>
       <url>/2023/11/14/Objection%E5%BF%AB%E9%80%9F%E9%80%86%E5%90%91%E3%80%81%E8%87%AA%E5%8A%A8%E5%88%86%E6%9E%90%E5%92%8C%E4%B8%BB%E5%8A%A8%E8%B0%83%E7%94%A8/</url>
@@ -1129,7 +1156,7 @@
       
       <categories>
           
-          <category> Windows逆向 </category>
+          <category> Win逆向 </category>
           
       </categories>
       
@@ -1529,7 +1556,7 @@
       
       <categories>
           
-          <category> Windows逆向 </category>
+          <category> Win逆向 </category>
           
       </categories>
       
@@ -1631,7 +1658,7 @@
       
       <categories>
           
-          <category> Windows逆向 </category>
+          <category> Win逆向 </category>
           
       </categories>
       
@@ -1658,7 +1685,7 @@
       
       <categories>
           
-          <category> Windows逆向 </category>
+          <category> Win逆向 </category>
           
       </categories>
       
@@ -1685,7 +1712,7 @@
       
       <categories>
           
-          <category> Windows逆向 </category>
+          <category> Win逆向 </category>
           
       </categories>
       
@@ -1693,6 +1720,8 @@
         <tags>
             
             <tag> PDF漏洞 </tag>
+            
+            <tag> 漏洞分析 </tag>
             
         </tags>
       
@@ -1710,7 +1739,7 @@
       
       <categories>
           
-          <category> Windows逆向 </category>
+          <category> Win逆向 </category>
           
       </categories>
       
@@ -1762,7 +1791,7 @@
       
       <categories>
           
-          <category> Windows逆向 </category>
+          <category> Win逆向 </category>
           
       </categories>
       
@@ -1789,12 +1818,14 @@
       
       <categories>
           
-          <category> Windows逆向 </category>
+          <category> Win逆向 </category>
           
       </categories>
       
       
         <tags>
+            
+            <tag> 漏洞分析 </tag>
             
             <tag> office漏洞 </tag>
             
