@@ -1,4 +1,5 @@
-https://xiaoeeyu.github.io/2022/09/08/010EDIT%E7%A0%B4%E8%A7%A3-%E6%B3%A8%E5%86%8C%E6%9C%BA/
+https://xiaoeeyu.github.io/2023/11/17/Frida%E4%B8%8A%E6%89%8B%E5%92%8C%E9%80%86%E5%90%91%E4%B8%89%E6%AE%B5/
+https://xiaoeeyu.github.io/2021/09/08/010EDIT%E7%A0%B4%E8%A7%A3-%E6%B3%A8%E5%86%8C%E6%9C%BA/
 https://xiaoeeyu.github.io/2021/05/20/%E5%A0%86%E7%BB%93%E6%9E%84/
 https://xiaoeeyu.github.io/2021/05/19/CVE-2010-2883-Adobe-Reader-TTF%E5%AD%97%E4%BD%93SING%E8%A1%A8%E6%A0%88%E6%BA%A2%E5%87%BA%E6%BC%8F%E6%B4%9E/
 https://xiaoeeyu.github.io/2021/05/20/exploit%E7%BC%96%E5%86%99%E7%B3%BB%E5%88%971-Easy-RM-to-MP3-%E6%BC%8F%E6%B4%9E%E8%B0%83%E8%AF%95/
@@ -6,7 +7,6 @@ https://xiaoeeyu.github.io/2021/05/24/%E4%B8%80%E6%9E%9A%E7%AE%80%E5%8D%95%E7%9A
 https://xiaoeeyu.github.io/2021/05/19/CVE-2012-0158/
 https://xiaoeeyu.github.io/2021/05/20/CVE-2009-0927-PDF%E4%B8%AD%E7%9A%84JS/
 https://xiaoeeyu.github.io/2021/05/20/exploit%E7%BC%96%E5%86%99%E7%B3%BB%E5%88%972%EF%BC%9A%E6%A0%88%E6%BA%A2%E5%87%BA%EF%BC%8C%E8%B7%B3%E8%BD%AC%E8%87%B3shellcode/
-https://xiaoeeyu.github.io/2023/11/17/Frida%E4%B8%8A%E6%89%8B%E5%92%8C%E9%80%86%E5%90%91%E4%B8%89%E6%AE%B5/
 https://xiaoeeyu.github.io/2021/06/07/%E5%BE%AE%E4%BF%A1%E9%98%B2%E6%92%A4%E5%9B%9E/
 https://xiaoeeyu.github.io/2023/11/11/Objection%E7%8E%AF%E5%A2%83%E3%80%81%E8%87%AA%E5%8A%A8%E5%8C%96%E5%88%86%E6%9E%90%E5%92%8C%E6%8F%92%E4%BB%B6/
 https://xiaoeeyu.github.io/2023/11/14/Objection%E5%BF%AB%E9%80%9F%E9%80%86%E5%90%91%E3%80%81%E8%87%AA%E5%8A%A8%E5%88%86%E6%9E%90%E5%92%8C%E4%B8%BB%E5%8A%A8%E8%B0%83%E7%94%A8/
