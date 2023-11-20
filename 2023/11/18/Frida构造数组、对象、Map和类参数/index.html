@@ -29,14 +29,13 @@
 <meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/18/Frida%E6%9E%84%E9%80%A0%E6%95%B0%E7%BB%84%E3%80%81%E5%AF%B9%E8%B1%A1%E3%80%81Map%E5%92%8C%E7%B1%BB%E5%8F%82%E6%95%B0/image-20231118223800036.png">
 <meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/18/Frida%E6%9E%84%E9%80%A0%E6%95%B0%E7%BB%84%E3%80%81%E5%AF%B9%E8%B1%A1%E3%80%81Map%E5%92%8C%E7%B1%BB%E5%8F%82%E6%95%B0/image-20231118223947493.png">
 <meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/18/Frida%E6%9E%84%E9%80%A0%E6%95%B0%E7%BB%84%E3%80%81%E5%AF%B9%E8%B1%A1%E3%80%81Map%E5%92%8C%E7%B1%BB%E5%8F%82%E6%95%B0/image-20231118224238240.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/18/Frida%E6%9E%84%E9%80%A0%E6%95%B0%E7%BB%84%E3%80%81%E5%AF%B9%E8%B1%A1%E3%80%81Map%E5%92%8C%E7%B1%BB%E5%8F%82%E6%95%B0/image-20231118175157552-17003187856201.png">
 <meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/18/Frida%E6%9E%84%E9%80%A0%E6%95%B0%E7%BB%84%E3%80%81%E5%AF%B9%E8%B1%A1%E3%80%81Map%E5%92%8C%E7%B1%BB%E5%8F%82%E6%95%B0/image-20231118224940766.png">
 <meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/18/Frida%E6%9E%84%E9%80%A0%E6%95%B0%E7%BB%84%E3%80%81%E5%AF%B9%E8%B1%A1%E3%80%81Map%E5%92%8C%E7%B1%BB%E5%8F%82%E6%95%B0/image-20231118225044474.png">
 <meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/18/Frida%E6%9E%84%E9%80%A0%E6%95%B0%E7%BB%84%E3%80%81%E5%AF%B9%E8%B1%A1%E3%80%81Map%E5%92%8C%E7%B1%BB%E5%8F%82%E6%95%B0/image-20231118225148951.png">
 <meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/18/Frida%E6%9E%84%E9%80%A0%E6%95%B0%E7%BB%84%E3%80%81%E5%AF%B9%E8%B1%A1%E3%80%81Map%E5%92%8C%E7%B1%BB%E5%8F%82%E6%95%B0/image-20231119233324076.png">
 <meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/18/Frida%E6%9E%84%E9%80%A0%E6%95%B0%E7%BB%84%E3%80%81%E5%AF%B9%E8%B1%A1%E3%80%81Map%E5%92%8C%E7%B1%BB%E5%8F%82%E6%95%B0/image-20231119233616888.png">
 <meta property="article:published_time" content="2023-11-18T14:14:47.000Z">
-<meta property="article:modified_time" content="2023-11-19T15:36:20.490Z">
+<meta property="article:modified_time" content="2023-11-20T05:10:50.839Z">
 <meta property="article:author" content="xiaoeryu">
 <meta property="article:tag" content="Frida逆向与利用自动化">
 <meta property="article:tag" content="Frida Hook">
@@ -287,8 +286,8 @@
     
         <span class="article-date article-meta-item">
             <i class="fa-regular fa-wrench"></i>&nbsp;
-            <span class="desktop">2023-11-19 23:36:20</span>
-            <span class="mobile">2023-11-19 23:36:20</span>
+            <span class="desktop">2023-11-20 13:10:50</span>
+            <span class="mobile">2023-11-20 13:10:50</span>
             <span class="hover-info">更新</span>
         </span>
     
@@ -399,19 +398,8 @@
 <img lazyload="" src="/images/loading.svg" data-src="/2023/11/18/Frida%E6%9E%84%E9%80%A0%E6%95%B0%E7%BB%84%E3%80%81%E5%AF%B9%E8%B1%A1%E3%80%81Map%E5%92%8C%E7%B1%BB%E5%8F%82%E6%95%B0/image-20231118224238240.png" class="" title="image-20231118224238240">
 
 <ul>
-<li>有点奇怪，在搜索实例的时候出现了搜索不到的情况，要等app运行了很久（大概一个小时左右了）才能搜索到实例。也许是设备或者系统版本的问题？没搜索到类似的问题，回头测试一下</li>
-</ul>
-</blockquote>
-</li>
-<li><p>charGPT给的回答：</p>
-<blockquote>
-<p>有时候在应用程序的运行过程中，特定的类可能会被延迟加载，导致在某个时刻无法找到实例，而在稍后的时候可以找到。这可能受到应用程序的优化、类加载时机等因素的影响。</p>
-<img lazyload="" src="/images/loading.svg" data-src="/2023/11/18/Frida%E6%9E%84%E9%80%A0%E6%95%B0%E7%BB%84%E3%80%81%E5%AF%B9%E8%B1%A1%E3%80%81Map%E5%92%8C%E7%B1%BB%E5%8F%82%E6%95%B0/image-20231118175157552-17003187856201.png" class="" title="image-20231118175157552">
-
-<ul>
-<li>所以<code>java.use</code>会比<code>java.choose</code>会更稳定一点，但是<code>java.use</code>无法用于查找和迭代多个对象实例。还是要根据需求选择</li>
-<li>简单来说就是hook的话使用<code>java.use</code>，找实例的话使用<code>java.choose</code></li>
-<li>这个问题可能是跟运行环境有关，不过<code>java.use</code>也有这个情况，不确定是哪个环境的问题</li>
+<li>有点奇怪，在搜索实例的时候出现了搜索不到的情况，要等app运行了很久（大概一个小时左右了）才能搜索到实例。看报错是编译优化导致的找不到类名。应该是设备或者系统版本的问题。没搜索到类似的问题，回头测试一下</li>
+<li><strong>换了Android 7.1没有这个问题了</strong></li>
 </ul>
 </blockquote>
 </li>
@@ -446,7 +434,7 @@
 <ul>
 <li>打印可以使用命令<code>frida -U com.xiaoeryu.printout -l lesson5.js</code>加载脚本就打印出来了</li>
 </ul>
-<p>hook的话得添加<code>-f</code>重新启动才能hook到</p>
+<p>hook的话需要添加<code>-f</code>参数重新启动才能hook到</p>
 <p>命令：<code>frida -U -f com.xiaoeryu.printout -l lesson5.js --no-pause</code></p>
 <img lazyload="" src="/images/loading.svg" data-src="/2023/11/18/Frida%E6%9E%84%E9%80%A0%E6%95%B0%E7%BB%84%E3%80%81%E5%AF%B9%E8%B1%A1%E3%80%81Map%E5%92%8C%E7%B1%BB%E5%8F%82%E6%95%B0/image-20231119233616888.png" class="" title="image-20231119233616888">
 
@@ -463,7 +451,7 @@
         
             <li>
                 <strong>更新于
-                    :</strong> 2023-11-19 23:36:20
+                    :</strong> 2023-11-20 13:10:50
             </li>
         
         <li>
