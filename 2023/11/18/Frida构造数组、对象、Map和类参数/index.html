@@ -35,7 +35,7 @@
 <meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/18/Frida%E6%9E%84%E9%80%A0%E6%95%B0%E7%BB%84%E3%80%81%E5%AF%B9%E8%B1%A1%E3%80%81Map%E5%92%8C%E7%B1%BB%E5%8F%82%E6%95%B0/image-20231119233324076.png">
 <meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/18/Frida%E6%9E%84%E9%80%A0%E6%95%B0%E7%BB%84%E3%80%81%E5%AF%B9%E8%B1%A1%E3%80%81Map%E5%92%8C%E7%B1%BB%E5%8F%82%E6%95%B0/image-20231119233616888.png">
 <meta property="article:published_time" content="2023-11-18T14:14:47.000Z">
-<meta property="article:modified_time" content="2023-11-20T05:10:50.839Z">
+<meta property="article:modified_time" content="2023-11-20T13:27:33.375Z">
 <meta property="article:author" content="xiaoeryu">
 <meta property="article:tag" content="Frida逆向与利用自动化">
 <meta property="article:tag" content="Frida Hook">
@@ -286,8 +286,8 @@
     
         <span class="article-date article-meta-item">
             <i class="fa-regular fa-wrench"></i>&nbsp;
-            <span class="desktop">2023-11-20 13:10:50</span>
-            <span class="mobile">2023-11-20 13:10:50</span>
+            <span class="desktop">2023-11-20 21:27:33</span>
+            <span class="mobile">2023-11-20 21:27:33</span>
             <span class="hover-info">更新</span>
         </span>
     
@@ -399,7 +399,7 @@
 
 <ul>
 <li>有点奇怪，在搜索实例的时候出现了搜索不到的情况，要等app运行了很久（大概一个小时左右了）才能搜索到实例。看报错是编译优化导致的找不到类名。应该是设备或者系统版本的问题。没搜索到类似的问题，回头测试一下</li>
-<li><strong>换了Android 7.1没有这个问题了</strong></li>
+<li><strong>之前是Android 10.0换了7.1没有这个问题了</strong></li>
 </ul>
 </blockquote>
 </li>
@@ -438,6 +438,11 @@
 <p>命令：<code>frida -U -f com.xiaoeryu.printout -l lesson5.js --no-pause</code></p>
 <img lazyload="" src="/images/loading.svg" data-src="/2023/11/18/Frida%E6%9E%84%E9%80%A0%E6%95%B0%E7%BB%84%E3%80%81%E5%AF%B9%E8%B1%A1%E3%80%81Map%E5%92%8C%E7%B1%BB%E5%8F%82%E6%95%B0/image-20231119233616888.png" class="" title="image-20231119233616888">
 
+
+
+<p>测试Demo<a class="link" target="_blank" rel="noopener" href="https://github.com/xiaoeeyu/printout">源码 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<p>hook<a class="link" target="_blank" rel="noopener" href="https://github.com/xiaoeeyu/printout_hook">脚本 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+
         </div>
 
         
@@ -451,7 +456,7 @@
         
             <li>
                 <strong>更新于
-                    :</strong> 2023-11-20 13:10:50
+                    :</strong> 2023-11-20 21:27:33
             </li>
         
         <li>
