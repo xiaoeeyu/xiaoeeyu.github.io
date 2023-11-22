@@ -1,0 +1,1089 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    
+    <meta name="author" content="xiaoeryu">
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="https://xiaoeeyu.github.io/2023/11/22/六层锁机分析/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+        <meta name="description" content="本章来通过一个案例更深层次的去了解frida，在各种情境下怎么去修改函数的返回值">
+<meta property="og:type" content="article">
+<meta property="og:title" content="六层锁机分析">
+<meta property="og:url" content="https://xiaoeeyu.github.io/2023/11/22/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA%E5%88%86%E6%9E%90/index.html">
+<meta property="og:site_name" content="xiaoeryu">
+<meta property="og:description" content="本章来通过一个案例更深层次的去了解frida，在各种情境下怎么去修改函数的返回值">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/22/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA%E5%88%86%E6%9E%90/image-20231119092257350.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/22/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA%E5%88%86%E6%9E%90/image-20231120224918546.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/22/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA%E5%88%86%E6%9E%90/image-20231120225856239.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/22/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA%E5%88%86%E6%9E%90/image-20231120230102805.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/22/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA%E5%88%86%E6%9E%90/image-20231120232340333.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/22/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA%E5%88%86%E6%9E%90/image-20231121161826092.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/22/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA%E5%88%86%E6%9E%90/image-20231121162253596.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/22/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA%E5%88%86%E6%9E%90/image-20231121162047633.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/22/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA%E5%88%86%E6%9E%90/image-20231121162420767.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/22/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA%E5%88%86%E6%9E%90/image-20231121163357336.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/22/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA%E5%88%86%E6%9E%90/image-20231121164503598.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/22/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA%E5%88%86%E6%9E%90/image-20231121164630724.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/22/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA%E5%88%86%E6%9E%90/image-20231121170030394.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/22/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA%E5%88%86%E6%9E%90/image-20231121170134756.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/22/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA%E5%88%86%E6%9E%90/image-20231121170402762.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/22/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA%E5%88%86%E6%9E%90/image-20231121180613623.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/22/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA%E5%88%86%E6%9E%90/image-20231121182030877.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/22/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA%E5%88%86%E6%9E%90/image-20231121204152860.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/22/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA%E5%88%86%E6%9E%90/image-20231121211304463.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/22/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA%E5%88%86%E6%9E%90/image-20231121211545411.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/22/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA%E5%88%86%E6%9E%90/image-20231121214703168.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/22/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA%E5%88%86%E6%9E%90/image-20231121232432260.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/22/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA%E5%88%86%E6%9E%90/image-20231121232921529.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/22/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA%E5%88%86%E6%9E%90/image-20231121233335779.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/22/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA%E5%88%86%E6%9E%90/image-20231121233823317.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/22/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA%E5%88%86%E6%9E%90/image-20231122111841402.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/22/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA%E5%88%86%E6%9E%90/image-20231122124632217.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/22/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA%E5%88%86%E6%9E%90/image-20231122010851298.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/22/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA%E5%88%86%E6%9E%90/image-20231122011214532.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/22/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA%E5%88%86%E6%9E%90/image-20231122133841569.png">
+<meta property="article:published_time" content="2023-11-22T05:37:50.000Z">
+<meta property="article:modified_time" content="2023-11-22T05:42:30.463Z">
+<meta property="article:author" content="xiaoeryu">
+<meta property="article:tag" content="Frida逆向与利用自动化">
+<meta property="article:tag" content="Frida HOOK">
+<meta property="article:tag" content="处理各种函数返回值">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://xiaoeeyu.github.io/2023/11/22/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA%E5%88%86%E6%9E%90/image-20231119092257350.png">
+    
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/rabete.jpg" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/rabete.jpg">
+    <meta name="theme-color" content="#A31F34">
+    <link rel="shortcut icon" href="/images/rabete.jpg">
+    <!--- Page Info-->
+    
+    <title>
+        
+            六层锁机分析 -
+        
+        xiaoeryu
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+        
+<link rel="stylesheet" href="/assets/build/styles.css">
+
+    
+
+    
+<link rel="stylesheet" href="/fonts/fonts.css">
+
+    
+<link rel="stylesheet" href="/fonts/Satoshi/satoshi.css">
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+    <!--- Font Part-->
+    
+    
+    
+    
+
+    <!--- Inject Part-->
+    
+    <script id="hexo-configurations">
+    window.config = {"hostname":"xiaoeeyu.github.io","root":"/","language":"zh-CN","path":"search.xml"};
+    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true,"title_alignment":"left"},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":4,"number":false,"expand":true,"init_open":true},"copyright":{"enable":true,"default":"cc_by_nc_sa"},"lazyload":true,"recommendation":{"enable":false,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/ball-0101.jpg","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"open_graph":true,"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/galaxy-3608029.jpg","dark":"/images/hacker.jpg"},"title":"XIAOERYU","subtitle":{"text":["明心见性，拨云见日"],"hitokoto":{"enable":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":true,"links":{"github":"https://github.com/xiaoeeyu","instagram":null,"zhihu":null,"twitter":null,"email":"xiaoeryu@163.com"},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null}]},"mermaid":{"enable":false,"version":"9.3.0"}},"version":"2.5.6","navbar":{"auto_hide":false,"color":{"left":"#f78736","right":"#367df7","transparency":35},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Archives":{"path":"/archives","icon":"fa-regular fa-archive"}},"search":{"enable":false,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"blur"},"home":{"sidebar":{"enable":true,"position":"left","first_item":"menu","announcement":null,"links":null},"article_date_format":"auto","categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":3}},"footerStart":"2022/8/17 11:45:14"};
+    window.lang_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"};
+    window.data = {"masonry":false};
+  </script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+<meta name="generator" content="Hexo 6.3.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <span class="swup-progress-icon">
+            <i class="fa-solid fa-circle-notch fa-spin"></i>
+        </span>
+    
+</div>
+
+
+<main class="page-container" id="swup">
+
+    
+
+    <div class="main-content-container">
+
+
+        <div class="main-content-header">
+            <header class="navbar-container">
+    
+    <div class="navbar-content">
+        <div class="left">
+            
+                <a class="logo-image" href="/">
+                    <img src="/images/rabete.jpg">
+                </a>
+            
+            <a class="logo-title" href="/">
+                
+                xiaoeryu
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-house"></i>
+                                        
+                                        首页
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/archives"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-archive"></i>
+                                        
+                                        归档
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile drawer -->
+    <div class="navbar-drawer w-full absolute top-0 left-0 bg-background-color">
+        <ul class="drawer-navbar-list flex flex-col justify-start items-center">
+            
+                
+                    <li class="drawer-navbar-item text-base my-1.5 flex justify-center items-center">
+                        <a class="rounded-3xl py-1.5 px-5 hover:border hover:!text-primary active:!text-primary group " 
+                        href="/"  >
+                             
+                                
+                                    <i class="fa-regular fa-house"></i>
+                                
+                                首页
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+                
+                    <li class="drawer-navbar-item text-base my-1.5 flex justify-center items-center">
+                        <a class="rounded-3xl py-1.5 px-5 hover:border hover:!text-primary active:!text-primary group " 
+                        href="/archives"  >
+                             
+                                
+                                    <i class="fa-regular fa-archive"></i>
+                                
+                                归档
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="main-content-body">
+
+            
+
+            <div class="main-content">
+
+                
+                    <div class="post-page-container">
+    <div class="article-content-container">
+
+        <div class="article-title relative w-full">
+            
+                <div class="w-full flex items-center pt-6 justify-start">
+                    <h1 class="article-title-regular text-second-text-color text-4xl md:text-6xl font-bold px-2 sm:px-6 md:px-8 py-3">六层锁机分析</h1>
+                </div>
+            
+            </div>
+
+        
+            <div class="article-header flex flex-row gap-2 items-center px-2 sm:px-6 md:px-8">
+                <div class="avatar w-[46px] h-[46px] flex-shrink-0 rounded-medium border border-border-color p-[1px]">
+                    <img src="/images/rabete.jpg">
+                </div>
+                <div class="info flex flex-col justify-between">
+                    <div class="author flex items-center">
+                        <span class="name text-default-text-color text-lg font-semibold">xiaoeryu</span>
+                        
+                            <span class="author-label ml-1.5 text-xs px-2 py-0.5 rounded-small text-third-text-color border border-shadow-color-1">Lv5</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2023-11-22 13:37:50</span>
+        <span class="mobile">2023-11-22 13:37:50</span>
+        <span class="hover-info">创建</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2023-11-22 13:42:30</span>
+            <span class="mobile">2023-11-22 13:42:30</span>
+            <span class="hover-info">更新</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/Android%E9%80%86%E5%90%91/">Android逆向</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/Frida%E9%80%86%E5%90%91%E4%B8%8E%E5%88%A9%E7%94%A8%E8%87%AA%E5%8A%A8%E5%8C%96/">Frida逆向与利用自动化</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/Frida-HOOK/">Frida HOOK</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E5%A4%84%E7%90%86%E5%90%84%E7%A7%8D%E5%87%BD%E6%95%B0%E8%BF%94%E5%9B%9E%E5%80%BC/">处理各种函数返回值</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fa-regular fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        
+
+
+        <div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
+            <p>本章来通过一个案例更深层次的去了解frida，在各种情境下怎么去修改函数的返回值</p>
+<span id="more"></span>
+
+<hr>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/11/22/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA%E5%88%86%E6%9E%90/image-20231119092257350.png" class="" title="image-20231119092257350">
+
+<p><strong>先使用objection大致了解一下apk</strong></p>
+<p>objection附加到app</p>
+<p><code>objection -g com.example.androiddemo explore</code></p>
+<p>然后看一下它的activity，总共有六层</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/11/22/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA%E5%88%86%E6%9E%90/image-20231120224918546.png" class="" title="image-20231120224918546">
+
+<ul>
+<li>这个Activity都能直接跳过登陆界面跳过去，这种直接能跳过登陆界面的在现在的app上基本都不存在了。</li>
+</ul>
+<p>接下来开始按正常流程开始分析</p>
+<h2 id="登陆"><a href="#登陆" class="headerlink" title="登陆"></a>登陆</h2><img lazyload="" src="/images/loading.svg" data-src="/2023/11/22/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA%E5%88%86%E6%9E%90/image-20231120225856239.png" class="" title="image-20231120225856239">
+
+<ul>
+<li>点击<code>SIGN IN</code>按钮会有一个<em>Login failed</em>的Toast</li>
+</ul>
+<p>接下来用jadx打开apk搜索这个字符串</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/11/22/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA%E5%88%86%E6%9E%90/image-20231120230102805.png" class="" title="image-20231120230102805">
+
+<p>进入</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/11/22/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA%E5%88%86%E6%9E%90/image-20231120232340333.png" class="" title="image-20231120232340333">
+
+<ul>
+<li>这里调用<code>a方法</code>传入了两个相同的<em>obj</em>然后将返回的结果与<em>obj2</em>作比较</li>
+<li>接下来查看这个两个str参数的重载<code>a方法</code></li>
+<li>hook这个a方法拿到返回的结果输入比较一下</li>
+</ul>
+<h3 id="写hook脚本拿到a-的返回结果"><a href="#写hook脚本拿到a-的返回结果" class="headerlink" title="写hook脚本拿到a()的返回结果"></a>写hook脚本拿到a()的返回结果</h3><pre><code class="js">function main(){
+    Java.perform(function(){
+        Java.use("com.example.androiddemo.Activity.LoginActivity").a.overload('java.lang.String', 'java.lang.String').implementation = function(x, y){
+            var result = this.a(x, y);
+            console.log("x, y, result", x, y, result);
+            return result;
+        }
+    })
+}
+setImmediate(main)
+</code></pre>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/11/22/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA%E5%88%86%E6%9E%90/image-20231121161826092.png" class="" title="image-20231121161826092">
+
+<ul>
+<li><p>将result的值粘贴进去试一下（使用<code>input</code>命令也可以粘贴进去）</p>
+<blockquote>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/11/22/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA%E5%88%86%E6%9E%90/image-20231121162253596.png" class="" title="image-20231121162253596"></blockquote>
+</li>
+</ul>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/11/22/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA%E5%88%86%E6%9E%90/image-20231121162047633.png" class="" title="image-20231121162047633">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2023/11/22/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA%E5%88%86%E6%9E%90/image-20231121162420767.png" class="" title="image-20231121162420767">
+
+
+
+<h2 id="第一关"><a href="#第一关" class="headerlink" title="第一关"></a>第一关</h2><img lazyload="" src="/images/loading.svg" data-src="/2023/11/22/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA%E5%88%86%E6%9E%90/image-20231121163357336.png" class="" title="image-20231121163357336">
+
+<ul>
+<li>点击屏幕上的按钮有<strong>Check Failed</strong>的弹窗，跟前面一样搜索这个弹窗</li>
+</ul>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/11/22/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA%E5%88%86%E6%9E%90/image-20231121164503598.png" class="" title="image-20231121164503598">
+
+<ul>
+<li>发现这里有个<code>CheckSuccess()</code>按X查找它的用例</li>
+</ul>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/11/22/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA%E5%88%86%E6%9E%90/image-20231121164630724.png" class="" title="image-20231121164630724">
+
+<p>看第一关的用例</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/11/22/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA%E5%88%86%E6%9E%90/image-20231121170030394.png" class="" title="image-20231121170030394">
+
+<ul>
+<li>这里只要修改<code>a方法</code>的返回值就可以通过了</li>
+</ul>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/11/22/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA%E5%88%86%E6%9E%90/image-20231121170134756.png" class="" title="image-20231121170134756">
+
+<ul>
+<li>用这个脚本hook这个类中的<code>a方法</code>让返回值等于<code>R4jSLLLLLLLLLLOrLE7/5B+Z6fsl65yj6BgC6YWz66gO6g2t65Pk6a+P65NK44NNROl0wNOLLLL=</code>就通过了</li>
+</ul>
+<h2 id="第二关"><a href="#第二关" class="headerlink" title="第二关"></a>第二关</h2><img lazyload="" src="/images/loading.svg" data-src="/2023/11/22/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA%E5%88%86%E6%9E%90/image-20231121170402762.png" class="" title="image-20231121170402762">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2023/11/22/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA%E5%88%86%E6%9E%90/image-20231121180613623.png" class="" title="image-20231121180613623">
+
+<ul>
+<li><p>第二关只需要这两个返回值为<code>true</code>就通过了</p>
+</li>
+<li><p>这两个方法一个是静态一个是动态</p>
+<blockquote>
+<p>静态直接调用就可以了</p>
+<p>动态需要找到实例才能调用</p>
+</blockquote>
+</li>
+</ul>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/11/22/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA%E5%88%86%E6%9E%90/image-20231121182030877.png" class="" title="image-20231121182030877">
+
+<ul>
+<li>写完直接保存一下，或者重新运行一下。这样就通过了</li>
+</ul>
+<h2 id="第三关"><a href="#第三关" class="headerlink" title="第三关"></a>第三关</h2><img lazyload="" src="/images/loading.svg" data-src="/2023/11/22/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA%E5%88%86%E6%9E%90/image-20231121204152860.png" class="" title="image-20231121204152860">
+
+<ul>
+<li><p>修改这三个变量为<code>true</code>就通过</p>
+<blockquote>
+<p>第一个变量为静态布尔类型</p>
+<p>第二个变量为动态布尔类型</p>
+<p>第三个为同名布尔变量</p>
+</blockquote>
+</li>
+</ul>
+<h6 id="脚本"><a href="#脚本" class="headerlink" title="脚本"></a>脚本</h6><pre><code class="js">function third(){
+    Java.perform(function(){
+        Java.use("com.example.androiddemo.Activity.FridaActivity3").static_bool_var.value = true;
+        Java.choose("com.example.androiddemo.Activity.FridaActivity3", {
+            onMatch:function(instance){
+                console.log("found instance: ", instance);
+                instance.bool_var.value = true;
+                instance._same_name_bool_var.value = true;
+            }, onComplete:function(){}
+        })
+    })
+}
+</code></pre>
+<ul>
+<li>注意修改同名变量的时候要在变量名前面加上下划线，不然会修改失败</li>
+</ul>
+<h2 id="第四关"><a href="#第四关" class="headerlink" title="第四关"></a>第四关</h2><img lazyload="" src="/images/loading.svg" data-src="/2023/11/22/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA%E5%88%86%E6%9E%90/image-20231121211304463.png" class="" title="image-20231121211304463">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2023/11/22/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA%E5%88%86%E6%9E%90/image-20231121211545411.png" class="" title="image-20231121211545411">
+
+<ul>
+<li>这里我们看怎么修改静态内部类中静态函数的返回值为<code>true</code></li>
+</ul>
+<h6 id="脚本-1"><a href="#脚本-1" class="headerlink" title="脚本"></a>脚本</h6><pre><code class="js">function fourth(){
+    Java.perform(function(){
+        Java.use("com.example.androiddemo.Activity.FridaActivity4$InnerClasses").check1.implementation = function(){return true};
+        Java.use("com.example.androiddemo.Activity.FridaActivity4$InnerClasses").check2.implementation = function(){return true};
+        Java.use("com.example.androiddemo.Activity.FridaActivity4$InnerClasses").check3.implementation = function(){return true};
+        Java.use("com.example.androiddemo.Activity.FridaActivity4$InnerClasses").check4.implementation = function(){return true};
+        Java.use("com.example.androiddemo.Activity.FridaActivity4$InnerClasses").check5.implementation = function(){return true};
+        Java.use("com.example.androiddemo.Activity.FridaActivity4$InnerClasses").check6.implementation = function(){return true};
+    })
+}
+</code></pre>
+<ul>
+<li><p>这样我们就可以通过验证进入下一关</p>
+</li>
+<li><p>但是这里有一个点需要注意一下</p>
+<blockquote>
+<p>怎么准确的拿到这个类名：</p>
+<p>可以通过<code>objection</code>去附加然后搜索拿到准确的类名</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/11/22/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA%E5%88%86%E6%9E%90/image-20231121214703168.png" class="" title="image-20231121214703168">
+</blockquote>
+</li>
+<li><p>另外就是像这种需要修改多个返回值的，一个一个修改如果量太多是比较麻烦的。所以可以通过java的反射来枚举所有的方法去修改<em>（反射机制允许在运行时动态获取和使用类的信息，包括类的字段、方法、构造函数等）</em></p>
+</li>
+</ul>
+<h6 id="通过枚举的方式批量修改返回值脚本"><a href="#通过枚举的方式批量修改返回值脚本" class="headerlink" title="通过枚举的方式批量修改返回值脚本"></a>通过枚举的方式批量修改返回值脚本</h6><pre><code class="js">function fourth_2() {
+    Java.perform(function () {
+        var innerClass = Java.use("com.example.androiddemo.Activity.FridaActivity4$InnerClasses");
+
+        // 获取内部类的所有方法
+        var methods = innerClass.class.getDeclaredMethods();
+
+        // 遍历方法数组
+        for (var i = 0; i &lt; methods.length; i++) {
+            var methodName = methods[i].getName();
+
+            var finalMethodString = methodName.toString();
+            // console.log(finalMethodString);
+            // hook修改返回值
+            innerClass[finalMethodString].implementation = function(){return true};
+        }
+    });
+}
+</code></pre>
+<h2 id="第五关"><a href="#第五关" class="headerlink" title="第五关"></a>第五关</h2><p>第五关的代码使用jadx反编译失败了</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/11/22/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA%E5%88%86%E6%9E%90/image-20231121232432260.png" class="" title="image-20231121232432260">
+
+<p>可以换GDA编译试试</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/11/22/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA%E5%88%86%E6%9E%90/image-20231121232921529.png" class="" title="image-20231121232921529">
+
+<ul>
+<li><p>反编译ok，可以看到它加载了<code>DynamicPlugin.dex</code>文件中的<code>com.example.androiddemo.Dynamic.DynamicCheck</code>类</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/11/22/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA%E5%88%86%E6%9E%90/image-20231121233335779.png" class="" title="image-20231121233335779">
+</li>
+<li><p>但是我们在这里找不到<code>chech()</code>的实现，解压apk找一下这个文件</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/11/22/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA%E5%88%86%E6%9E%90/image-20231121233823317.png" class="" title="image-20231121233823317">
+
+<ul>
+<li>找到之后我们可以来hook这个<code>check()</code></li>
+</ul>
+</li>
+</ul>
+<p>第五关有点奇怪，试了几种方法都找不到这个类：</p>
+<blockquote>
+<ol>
+<li><p>enumerateClassLoaders</p>
+</li>
+<li><p>Java.choose</p>
+</li>
+<li><p>加载外部dex再进行hook</p>
+</li>
+</ol>
+</blockquote>
+<p>这个dex文件也在</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/11/22/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA%E5%88%86%E6%9E%90/image-20231122111841402.png" class="" title="image-20231122111841402">
+
+<pre><code class="js">function fifth(){
+    Java.perform(function(){
+        
+        // Java.use("com.example.androiddemo.Dynamic.DynamicCheck").check.implementation = function(){return true};
+        Java.enumerateClassLoaders({
+            onMatch:function(loader){
+                try {
+                    if(loader.loadClass("com.example.androiddemo.Dynamic.DynamicCheck")){
+                        Java.classFactory.loader = loader;
+                        var b = Java.use(loader);
+                        console.log(b);
+                    }
+                } catch (error) {
+                    console.log("loadClass error: "+error)
+                }
+                try {
+                    if(loader.findClass("com.example.androiddemo.Dynamic.DynamicCheck")){
+                        console.log("Succefully found loader!",loader);
+                        Java.classFactory.loader = loader;
+                    }
+                } catch (error) {
+                    console.log("found error "+error)
+                    
+                }
+            },
+            onComplete:function(){"enum completed fifth!"}
+        })
+    })
+}
+
+function fifth_1() {
+    Java.perform(function () {
+        Java.choose("com.example.androiddemo.Dynamic.DynamicCheck", {
+            onMatch: function (instance) {
+                console.log("Found instance:", instance);
+                try {
+                    instance.check.implementation = function () {
+                        console.log("DynamicCheck.check() is hooked!");
+                        return true;
+                    };
+                } catch (error) {
+                    console.log("Error:", error);
+                }
+            },
+            onComplete: function () {
+                console.log("Enumeration completed!");
+            }
+        });
+    });
+}
+</code></pre>
+<ul>
+<li>先记录下来后续再搞</li>
+<li>类在文件中但是加载不上</li>
+</ul>
+<p><strong>报错</strong></p>
+<pre><code class="bash">Error: java.lang.ClassNotFoundException: Didn't find class "com.example.androiddemo.Dynamic.DynamicCheck" on path: DexPathList[[zip file "/data/app/com.example.androiddemo-1/base.apk"],nativeLibraryDirectories=[/data/app/com.example.androiddemo-1/lib/arm64, /data/app/com.example.androiddemo-1/base.apk!/lib/arm64-v8a, /system/lib64, /vendor/lib64]]
+    at frida/node_modules/frida-java-bridge/lib/env.js:122
+    at ensureClass (frida/node_modules/frida-java-bridge/lib/class-factory.js:380)
+    at frida/node_modules/frida-java-bridge/lib/class-factory.js:102
+    at /lesson6.js:158
+    at frida/node_modules/frida-java-bridge/lib/vm.js:11                                                                                                   
+    at frida/node_modules/frida-java-bridge/index.js:279
+    at searchClass (/lesson6.js:159)
+    at frida/runtime/core.js:55
+</code></pre>
+<ul>
+<li>报错提示在<code>/data/app/com.example.androiddemo-1/base.apk</code>下找不到类名</li>
+<li>我们dex的类名是在<code>/data/data/com.example.androiddemo/files/DynamicPlugin.dex</code>文件中</li>
+</ul>
+<h6 id="尝试使用objection搜索"><a href="#尝试使用objection搜索" class="headerlink" title="尝试使用objection搜索"></a>尝试使用objection搜索</h6><img lazyload="" src="/images/loading.svg" data-src="/2023/11/22/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA%E5%88%86%E6%9E%90/image-20231122124632217.png" class="" title="image-20231122124632217">
+
+<ul>
+<li>只能找到接口类名，找不到<code>check()</code>的实现类名</li>
+</ul>
+<p>把pixel XL从7.1刷到了8.1也还是一样</p>
+<ul>
+<li>暂时先放下，回头有时间可以再试试其它系统或者frida版本</li>
+<li>这个应该是环境的问题，因为类名只要加载了使用<code>Java.use</code>肯定是可以hook到的，但是现在就是没有加载上哪里都找不到</li>
+</ul>
+<h2 id="第六关"><a href="#第六关" class="headerlink" title="第六关"></a>第六关</h2><img lazyload="" src="/images/loading.svg" data-src="/2023/11/22/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA%E5%88%86%E6%9E%90/image-20231122010851298.png" class="" title="image-20231122010851298">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2023/11/22/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA%E5%88%86%E6%9E%90/image-20231122011214532.png" class="" title="image-20231122011214532">
+
+<ul>
+<li>还是修改这几个返回值为<code>true</code></li>
+</ul>
+<p>直接通过<code>java.use</code>修改就可以</p>
+<pre><code class="js">function sixth(){
+    Java.perform(function(){
+        Java.use("com.example.androiddemo.Activity.Frida6.Frida6Class0").check.implementation = function(){return true};
+        Java.use("com.example.androiddemo.Activity.Frida6.Frida6Class1").check.implementation = function(){return true};
+        Java.use("com.example.androiddemo.Activity.Frida6.Frida6Class2").check.implementation = function(){return true};  
+    })
+}
+</code></pre>
+<p>同样的我们也可以把这个脚本修改为枚举的方式，方便批量修改</p>
+<p>最后第七关没有东西</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/11/22/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA%E5%88%86%E6%9E%90/image-20231122133841569.png" class="" title="image-20231122133841569">
+
+        </div>
+
+        
+            <div class="post-copyright-info my-8 px-2 sm:px-6 md:px-8">
+                <div class="article-copyright-info-container">
+    <ul>
+        <li><strong>标题:</strong> 六层锁机分析</li>
+        <li><strong>作者:</strong> xiaoeryu</li>
+        <li><strong>创建于
+                :</strong> 2023-11-22 13:37:50</li>
+        
+            <li>
+                <strong>更新于
+                    :</strong> 2023-11-22 13:42:30
+            </li>
+        
+        <li>
+            <strong>链接:</strong> https://github.com/xiaoeryu/2023/11/22/六层锁机分析/
+        </li>
+        <li>
+            <strong>
+                版权声明:
+            </strong>
+            
+
+            
+                本文章采用 <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0">CC BY-NC-SA 4.0</a> 进行许可。
+            
+        </li>
+    </ul>
+</div>
+
+            </div>
+        
+
+        
+            <ul class="post-tags-box">
+                
+                    <li class="tag-item">
+                        <a href="/tags/Frida%E9%80%86%E5%90%91%E4%B8%8E%E5%88%A9%E7%94%A8%E8%87%AA%E5%8A%A8%E5%8C%96/">#Frida逆向与利用自动化</a>&nbsp;
+                    </li>
+                
+                    <li class="tag-item">
+                        <a href="/tags/Frida-HOOK/">#Frida HOOK</a>&nbsp;
+                    </li>
+                
+                    <li class="tag-item">
+                        <a href="/tags/%E5%A4%84%E7%90%86%E5%90%84%E7%A7%8D%E5%87%BD%E6%95%B0%E8%BF%94%E5%9B%9E%E5%80%BC/">#处理各种函数返回值</a>&nbsp;
+                    </li>
+                
+            </ul>
+        
+
+        
+
+        
+            <div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
+                
+                
+                    <div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+                        <a class="next"
+                        rel="next"
+                        href="/2023/11/18/Frida%E6%9E%84%E9%80%A0%E6%95%B0%E7%BB%84%E3%80%81%E5%AF%B9%E8%B1%A1%E3%80%81Map%E5%92%8C%E7%B1%BB%E5%8F%82%E6%95%B0/"
+                        >
+                            <span class="title flex justify-center items-center">
+                                <span class="post-nav-title-item">Frida构造数组、对象、Map和类参数</span>
+                                <span class="post-nav-item">下一篇</span>
+                            </span>
+                            <span class="right arrow-icon flex justify-center items-center">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+
+        
+            <div class="comment-container px-2 sm:px-6 md:px-8 pb-8">
+                <div class="comments-container pjax">
+    <div id="comment-anchor"></div>
+    <div class="comment-area-title">
+        <i class="fa-solid fa-comments"></i>&nbsp;评论
+    </div>
+    
+
+        
+            
+    <div id="gitalk-container"></div>
+    <script data-swup-reload-script
+            src="//cdn.staticfile.org/gitalk/1.8.0/gitalk.min.js"></script>
+    <script data-swup-reload-script>
+
+        function loadGitalk() {
+            let __gitalk__pathname = decodeURI(location.pathname);
+            const __gitalk__pathnameLength = __gitalk__pathname.length;
+            const __gitalk__pathnameMaxLength = 50;
+            if (__gitalk__pathnameLength > __gitalk__pathnameMaxLength) {
+                __gitalk__pathname = __gitalk__pathname.substring(0, __gitalk__pathnameMaxLength - 3) + '...';
+            }
+
+            try {
+                Gitalk && new Gitalk({
+                    clientID: '13d9974f24854a639570',
+                    clientSecret: '0c6c11ab3852d24a608e0f95a79829a649afac4b',
+                    repo: 'blog_gitalk',
+                    owner: 'xiaoeeyu',
+                    admin: ['xiaoeeyu'],
+                    id: __gitalk__pathname,
+                    language: 'zh-CN'
+                }).render('gitalk-container');
+
+            } catch (e) {
+                window.Gitalk = null;
+            }
+        }
+
+        if ('true') {
+            const loadGitalkTimeout = setTimeout(() => {
+                loadGitalk();
+                clearTimeout(loadGitalkTimeout);
+            }, 1000);
+        } else {
+            window.addEventListener('DOMContentLoaded', loadGitalk);
+        }
+    </script>
+
+
+
+        
+    
+</div>
+
+            </div>
+        
+    </div>
+
+    
+        <div class="toc-content-container">
+            <div class="post-toc-wrap">
+    <div class="post-toc">
+        <div class="toc-title">此页目录</div>
+        <div class="page-title">六层锁机分析</div>
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%99%BB%E9%99%86"><span class="nav-text">登陆</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%86%99hook%E8%84%9A%E6%9C%AC%E6%8B%BF%E5%88%B0a-%E7%9A%84%E8%BF%94%E5%9B%9E%E7%BB%93%E6%9E%9C"><span class="nav-text">写hook脚本拿到a()的返回结果</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E5%85%B3"><span class="nav-text">第一关</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E5%85%B3"><span class="nav-text">第二关</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%B8%89%E5%85%B3"><span class="nav-text">第三关</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E5%9B%9B%E5%85%B3"><span class="nav-text">第四关</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E4%BA%94%E5%85%B3"><span class="nav-text">第五关</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%AC%AC%E5%85%AD%E5%85%B3"><span class="nav-text">第六关</span></a></li></ol>
+
+    </div>
+</div>
+        </div>
+    
+</div>
+
+
+
+                
+
+            </div>
+
+            
+
+        </div>
+
+        <div class="main-content-footer">
+            <footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
+    <div class="info-container py-3 text-center">
+        
+        <div class="text-center">
+            &copy;
+            
+              <span>2022</span>
+              -
+            
+            2023&nbsp;&nbsp;<i class="fa-solid fa-heart fa-beat" style="--fa-animation-duration: 0.5s; color: #f54545"></i>&nbsp;&nbsp;<a href="/">xiaoeryu</a>
+        </div>
+        
+            <script data-swup-reload-script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            <div class="relative text-center lg:absolute lg:right-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-right">
+                
+                    <span id="busuanzi_container_site_uv" class="lg:!block">
+                        <span class="text-sm">访问人数</span>
+                        <span id="busuanzi_value_site_uv"></span>
+                    </span>
+                
+                
+                    <span id="busuanzi_container_site_pv" class="lg:!block">
+                        <span class="text-sm">总访问量</span>
+                        <span id="busuanzi_value_site_pv"></span>
+                    </span>
+                
+            </div>
+        
+        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
+            <span class="lg:block text-sm">由 <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a> 驱动</span>
+            <span class="text-sm lg:block">主题&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.5.6</a></span>
+        </div>
+        
+        
+            <div>
+                博客已运行 <span class="odometer" id="runtime_days" ></span> 天 <span class="odometer" id="runtime_hours"></span> 小时 <span class="odometer" id="runtime_minutes"></span> 分钟 <span class="odometer" id="runtime_seconds"></span> 秒
+            </div>
+        
+        
+            <script data-swup-reload-script>
+                try {
+                    function odometer_init() {
+                    const elements = document.querySelectorAll('.odometer');
+                    elements.forEach(el => {
+                        new Odometer({
+                            el,
+                            format: '( ddd).dd',
+                            duration: 200
+                        });
+                    });
+                    }
+                    odometer_init();
+                } catch (error) {}
+            </script>
+        
+        
+        
+    </div>  
+</footer>
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="article-tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="right-bottom-tools page-aside-toggle">
+                <i class="fa-regular fa-outdent"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+            <li class="go-comment">
+                <i class="fa-regular fa-comments"></i>
+            </li>
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-side-tools-container">
+        <div class="side-tools-container">
+    <ul class="hidden-tools-list">
+        <li class="right-bottom-tools tool-font-adjust-plus flex justify-center items-center">
+            <i class="fa-regular fa-magnifying-glass-plus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-font-adjust-minus flex justify-center items-center">
+            <i class="fa-regular fa-magnifying-glass-minus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
+            <i class="fa-regular fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+
+        <li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
+            <i class="fa-regular fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="visible-tools-list">
+        <li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
+            <i class="fa-regular fa-cog fa-spin"></i>
+        </li>
+        
+            <li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
+                <i class="arrow-up fas fa-arrow-up"></i>
+                <span class="percent"></span>
+            </li>
+        
+        
+    </ul>
+</div>
+
+    </div>
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+
+</main>
+
+
+    
+<script src="/js/libs/Swup.min.js"></script>
+
+<script src="/js/libs/SwupSlideTheme.min.js"></script>
+
+<script src="/js/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="/js/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="/js/libs/SwupScrollPlugin.min.js"></script>
+
+<script src="/js/libs/SwupPreloadPlugin.min.js"></script>
+
+<script>
+    const swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+            new SwupPreloadPlugin(),
+        ],
+        containers: ["#swup"],
+    });
+</script>
+
+
+
+
+
+
+
+<script src="/js/tools/imageViewer.js" type="module"></script>
+
+<script src="/js/utils.js" type="module"></script>
+
+<script src="/js/main.js" type="module"></script>
+
+<script src="/js/layouts/navbarShrink.js" type="module"></script>
+
+<script src="/js/tools/scrollTopBottom.js" type="module"></script>
+
+<script src="/js/tools/lightDarkSwitch.js" type="module"></script>
+
+<script src="/js/layouts/categoryList.js" type="module"></script>
+
+
+
+
+
+    
+<script src="/js/tools/codeBlock.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/layouts/lazyload.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/tools/runtime.js"></script>
+
+    
+<script src="/js/libs/odometer.min.js"></script>
+
+    
+<link rel="stylesheet" href="/assets/odometer-theme-minimal.css">
+
+
+
+
+  
+<script src="/js/libs/Typed.min.js"></script>
+
+  
+<script src="/js/plugins/typed.js" type="module"></script>
+
+
+
+
+
+
+
+<div class="post-scripts" data-swup-reload-script>
+    
+        
+<script src="/js/libs/anime.min.js"></script>
+
+        
+<script src="/js/tools/tocToggle.js" type="module"></script>
+
+<script src="/js/layouts/toc.js" type="module"></script>
+
+<script src="/js/plugins/tabs.js" type="module"></script>
+
+    
+</div>
+
+
+</body>
+</html>
