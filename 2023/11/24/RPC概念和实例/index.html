@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    
+    <meta name="author" content="xiaoeryu">
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="https://xiaoeeyu.github.io/2023/11/24/rpc概念和实例/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+        <meta name="description" content="本章来看一下RPC相关的问题 RPC远程过程调用，是一种计算机通信协议，用于在计算机网络中的程序之间进行通信。它允许程序调用另一个地址空间（通常是远程机器上的程序）的过程，就像调用本地过程一样，而无需显式地处理网络细节。 在RPC中，客户端程序调用远程服务器上的过程，就像调用本地过程一样。RPC框架负责将参数传递给远程过程并返回结果。这使得分布式计算变得更加容易，因为开发人员可以将远程调用抽象为本">
+<meta property="og:type" content="article">
+<meta property="og:title" content="RPC概念和实例">
+<meta property="og:url" content="https://xiaoeeyu.github.io/2023/11/24/RPC%E6%A6%82%E5%BF%B5%E5%92%8C%E5%AE%9E%E4%BE%8B/index.html">
+<meta property="og:site_name" content="xiaoeryu">
+<meta property="og:description" content="本章来看一下RPC相关的问题 RPC远程过程调用，是一种计算机通信协议，用于在计算机网络中的程序之间进行通信。它允许程序调用另一个地址空间（通常是远程机器上的程序）的过程，就像调用本地过程一样，而无需显式地处理网络细节。 在RPC中，客户端程序调用远程服务器上的过程，就像调用本地过程一样。RPC框架负责将参数传递给远程过程并返回结果。这使得分布式计算变得更加容易，因为开发人员可以将远程调用抽象为本">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/24/RPC%E6%A6%82%E5%BF%B5%E5%92%8C%E5%AE%9E%E4%BE%8B/image-20231122204524604.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/24/RPC%E6%A6%82%E5%BF%B5%E5%92%8C%E5%AE%9E%E4%BE%8B/image-20231123152036237.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/24/RPC%E6%A6%82%E5%BF%B5%E5%92%8C%E5%AE%9E%E4%BE%8B/image-20231123152644869.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/24/RPC%E6%A6%82%E5%BF%B5%E5%92%8C%E5%AE%9E%E4%BE%8B/image-20231123154646447.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/24/RPC%E6%A6%82%E5%BF%B5%E5%92%8C%E5%AE%9E%E4%BE%8B/image-20231123155524543.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/24/RPC%E6%A6%82%E5%BF%B5%E5%92%8C%E5%AE%9E%E4%BE%8B/image-20231123155724093.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/24/RPC%E6%A6%82%E5%BF%B5%E5%92%8C%E5%AE%9E%E4%BE%8B/image-20231123161455296.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/24/RPC%E6%A6%82%E5%BF%B5%E5%92%8C%E5%AE%9E%E4%BE%8B/image-20231123162159622.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/24/RPC%E6%A6%82%E5%BF%B5%E5%92%8C%E5%AE%9E%E4%BE%8B/image-20231124110117380.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/24/RPC%E6%A6%82%E5%BF%B5%E5%92%8C%E5%AE%9E%E4%BE%8B/image-20231124111105937.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/24/RPC%E6%A6%82%E5%BF%B5%E5%92%8C%E5%AE%9E%E4%BE%8B/image-20231124112824466.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/24/RPC%E6%A6%82%E5%BF%B5%E5%92%8C%E5%AE%9E%E4%BE%8B/image-20231124161614390.png">
+<meta property="article:published_time" content="2023-11-24T08:15:00.000Z">
+<meta property="article:modified_time" content="2023-11-24T08:24:45.153Z">
+<meta property="article:author" content="xiaoeryu">
+<meta property="article:tag" content="Frida逆向与利用自动化">
+<meta property="article:tag" content="Frida HOOK">
+<meta property="article:tag" content="RPC">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://xiaoeeyu.github.io/2023/11/24/RPC%E6%A6%82%E5%BF%B5%E5%92%8C%E5%AE%9E%E4%BE%8B/image-20231122204524604.png">
+    
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/rabete.jpg" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/rabete.jpg">
+    <meta name="theme-color" content="#A31F34">
+    <link rel="shortcut icon" href="/images/rabete.jpg">
+    <!--- Page Info-->
+    
+    <title>
+        
+            RPC概念和实例 -
+        
+        xiaoeryu
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+        
+<link rel="stylesheet" href="/assets/build/styles.css">
+
+    
+
+    
+<link rel="stylesheet" href="/fonts/fonts.css">
+
+    
+<link rel="stylesheet" href="/fonts/Satoshi/satoshi.css">
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+    <!--- Font Part-->
+    
+    
+    
+    
+
+    <!--- Inject Part-->
+    
+    <script id="hexo-configurations">
+    window.config = {"hostname":"xiaoeeyu.github.io","root":"/","language":"zh-CN","path":"search.xml"};
+    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true,"title_alignment":"left"},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":4,"number":false,"expand":true,"init_open":true},"copyright":{"enable":true,"default":"cc_by_nc_sa"},"lazyload":true,"recommendation":{"enable":false,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/ball-0101.jpg","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"open_graph":true,"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/wallhaven-jxl31y.png","dark":"/images/wallhaven-o5762l.png"},"title":"XIAOERYU","subtitle":{"text":["明心见性，拨云见日","Don't waite, to create"],"hitokoto":{"enable":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":true,"links":{"github":"https://github.com/xiaoeeyu","instagram":null,"zhihu":null,"twitter":null,"email":"xiaoeryu@163.com"},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null}]},"mermaid":{"enable":false,"version":"9.3.0"}},"version":"2.5.6","navbar":{"auto_hide":false,"color":{"left":"#f78736","right":"#367df7","transparency":35},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Archives":{"path":"/archives","icon":"fa-regular fa-archive"}},"search":{"enable":false,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"blur"},"home":{"sidebar":{"enable":true,"position":"left","first_item":"menu","announcement":null,"links":null},"article_date_format":"auto","categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":3}},"footerStart":"2022/8/17 11:45:14"};
+    window.lang_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"};
+    window.data = {"masonry":false};
+  </script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+<meta name="generator" content="Hexo 6.3.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <span class="swup-progress-icon">
+            <i class="fa-solid fa-circle-notch fa-spin"></i>
+        </span>
+    
+</div>
+
+
+<main class="page-container" id="swup">
+
+    
+
+    <div class="main-content-container">
+
+
+        <div class="main-content-header">
+            <header class="navbar-container">
+    
+    <div class="navbar-content">
+        <div class="left">
+            
+                <a class="logo-image" href="/">
+                    <img src="/images/rabete.jpg">
+                </a>
+            
+            <a class="logo-title" href="/">
+                
+                xiaoeryu
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-house"></i>
+                                        
+                                        首页
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/archives"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-archive"></i>
+                                        
+                                        归档
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile drawer -->
+    <div class="navbar-drawer w-full absolute top-0 left-0 bg-background-color">
+        <ul class="drawer-navbar-list flex flex-col justify-start items-center">
+            
+                
+                    <li class="drawer-navbar-item text-base my-1.5 flex justify-center items-center">
+                        <a class="rounded-3xl py-1.5 px-5 hover:border hover:!text-primary active:!text-primary group " 
+                        href="/"  >
+                             
+                                
+                                    <i class="fa-regular fa-house"></i>
+                                
+                                首页
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+                
+                    <li class="drawer-navbar-item text-base my-1.5 flex justify-center items-center">
+                        <a class="rounded-3xl py-1.5 px-5 hover:border hover:!text-primary active:!text-primary group " 
+                        href="/archives"  >
+                             
+                                
+                                    <i class="fa-regular fa-archive"></i>
+                                
+                                归档
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="main-content-body">
+
+            
+
+            <div class="main-content">
+
+                
+                    <div class="post-page-container">
+    <div class="article-content-container">
+
+        <div class="article-title relative w-full">
+            
+                <div class="w-full flex items-center pt-6 justify-start">
+                    <h1 class="article-title-regular text-second-text-color text-4xl md:text-6xl font-bold px-2 sm:px-6 md:px-8 py-3">RPC概念和实例</h1>
+                </div>
+            
+            </div>
+
+        
+            <div class="article-header flex flex-row gap-2 items-center px-2 sm:px-6 md:px-8">
+                <div class="avatar w-[46px] h-[46px] flex-shrink-0 rounded-medium border border-border-color p-[1px]">
+                    <img src="/images/rabete.jpg">
+                </div>
+                <div class="info flex flex-col justify-between">
+                    <div class="author flex items-center">
+                        <span class="name text-default-text-color text-lg font-semibold">xiaoeryu</span>
+                        
+                            <span class="author-label ml-1.5 text-xs px-2 py-0.5 rounded-small text-third-text-color border border-shadow-color-1">Lv5</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2023-11-24 16:15</span>
+        <span class="mobile">2023-11-24 16:15</span>
+        <span class="hover-info">创建</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2023-11-24 16:24:45</span>
+            <span class="mobile">2023-11-24 16:24:45</span>
+            <span class="hover-info">更新</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/Android%E9%80%86%E5%90%91/">Android逆向</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/Frida%E9%80%86%E5%90%91%E4%B8%8E%E5%88%A9%E7%94%A8%E8%87%AA%E5%8A%A8%E5%8C%96/">Frida逆向与利用自动化</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/Frida-HOOK/">Frida HOOK</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/RPC/">RPC</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fa-regular fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        
+
+
+        <div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
+            <p>本章来看一下RPC相关的问题</p>
+<p>RPC远程过程调用，是一种计算机通信协议，用于在计算机网络中的程序之间进行通信。它允许程序调用另一个地址空间（通常是远程机器上的程序）的过程，就像调用本地过程一样，而无需显式地处理网络细节。</p>
+<p>在RPC中，客户端程序调用远程服务器上的过程，就像调用本地过程一样。RPC框架负责将参数传递给远程过程并返回结果。这使得分布式计算变得更加容易，因为开发人员可以将远程调用抽象为本地调用，而不必去关心底层网络通信的实现细节。</p>
+<span id="more"></span>
+
+<img lazyload="" src="/images/loading.svg" data-src="/2023/11/24/RPC%E6%A6%82%E5%BF%B5%E5%92%8C%E5%AE%9E%E4%BE%8B/image-20231122204524604.png" class="" title="image-20231122204524604">
+
+<hr>
+<h2 id="远程调用"><a href="#远程调用" class="headerlink" title="远程调用"></a>远程调用</h2><p>这里拿<a class="link" target="_blank" rel="noopener" href="https://github.com/xiaoeeyu/lesson4_4">lesson4 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>编写的apk来进行RPC调用测试</p>
+<p>调用<code>secret()</code></p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/11/24/RPC%E6%A6%82%E5%BF%B5%E5%92%8C%E5%AE%9E%E4%BE%8B/image-20231123152036237.png" class="" title="image-20231123152036237">
+
+<p>先执行这个脚本看是否起作用了</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/11/24/RPC%E6%A6%82%E5%BF%B5%E5%92%8C%E5%AE%9E%E4%BE%8B/image-20231123152644869.png" class="" title="image-20231123152644869">
+
+<ul>
+<li>起作用了我们开始进行下一步的RPC调用</li>
+</ul>
+<p>RPC注入的脚本：</p>
+<blockquote>
+<p>PS：<strong>Amazon CodeWhisperer</strong>的代码智能提示挺好用的，支持中文还免费</p>
+</blockquote>
+<h6 id="lesson7-lesson4-js"><a href="#lesson7-lesson4-js" class="headerlink" title="lesson7_lesson4.js"></a>lesson7_lesson4.js</h6><pre><code class="js">function invoke(){
+    Java.perform(function(){
+        Java.choose("com.xiaoeryu.lesson4_4.MainActivity",{
+            onMatch:function(instance){
+                console.log("found instance: ", instance)
+                console.log("found instance: ", instance.secret())
+            },onComplete:function(){}
+        })
+    })
+}
+
+// setTimeout(invoke, 3000);
+
+rpc.exports = {
+    invokefunc:invoke
+}
+</code></pre>
+<h6 id="lesson7-loader-py"><a href="#lesson7-loader-py" class="headerlink" title="lesson7_loader.py"></a>lesson7_loader.py</h6><pre><code class="python">import time
+import frida
+
+def my_message_handler(message, payload):
+    # 处理Frida脚本发送的消息
+    print(message)
+    print(payload)
+
+# 获取连接到计算机的USB设备，通常是Android设备
+device = frida.get_usb_device()
+
+# ==============================
+# 选择一种注入方式（方式1或方式2），注释掉另一种方式
+
+# Way 1: 通过spawn方式创建进程并附加
+# pid = device.spawn(["com.xiaoeryu.lesson4_4"])
+# device.resume(pid)
+# time.sleep(1)
+# session = device.attach(pid)
+
+# Way 2: 直接绑定到指定的进程
+session = device.attach("com.xiaoeryu.lesson4_4")  # 绑定指定进程
+# ==============================
+
+# 打开名为lesson7_lesson4.js的Frida脚本文件
+with open("lesson7_lesson4.js") as f:
+    # 创建Frida脚本对象并加载脚本内容
+    script = session.create_script(f.read())
+
+# 将my_message_handler函数注册为脚本的消息处理程序
+script.on("message", my_message_handler)
+
+# 加载脚本到目标应用程序中，使其开始执行
+script.load()
+
+command = ""
+while True:
+    # 等待用户输入命令，提示符为&gt;&gt;&gt;
+    command = input("&gt;&gt;&gt;")
+    if command == "1":
+        # 如果用户输入为"1"，跳出循环，结束程序
+        break
+    elif command == "2":
+        # 如果用户输入为"2"，调用Frida脚本中导出的invokefunc函数
+        script.exports.invokefunc()
+</code></pre>
+<h6 id="执行效果"><a href="#执行效果" class="headerlink" title="执行效果"></a>执行效果</h6><img lazyload="" src="/images/loading.svg" data-src="/2023/11/24/RPC%E6%A6%82%E5%BF%B5%E5%92%8C%E5%AE%9E%E4%BE%8B/image-20231123154646447.png" class="" title="image-20231123154646447">
+
+
+
+<h2 id="多主机多手机多端口混连"><a href="#多主机多手机多端口混连" class="headerlink" title="多主机多手机多端口混连"></a>多主机多手机多端口混连</h2><p>先把手机的<code>wifi adb</code>打开</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/11/24/RPC%E6%A6%82%E5%BF%B5%E5%92%8C%E5%AE%9E%E4%BE%8B/image-20231123155524543.png" class="" title="image-20231123155524543">
+
+<p>打开frida-server绑定9999端口</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/11/24/RPC%E6%A6%82%E5%BF%B5%E5%92%8C%E5%AE%9E%E4%BE%8B/image-20231123155724093.png" class="" title="image-20231123155724093">
+
+<ul>
+<li>现在我们局域网下面的设备就都可以使用adb命令连接<strong>192.168.1.7</strong>这台设备了</li>
+</ul>
+<p>修改一下我们的python脚本为远程连接</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/11/24/RPC%E6%A6%82%E5%BF%B5%E5%92%8C%E5%AE%9E%E4%BE%8B/image-20231123161455296.png" class="" title="image-20231123161455296">
+
+<p>打印设备的信息也是可以的</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/11/24/RPC%E6%A6%82%E5%BF%B5%E5%92%8C%E5%AE%9E%E4%BE%8B/image-20231123162159622.png" class="" title="image-20231123162159622">
+
+<h2 id="互联互通、动态修改、上传到PC打印"><a href="#互联互通、动态修改、上传到PC打印" class="headerlink" title="互联互通、动态修改、上传到PC打印"></a>互联互通、动态修改、上传到PC打印</h2><h5 id="下面先写一下用来测试的登陆界面，然后截取登陆界面的用户名和密码并修改"><a href="#下面先写一下用来测试的登陆界面，然后截取登陆界面的用户名和密码并修改" class="headerlink" title="下面先写一下用来测试的登陆界面，然后截取登陆界面的用户名和密码并修改"></a>下面先写一下用来测试的<a class="link" target="_blank" rel="noopener" href="https://github.com/xiaoeeyu/lesson7sec">登陆界面 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>，然后截取登陆界面的用户名和密码并修改</h5><blockquote>
+<p>PS：使用下载的代码的时候最好把IDE的代理挂上，不然有些包下载不下来各种报错</p>
+</blockquote>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/11/24/RPC%E6%A6%82%E5%BF%B5%E5%92%8C%E5%AE%9E%E4%BE%8B/image-20231124110117380.png" class="" title="image-20231124110117380">
+
+<ul>
+<li>在这里我们设置一下不允许使用<em>admin</em>用户名登陆，后面hook后强制修改</li>
+<li>然后把输入的用户名和密码<code>base64</code>后传给服务端</li>
+<li>可以通过HOOK <code>message_tv.setText()</code>来拿到base64后的用户名和密码</li>
+</ul>
+<h6 id="编写hook脚本"><a href="#编写hook脚本" class="headerlink" title="编写hook脚本"></a>编写hook脚本</h6><p><code>setText()</code>是一个通用函数肯定有多个重载，可以先确定这里使用的是哪个重载</p>
+<ul>
+<li><p>使用objection来确定一下使用了哪个重载</p>
+<blockquote>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/11/24/RPC%E6%A6%82%E5%BF%B5%E5%92%8C%E5%AE%9E%E4%BE%8B/image-20231124111105937.png" class="" title="image-20231124111105937">
+
+<ul>
+<li><code>Called android.widget.TextView.setText(java.lang.CharSequence)</code></li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<pre><code class="js">function main(){
+    Java.perform(function(){
+        Java.use("android.widget.TextView").setText.overload('java.lang.CharSequence').implementation = function(x){
+            console.log("TextView.setText: " + x)
+            return this.setText(x)
+        }
+    })
+}
+setImmediate(main)
+</code></pre>
+<ul>
+<li><p>在使用RPC之前先试一下本地调用是否ok</p>
+<blockquote>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/11/24/RPC%E6%A6%82%E5%BF%B5%E5%92%8C%E5%AE%9E%E4%BE%8B/image-20231124112824466.png" class="" title="image-20231124112824466">
+
+<ul>
+<li>测试ok，开始修改脚本去跟服务端联动</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<h6 id="修改脚本：添加发送和接收进行RPC联动"><a href="#修改脚本：添加发送和接收进行RPC联动" class="headerlink" title="修改脚本：添加发送和接收进行RPC联动"></a>修改脚本：添加发送和接收进行RPC联动</h6><p>修改后的<strong>lesson7sec.js</strong></p>
+<pre><code class="js">Java.perform(function(){
+    Java.use("android.widget.TextView").setText.overload('java.lang.CharSequence').implementation = function(x){
+        var string_to_send_x = x.toString()
+        var string_to_recv
+        send(string_to_send_x)
+        recv(function(recv_json_objection){
+            string_to_recv = recv_json_objection.my_data
+            // x = string_to_recv.toString()
+            console.log("string_to_recv: " + string_to_recv)
+        }).wait()
+        var javaStringToSend = Java.use("java.lang.String").$new(string_to_recv)
+
+        var result = this.setText(javaStringToSend)
+        // console.log("TextView.setText: " + x)
+        return result
+    }
+})
+</code></pre>
+<p><strong>lesson7secLoader.py</strong></p>
+<pre><code class="python"># 导入必要的模块
+import time
+import frida
+import base64
+
+# 定义消息处理函数
+def my_message_handler(message, payload):
+    # 打印接收到的消息和负载
+    print(message)
+    print(payload)
+
+    # 检查消息类型是否为 "send"
+    if message["type"] == "send":
+        # 打印接收到的负载数据
+        print(message["payload"])
+
+        # 解码 base64 编码的数据，并转换为字符串
+        data = message["payload"].split(":")[1].strip()
+        data = str(base64.b64decode(data), encoding="utf-8")
+        print("解码后的数据: ", data)
+
+        # 将解码后的数据拆分成用户名和密码
+        usr, pw = data.split(":")
+        print("密码: ", pw)
+
+        # 将用户名替换为 "admin"，然后重新编码为 base64
+        data = str(base64.b64encode(("admin" + ":" + pw).encode()))
+        print("编码后的数据: ", data)
+
+        # 向脚本发送修改后的数据
+        script.post({"my_data": data})
+        print("修改后的数据已发送！")
+
+# 连接到远程设备
+device = frida.get_device_manager().add_remote_device("192.168.1.7:8888")
+
+# 附加到目标应用进程
+session = device.attach("com.example.lesson7sec")
+
+# 从文件中读取 JavaScript 脚本
+with open("lesson7sec.js") as f:
+    script = session.create_script(f.read())
+
+# 设置消息处理回调函数
+script.on("message", my_message_handler)
+
+# 加载并执行 JavaScript 脚本
+script.load()
+
+# 等待输入，保持脚本运行
+input()
+</code></pre>
+<ul>
+<li><p>运行结果</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/11/24/RPC%E6%A6%82%E5%BF%B5%E5%92%8C%E5%AE%9E%E4%BE%8B/image-20231124161614390.png" class="" title="image-20231124161614390"></li>
+</ul>
+
+        </div>
+
+        
+            <div class="post-copyright-info my-8 px-2 sm:px-6 md:px-8">
+                <div class="article-copyright-info-container">
+    <ul>
+        <li><strong>标题:</strong> RPC概念和实例</li>
+        <li><strong>作者:</strong> xiaoeryu</li>
+        <li><strong>创建于
+                :</strong> 2023-11-24 16:15:00</li>
+        
+            <li>
+                <strong>更新于
+                    :</strong> 2023-11-24 16:24:45
+            </li>
+        
+        <li>
+            <strong>链接:</strong> https://github.com/xiaoeryu/2023/11/24/RPC概念和实例/
+        </li>
+        <li>
+            <strong>
+                版权声明:
+            </strong>
+            
+
+            
+                本文章采用 <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0">CC BY-NC-SA 4.0</a> 进行许可。
+            
+        </li>
+    </ul>
+</div>
+
+            </div>
+        
+
+        
+            <ul class="post-tags-box">
+                
+                    <li class="tag-item">
+                        <a href="/tags/Frida%E9%80%86%E5%90%91%E4%B8%8E%E5%88%A9%E7%94%A8%E8%87%AA%E5%8A%A8%E5%8C%96/">#Frida逆向与利用自动化</a>&nbsp;
+                    </li>
+                
+                    <li class="tag-item">
+                        <a href="/tags/Frida-HOOK/">#Frida HOOK</a>&nbsp;
+                    </li>
+                
+                    <li class="tag-item">
+                        <a href="/tags/RPC/">#RPC</a>&nbsp;
+                    </li>
+                
+            </ul>
+        
+
+        
+
+        
+            <div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
+                
+                
+                    <div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+                        <a class="next"
+                        rel="next"
+                        href="/2023/11/22/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA%E5%88%86%E6%9E%90/"
+                        >
+                            <span class="title flex justify-center items-center">
+                                <span class="post-nav-title-item">六层锁机分析</span>
+                                <span class="post-nav-item">下一篇</span>
+                            </span>
+                            <span class="right arrow-icon flex justify-center items-center">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+
+        
+            <div class="comment-container px-2 sm:px-6 md:px-8 pb-8">
+                <div class="comments-container pjax">
+    <div id="comment-anchor"></div>
+    <div class="comment-area-title">
+        <i class="fa-solid fa-comments"></i>&nbsp;评论
+    </div>
+    
+
+        
+            
+    <div id="gitalk-container"></div>
+    <script data-swup-reload-script
+            src="//cdn.staticfile.org/gitalk/1.8.0/gitalk.min.js"></script>
+    <script data-swup-reload-script>
+
+        function loadGitalk() {
+            let __gitalk__pathname = decodeURI(location.pathname);
+            const __gitalk__pathnameLength = __gitalk__pathname.length;
+            const __gitalk__pathnameMaxLength = 50;
+            if (__gitalk__pathnameLength > __gitalk__pathnameMaxLength) {
+                __gitalk__pathname = __gitalk__pathname.substring(0, __gitalk__pathnameMaxLength - 3) + '...';
+            }
+
+            try {
+                Gitalk && new Gitalk({
+                    clientID: '13d9974f24854a639570',
+                    clientSecret: '0c6c11ab3852d24a608e0f95a79829a649afac4b',
+                    repo: 'blog_gitalk',
+                    owner: 'xiaoeeyu',
+                    admin: ['xiaoeeyu'],
+                    id: __gitalk__pathname,
+                    language: 'zh-CN'
+                }).render('gitalk-container');
+
+            } catch (e) {
+                window.Gitalk = null;
+            }
+        }
+
+        if ('true') {
+            const loadGitalkTimeout = setTimeout(() => {
+                loadGitalk();
+                clearTimeout(loadGitalkTimeout);
+            }, 1000);
+        } else {
+            window.addEventListener('DOMContentLoaded', loadGitalk);
+        }
+    </script>
+
+
+
+        
+    
+</div>
+
+            </div>
+        
+    </div>
+
+    
+        <div class="toc-content-container">
+            <div class="post-toc-wrap">
+    <div class="post-toc">
+        <div class="toc-title">此页目录</div>
+        <div class="page-title">RPC概念和实例</div>
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E8%BF%9C%E7%A8%8B%E8%B0%83%E7%94%A8"><span class="nav-text">远程调用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%A4%9A%E4%B8%BB%E6%9C%BA%E5%A4%9A%E6%89%8B%E6%9C%BA%E5%A4%9A%E7%AB%AF%E5%8F%A3%E6%B7%B7%E8%BF%9E"><span class="nav-text">多主机多手机多端口混连</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BA%92%E8%81%94%E4%BA%92%E9%80%9A%E3%80%81%E5%8A%A8%E6%80%81%E4%BF%AE%E6%94%B9%E3%80%81%E4%B8%8A%E4%BC%A0%E5%88%B0PC%E6%89%93%E5%8D%B0"><span class="nav-text">互联互通、动态修改、上传到PC打印</span></a></li></ol>
+
+    </div>
+</div>
+        </div>
+    
+</div>
+
+
+
+                
+
+            </div>
+
+            
+
+        </div>
+
+        <div class="main-content-footer">
+            <footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
+    <div class="info-container py-3 text-center">
+        
+        <div class="text-center">
+            &copy;
+            
+              <span>2022</span>
+              -
+            
+            2023&nbsp;&nbsp;<i class="fa-solid fa-heart fa-beat" style="--fa-animation-duration: 0.5s; color: #f54545"></i>&nbsp;&nbsp;<a href="/">xiaoeryu</a>
+        </div>
+        
+            <script data-swup-reload-script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            <div class="relative text-center lg:absolute lg:right-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-right">
+                
+                    <span id="busuanzi_container_site_uv" class="lg:!block">
+                        <span class="text-sm">访问人数</span>
+                        <span id="busuanzi_value_site_uv"></span>
+                    </span>
+                
+                
+                    <span id="busuanzi_container_site_pv" class="lg:!block">
+                        <span class="text-sm">总访问量</span>
+                        <span id="busuanzi_value_site_pv"></span>
+                    </span>
+                
+            </div>
+        
+        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
+            <span class="lg:block text-sm">由 <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a> 驱动</span>
+            <span class="text-sm lg:block">主题&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.5.6</a></span>
+        </div>
+        
+        
+            <div>
+                博客已运行 <span class="odometer" id="runtime_days" ></span> 天 <span class="odometer" id="runtime_hours"></span> 小时 <span class="odometer" id="runtime_minutes"></span> 分钟 <span class="odometer" id="runtime_seconds"></span> 秒
+            </div>
+        
+        
+            <script data-swup-reload-script>
+                try {
+                    function odometer_init() {
+                    const elements = document.querySelectorAll('.odometer');
+                    elements.forEach(el => {
+                        new Odometer({
+                            el,
+                            format: '( ddd).dd',
+                            duration: 200
+                        });
+                    });
+                    }
+                    odometer_init();
+                } catch (error) {}
+            </script>
+        
+        
+        
+    </div>  
+</footer>
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="article-tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="right-bottom-tools page-aside-toggle">
+                <i class="fa-regular fa-outdent"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+            <li class="go-comment">
+                <i class="fa-regular fa-comments"></i>
+            </li>
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-side-tools-container">
+        <div class="side-tools-container">
+    <ul class="hidden-tools-list">
+        <li class="right-bottom-tools tool-font-adjust-plus flex justify-center items-center">
+            <i class="fa-regular fa-magnifying-glass-plus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-font-adjust-minus flex justify-center items-center">
+            <i class="fa-regular fa-magnifying-glass-minus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
+            <i class="fa-regular fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+
+        <li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
+            <i class="fa-regular fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="visible-tools-list">
+        <li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
+            <i class="fa-regular fa-cog fa-spin"></i>
+        </li>
+        
+            <li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
+                <i class="arrow-up fas fa-arrow-up"></i>
+                <span class="percent"></span>
+            </li>
+        
+        
+    </ul>
+</div>
+
+    </div>
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+
+</main>
+
+
+    
+<script src="/js/libs/Swup.min.js"></script>
+
+<script src="/js/libs/SwupSlideTheme.min.js"></script>
+
+<script src="/js/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="/js/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="/js/libs/SwupScrollPlugin.min.js"></script>
+
+<script src="/js/libs/SwupPreloadPlugin.min.js"></script>
+
+<script>
+    const swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+            new SwupPreloadPlugin(),
+        ],
+        containers: ["#swup"],
+    });
+</script>
+
+
+
+
+
+
+
+<script src="/js/tools/imageViewer.js" type="module"></script>
+
+<script src="/js/utils.js" type="module"></script>
+
+<script src="/js/main.js" type="module"></script>
+
+<script src="/js/layouts/navbarShrink.js" type="module"></script>
+
+<script src="/js/tools/scrollTopBottom.js" type="module"></script>
+
+<script src="/js/tools/lightDarkSwitch.js" type="module"></script>
+
+<script src="/js/layouts/categoryList.js" type="module"></script>
+
+
+
+
+
+    
+<script src="/js/tools/codeBlock.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/layouts/lazyload.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/tools/runtime.js"></script>
+
+    
+<script src="/js/libs/odometer.min.js"></script>
+
+    
+<link rel="stylesheet" href="/assets/odometer-theme-minimal.css">
+
+
+
+
+  
+<script src="/js/libs/Typed.min.js"></script>
+
+  
+<script src="/js/plugins/typed.js" type="module"></script>
+
+
+
+
+
+
+
+<div class="post-scripts" data-swup-reload-script>
+    
+        
+<script src="/js/libs/anime.min.js"></script>
+
+        
+<script src="/js/tools/tocToggle.js" type="module"></script>
+
+<script src="/js/layouts/toc.js" type="module"></script>
+
+<script src="/js/plugins/tabs.js" type="module"></script>
+
+    
+</div>
+
+
+</body>
+</html>
