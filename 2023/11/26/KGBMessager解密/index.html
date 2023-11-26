@@ -57,7 +57,7 @@
 <meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/26/KGBMessager%E8%A7%A3%E5%AF%86/image-20231126173636593.png">
 <meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/26/KGBMessager%E8%A7%A3%E5%AF%86/image-20231126173722880.png">
 <meta property="article:published_time" content="2023-11-26T08:49:53.000Z">
-<meta property="article:modified_time" content="2023-11-26T10:38:49.104Z">
+<meta property="article:modified_time" content="2023-11-26T12:40:01.323Z">
 <meta property="article:author" content="xiaoeryu">
 <meta property="article:tag" content="Frida逆向与利用自动化">
 <meta property="article:tag" content="Frida HOOK">
@@ -308,8 +308,8 @@
     
         <span class="article-date article-meta-item">
             <i class="fa-regular fa-wrench"></i>&nbsp;
-            <span class="desktop">2023-11-26 18:38:49</span>
-            <span class="mobile">2023-11-26 18:38:49</span>
+            <span class="desktop">2023-11-26 20:40:01</span>
+            <span class="mobile">2023-11-26 20:40:01</span>
             <span class="hover-info">更新</span>
         </span>
     
@@ -627,8 +627,8 @@ print(raw_text)
 
 
 
-<p>这里记录一下，我们对于<strong>Z3</strong>的失败运用</p>
-<p>本来第二个字符串是打算用<strong>Z3</strong>解的，但是打印字符串结果的时候一致提示溢出，只好自己手动解了。这里记录一下流程和思路</p>
+<p>android_studio编写部分的<a class="link" target="_blank" rel="noopener" href="https://github.com/xiaoeeyu/KGB_Messenger_Decoder/tree/master">代码 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<h3 id="Z3"><a href="#Z3" class="headerlink" title="Z3"></a>Z3</h3><p>本来第二个字符串是打算用<strong>Z3</strong>解的，但是打印字符串结果的时候一致提示溢出，只好自己手动解了。这里记录一下流程和思路</p>
 <blockquote>
 <p>因为<code>r</code>字符串有很多不可见字符串，先把它变为可见字符串</p>
 <img lazyload="" src="/images/loading.svg" data-src="/2023/11/26/KGBMessager%E8%A7%A3%E5%AF%86/image-20231126173232715.png" class="" title="image-20231126173232715">
@@ -675,7 +675,7 @@ if s.check() == sat:
     # 获取解
     model = s.model()
     print(model)
-    
+
     # 解密后的整数值列表
     decoded_values = []
     for i in range(len(r_result)):
@@ -684,7 +684,7 @@ if s.check() == sat:
         else:
             decoded_values.append(0)
     print("Decrypted as integers:", decoded_values)
-    
+
     # 解密后的十六进制表示列表
     print("Decrypted as hex:", [hex(val) for val in decoded_values])
 
@@ -705,10 +705,12 @@ if s.check() == sat:
 <li><p>整数和16进制形式打印</p>
 <img lazyload="" src="/images/loading.svg" data-src="/2023/11/26/KGBMessager%E8%A7%A3%E5%AF%86/image-20231126173636593.png" class="" title="image-20231126173636593">
 </li>
-<li><p>字符串形式打印</p>
+<li><p>字符串形式打印出错</p>
 <img lazyload="" src="/images/loading.svg" data-src="/2023/11/26/KGBMessager%E8%A7%A3%E5%AF%86/image-20231126173722880.png" class="" title="image-20231126173722880"></li>
 </ul>
 </blockquote>
+<p>参考文章：</p>
+<p><a class="link" target="_blank" rel="noopener" href="https://blog.csdn.net/siritobla/article/details/123956940">KGB Messenger解题流程 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
 
         </div>
 
@@ -723,7 +725,7 @@ if s.check() == sat:
         
             <li>
                 <strong>更新于
-                    :</strong> 2023-11-26 18:38:49
+                    :</strong> 2023-11-26 20:40:01
             </li>
         
         <li>
@@ -854,7 +856,7 @@ if s.check() == sat:
     <div class="post-toc">
         <div class="toc-title">此页目录</div>
         <div class="page-title">KGBMessager解密</div>
-        <ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%83%AF%E4%BE%8B%E5%85%88%E7%94%A8jadx%E6%89%93%E5%BC%80%E6%8B%BF%E5%88%B0%E5%8C%85%E5%90%8D%EF%BC%8C%E7%84%B6%E5%90%8E%E7%94%A8objection%E6%9F%A5%E7%9C%8B%E4%B8%80%E4%B8%8B%E5%9F%BA%E6%9C%AC%E4%BF%A1%E6%81%AF"><span class="nav-text">惯例先用jadx打开拿到包名，然后用objection查看一下基本信息</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%80%E5%A7%8B%E5%88%86%E6%9E%90"><span class="nav-text">开始分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%9A%E8%BF%87%E5%9C%B0%E5%8C%BA%E6%A0%A1%E9%AA%8C"><span class="nav-text">通过地区校验</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%99%BB%E9%99%86"><span class="nav-text">登陆</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%97%E6%B3%95%E9%80%86%E5%90%91"><span class="nav-text">算法逆向</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#a"><span class="nav-text">a()</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#b"><span class="nav-text">b()</span></a></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%83%AF%E4%BE%8B%E5%85%88%E7%94%A8jadx%E6%89%93%E5%BC%80%E6%8B%BF%E5%88%B0%E5%8C%85%E5%90%8D%EF%BC%8C%E7%84%B6%E5%90%8E%E7%94%A8objection%E6%9F%A5%E7%9C%8B%E4%B8%80%E4%B8%8B%E5%9F%BA%E6%9C%AC%E4%BF%A1%E6%81%AF"><span class="nav-text">惯例先用jadx打开拿到包名，然后用objection查看一下基本信息</span></a></li></ol></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%BC%80%E5%A7%8B%E5%88%86%E6%9E%90"><span class="nav-text">开始分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%9A%E8%BF%87%E5%9C%B0%E5%8C%BA%E6%A0%A1%E9%AA%8C"><span class="nav-text">通过地区校验</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%99%BB%E9%99%86"><span class="nav-text">登陆</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%AE%97%E6%B3%95%E9%80%86%E5%90%91"><span class="nav-text">算法逆向</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#a"><span class="nav-text">a()</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#b"><span class="nav-text">b()</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Z3"><span class="nav-text">Z3</span></a>
 
     </div>
 </div>
