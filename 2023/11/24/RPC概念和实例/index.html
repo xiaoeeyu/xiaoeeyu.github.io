@@ -38,7 +38,7 @@
 <meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/24/RPC%E6%A6%82%E5%BF%B5%E5%92%8C%E5%AE%9E%E4%BE%8B/image-20231124112824466.png">
 <meta property="og:image" content="https://xiaoeeyu.github.io/2023/11/24/RPC%E6%A6%82%E5%BF%B5%E5%92%8C%E5%AE%9E%E4%BE%8B/image-20231124161614390.png">
 <meta property="article:published_time" content="2023-11-24T08:15:00.000Z">
-<meta property="article:modified_time" content="2023-11-24T08:24:45.153Z">
+<meta property="article:modified_time" content="2023-11-24T13:30:36.715Z">
 <meta property="article:author" content="xiaoeryu">
 <meta property="article:tag" content="Frida逆向与利用自动化">
 <meta property="article:tag" content="Frida HOOK">
@@ -289,8 +289,8 @@
     
         <span class="article-date article-meta-item">
             <i class="fa-regular fa-wrench"></i>&nbsp;
-            <span class="desktop">2023-11-24 16:24:45</span>
-            <span class="mobile">2023-11-24 16:24:45</span>
+            <span class="desktop">2023-11-24 21:30:36</span>
+            <span class="mobile">2023-11-24 21:30:36</span>
             <span class="hover-info">更新</span>
         </span>
     
@@ -359,6 +359,9 @@
 
 <img lazyload="" src="/images/loading.svg" data-src="/2023/11/24/RPC%E6%A6%82%E5%BF%B5%E5%92%8C%E5%AE%9E%E4%BE%8B/image-20231122204524604.png" class="" title="image-20231122204524604">
 
+<ul>
+<li>在进行RPC之前，要先把问题在hook和主动调用阶段解决，然后再去进行RPC的互联</li>
+</ul>
 <hr>
 <h2 id="远程调用"><a href="#远程调用" class="headerlink" title="远程调用"></a>远程调用</h2><p>这里拿<a class="link" target="_blank" rel="noopener" href="https://github.com/xiaoeeyu/lesson4_4">lesson4 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>编写的apk来进行RPC调用测试</p>
 <p>调用<code>secret()</code></p>
@@ -470,6 +473,11 @@ while True:
 <ul>
 <li><p>使用objection来确定一下使用了哪个重载</p>
 <blockquote>
+<ul>
+<li>这里frida-server不小心断开了，重连了一遍，所以端口改为了8888</li>
+</ul>
+</blockquote>
+<blockquote>
 <img lazyload="" src="/images/loading.svg" data-src="/2023/11/24/RPC%E6%A6%82%E5%BF%B5%E5%92%8C%E5%AE%9E%E4%BE%8B/image-20231124111105937.png" class="" title="image-20231124111105937">
 
 <ul>
@@ -519,8 +527,7 @@ setImmediate(main)
 })
 </code></pre>
 <p><strong>lesson7secLoader.py</strong></p>
-<pre><code class="python"># 导入必要的模块
-import time
+<pre><code class="python">import time
 import frida
 import base64
 
@@ -589,7 +596,7 @@ input()
         
             <li>
                 <strong>更新于
-                    :</strong> 2023-11-24 16:24:45
+                    :</strong> 2023-11-24 21:30:36
             </li>
         
         <li>
@@ -633,6 +640,21 @@ input()
 
         
             <div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
+                
+                    <div class="article-prev border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+                        <a class="prev"
+                        rel="prev"
+                        href="/2023/11/26/KGBMessager%E8%A7%A3%E5%AF%86/"
+                        >
+                            <span class="left arrow-icon flex justify-center items-center">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </span>
+                            <span class="title flex justify-center items-center">
+                                <span class="post-nav-title-item">KGBMessager解密</span>
+                                <span class="post-nav-item">上一篇</span>
+                            </span>
+                        </a>
+                    </div>
                 
                 
                     <div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
