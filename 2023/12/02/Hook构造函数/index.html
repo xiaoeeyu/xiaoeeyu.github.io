@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    
+    <meta name="author" content="xiaoeryu">
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="https://xiaoeeyu.github.io/2023/12/02/hook构造函数/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+        <meta name="description" content="接下来几章我们学习一下Xposed插件的开发，本章主要是配置一下Xposed开发环境，以及对构造函数进行一个简单的hook">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Hook构造函数">
+<meta property="og:url" content="https://xiaoeeyu.github.io/2023/12/02/Hook%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0/index.html">
+<meta property="og:site_name" content="xiaoeryu">
+<meta property="og:description" content="接下来几章我们学习一下Xposed插件的开发，本章主要是配置一下Xposed开发环境，以及对构造函数进行一个简单的hook">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/12/02/Hook%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0/image-20231201230014864.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/12/02/Hook%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0/image-20231201230105745.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/12/02/Hook%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0/image-20231201230444922.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/12/02/Hook%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0/image-20231201230656210.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/12/02/Hook%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0/image-20231201230932414.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/12/02/Hook%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0/image-20231201231154212.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/12/02/Hook%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0/image-20231201231458997.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/12/02/Hook%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0/image-20231201231804562.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/12/02/Hook%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0/image-20231202134042460.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/12/02/Hook%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0/image-20231202204314414.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/12/02/Hook%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0/image-20231202204521111.png">
+<meta property="article:published_time" content="2023-12-02T09:26:26.000Z">
+<meta property="article:modified_time" content="2023-12-02T12:49:30.697Z">
+<meta property="article:author" content="xiaoeryu">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://xiaoeeyu.github.io/2023/12/02/Hook%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0/image-20231201230014864.png">
+    
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/rabete.jpg" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/rabete.jpg">
+    <meta name="theme-color" content="#A31F34">
+    <link rel="shortcut icon" href="/images/rabete.jpg">
+    <!--- Page Info-->
+    
+    <title>
+        
+            Hook构造函数 -
+        
+        xiaoeryu
+    </title>
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+        
+<link rel="stylesheet" href="/assets/build/styles.css">
+
+    
+
+    
+<link rel="stylesheet" href="/fonts/fonts.css">
+
+    
+<link rel="stylesheet" href="/fonts/Satoshi/satoshi.css">
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+    <!--- Font Part-->
+    
+    
+    
+    
+
+    <!--- Inject Part-->
+    
+    <script id="hexo-configurations">
+    window.config = {"hostname":"xiaoeeyu.github.io","root":"/","language":"zh-CN","path":"search.xml"};
+    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true,"title_alignment":"left"},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":4,"number":false,"expand":true,"init_open":true},"copyright":{"enable":true,"default":"cc_by_nc_sa"},"lazyload":true,"recommendation":{"enable":false,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/ball-0101.jpg","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"open_graph":true,"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/wallhaven-jxl31y.png","dark":"/images/wallhaven-o5762l.png"},"title":"XIAOERYU","subtitle":{"text":["明心见性，拨云见日","Don't waite, to create"],"hitokoto":{"enable":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":true,"links":{"github":"https://github.com/xiaoeeyu","instagram":null,"zhihu":null,"twitter":null,"email":"xiaoeryu@163.com"},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null}]},"mermaid":{"enable":false,"version":"9.3.0"}},"version":"2.5.6","navbar":{"auto_hide":false,"color":{"left":"#f78736","right":"#367df7","transparency":35},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Archives":{"path":"/archives","icon":"fa-regular fa-archive"}},"search":{"enable":false,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"blur"},"home":{"sidebar":{"enable":true,"position":"left","first_item":"menu","announcement":null,"links":null},"article_date_format":"auto","categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":3}},"footerStart":"2022/8/17 11:45:14"};
+    window.lang_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"};
+    window.data = {"masonry":false};
+  </script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+<meta name="generator" content="Hexo 6.3.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+        <span class="swup-progress-icon">
+            <i class="fa-solid fa-circle-notch fa-spin"></i>
+        </span>
+    
+</div>
+
+
+<main class="page-container" id="swup">
+
+    
+
+    <div class="main-content-container">
+
+
+        <div class="main-content-header">
+            <header class="navbar-container">
+    
+    <div class="navbar-content">
+        <div class="left">
+            
+                <a class="logo-image" href="/">
+                    <img src="/images/rabete.jpg">
+                </a>
+            
+            <a class="logo-title" href="/">
+                
+                xiaoeryu
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-house"></i>
+                                        
+                                        首页
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class="" 
+                                    href="/archives"  >
+                                    
+                                        
+                                            <i class="fa-regular fa-archive"></i>
+                                        
+                                        归档
+                                    
+                                </a>
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile drawer -->
+    <div class="navbar-drawer w-full absolute top-0 left-0 bg-background-color">
+        <ul class="drawer-navbar-list flex flex-col justify-start items-center">
+            
+                
+                    <li class="drawer-navbar-item text-base my-1.5 flex justify-center items-center">
+                        <a class="rounded-3xl py-1.5 px-5 hover:border hover:!text-primary active:!text-primary group " 
+                        href="/"  >
+                             
+                                
+                                    <i class="fa-regular fa-house"></i>
+                                
+                                首页
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+                
+                    <li class="drawer-navbar-item text-base my-1.5 flex justify-center items-center">
+                        <a class="rounded-3xl py-1.5 px-5 hover:border hover:!text-primary active:!text-primary group " 
+                        href="/archives"  >
+                             
+                                
+                                    <i class="fa-regular fa-archive"></i>
+                                
+                                归档
+                            
+                        </a>
+                    </li>
+                    <!-- Submenu -->
+                    
+            
+
+        </ul>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="main-content-body">
+
+            
+
+            <div class="main-content">
+
+                
+                    <div class="post-page-container">
+    <div class="article-content-container">
+
+        <div class="article-title relative w-full">
+            
+                <div class="w-full flex items-center pt-6 justify-start">
+                    <h1 class="article-title-regular text-second-text-color text-4xl md:text-6xl font-bold px-2 sm:px-6 md:px-8 py-3">Hook构造函数</h1>
+                </div>
+            
+            </div>
+
+        
+            <div class="article-header flex flex-row gap-2 items-center px-2 sm:px-6 md:px-8">
+                <div class="avatar w-[46px] h-[46px] flex-shrink-0 rounded-medium border border-border-color p-[1px]">
+                    <img src="/images/rabete.jpg">
+                </div>
+                <div class="info flex flex-col justify-between">
+                    <div class="author flex items-center">
+                        <span class="name text-default-text-color text-lg font-semibold">xiaoeryu</span>
+                        
+                            <span class="author-label ml-1.5 text-xs px-2 py-0.5 rounded-small text-third-text-color border border-shadow-color-1">Lv5</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2023-12-02 17:26:26</span>
+        <span class="mobile">2023-12-02 17:26:26</span>
+        <span class="hover-info">创建</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2023-12-02 20:49:30</span>
+            <span class="mobile">2023-12-02 20:49:30</span>
+            <span class="hover-info">更新</span>
+        </span>
+    
+
+    
+    
+
+    
+    
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fa-regular fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        
+
+
+        <div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
+            <p>接下来几章我们学习一下Xposed插件的开发，本章主要是配置一下Xposed开发环境，以及对构造函数进行一个简单的hook</p>
+<span id="more"></span>
+
+<h2 id="Xposed开发环境配置"><a href="#Xposed开发环境配置" class="headerlink" title="Xposed开发环境配置"></a>Xposed开发环境配置</h2><h6 id="开发环境"><a href="#开发环境" class="headerlink" title="开发环境"></a>开发环境</h6><blockquote>
+<p>设备：pixel XL</p>
+<p>系统：Android 10</p>
+<p>开发平台：Ubuntu 22.04</p>
+<p>IDE：Android Studio 2022.3</p>
+<p>开发语言：Java</p>
+</blockquote>
+<p>手机环境配置：Magisk（26）和LSPosed（1.9.2）使用的最新版，<a href="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/">安装教程</a>在之前的章节里面写过了不再赘述</p>
+<h3 id="新建项目"><a href="#新建项目" class="headerlink" title="新建项目"></a>新建项目</h3><p>手机环境配置好了之后，用Android Studio创建一个新的项目：先配置好Android Studio的代理</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/12/02/Hook%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0/image-20231201230014864.png" class="" title="image-20231201230014864">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2023/12/02/Hook%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0/image-20231201230105745.png" class="" title="image-20231201230105745">
+
+<ul>
+<li>项目名可以随便起个喜欢的</li>
+</ul>
+<h3 id="修改配置："><a href="#修改配置：" class="headerlink" title="修改配置："></a>修改配置：</h3><p>首先我们引入Xposed的库，这里我们需要在<code>settings.gradle</code>里修改一下</p>
+<p><code>maven { url 'https://api.xposed.info/' }</code></p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/12/02/Hook%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0/image-20231201230444922.png" class="" title="image-20231201230444922">
+
+<p>之后，进入app目录下面的<code>build.gradle</code>引入xposed的依赖</p>
+<p><code>compileOnly 'de.robv.android.xposed:api:82'</code></p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/12/02/Hook%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0/image-20231201230656210.png" class="" title="image-20231201230656210">
+
+<h3 id="声明模块"><a href="#声明模块" class="headerlink" title="声明模块"></a>声明模块</h3><pre><code class="xml">        &lt;!-- 是否为Xposed模块 --&gt;
+        &lt;meta-data
+            android:name="xposedmodule"
+            android:value="true"/&gt;
+        &lt;!-- 模块的简介（在框架中显示） --&gt;
+        &lt;meta-data
+            android:name="xposeddescription"
+            android:value="我是Xposed模块test05" /&gt;
+        &lt;!-- 模块最低支持的Api版本 一般填54即可 --&gt;
+        &lt;meta-data
+            android:name="xposedminversion"
+            android:value="54"/&gt;
+</code></pre>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/12/02/Hook%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0/image-20231201230932414.png" class="" title="image-20231201230932414">
+
+<h3 id="模块编写"><a href="#模块编写" class="headerlink" title="模块编写"></a>模块编写</h3><p>创建一个入口类</p>
+<pre><code class="java">public class MainHook implements IXposedHookLoadPackage {
+    @Override
+    public void handleLoadPackage(XC_LoadPackage.LoadPackageParam lpparam) throws Throwable {
+        Log.i("MainHook", lpparam.packageName);
+        XposedBridge.log("MainHook-&gt;app packagename" + lpparam.packageName);
+
+    }
+}
+</code></pre>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/12/02/Hook%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0/image-20231201231154212.png" class="" title="image-20231201231154212">
+
+
+
+<p>然后我们还需要定义一下入口类：</p>
+<p>创建一个<code>assets</code>文件夹，并创建一个文件名叫<code>xposed_init</code></p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/12/02/Hook%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0/image-20231201231458997.png" class="" title="image-20231201231458997">
+
+<ul>
+<li>可以定义多个入口</li>
+</ul>
+<h3 id="测试一下"><a href="#测试一下" class="headerlink" title="测试一下"></a>测试一下</h3><p>可以输入命令重启一下手机</p>
+<p><code>adb reboot</code></p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/12/02/Hook%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0/image-20231201231804562.png" class="" title="image-20231201231804562">
+
+<p>在Android Studio的<code>Logcat</code>中可以查看到调用结果</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/12/02/Hook%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0/image-20231202134042460.png" class="" title="image-20231202134042460">
+
+<h2 id="Hook构造函数"><a href="#Hook构造函数" class="headerlink" title="Hook构造函数"></a>Hook构造函数</h2><h4 id="我们先写一个简单的app当作测试用例"><a href="#我们先写一个简单的app当作测试用例" class="headerlink" title="我们先写一个简单的app当作测试用例"></a>我们先写一个简单的app当作<a class="link" target="_blank" rel="noopener" href="https://github.com/xiaoeeyu/XposedHook01">测试用例 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></h4><p>主要内容就是几个构造函数：分别为带参数和不带参数的，然后再调用一下</p>
+<pre><code class="java">public class Student {
+    String name = null;
+    String id = null;
+    int age = 0;
+    public Student(){
+        name = "default";
+        id = "default";
+        age = 10;
+    }
+    public Student(String name){
+        this.name = name;
+        id = "default";
+    }
+    public Student(String name, String id){
+        this.name = name;
+        this.id = id;
+    }
+    public Student(String name, String id, int age){
+        this.name = name;
+        this.id = id;
+        this.age = age;
+    }
+}
+</code></pre>
+<ul>
+<li>将这个测试项目编译完成后先安装在手机上</li>
+</ul>
+<h4 id="接下来开始我们对构造函数的hook"><a href="#接下来开始我们对构造函数的hook" class="headerlink" title="接下来开始我们对构造函数的hook"></a>接下来开始我们对构造函数的hook</h4><p><strong>无参构造函数</strong></p>
+<pre><code class="java">Class StudentClass = classLoader.loadClass("com.xiaoeryu.xposedhook01.Student");
+
+// 使用XposedHelpers.findAndHookConstructor进行构造函数的hook
+// StudentClass 是目标类的 Class 对象
+
+XposedHelpers.findAndHookConstructor(StudentClass, new XC_MethodHook() {
+    @Override
+    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+        super.beforeHookedMethod(param);
+        // 在目标构造函数执行之前的逻辑
+        XposedBridge.log("xiaoeryu-&gt;beforeHookedMethod");
+    }
+
+    @Override
+    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+        super.afterHookedMethod(param);
+        // 在目标构造函数执行之后的逻辑
+        XposedBridge.log("xiaoeryu-&gt;afterHookedMethod");
+    }
+});
+</code></pre>
+<p><strong>有参的构造函数</strong></p>
+<pre><code class="java">Class StudentClass = classLoader.loadClass("com.xiaoeryu.xposedhook01.Student");
+
+// 参数写为 参数类型.class
+XposedHelpers.findAndHookConstructor(StudentClass, String.class, new XC_MethodHook() {
+    @Override
+    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+        super.beforeHookedMethod(param);
+        // 获取参数
+        Object[] args = param.args;
+        String name = (String) args[0];
+        XposedBridge.log("com.xiaoeryu.xposedhook01.Student(String)-&gt;beforeHookedMethod: " + name);
+    }
+
+    @Override
+    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+        super.afterHookedMethod(param);
+        XposedBridge.log("com.xiaoeryu.xposedhook01.Student(String)-&gt;afterHookedMethod");
+    }
+});
+</code></pre>
+<p>有参构造函数的另一种调用方式：传入完整类名</p>
+<pre><code class="java">// 也可以直接以字符串形式传入完整类名
+XposedHelpers.findAndHookConstructor("com.xiaoeryu.xposedhook01.Student", loadPackageParam.classLoader, String.class, String.class, int.class, new XC_MethodHook() {
+    @Override
+    protected void beforeHookedMethod(MethodHookParam param) throws Throwable {
+        super.beforeHookedMethod(param);
+        Object[] args = param.args;
+        String name = (String) args[0];
+        args[1] = "2050";
+        args[2] = 200;
+        String id = (String) args[1];
+        int age = (int) args[2];
+        XposedBridge.log("com.xiaoeryu.xposedhook01.Student(String, String, int)-&gt;beforeHookedMethod: " + name + "--" + id + "--" + age);
+    }
+
+    @Override
+    protected void afterHookedMethod(MethodHookParam param) throws Throwable {
+        super.afterHookedMethod(param);
+        // 经过测试构造函数的返回对象是使用thisObject获取，而不是使用getResult()获取，这是因为构造函数都是void类型
+        Object thisObj = param.thisObject;
+        Object returnObj = param.getResult();
+        XposedBridge.log( thisObj + "---" + returnObj);
+        XposedBridge.log("com.xiaoeryu.xposedhook01.Student(String, String, int)-&gt;afterHookedMethod");
+    }
+});
+</code></pre>
+<h4 id="代码主要就上面这些，然后过一遍它的执行流程"><a href="#代码主要就上面这些，然后过一遍它的执行流程" class="headerlink" title="代码主要就上面这些，然后过一遍它的执行流程"></a>代码主要就上面这些，然后过一遍它的执行流程</h4><ol>
+<li><p>我们要测试的目标app要先安装再设备上</p>
+</li>
+<li><p>然后将我们的xposed插件安装上，并且在LSPosed中勾选我们要hook的目标app</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/12/02/Hook%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0/image-20231202204314414.png" class="" title="image-20231202204314414">
+</li>
+<li><p>之后我们在勾选系统框架的时候会提示需要重启才能生效，我们点击重启即可或者自己手动重启也一样</p>
+</li>
+<li><p>然后我们就可以在Android Studio的Logcat界面看到我们插件的执行情况</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/12/02/Hook%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0/image-20231202204521111.png" class="" title="image-20231202204521111"></li>
+</ol>
+<p>本章的XposedHook都比较简单，主要是过一遍Xposed插件的编写流程，后面几章会涉及到如果是加壳的app或者动态下发的dex等等，在这些情况下我们应该怎么去写hook插件</p>
+
+        </div>
+
+        
+            <div class="post-copyright-info my-8 px-2 sm:px-6 md:px-8">
+                <div class="article-copyright-info-container">
+    <ul>
+        <li><strong>标题:</strong> Hook构造函数</li>
+        <li><strong>作者:</strong> xiaoeryu</li>
+        <li><strong>创建于
+                :</strong> 2023-12-02 17:26:26</li>
+        
+            <li>
+                <strong>更新于
+                    :</strong> 2023-12-02 20:49:30
+            </li>
+        
+        <li>
+            <strong>链接:</strong> https://github.com/xiaoeryu/2023/12/02/Hook构造函数/
+        </li>
+        <li>
+            <strong>
+                版权声明:
+            </strong>
+            
+
+            
+                本文章采用 <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0">CC BY-NC-SA 4.0</a> 进行许可。
+            
+        </li>
+    </ul>
+</div>
+
+            </div>
+        
+
+        
+
+        
+
+        
+            <div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
+                
+                
+                    <div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+                        <a class="next"
+                        rel="next"
+                        href="/2023/11/26/KGBMessager%E8%A7%A3%E5%AF%86/"
+                        >
+                            <span class="title flex justify-center items-center">
+                                <span class="post-nav-title-item">KGBMessager解密</span>
+                                <span class="post-nav-item">下一篇</span>
+                            </span>
+                            <span class="right arrow-icon flex justify-center items-center">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+
+        
+            <div class="comment-container px-2 sm:px-6 md:px-8 pb-8">
+                <div class="comments-container pjax">
+    <div id="comment-anchor"></div>
+    <div class="comment-area-title">
+        <i class="fa-solid fa-comments"></i>&nbsp;评论
+    </div>
+    
+
+        
+            
+    <div id="gitalk-container"></div>
+    <script data-swup-reload-script
+            src="//cdn.staticfile.org/gitalk/1.8.0/gitalk.min.js"></script>
+    <script data-swup-reload-script>
+
+        function loadGitalk() {
+            let __gitalk__pathname = decodeURI(location.pathname);
+            const __gitalk__pathnameLength = __gitalk__pathname.length;
+            const __gitalk__pathnameMaxLength = 50;
+            if (__gitalk__pathnameLength > __gitalk__pathnameMaxLength) {
+                __gitalk__pathname = __gitalk__pathname.substring(0, __gitalk__pathnameMaxLength - 3) + '...';
+            }
+
+            try {
+                Gitalk && new Gitalk({
+                    clientID: '13d9974f24854a639570',
+                    clientSecret: '0c6c11ab3852d24a608e0f95a79829a649afac4b',
+                    repo: 'blog_gitalk',
+                    owner: 'xiaoeeyu',
+                    admin: ['xiaoeeyu'],
+                    id: __gitalk__pathname,
+                    language: 'zh-CN'
+                }).render('gitalk-container');
+
+            } catch (e) {
+                window.Gitalk = null;
+            }
+        }
+
+        if ('true') {
+            const loadGitalkTimeout = setTimeout(() => {
+                loadGitalk();
+                clearTimeout(loadGitalkTimeout);
+            }, 1000);
+        } else {
+            window.addEventListener('DOMContentLoaded', loadGitalk);
+        }
+    </script>
+
+
+
+        
+    
+</div>
+
+            </div>
+        
+    </div>
+
+    
+        <div class="toc-content-container">
+            <div class="post-toc-wrap">
+    <div class="post-toc">
+        <div class="toc-title">此页目录</div>
+        <div class="page-title">Hook构造函数</div>
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#Xposed%E5%BC%80%E5%8F%91%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE"><span class="nav-text">Xposed开发环境配置</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%96%B0%E5%BB%BA%E9%A1%B9%E7%9B%AE"><span class="nav-text">新建项目</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%BF%AE%E6%94%B9%E9%85%8D%E7%BD%AE%EF%BC%9A"><span class="nav-text">修改配置：</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%A3%B0%E6%98%8E%E6%A8%A1%E5%9D%97"><span class="nav-text">声明模块</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E5%9D%97%E7%BC%96%E5%86%99"><span class="nav-text">模块编写</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E4%B8%80%E4%B8%8B"><span class="nav-text">测试一下</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Hook%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0"><span class="nav-text">Hook构造函数</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%88%91%E4%BB%AC%E5%85%88%E5%86%99%E4%B8%80%E4%B8%AA%E7%AE%80%E5%8D%95%E7%9A%84app%E5%BD%93%E4%BD%9C%E6%B5%8B%E8%AF%95%E7%94%A8%E4%BE%8B"><span class="nav-text">我们先写一个简单的app当作测试用例 </span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%8E%A5%E4%B8%8B%E6%9D%A5%E5%BC%80%E5%A7%8B%E6%88%91%E4%BB%AC%E5%AF%B9%E6%9E%84%E9%80%A0%E5%87%BD%E6%95%B0%E7%9A%84hook"><span class="nav-text">接下来开始我们对构造函数的hook</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E4%B8%BB%E8%A6%81%E5%B0%B1%E4%B8%8A%E9%9D%A2%E8%BF%99%E4%BA%9B%EF%BC%8C%E7%84%B6%E5%90%8E%E8%BF%87%E4%B8%80%E9%81%8D%E5%AE%83%E7%9A%84%E6%89%A7%E8%A1%8C%E6%B5%81%E7%A8%8B"><span class="nav-text">代码主要就上面这些，然后过一遍它的执行流程</span></a></li></ol></li></ol></li></ol>
+
+    </div>
+</div>
+        </div>
+    
+</div>
+
+
+
+                
+
+            </div>
+
+            
+
+        </div>
+
+        <div class="main-content-footer">
+            <footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
+    <div class="info-container py-3 text-center">
+        
+        <div class="text-center">
+            &copy;
+            
+              <span>2022</span>
+              -
+            
+            2023&nbsp;&nbsp;<i class="fa-solid fa-heart fa-beat" style="--fa-animation-duration: 0.5s; color: #f54545"></i>&nbsp;&nbsp;<a href="/">xiaoeryu</a>
+        </div>
+        
+            <script data-swup-reload-script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            <div class="relative text-center lg:absolute lg:right-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-right">
+                
+                    <span id="busuanzi_container_site_uv" class="lg:!block">
+                        <span class="text-sm">访问人数</span>
+                        <span id="busuanzi_value_site_uv"></span>
+                    </span>
+                
+                
+                    <span id="busuanzi_container_site_pv" class="lg:!block">
+                        <span class="text-sm">总访问量</span>
+                        <span id="busuanzi_value_site_pv"></span>
+                    </span>
+                
+            </div>
+        
+        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
+            <span class="lg:block text-sm">由 <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a> 驱动</span>
+            <span class="text-sm lg:block">主题&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.5.6</a></span>
+        </div>
+        
+        
+            <div>
+                博客已运行 <span class="odometer" id="runtime_days" ></span> 天 <span class="odometer" id="runtime_hours"></span> 小时 <span class="odometer" id="runtime_minutes"></span> 分钟 <span class="odometer" id="runtime_seconds"></span> 秒
+            </div>
+        
+        
+            <script data-swup-reload-script>
+                try {
+                    function odometer_init() {
+                    const elements = document.querySelectorAll('.odometer');
+                    elements.forEach(el => {
+                        new Odometer({
+                            el,
+                            format: '( ddd).dd',
+                            duration: 200
+                        });
+                    });
+                    }
+                    odometer_init();
+                } catch (error) {}
+            </script>
+        
+        
+        
+    </div>  
+</footer>
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="article-tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="right-bottom-tools page-aside-toggle">
+                <i class="fa-regular fa-outdent"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+            <li class="go-comment">
+                <i class="fa-regular fa-comments"></i>
+            </li>
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-side-tools-container">
+        <div class="side-tools-container">
+    <ul class="hidden-tools-list">
+        <li class="right-bottom-tools tool-font-adjust-plus flex justify-center items-center">
+            <i class="fa-regular fa-magnifying-glass-plus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-font-adjust-minus flex justify-center items-center">
+            <i class="fa-regular fa-magnifying-glass-minus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
+            <i class="fa-regular fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+
+        <li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
+            <i class="fa-regular fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="visible-tools-list">
+        <li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
+            <i class="fa-regular fa-cog fa-spin"></i>
+        </li>
+        
+            <li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
+                <i class="arrow-up fas fa-arrow-up"></i>
+                <span class="percent"></span>
+            </li>
+        
+        
+    </ul>
+</div>
+
+    </div>
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+
+</main>
+
+
+    
+<script src="/js/libs/Swup.min.js"></script>
+
+<script src="/js/libs/SwupSlideTheme.min.js"></script>
+
+<script src="/js/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="/js/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="/js/libs/SwupScrollPlugin.min.js"></script>
+
+<script src="/js/libs/SwupPreloadPlugin.min.js"></script>
+
+<script>
+    const swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+            new SwupPreloadPlugin(),
+        ],
+        containers: ["#swup"],
+    });
+</script>
+
+
+
+
+
+
+
+<script src="/js/tools/imageViewer.js" type="module"></script>
+
+<script src="/js/utils.js" type="module"></script>
+
+<script src="/js/main.js" type="module"></script>
+
+<script src="/js/layouts/navbarShrink.js" type="module"></script>
+
+<script src="/js/tools/scrollTopBottom.js" type="module"></script>
+
+<script src="/js/tools/lightDarkSwitch.js" type="module"></script>
+
+<script src="/js/layouts/categoryList.js" type="module"></script>
+
+
+
+
+
+    
+<script src="/js/tools/codeBlock.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/layouts/lazyload.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/tools/runtime.js"></script>
+
+    
+<script src="/js/libs/odometer.min.js"></script>
+
+    
+<link rel="stylesheet" href="/assets/odometer-theme-minimal.css">
+
+
+
+
+  
+<script src="/js/libs/Typed.min.js"></script>
+
+  
+<script src="/js/plugins/typed.js" type="module"></script>
+
+
+
+
+
+
+
+<div class="post-scripts" data-swup-reload-script>
+    
+        
+<script src="/js/libs/anime.min.js"></script>
+
+        
+<script src="/js/tools/tocToggle.js" type="module"></script>
+
+<script src="/js/layouts/toc.js" type="module"></script>
+
+<script src="/js/plugins/tabs.js" type="module"></script>
+
+    
+</div>
+
+
+</body>
+</html>
