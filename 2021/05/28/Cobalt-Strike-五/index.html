@@ -575,7 +575,7 @@ msf5 exploit(windows/browser/ms14_064_ole_code_execution) &gt; exploit
             
     <div id="gitalk-container"></div>
     <script data-swup-reload-script
-            src="//cdn.staticfile.org/gitalk/1.8.0/gitalk.min.js"></script>
+            src="https://jsd.onmicrosoft.cn/npm/gitalk@1.8.0/dist/gitalk.min.js"></script>
     <script data-swup-reload-script>
 
         function loadGitalk() {
@@ -594,7 +594,8 @@ msf5 exploit(windows/browser/ms14_064_ole_code_execution) &gt; exploit
                     owner: 'xiaoeeyu',
                     admin: ['xiaoeeyu'],
                     id: __gitalk__pathname,
-                    language: 'zh-CN'
+                    language: 'zh-CN',
+                    proxy: ''
                 }).render('gitalk-container');
 
             } catch (e) {
