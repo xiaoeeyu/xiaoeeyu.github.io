@@ -33,7 +33,7 @@
 <meta property="og:image" content="https://xiaoeeyu.github.io/2023/12/20/Hook%E5%8A%A0%E5%A3%B3app/image-20231218011816925.png">
 <meta property="og:image" content="https://xiaoeeyu.github.io/2023/12/20/Hook%E5%8A%A0%E5%A3%B3app/image-20231218133039765.png">
 <meta property="article:published_time" content="2023-12-20T11:18:29.000Z">
-<meta property="article:modified_time" content="2023-12-20T11:21:14.700Z">
+<meta property="article:modified_time" content="2023-12-20T11:24:12.317Z">
 <meta property="article:author" content="xiaoeryu">
 <meta property="article:tag" content="Frida Hook">
 <meta property="article:tag" content="Xposed插件开发">
@@ -462,8 +462,8 @@
     
         <span class="article-date article-meta-item">
             <i class="fa-regular fa-wrench"></i>&nbsp;
-            <span class="desktop">2023-12-20 19:21:14</span>
-            <span class="mobile">2023-12-20 19:21:14</span>
+            <span class="desktop">2023-12-20 19:24:12</span>
+            <span class="mobile">2023-12-20 19:24:12</span>
             <span class="hover-info">更新</span>
         </span>
     
@@ -621,7 +621,7 @@ XposedHelpers.findAndHookMethod("com.omyga.app.ui.activity.MainActivity_", final
 <img lazyload="" src="/images/loading.svg" data-src="/2023/12/20/Hook%E5%8A%A0%E5%A3%B3app/image-20231220190434206.png" class="" title="image-20231220190434206">
 
 <p>总结：这样我们就成功的hook到了加壳app中的函数，其实步骤也不是很复杂。不过里面有一些细节例如获取ClassLoader和类加载的函数列表，需要我们对源码有一定的了解才能通过反射获取到。</p>
-<h4 id="分析如何获取类中的所有方法"><a href="#分析如何获取类中的所有方法" class="headerlink" title="分析如何获取类中的所有方法"></a>分析如何获取类中的所有方法</h4><p>这里先打印一下它的双亲委派关系，看看它是使用<code>PathClassLoader</code>还是<code>DexClassLoader</code>或者其它的ClassLoader加载的dex</p>
+<h3 id="分析如何获取类中的所有方法"><a href="#分析如何获取类中的所有方法" class="headerlink" title="分析如何获取类中的所有方法"></a>分析如何获取类中的所有方法</h3><p>这里先打印一下它的双亲委派关系，看看它是使用<code>PathClassLoader</code>还是<code>DexClassLoader</code>或者其它的ClassLoader加载的dex</p>
 <pre><code class="java">            ClassLoader classLoader = loadPackageParam.classLoader;
 
             XposedBridge.log("loadPackageParam.classLoader: " + classLoader);
@@ -795,7 +795,7 @@ public class PathClassLoader extends BaseDexClassLoader {
         
             <li>
                 <strong>更新于
-                    :</strong> 2023-12-20 19:21:14
+                    :</strong> 2023-12-20 19:24:12
             </li>
         
         <li>
@@ -923,7 +923,7 @@ public class PathClassLoader extends BaseDexClassLoader {
     <div class="post-toc">
         <div class="toc-title">此页目录</div>
         <div class="page-title">Hook加壳app</div>
-        <ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A1%88%E4%BE%8B"><span class="nav-text">案例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%80%E5%A7%8B%E7%BC%96%E5%86%99%E6%8F%92%E4%BB%B6"><span class="nav-text">开始编写插件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96ClassLoader"><span class="nav-text">获取ClassLoader</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hook%E8%A7%A3%E5%AF%86%E5%90%8E%E7%A8%8B%E5%BA%8F%E4%B8%AD%E7%9A%84%E6%96%B9%E6%B3%95"><span class="nav-text">hook解密后程序中的方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%88%86%E6%9E%90%E5%A6%82%E4%BD%95%E8%8E%B7%E5%8F%96%E7%B1%BB%E4%B8%AD%E7%9A%84%E6%89%80%E6%9C%89%E6%96%B9%E6%B3%95"><span class="nav-text">分析如何获取类中的所有方法</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9B%9E%E9%A1%BE%E4%B8%80%E4%B8%8B%E4%B9%8B%E5%89%8D%E5%AD%A6%E4%B9%A0FART%E8%84%B1%E5%A3%B3%E7%9A%84%E6%97%B6%E5%80%99%E5%88%86%E6%9E%90%E8%BF%87%E7%9A%84%E6%BA%90%E7%A0%81"><span class="nav-text">回顾一下之前学习FART脱壳的时候分析过的源码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E6%89%80%E6%9C%89%E5%8A%A0%E8%BD%BD%E7%9A%84%E7%B1%BB"><span class="nav-text">获取所有加载的类</span></a></li></ol></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A1%88%E4%BE%8B"><span class="nav-text">案例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%80%E5%A7%8B%E7%BC%96%E5%86%99%E6%8F%92%E4%BB%B6"><span class="nav-text">开始编写插件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96ClassLoader"><span class="nav-text">获取ClassLoader</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hook%E8%A7%A3%E5%AF%86%E5%90%8E%E7%A8%8B%E5%BA%8F%E4%B8%AD%E7%9A%84%E6%96%B9%E6%B3%95"><span class="nav-text">hook解密后程序中的方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%9E%90%E5%A6%82%E4%BD%95%E8%8E%B7%E5%8F%96%E7%B1%BB%E4%B8%AD%E7%9A%84%E6%89%80%E6%9C%89%E6%96%B9%E6%B3%95"><span class="nav-text">分析如何获取类中的所有方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9B%9E%E9%A1%BE%E4%B8%80%E4%B8%8B%E4%B9%8B%E5%89%8D%E5%AD%A6%E4%B9%A0FART%E8%84%B1%E5%A3%B3%E7%9A%84%E6%97%B6%E5%80%99%E5%88%86%E6%9E%90%E8%BF%87%E7%9A%84%E6%BA%90%E7%A0%81"><span class="nav-text">回顾一下之前学习FART脱壳的时候分析过的源码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E6%89%80%E6%9C%89%E5%8A%A0%E8%BD%BD%E7%9A%84%E7%B1%BB"><span class="nav-text">获取所有加载的类</span></a></li></ol></li></ol>
 
     </div>
 </div>
