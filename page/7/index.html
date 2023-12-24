@@ -417,7 +417,7 @@
 
         <div class="statistics flex justify-around my-2.5">
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">72</div>
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">73</div>
         <div class="label text-third-text-color text-sm">标签</div>
     </a>
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
@@ -425,7 +425,7 @@
         <div class="label text-third-text-color text-sm">分类</div>
     </a>
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">79</div>
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">81</div>
         <div class="label text-third-text-color text-sm">文章</div>
     </a>
 </div>
@@ -458,7 +458,7 @@
 </div>
                 <div class="statistics flex justify-around my-2.5">
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">72</div>
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">73</div>
         <div class="label text-third-text-color text-sm">标签</div>
     </a>
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
@@ -466,7 +466,7 @@
         <div class="label text-third-text-color text-sm">分类</div>
     </a>
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">79</div>
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">81</div>
         <div class="label text-third-text-color text-sm">文章</div>
     </a>
 </div>
@@ -483,6 +483,171 @@
                 
                     <div class="home-content-container">
     <ul class="home-article-list">
+        
+            <li class="home-article-item">
+
+                
+
+                
+
+                
+                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
+                    <h3 class="home-article-title">
+                        <a href="/2021/05/20/winDbg%E5%AE%89%E8%A3%85mona/">
+                            winXP安装mona
+                        </a>
+                    </h3>
+
+                    <div class="home-article-content markdown-body">
+                        
+                            <h3 id="Windows-XP，32位"><a href="#Windows-XP，32位" class="headerlink" title="Windows XP，32位"></a>Windows XP，32位</h3><ol>
+<li><p>从<a class="link" target="_blank" rel="noopener" href="https://github.com/corelan/windbglib/raw/master/pykd/pykd.zip%E4%B8%8B%E8%BD%BDpykd.zip">https://github.com/corelan/windbglib/raw/master/pykd/pykd.zip下载pykd.zip <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+</li>
+<li><p>解压后获得2个文件：pykd.pyd和vcredist_x86.exe</p>
+</li>
+<li><p>使用管理员权限运行vcredist_x86.exe并接受默认值。</p>
+</li>
+<li><p>将pykd.pyd复制到 <code>C:\Program Files\Debugging Tools for Windows (x86)\winext</code></p>
+</li>
+<li><p>打开具有管理员权限的命令提示符，然后运行以下命令：</p>
+<pre><code>c:
+cd "C:\Program Files\Common Files\Microsoft Shared\VC"
+regsvr32 msdia90.dll
+(You should get a messagebox indicating that the dll was registered successfully)
+</code></pre>
+</li>
+<li><p>从<a class="link" target="_blank" rel="noopener" href="https://github.com/corelan/windbglib/raw/master/windbglib.py%E4%B8%8B%E8%BD%BDwindbglib.py">https://github.com/corelan/windbglib/raw/master/windbglib.py下载windbglib.py <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+</li>
+<li><p>将文件保存在下面<code>C:\Program Files\Debugging Tools for Windows (x86)</code> （如果需要，“取消阻止”文件）</p>
+</li>
+<li><p>从<a class="link" target="_blank" rel="noopener" href="https://github.com/corelan/mona/raw/master/mona.py%E4%B8%8B%E8%BD%BDmona.py">https://github.com/corelan/mona/raw/master/mona.py下载mona.py <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+</li>
+<li><p>将文件保存在下面<code>C:\Program Files\Debugging Tools for Windows (x86)</code> （如果需要，“取消阻止”文件）</p>
+</li>
+</ol>
+                        
+                    </div>
+
+                    <div class="home-article-meta-info-container">
+    <div class="home-article-meta-info">
+        <span><i class="fa-solid fa-calendars"></i>&nbsp;
+            <span class="home-article-date" data-date="Thu May 20 2021 11:05:14 GMT+0800">
+                
+                    2021-05-20
+                
+            </span>
+        </span>
+        
+            <span class="home-article-category">
+                <i class="fa-solid fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/%E5%B7%A5%E5%85%B7/">工具</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+        
+        
+            <span class="home-article-tag">
+                <i class="fa-solid fa-tags"></i>&nbsp;
+                <ul>
+                    
+                        <li>
+                            
+                            <a href="/tags/winDbg%E6%8F%92%E4%BB%B6/">winDbg插件</a>&nbsp;
+                        </li>
+                    
+                </ul>
+            </span>
+        
+    </div>
+
+    <a href="/2021/05/20/winDbg%E5%AE%89%E8%A3%85mona/">阅读全文<span class="seo-reader-text">winXP安装mona</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
+</div>
+
+                </div>
+            </li>
+        
+            <li class="home-article-item">
+
+                
+
+                
+
+                
+                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
+                    <h3 class="home-article-title">
+                        <a href="/2021/05/20/go%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F%E8%AE%BE%E7%BD%AE/">
+                            go环境变量设置
+                        </a>
+                    </h3>
+
+                    <div class="home-article-content markdown-body">
+                        
+                            <h3 id="question："><a href="#question：" class="headerlink" title="question："></a>question：</h3><ul>
+<li>linux下设置go环境变量之后，再次打开新的终端或者重启后环境变量会失效需要重新<code>source /etc/profile</code> 后才能生效</li>
+</ul>
+                        
+                    </div>
+
+                    <div class="home-article-meta-info-container">
+    <div class="home-article-meta-info">
+        <span><i class="fa-solid fa-calendars"></i>&nbsp;
+            <span class="home-article-date" data-date="Thu May 20 2021 10:56:10 GMT+0800">
+                
+                    2021-05-20
+                
+            </span>
+        </span>
+        
+            <span class="home-article-category">
+                <i class="fa-solid fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/%E5%B7%A5%E5%85%B7/">工具</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+        
+        
+            <span class="home-article-tag">
+                <i class="fa-solid fa-tags"></i>&nbsp;
+                <ul>
+                    
+                        <li>
+                            
+                            <a href="/tags/golang/">golang</a>&nbsp;
+                        </li>
+                    
+                        <li>
+                            | 
+                            <a href="/tags/%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/">环境配置</a>&nbsp;
+                        </li>
+                    
+                </ul>
+            </span>
+        
+    </div>
+
+    <a href="/2021/05/20/go%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F%E8%AE%BE%E7%BD%AE/">阅读全文<span class="seo-reader-text">go环境变量设置</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
+</div>
+
+                </div>
+            </li>
         
             <li class="home-article-item">
 

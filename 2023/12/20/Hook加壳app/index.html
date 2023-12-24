@@ -33,7 +33,7 @@
 <meta property="og:image" content="https://xiaoeeyu.github.io/2023/12/20/Hook%E5%8A%A0%E5%A3%B3app/image-20231218011816925.png">
 <meta property="og:image" content="https://xiaoeeyu.github.io/2023/12/20/Hook%E5%8A%A0%E5%A3%B3app/image-20231218133039765.png">
 <meta property="article:published_time" content="2023-12-20T11:18:29.000Z">
-<meta property="article:modified_time" content="2023-12-20T11:24:12.317Z">
+<meta property="article:modified_time" content="2023-12-22T09:35:05.032Z">
 <meta property="article:author" content="xiaoeryu">
 <meta property="article:tag" content="Frida Hook">
 <meta property="article:tag" content="Xposed插件开发">
@@ -400,7 +400,7 @@
 
         <div class="statistics flex justify-around my-2.5">
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">72</div>
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">73</div>
         <div class="label text-third-text-color text-sm">标签</div>
     </a>
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
@@ -408,7 +408,7 @@
         <div class="label text-third-text-color text-sm">分类</div>
     </a>
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">79</div>
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">81</div>
         <div class="label text-third-text-color text-sm">文章</div>
     </a>
 </div>
@@ -462,8 +462,8 @@
     
         <span class="article-date article-meta-item">
             <i class="fa-regular fa-wrench"></i>&nbsp;
-            <span class="desktop">2023-12-20 19:24:12</span>
-            <span class="mobile">2023-12-20 19:24:12</span>
+            <span class="desktop">2023-12-22 17:35:05</span>
+            <span class="mobile">2023-12-22 17:35:05</span>
             <span class="hover-info">更新</span>
         </span>
     
@@ -593,7 +593,7 @@
 
 <ul>
 <li>比如说这里我们可以hook它的MainActivity_类，它里面肯定有<code>onCreate</code>方法</li>
-<li>当然我们也可以用获取到的ClassLoader把类中的方法全部打印出来（放在文章末尾单独介绍一下）</li>
+<li>当然我们也可以用获取到的ClassLoader把类中的类列表全部打印出来（放在文章末尾单独介绍一下）</li>
 </ul>
 </blockquote>
 </li>
@@ -621,7 +621,9 @@ XposedHelpers.findAndHookMethod("com.omyga.app.ui.activity.MainActivity_", final
 <img lazyload="" src="/images/loading.svg" data-src="/2023/12/20/Hook%E5%8A%A0%E5%A3%B3app/image-20231220190434206.png" class="" title="image-20231220190434206">
 
 <p>总结：这样我们就成功的hook到了加壳app中的函数，其实步骤也不是很复杂。不过里面有一些细节例如获取ClassLoader和类加载的函数列表，需要我们对源码有一定的了解才能通过反射获取到。</p>
-<h3 id="分析如何获取类中的所有方法"><a href="#分析如何获取类中的所有方法" class="headerlink" title="分析如何获取类中的所有方法"></a>分析如何获取类中的所有方法</h3><p>这里先打印一下它的双亲委派关系，看看它是使用<code>PathClassLoader</code>还是<code>DexClassLoader</code>或者其它的ClassLoader加载的dex</p>
+<hr>
+<p>加壳app的hook流程也比较简单，下面分析一下获取类中所有方法的原理</p>
+<h3 id="分析如何获取dex中的类列表"><a href="#分析如何获取dex中的类列表" class="headerlink" title="分析如何获取dex中的类列表"></a>分析如何获取dex中的类列表</h3><p>这里先打印一下它的双亲委派关系，看看它是使用<code>PathClassLoader</code>还是<code>DexClassLoader</code>或者其它的ClassLoader加载的dex</p>
 <pre><code class="java">            ClassLoader classLoader = loadPackageParam.classLoader;
 
             XposedBridge.log("loadPackageParam.classLoader: " + classLoader);
@@ -795,7 +797,7 @@ public class PathClassLoader extends BaseDexClassLoader {
         
             <li>
                 <strong>更新于
-                    :</strong> 2023-12-20 19:24:12
+                    :</strong> 2023-12-22 17:35:05
             </li>
         
         <li>
@@ -835,6 +837,21 @@ public class PathClassLoader extends BaseDexClassLoader {
 
         
             <div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
+                
+                    <div class="article-prev border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+                        <a class="prev"
+                        rel="prev"
+                        href="/2023/12/25/Hook%E5%A4%9Adex%E7%9A%84app/"
+                        >
+                            <span class="left arrow-icon flex justify-center items-center">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </span>
+                            <span class="title flex justify-center items-center">
+                                <span class="post-nav-title-item">Hook多dex的app</span>
+                                <span class="post-nav-item">上一篇</span>
+                            </span>
+                        </a>
+                    </div>
                 
                 
                     <div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
@@ -923,7 +940,7 @@ public class PathClassLoader extends BaseDexClassLoader {
     <div class="post-toc">
         <div class="toc-title">此页目录</div>
         <div class="page-title">Hook加壳app</div>
-        <ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A1%88%E4%BE%8B"><span class="nav-text">案例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%80%E5%A7%8B%E7%BC%96%E5%86%99%E6%8F%92%E4%BB%B6"><span class="nav-text">开始编写插件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96ClassLoader"><span class="nav-text">获取ClassLoader</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hook%E8%A7%A3%E5%AF%86%E5%90%8E%E7%A8%8B%E5%BA%8F%E4%B8%AD%E7%9A%84%E6%96%B9%E6%B3%95"><span class="nav-text">hook解密后程序中的方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%9E%90%E5%A6%82%E4%BD%95%E8%8E%B7%E5%8F%96%E7%B1%BB%E4%B8%AD%E7%9A%84%E6%89%80%E6%9C%89%E6%96%B9%E6%B3%95"><span class="nav-text">分析如何获取类中的所有方法</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9B%9E%E9%A1%BE%E4%B8%80%E4%B8%8B%E4%B9%8B%E5%89%8D%E5%AD%A6%E4%B9%A0FART%E8%84%B1%E5%A3%B3%E7%9A%84%E6%97%B6%E5%80%99%E5%88%86%E6%9E%90%E8%BF%87%E7%9A%84%E6%BA%90%E7%A0%81"><span class="nav-text">回顾一下之前学习FART脱壳的时候分析过的源码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E6%89%80%E6%9C%89%E5%8A%A0%E8%BD%BD%E7%9A%84%E7%B1%BB"><span class="nav-text">获取所有加载的类</span></a></li></ol></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A1%88%E4%BE%8B"><span class="nav-text">案例</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%BC%80%E5%A7%8B%E7%BC%96%E5%86%99%E6%8F%92%E4%BB%B6"><span class="nav-text">开始编写插件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96ClassLoader"><span class="nav-text">获取ClassLoader</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#hook%E8%A7%A3%E5%AF%86%E5%90%8E%E7%A8%8B%E5%BA%8F%E4%B8%AD%E7%9A%84%E6%96%B9%E6%B3%95"><span class="nav-text">hook解密后程序中的方法</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%9E%90%E5%A6%82%E4%BD%95%E8%8E%B7%E5%8F%96dex%E4%B8%AD%E7%9A%84%E7%B1%BB%E5%88%97%E8%A1%A8"><span class="nav-text">分析如何获取dex中的类列表</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9B%9E%E9%A1%BE%E4%B8%80%E4%B8%8B%E4%B9%8B%E5%89%8D%E5%AD%A6%E4%B9%A0FART%E8%84%B1%E5%A3%B3%E7%9A%84%E6%97%B6%E5%80%99%E5%88%86%E6%9E%90%E8%BF%87%E7%9A%84%E6%BA%90%E7%A0%81"><span class="nav-text">回顾一下之前学习FART脱壳的时候分析过的源码</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%8E%B7%E5%8F%96%E6%89%80%E6%9C%89%E5%8A%A0%E8%BD%BD%E7%9A%84%E7%B1%BB"><span class="nav-text">获取所有加载的类</span></a></li></ol></li></ol>
 
     </div>
 </div>
