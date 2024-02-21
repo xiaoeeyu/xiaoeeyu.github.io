@@ -1,3 +1,5 @@
+https://xiaoeeyu.github.io/2024/02/21/%E5%BA%8F%E5%88%97%E5%AF%86%E7%A0%81%E4%B9%8BRC4%E5%AE%9E%E8%B7%B5%E7%AF%87/
+https://xiaoeeyu.github.io/2024/02/21/%E5%BA%8F%E5%88%97%E5%AF%86%E7%A0%81RC4%E7%90%86%E8%AE%BA%E7%AF%87/
 https://xiaoeeyu.github.io/2024/02/13/%E5%AF%86%E7%A0%81%E5%AD%A6%E5%88%9D%E6%AD%A5%E8%AE%A4%E8%AF%86/
 https://xiaoeeyu.github.io/2023/12/25/Hook%E5%A4%9Adex%E7%9A%84app/
 https://xiaoeeyu.github.io/2023/12/25/so%E5%87%BD%E6%95%B0Hook%EF%BC%88%E4%B8%8A%EF%BC%89/
@@ -160,6 +162,8 @@ https://xiaoeeyu.github.io/tags/%E8%B5%84%E6%9C%AC%E4%B8%BB%E4%B9%89/
 https://xiaoeeyu.github.io/tags/%E5%93%B2%E5%AD%A6/
 https://xiaoeeyu.github.io/tags/so-Hook/
 https://xiaoeeyu.github.io/tags/%E5%8A%A0%E8%A7%A3%E5%AF%86%E7%AE%97%E6%B3%95%E5%88%86%E6%9E%90/
+https://xiaoeeyu.github.io/tags/RC4/
+https://xiaoeeyu.github.io/tags/frida-Hook/
 https://xiaoeeyu.github.io/categories/X86%E6%B1%87%E7%BC%96%EF%BC%9A%E5%AE%9E%E6%A8%A1%E5%BC%8F%E5%88%B0%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F/
 https://xiaoeeyu.github.io/categories/Win%E9%80%86%E5%90%91/
 https://xiaoeeyu.github.io/categories/ARM%E6%B1%87%E7%BC%96/
@@ -170,3 +174,5 @@ https://xiaoeeyu.github.io/categories/NDK%E5%BC%80%E5%8F%91/
 https://xiaoeeyu.github.io/categories/%E5%B7%A5%E5%85%B7/
 https://xiaoeeyu.github.io/categories/ios%E9%80%86%E5%90%91/
 https://xiaoeeyu.github.io/categories/%E7%A4%BE%E7%A7%91/
+https://xiaoeeyu.github.io/categories/%E5%8A%A0%E5%AF%86%E8%A7%A3%E5%AF%86/
+https://xiaoeeyu.github.io/categories/%E5%8A%A0%E5%AF%86%E8%A7%A3%E5%AF%86/Android%E9%80%86%E5%90%91/

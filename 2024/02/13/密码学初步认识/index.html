@@ -38,8 +38,14 @@
 <meta property="og:image" content="https://xiaoeeyu.github.io/2024/02/13/%E5%AF%86%E7%A0%81%E5%AD%A6%E5%88%9D%E6%AD%A5%E8%AE%A4%E8%AF%86/image-20240213171711984.png">
 <meta property="og:image" content="https://xiaoeeyu.github.io/2024/02/13/%E5%AF%86%E7%A0%81%E5%AD%A6%E5%88%9D%E6%AD%A5%E8%AE%A4%E8%AF%86/image-20240213172202980.png">
 <meta property="og:image" content="https://xiaoeeyu.github.io/2024/02/13/%E5%AF%86%E7%A0%81%E5%AD%A6%E5%88%9D%E6%AD%A5%E8%AE%A4%E8%AF%86/image-20240213172616612.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/02/13/%E5%AF%86%E7%A0%81%E5%AD%A6%E5%88%9D%E6%AD%A5%E8%AE%A4%E8%AF%86/image-20240216113916213.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/02/13/%E5%AF%86%E7%A0%81%E5%AD%A6%E5%88%9D%E6%AD%A5%E8%AE%A4%E8%AF%86/image-20240216113927971.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/02/13/%E5%AF%86%E7%A0%81%E5%AD%A6%E5%88%9D%E6%AD%A5%E8%AE%A4%E8%AF%86/image-20240216093329714.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/02/13/%E5%AF%86%E7%A0%81%E5%AD%A6%E5%88%9D%E6%AD%A5%E8%AE%A4%E8%AF%86/image-20240216093417551.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/02/13/%E5%AF%86%E7%A0%81%E5%AD%A6%E5%88%9D%E6%AD%A5%E8%AE%A4%E8%AF%86/image-20240216110706274.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/02/13/%E5%AF%86%E7%A0%81%E5%AD%A6%E5%88%9D%E6%AD%A5%E8%AE%A4%E8%AF%86/image-20240216111055765.png">
 <meta property="article:published_time" content="2024-02-13T08:38:12.000Z">
-<meta property="article:modified_time" content="2024-02-13T09:28:45.629Z">
+<meta property="article:modified_time" content="2024-02-17T11:02:09.357Z">
 <meta property="article:author" content="xiaoeryu">
 <meta property="article:tag" content="Frida Hook">
 <meta property="article:tag" content="加解密算法分析">
@@ -406,15 +412,15 @@
 
         <div class="statistics flex justify-around my-2.5">
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">74</div>
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">76</div>
         <div class="label text-third-text-color text-sm">标签</div>
     </a>
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">10</div>
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">12</div>
         <div class="label text-third-text-color text-sm">分类</div>
     </a>
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">82</div>
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">84</div>
         <div class="label text-third-text-color text-sm">文章</div>
     </a>
 </div>
@@ -468,8 +474,8 @@
     
         <span class="article-date article-meta-item">
             <i class="fa-regular fa-wrench"></i>&nbsp;
-            <span class="desktop">2024-02-13 17:28:45</span>
-            <span class="mobile">2024-02-13 17:28:45</span>
+            <span class="desktop">2024-02-17 19:02:09</span>
+            <span class="mobile">2024-02-17 19:02:09</span>
             <span class="hover-info">更新</span>
         </span>
     
@@ -640,6 +646,105 @@
 </ul>
 </li>
 </ul>
+<h3 id="针对函数进行重放攻击"><a href="#针对函数进行重放攻击" class="headerlink" title="针对函数进行重放攻击"></a>针对函数进行重放攻击</h3><ol>
+<li>针对java实现的函数，可以简单编写frida脚本或xposed插件对函数进行主动调用。只需要知道类名和函数名就ok，对于加壳的app可能会出现找不到类找不到函数等问题，这些问题的根本原因还是使用的classloader不对，只有加载了这个class的classloader才可以找到这个类。</li>
+<li>针对so中的函数，推荐使用frida脚本进行主动调用，较为简洁，当然使用xposed也可以。如果是导出函数就比较简单只需要在frida中遍历它的符号表就可以拿到函数地址。使用xposed也可以，使用dlopen、dlsym也可以快速的拿到函数地址。如果没有导出的话就需要去找到函数的基址和偏移</li>
+</ol>
+<h3 id="加壳的ollvm分析"><a href="#加壳的ollvm分析" class="headerlink" title="加壳的ollvm分析"></a>加壳的ollvm分析</h3><p>接下来是对加壳了的app的处理流程，怎么去快速的定位加解密算法相关的类，然后对类中的函数进行调用</p>
+<h4 id="脱壳"><a href="#脱壳" class="headerlink" title="脱壳"></a>脱壳</h4><p>分析软件，对于能脱壳的就先把壳脱掉。</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/02/13/%E5%AF%86%E7%A0%81%E5%AD%A6%E5%88%9D%E6%AD%A5%E8%AE%A4%E8%AF%86/image-20240216113916213.png" class="" title="image-20240216113916213">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2024/02/13/%E5%AF%86%E7%A0%81%E5%AD%A6%E5%88%9D%E6%AD%A5%E8%AE%A4%E8%AF%86/image-20240216113927971.png" class="" title="image-20240216113927971">
+
+<p>这里使用<a class="link" target="_blank" rel="noopener" href="https://github.com/jas502n/FART-dump">frida_fart <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>脚本来脱壳：</p>
+<blockquote>
+<p>脚本使用方法在脚本中有说明，这里说一下大致使用流程</p>
+<ol>
+<li><p>将加壳app安装到手机上</p>
+</li>
+<li><p>运行脚本脱壳<code>frida -U -f com.kanxue.encrypt01 -l frida_fart_hook.js --no-pause</code>，对于没有存储权限的app把脚本中的savepath设置为app包所在的路径</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/02/13/%E5%AF%86%E7%A0%81%E5%AD%A6%E5%88%9D%E6%AD%A5%E8%AE%A4%E8%AF%86/image-20240216093329714.png" class="" title="image-20240216093329714">
+</li>
+<li><p>调用**fart()**对codeitem进行一个dump<code>fart()</code></p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/02/13/%E5%AF%86%E7%A0%81%E5%AD%A6%E5%88%9D%E6%AD%A5%E8%AE%A4%E8%AF%86/image-20240216093417551.png" class="" title="image-20240216093417551"></li>
+</ol>
+</blockquote>
+<p>当然脱壳方法非常多，把pixel刷入脱壳机的rom也可以</p>
+<h3 id="分析dex"><a href="#分析dex" class="headerlink" title="分析dex"></a>分析dex</h3><p>通过文本搜索找到包含MainActivity的文件，然后用GDA反编译</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/02/13/%E5%AF%86%E7%A0%81%E5%AD%A6%E5%88%9D%E6%AD%A5%E8%AE%A4%E8%AF%86/image-20240216110706274.png" class="" title="image-20240216110706274">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2024/02/13/%E5%AF%86%E7%A0%81%E5%AD%A6%E5%88%9D%E6%AD%A5%E8%AE%A4%E8%AF%86/image-20240216111055765.png" class="" title="image-20240216111055765">
+
+<ul>
+<li><p>反编译出来之后尝试用<strong>Java.perform()</strong> HOOK **caicaikan()**这个函数</p>
+</li>
+<li><p>这个函数是一个非静态函数，有一个string参数。对于一个非静态的函数我们需要一个实例才能对其进行主动调用</p>
+<blockquote>
+<pre><code class="js">function activeinvokejavafunc(content){
+    Java.perform(function () {
+        // com.kanxue.encrypt01.MainActivity
+        var mainActivityClass = Java.use("com.kanxue.encrypt01.MainActivity");
+        console.log("mainActivityClass: ", mainActivityClass);
+
+        // public String caicaikan(String content)
+        Java.choose("com.kanxue.encrypt01.MainActivity",{
+            onMatch:function(obj){
+                console.log("found obj: ", obj);
+                var result = obj.caicaikan(content);
+                console.log("result: ", result);
+            },onComplete:function(){
+                console.log("search heap complete");
+            }
+        })
+    })
+}
+</code></pre>
+</blockquote>
+</li>
+<li><p>对于这种情况可以直接调用就行</p>
+</li>
+</ul>
+<p>如果一个app使用动态加载的方式，加载了一些插件中的classloader的时候，我们就需要使用frida中枚举的方式去遍历所有的classloader。枚举到了我们就把这个classloader设置为当前的classload，来进行主动调用。</p>
+<blockquote>
+<pre><code class="js">function activeinvokejavafunc(content){
+    Java.perform(function () {
+        Java.enumerateClassLoadersSync().forEach(function(classloader){
+            console.log(classloader);
+        });
+        
+        Java.enumerateClassLoadersSync().forEach(function(classloader){
+            try {
+                console.log(classloader);
+                classloader.loadClass("com.kanxue.encrypt01.MainActivity");
+                Java.classFactory.loader = classloader;
+
+                // com.kanxue.encrypt01.MainActivity
+                var mainActivityClass = Java.use("com.kanxue.encrypt01.MainActivity");
+                console.log("mainActivityClass: ", mainActivityClass);
+
+                // public String caicaikan(String content)
+                Java.choose("com.kanxue.encrypt01.MainActivity",{
+                    onMatch:function(obj){
+                        console.log("found obj: ", obj);
+                        var result = obj.caicaikan(content);
+                        console.log("result: ", result);
+                    },onComplete:function(){
+                        console.log("search heap complete");
+                    }
+                })
+            } catch (error) {
+                console.log("error: ", error);
+            }
+        })
+    })
+}
+</code></pre>
+</blockquote>
+<p>总结：针对函数进行重放攻击</p>
+<ol>
+<li>针对java实现的函数，可以简单编写frida脚本或者xposed插件对函数进行主动调用</li>
+<li>针对so中的函数，推荐使用frida脚本进行主动调用，较为简单快捷；当然xposed也可以</li>
+</ol>
 
         </div>
 
@@ -654,7 +759,7 @@
         
             <li>
                 <strong>更新于
-                    :</strong> 2024-02-13 17:28:45
+                    :</strong> 2024-02-17 19:02:09
             </li>
         
         <li>
@@ -694,6 +799,21 @@
 
         
             <div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
+                
+                    <div class="article-prev border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+                        <a class="prev"
+                        rel="prev"
+                        href="/2024/02/21/%E5%BA%8F%E5%88%97%E5%AF%86%E7%A0%81RC4%E7%90%86%E8%AE%BA%E7%AF%87/"
+                        >
+                            <span class="left arrow-icon flex justify-center items-center">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </span>
+                            <span class="title flex justify-center items-center">
+                                <span class="post-nav-title-item">序列密码RC4理论篇</span>
+                                <span class="post-nav-item">上一篇</span>
+                            </span>
+                        </a>
+                    </div>
                 
                 
                     <div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
@@ -782,7 +902,7 @@
     <div class="post-toc">
         <div class="toc-title">此页目录</div>
         <div class="page-title">密码学初步认识</div>
-        <ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#BASE64%E7%BC%96%E7%A0%81%E7%AE%80%E4%BB%8B"><span class="nav-text">BASE64编码简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#BASE64%E5%9C%A8%E5%8F%8D%E6%B1%87%E7%BC%96%E5%90%8E%E7%9A%84%E8%A1%A8%E7%8E%B0%E5%BD%A2%E5%BC%8F"><span class="nav-text">BASE64在反汇编后的表现形式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#so%E6%96%87%E4%BB%B6%E4%B8%AD%E7%9A%84base64"><span class="nav-text">so文件中的base64</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A0%E4%BA%86ollvm%E5%90%8Eso%E6%96%87%E4%BB%B6%E4%B8%AD%E7%9A%84base64"><span class="nav-text">加了ollvm后so文件中的base64</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B0%9D%E8%AF%95%E5%88%86%E6%9E%90"><span class="nav-text">尝试分析</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Frida%E8%84%9A%E6%9C%AC"><span class="nav-text">Frida脚本</span></a></li></ol>
+        <ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#BASE64%E7%BC%96%E7%A0%81%E7%AE%80%E4%BB%8B"><span class="nav-text">BASE64编码简介</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#BASE64%E5%9C%A8%E5%8F%8D%E6%B1%87%E7%BC%96%E5%90%8E%E7%9A%84%E8%A1%A8%E7%8E%B0%E5%BD%A2%E5%BC%8F"><span class="nav-text">BASE64在反汇编后的表现形式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#so%E6%96%87%E4%BB%B6%E4%B8%AD%E7%9A%84base64"><span class="nav-text">so文件中的base64</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A0%E4%BA%86ollvm%E5%90%8Eso%E6%96%87%E4%BB%B6%E4%B8%AD%E7%9A%84base64"><span class="nav-text">加了ollvm后so文件中的base64</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%B0%9D%E8%AF%95%E5%88%86%E6%9E%90"><span class="nav-text">尝试分析</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Frida%E8%84%9A%E6%9C%AC"><span class="nav-text">Frida脚本</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%92%88%E5%AF%B9%E5%87%BD%E6%95%B0%E8%BF%9B%E8%A1%8C%E9%87%8D%E6%94%BE%E6%94%BB%E5%87%BB"><span class="nav-text">针对函数进行重放攻击</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%8A%A0%E5%A3%B3%E7%9A%84ollvm%E5%88%86%E6%9E%90"><span class="nav-text">加壳的ollvm分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E8%84%B1%E5%A3%B3"><span class="nav-text">脱壳</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%86%E6%9E%90dex"><span class="nav-text">分析dex</span></a></li></ol>
 
     </div>
 </div>
