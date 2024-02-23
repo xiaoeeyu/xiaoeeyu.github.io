@@ -1,0 +1,1068 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    
+    <meta name="author" content="xiaoeryu">
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="https://xiaoeeyu.github.io/2024/02/23/分组密码-des/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+        <meta name="description" content="本章内容主要是DES加密的原理和如何在Java以及SO中识别DES算法">
+<meta property="og:type" content="article">
+<meta property="og:title" content="分组密码-DES">
+<meta property="og:url" content="https://xiaoeeyu.github.io/2024/02/23/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-DES/index.html">
+<meta property="og:site_name" content="xiaoeryu">
+<meta property="og:description" content="本章内容主要是DES加密的原理和如何在Java以及SO中识别DES算法">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/02/23/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-DES/image-20240222105933997.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/02/23/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-DES/image-20240222133719348.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/02/23/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-DES/image-20240222144900177.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/02/23/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-DES/image-20240222150228405.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/02/23/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-DES/image-20240222220947583.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/02/23/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-DES/image-20240223100117244.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/02/23/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-DES/image-20240223131756282.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/02/23/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-DES/image-20240223150139614.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/02/23/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-DES/image-20240223150320804.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/02/23/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-DES/image-20240223150755250.png">
+<meta property="article:published_time" content="2024-02-23T07:22:17.000Z">
+<meta property="article:modified_time" content="2024-02-23T07:35:23.991Z">
+<meta property="article:author" content="xiaoeryu">
+<meta property="article:tag" content="Frida Hook">
+<meta property="article:tag" content="DES">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://xiaoeeyu.github.io/2024/02/23/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-DES/image-20240222105933997.png">
+    
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/rabete.jpg" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/rabete.jpg">
+    <meta name="theme-color" content="#A31F34">
+    <link rel="shortcut icon" href="/images/rabete.jpg">
+    <!--- Page Info-->
+    
+    <title>
+        
+            分组密码-DES -
+        
+        xiaoeryu
+    </title>
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+
+    
+        <style>
+    :root {
+        --preloader-background-color: #fff;
+        --preloader-text-color: #000;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        :root {
+            --preloader-background-color: #202124;
+            --preloader-text-color: #fff;
+        }
+    }
+
+    @media (prefers-color-scheme: light) {
+        :root {
+            --preloader-background-color: #fff;
+            --preloader-text-color: #000;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .ml13 {
+            font-size: 2.6rem !important; /* Adjust this value as needed */
+        }
+    }
+
+    .preloader {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem; /* Tailwind 'gap-4' is 1rem */
+        align-items: center;
+        justify-content: center;
+        position: fixed;
+        padding: 12px;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh; /* 'h-screen' is 100% of the viewport height */
+        background-color: var(--preloader-background-color);
+        z-index: 1100; /* 'z-[1100]' sets the z-index */
+        transition: opacity 0.2s ease-in-out;
+    }
+
+    .ml13 {
+        font-size: 3.2rem;
+        /* text-transform: uppercase; */
+        color: var(--preloader-text-color);
+        letter-spacing: -1px;
+        font-weight: 500;
+        font-family: 'Chillax-Variable', sans-serif;
+        text-align: center;
+    }
+
+    .ml13 .word {
+        display: inline-flex;
+        flex-wrap: wrap;
+        white-space: nowrap;
+    }
+
+    .ml13 .letter {
+        display: inline-block;
+        line-height: 1em;
+    }
+</style>
+
+<div class="preloader">
+    
+<script src="/js/libs/anime.min.js"></script>
+
+    <h1 class="ml13">
+        xiaoeryu
+    </h1>
+    <script>
+        var textWrapper = document.querySelector('.ml13');
+        // Split text into words
+        var words = textWrapper.textContent.trim().split(' ');
+
+        // Clear the existing content
+        textWrapper.innerHTML = '';
+
+        // Wrap each word and its letters in spans
+        words.forEach(function(word) {
+            var wordSpan = document.createElement('span');
+            wordSpan.classList.add('word');
+            wordSpan.innerHTML = word.replace(/\S/g, "<span class='letter'>$&</span>");
+            textWrapper.appendChild(wordSpan);
+            textWrapper.appendChild(document.createTextNode(' ')); // Add space between words
+        });
+
+
+        anime.timeline({loop: true})
+            .add({
+                targets: '.ml13 .letter',
+                translateY: [100,0],
+                translateZ: 0,
+                opacity: [0,1],
+                easing: "easeOutExpo",
+                duration: 1400,
+                delay: (el, i) => 300 + 30 * i
+            }).add({
+            targets: '.ml13 .letter',
+            translateY: [0,-100],
+            opacity: [1,0],
+            easing: "easeInExpo",
+            duration: 1200,
+            delay: (el, i) => 100 + 30 * i
+        });
+
+        let themeStatus = JSON.parse(localStorage.getItem('REDEFINE-THEME-STATUS'))?.isDark;
+
+        // If the theme status is not found in local storage, check the preferred color scheme
+        if (themeStatus === undefined || themeStatus === null) {
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                themeStatus = 'dark';
+            } else {
+                themeStatus = 'light';
+            }
+        }
+
+        // Now you can use the themeStatus variable in your code
+        if (themeStatus) {
+            document.documentElement.style.setProperty('--preloader-background-color', '#202124');
+            document.documentElement.style.setProperty('--preloader-text-color', '#fff');
+        } else {
+            document.documentElement.style.setProperty('--preloader-background-color', '#fff');
+            document.documentElement.style.setProperty('--preloader-text-color', '#000');
+        }
+
+        window.addEventListener('load', function () {
+            hidePreloaderAfterTimeout(1000); // Hide after 1000 milliseconds once the window has loaded
+        });
+
+        // Backup failsafe: Hide preloader after a maximum of 5000 milliseconds, regardless of the window load event
+        hidePreloaderAfterTimeout(5000);
+
+        function hidePreloaderAfterTimeout(delay) {
+            setTimeout(function () {
+                var preloader = document.querySelector('.preloader');
+                preloader.style.opacity = '0';
+                setTimeout(function () {
+                    preloader.style.display = 'none';
+                }, 200);
+            }, delay);
+        }
+    </script>
+</div>
+    
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+        
+<link rel="stylesheet" href="/assets/build/styles.css">
+
+    
+
+    
+<link rel="stylesheet" href="/fonts/fonts.css">
+
+    
+<link rel="stylesheet" href="/fonts/Satoshi/satoshi.css">
+
+    <!--- Font Part-->
+    
+    
+    
+    
+
+    <!--- Inject Part-->
+    
+    <script id="hexo-configurations">
+    window.config = {"hostname":"xiaoeeyu.github.io","root":"/","language":"zh-CN","path":"search.xml"};
+    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true,"title_alignment":"left"},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":4,"number":false,"expand":true,"init_open":true},"copyright":{"enable":true,"default":"cc_by_nc_sa"},"lazyload":true,"recommendation":{"enable":false,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/ball-0101.jpg","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"preloader":true,"open_graph":true,"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/wallhaven-jxl31y.png","dark":"/images/wallhaven-o5762l.png"},"title":"XIAOERYU","subtitle":{"text":["明心见性，拨云见日","Don't waite, to create"],"hitokoto":{"enable":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":true,"links":{"github":"https://github.com/xiaoeeyu","instagram":null,"zhihu":null,"twitter":null,"email":"xiaoeryu@163.com"},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null}]},"mermaid":{"enable":false,"version":"9.3.0"}},"version":"2.6.0","navbar":{"auto_hide":false,"color":{"left":"#f78736","right":"#367df7","transparency":35},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Archives":{"path":"/archives","icon":"fa-regular fa-archive"}},"search":{"enable":false,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"blur"},"home":{"sidebar":{"enable":true,"position":"left","first_item":"menu","announcement":null,"links":null},"article_date_format":"auto","categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":3}},"footerStart":"2022/8/17 11:45:14"};
+    window.lang_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"};
+    window.data = {"masonry":false};
+  </script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+<meta name="generator" content="Hexo 6.3.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+<!--        <span class="swup-progress-icon">-->
+<!--            <i class="fa-solid fa-circle-notch fa-spin"></i>-->
+<!--        </span>-->
+    
+</div>
+
+
+<main class="page-container" id="swup">
+
+    
+
+    <div class="main-content-container">
+
+
+        <div class="main-content-header">
+            <header class="navbar-container">
+
+    <div class="navbar-content">
+        <div class="left">
+            
+                <a class="logo-image" href="/">
+                    <img src="/images/rabete.jpg">
+                </a>
+            
+            <a class="logo-title" href="/">
+                
+                xiaoeryu
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/"
+                                        >
+                                    <i class="fa-regular fa-house fa-fw"></i>
+                                    首页
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/archives"
+                                        >
+                                    <i class="fa-regular fa-archive fa-fw"></i>
+                                    归档
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile drawer -->
+    <div class="navbar-drawer h-screen w-full absolute top-0 left-0 bg-background-color flex flex-col justify-between">
+        <ul class="drawer-navbar-list flex flex-col px-4 justify-center items-start">
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/"
+                        >
+                            <span>
+                                首页
+                            </span>
+                            
+                                <i class="fa-regular fa-house fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/archives"
+                        >
+                            <span>
+                                归档
+                            </span>
+                            
+                                <i class="fa-regular fa-archive fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+        </ul>
+
+        <div class="statistics flex justify-around my-2.5">
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">77</div>
+        <div class="label text-third-text-color text-sm">标签</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">12</div>
+        <div class="label text-third-text-color text-sm">分类</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">85</div>
+        <div class="label text-third-text-color text-sm">文章</div>
+    </a>
+</div>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="main-content-body">
+
+            
+
+            <div class="main-content">
+
+                
+                    <div class="post-page-container flex relative justify-between box-border w-full h-full">
+    <div class="article-content-container">
+
+        <div class="article-title relative w-full">
+            
+                <div class="w-full flex items-center pt-6 justify-start">
+                    <h1 class="article-title-regular text-second-text-color text-4xl md:text-6xl font-bold px-2 sm:px-6 md:px-8 py-3">分组密码-DES</h1>
+                </div>
+            
+            </div>
+
+        
+            <div class="article-header flex flex-row gap-2 items-center px-2 sm:px-6 md:px-8">
+                <div class="avatar w-[46px] h-[46px] flex-shrink-0 rounded-medium border border-border-color p-[1px]">
+                    <img src="/images/rabete.jpg">
+                </div>
+                <div class="info flex flex-col justify-between">
+                    <div class="author flex items-center">
+                        <span class="name text-default-text-color text-lg font-semibold">xiaoeryu</span>
+                        
+                            <span class="author-label ml-1.5 text-xs px-2 py-0.5 rounded-small text-third-text-color border border-shadow-color-1">Lv5</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2024-02-23 15:22:17</span>
+        <span class="mobile">2024-02-23 15:22:17</span>
+        <span class="hover-info">创建</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2024-02-23 15:35:23</span>
+            <span class="mobile">2024-02-23 15:35:23</span>
+            <span class="hover-info">更新</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/%E5%8A%A0%E5%AF%86%E8%A7%A3%E5%AF%86/">加密解密</a>&nbsp;
+                        </li>
+                    
+                    
+                
+                    
+                        
+                            <li>></li>
+                        
+                        <li>
+                            <a href="/categories/%E5%8A%A0%E5%AF%86%E8%A7%A3%E5%AF%86/Android%E9%80%86%E5%90%91/">Android逆向</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/Frida-Hook/">Frida Hook</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/DES/">DES</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fa-regular fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        
+
+
+        <div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
+            <p>本章内容主要是DES加密的原理和如何在Java以及SO中识别DES算法</p>
+<span id="more"></span>
+
+<p>DES：DES算法为密码体制中的对称密码体制，属于分组密码，又被称为美国数据加密标准，是1972年美国IBM公司研制的对称密码体制加密算法。明文按64位进行分组，密钥长64位，而事实上是56位参与DES运算（第8、16、24、32、40、48、56、64位是校验位，使得每个密钥都有奇数个1）分组后的明文组和56位的密钥按位替代或交换的方法形成密文组的加密方法。</p>
+<p>DES（数据加密标准）算法主要采用替换和移位的方式进行加密，他用56位（64位密钥只有56位有效）对64位二进制数据块进行加密，每次加密对64位的输入数据进行16轮编码，经过一系列替换和移位后，输入的64位原数据转换成完全不同的64位输出数据。DES作为分组密码，主要的实现过程由两部分组成，分别是密钥的生成以及明文的处理。其中每一个分组的明文的处理分为16轮进行，而对于每一轮都需要使用密钥编排部分生成的子密钥参与运算。</p>
+<h3 id="java代码中使用的DES"><a href="#java代码中使用的DES" class="headerlink" title="java代码中使用的DES"></a>java代码中使用的DES</h3><p>Android本身提供了用于加解密的类：javax.crypto.Cipher类，直接使用即可，其中的DES代表使用DES加密算法，CBC代表分组加密的工作模式，PKCS5Padding代表分组的填充方式；在家解密的过程中，主要的密钥和IV是在Cipher类中的init函数进行传递的，因此，只需要hook该函数即可获取到密钥和IV；</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/02/23/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-DES/image-20240222105933997.png" class="" title="image-20240222105933997">
+
+<ul>
+<li><p>在逆向过程中需要定位算法的时候，可以直接搜索“DES”、“Cipher”来定位到算法位置。但是如果代码使用了混淆、加壳、采用反射的方式（例如上图中注释的一行代码）调用Cipher的时候，我们使用静态的方式就无法直接定位到这些关键字符串所在的位置了。</p>
+</li>
+<li><p>在这种情况下，对于Java实现的情况下我们可以使用xpose、frida去动态的hook关键函数，获取它的参数来拿到需要的内容</p>
+<blockquote>
+<p>例如：</p>
+<p>hook**Cipher.getInstance()**可以获取到加密模式和填充模式</p>
+<p>hook <strong>IvParameterSpec()<strong>拿到返回值可以获取到</strong>iv</strong>，</p>
+<p>hook **cipher.init()**可以拿到密钥key</p>
+</blockquote>
+<p>对于Java部分来说，hook起来是相对比较容易的。困难的地方在于复杂的标准DES实现部分</p>
+</li>
+</ul>
+<h4 id="复杂的标准DES实现部分"><a href="#复杂的标准DES实现部分" class="headerlink" title="复杂的标准DES实现部分"></a>复杂的标准DES实现部分</h4><img lazyload="" src="/images/loading.svg" data-src="/2024/02/23/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-DES/image-20240222133719348.png" class="" title="image-20240222133719348">
+
+<p>可以看到这个算法还是相对来说比较复杂的</p>
+<p>在DES中去快速的识别确认是否是这个算法，有一个简单的办法是去定位DES加密流程中出现的一些常量表</p>
+<h5 id="明文处理流程中的常量表"><a href="#明文处理流程中的常量表" class="headerlink" title="明文处理流程中的常量表"></a>明文处理流程中的常量表</h5><p>在针对每一个明文分组即64位数据进行处理的流程中，需要有大量的常量表的参与，从而完成对明文的混淆、扩散处理。主要有：<strong>初始置换IP（8 × 8）</strong>，以及与之对应的<strong>逆初始置换表（8 × 8）</strong>；同时，还有在f函数中的<strong>扩展置换E表（8 × 6）</strong>，用于将32位的输入，扩展成48位；加下来还有<strong>S-盒</strong>的参与，共计有<strong>8个S-盒（4 × 16）</strong>。这些常量都是快速判断DES加密算法的标志。</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/02/23/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-DES/image-20240222144900177.png" class="" title="image-20240222144900177">
+
+<h5 id="密钥编排流程中的常量表"><a href="#密钥编排流程中的常量表" class="headerlink" title="密钥编排流程中的常量表"></a>密钥编排流程中的常量表</h5><p>在针对每一个明文分组即64位数据进行16轮的处理过程中每一轮都需要一个由原始56位密钥经过编排生成的48位子密钥的参与，该密钥编排流程中也同样出现了一些常量表的参与。主要有：初始置换PC-1表（7 × 8），以及PC-2表（6 × 8），这些常量也可以作为快速判断DES加密算法的标志。</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/02/23/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-DES/image-20240222150228405.png" class="" title="image-20240222150228405">
+
+<h5 id="DES的衍生算法"><a href="#DES的衍生算法" class="headerlink" title="DES的衍生算法"></a>DES的衍生算法</h5><p>因为DES到了现如今仅仅56位的加密算法已经不足以确保安全性了，所以衍生出来双重和三重DES</p>
+<h6 id="衍生"><a href="#衍生" class="headerlink" title="衍生"></a>衍生</h6><p>在 DES 的基础上，衍生了以下两种加密方式</p>
+<ul>
+<li>双重 DES</li>
+<li>三种 DES</li>
+</ul>
+<h6 id="双重-DES"><a href="#双重-DES" class="headerlink" title="双重 DES"></a>双重 DES</h6><p>双重 DES 使用两个密钥，长度为 112 比特。加密方式如下</p>
+<p>C=Ek2(Ek1(P))</p>
+<p><strong>但是双重 DES 不能抵抗中间相遇攻击，我们可以构造如下两个集合</strong></p>
+<p>I=Ek1(P)</p>
+<p>J=Dk2(C)</p>
+<p>即分别枚举 K1 和 K2 分别对 P 进行加密和对 C 进行解密。</p>
+<p>在我们对 P 进行加密完毕后，可以对加密结果进行排序，这样的复杂度为2nlog(2n)=O(n2n)2</p>
+<p>当我们对 C 进行解密时，可以每解密一个，就去对应的表中查询。</p>
+<p>总的复杂度为还是O(n2n)</p>
+<h6 id="三重-DES"><a href="#三重-DES" class="headerlink" title="三重 DES"></a>三重 DES</h6><p>三重 DES 的加解密方式如下</p>
+<p>C=Ek3(Dk2(Ek1(P)))</p>
+<p>P=Dk1(Ek2(Dk3(C)))</p>
+<p>在选择密钥时，可以有两种方法</p>
+<ul>
+<li>3 个不同的密钥，k1，k2，k3 互相独立，一共 168 比特。</li>
+<li>2 个不同的密钥，k1 与 k2 独立，k3=k1，112 比特。</li>
+</ul>
+<h5 id="攻击方法"><a href="#攻击方法" class="headerlink" title="攻击方法"></a>攻击方法</h5><ul>
+<li>差分攻击</li>
+<li>线性攻击</li>
+</ul>
+<h3 id="实际的逆向分析"><a href="#实际的逆向分析" class="headerlink" title="实际的逆向分析"></a>实际的逆向分析</h3><p>这里使用我们本地编写的一个标准DES加密作为例子进行分析，<a class="link" target="_blank" rel="noopener" href="https://github.com/xiaoeeyu/desencrypt">代码地址 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<h4 id="Java层"><a href="#Java层" class="headerlink" title="Java层"></a>Java层</h4><p>java的静态分析：如果没有加保护的话，只需检索关键字字符串即可</p>
+<p>对于使用了字符串加密，函数的调用使用了反射的方式，这种情况使用xposed、frida去hook相关的函数就可以了</p>
+<pre><code class="js">function main(){
+    Java.perform(function(){
+        Java.use('javax.crypto.Cipher').getInstance.overload('java.lang.String').implementation = function(arg0){
+            console.log('javax.crypto.Cipher.getInstance is called!', arg0);
+            var result = this.getInstance(arg0);
+            return result;
+        };
+        // cipher.init(Cipher.ENCRYPT_MODE, getRawKey(key), iv);
+        Java.use('javax.crypto.Cipher').init.overload('int', 'java.security.Key', 'java.security.spec.AlgorithmParameterSpec').implementation = function(arg0, arg1, arg2){
+            // console.log("javax.crypto.Cipher.init is called!", arg0, arg1, arg2);
+            var mode = arg0;
+            var key = arg1;
+            var iv = arg2;
+            var KeyClass = Java.use('java.security.Key');
+            var keyobj = Java.cast(key, KeyClass);
+            var key_bytes = keyobj.getEncoded();
+            var IVClass = Java.use('javax.crypto.spec.IvParameterSpec');
+            var ivobj = Java.cast(iv, IVClass);
+            var iv_bytes = ivobj.getIV();
+            console.log("javax.crypto.Cipher.init is called!", mode, JSON.stringify(key_bytes), JSON.stringify(iv_bytes));
+            var result = this.init(arg0, arg1, arg2);
+            return result;
+        };
+        // doFinal
+        Java.use('javax.crypto.Cipher').doFinal.overload('[B').implementation = function(arg0){
+            console.log("javax.crypto.Cipher.doFinal is called!", JSON.stringify(arg0));
+            var data = arg0;
+            var result = this.doFinal(arg0);
+            console.log("javax.crypto.Cipher.doFinal is called!", JSON.stringify(data), "encrypt: ", JSON.stringify(result));
+            return result;
+        };
+    })
+}
+
+setImmediate(main);
+</code></pre>
+<ul>
+<li>代码非常简单，就是通过frida hook把这几个函数的参数以及**doFinal()**返回的加密后内容打印出来打印出来</li>
+</ul>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/02/23/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-DES/image-20240222220947583.png" class="" title="image-20240222220947583">
+
+<ul>
+<li>通过hook打印出了加密和填充模式、密钥Key、加密前的字符串、加密后的字符串</li>
+</ul>
+<p>通过上面的实践可以知道，在java代码中去识别和获取到算法的内容是比较简单的，只需要去hook就ok了</p>
+<h4 id="在SO当中去识别DES"><a href="#在SO当中去识别DES" class="headerlink" title="在SO当中去识别DES"></a>在SO当中去识别DES</h4><p>这里拿我们本地编译的未加保护的标准DES当作例子，用ida分析它的so文件</p>
+<h5 id="手动定位DES算法"><a href="#手动定位DES算法" class="headerlink" title="手动定位DES算法"></a>手动定位DES算法</h5><p>例如这里我们可以直接在IDA搜索S盒中的16进制数字来定位</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/02/23/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-DES/image-20240223100117244.png" class="" title="image-20240223100117244">
+
+<ul>
+<li>在ida中<strong>alt+B</strong>可以直接搜索S盒的16进制数字，然后通过这个地址的交叉引用定位到算法所在的位置</li>
+</ul>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/02/23/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-DES/image-20240223131756282.png" class="" title="image-20240223131756282">
+
+<p>或者，我们也可以通过使用<strong>findcrypt插件</strong>定位到算法位置</p>
+<h5 id="findcrypt插件定位算法"><a href="#findcrypt插件定位算法" class="headerlink" title="findcrypt插件定位算法"></a>findcrypt插件定位算法</h5><p>在使用插件快捷键<strong>ctrl+alt+F</strong>定位的时候发现无法定位到我们的算法位置，因为插件是按特征去识别算法来定位的，手动把算法的特征添加进去。</p>
+<p>在ida的<strong>\plugins</strong>目录下找到<strong>findcrypt3.rules</strong>添加规则特征：将S盒处的16进制特征添加进去就可以了</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/02/23/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-DES/image-20240223150139614.png" class="" title="image-20240223150139614">
+
+<p>然后重新识别就可以识别到算法位置</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/02/23/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-DES/image-20240223150320804.png" class="" title="image-20240223150320804">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2024/02/23/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-DES/image-20240223150755250.png" class="" title="image-20240223150755250">
+
+<p>需要的话可以把P表、扩展置换表的特征都添加进去。跟添加S盒的方法是相同的。</p>
+
+        </div>
+
+        
+            <div class="post-copyright-info w-full my-8 px-2 sm:px-6 md:px-8">
+                <div class="article-copyright-info-container">
+    <ul>
+        <li><strong>标题:</strong> 分组密码-DES</li>
+        <li><strong>作者:</strong> xiaoeryu</li>
+        <li><strong>创建于
+                :</strong> 2024-02-23 15:22:17</li>
+        
+            <li>
+                <strong>更新于
+                    :</strong> 2024-02-23 15:35:23
+            </li>
+        
+        <li>
+            <strong>链接:</strong> https://github.com/xiaoeryu/2024/02/23/分组密码-DES/
+        </li>
+        <li>
+            <strong>
+                版权声明:
+            </strong>
+            
+
+            
+                本文章采用 <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0">CC BY-NC-SA 4.0</a> 进行许可。
+            
+        </li>
+    </ul>
+</div>
+
+            </div>
+        
+
+        
+            <ul class="post-tags-box text-lg mt-1.5 flex-wrap justify-center flex md:hidden">
+                
+                    <li class="tag-item mx-0.5">
+                        <a href="/tags/Frida-Hook/">#Frida Hook</a>&nbsp;
+                    </li>
+                
+                    <li class="tag-item mx-0.5">
+                        <a href="/tags/DES/">#DES</a>&nbsp;
+                    </li>
+                
+            </ul>
+        
+
+        
+
+        
+            <div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
+                
+                
+                    <div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+                        <a class="next"
+                        rel="next"
+                        href="/2024/02/21/%E5%BA%8F%E5%88%97%E5%AF%86%E7%A0%81%E4%B9%8BRC4%E5%AE%9E%E8%B7%B5%E7%AF%87/"
+                        >
+                            <span class="title flex justify-center items-center">
+                                <span class="post-nav-title-item">序列密码之RC4实践篇</span>
+                                <span class="post-nav-item">下一篇</span>
+                            </span>
+                            <span class="right arrow-icon flex justify-center items-center">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+
+        
+            <div class="comment-container px-2 sm:px-6 md:px-8 pb-8">
+                <div class="comments-container mt-10 w-full ">
+    <div id="comment-anchor" class="w-full h-2.5"></div>
+    <div class="comment-area-title w-full my-1.5 md:my-2.5 text-xl md:text-3xl font-bold">
+        评论
+    </div>
+    
+
+        
+            
+    <div id="gitalk-container"></div>
+    <script data-swup-reload-script
+            src="https://jsd.onmicrosoft.cn/npm/gitalk@1.8.0/dist/gitalk.min.js"></script>
+    <script data-swup-reload-script>
+
+        function loadGitalk() {
+            let __gitalk__pathname = decodeURI(location.pathname);
+            const __gitalk__pathnameLength = __gitalk__pathname.length;
+            const __gitalk__pathnameMaxLength = 50;
+            if (__gitalk__pathnameLength > __gitalk__pathnameMaxLength) {
+                __gitalk__pathname = __gitalk__pathname.substring(0, __gitalk__pathnameMaxLength - 3) + '...';
+            }
+
+            try {
+                Gitalk && new Gitalk({
+                    clientID: '13d9974f24854a639570',
+                    clientSecret: '0c6c11ab3852d24a608e0f95a79829a649afac4b',
+                    repo: 'blog_gitalk',
+                    owner: 'xiaoeeyu',
+                    admin: ['xiaoeeyu'],
+                    id: __gitalk__pathname,
+                    language: 'zh-CN',
+                    proxy: ''
+                }).render('gitalk-container');
+
+            } catch (e) {
+                window.Gitalk = null;
+            }
+        }
+
+        if ('true') {
+            const loadGitalkTimeout = setTimeout(() => {
+                loadGitalk();
+                clearTimeout(loadGitalkTimeout);
+            }, 1000);
+        } else {
+            window.addEventListener('DOMContentLoaded', loadGitalk);
+        }
+    </script>
+
+
+
+        
+    
+</div>
+
+            </div>
+        
+    </div>
+
+    
+        <div class="toc-content-container">
+            <div class="post-toc-wrap">
+    <div class="post-toc">
+        <div class="toc-title">此页目录</div>
+        <div class="page-title">分组密码-DES</div>
+        <ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#java%E4%BB%A3%E7%A0%81%E4%B8%AD%E4%BD%BF%E7%94%A8%E7%9A%84DES"><span class="nav-text">java代码中使用的DES</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%A4%8D%E6%9D%82%E7%9A%84%E6%A0%87%E5%87%86DES%E5%AE%9E%E7%8E%B0%E9%83%A8%E5%88%86"><span class="nav-text">复杂的标准DES实现部分</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9E%E9%99%85%E7%9A%84%E9%80%86%E5%90%91%E5%88%86%E6%9E%90"><span class="nav-text">实际的逆向分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Java%E5%B1%82"><span class="nav-text">Java层</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%9C%A8SO%E5%BD%93%E4%B8%AD%E5%8E%BB%E8%AF%86%E5%88%ABDES"><span class="nav-text">在SO当中去识别DES</span></a></li></ol></li></ol>
+
+    </div>
+</div>
+        </div>
+    
+</div>
+
+
+
+                
+
+            </div>
+
+            
+
+        </div>
+
+        <div class="main-content-footer">
+            <footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
+    <div class="info-container py-3 text-center">
+        
+        <div class="text-center">
+            &copy;
+            
+              <span>2022</span>
+              -
+            
+            2024&nbsp;&nbsp;<i class="fa-solid fa-heart fa-beat" style="--fa-animation-duration: 0.5s; color: #f54545"></i>&nbsp;&nbsp;<a href="/">xiaoeryu</a>
+        </div>
+        
+            <script data-swup-reload-script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            <div class="relative text-center lg:absolute lg:right-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-right">
+                
+                    <span id="busuanzi_container_site_uv" class="lg:!block">
+                        <span class="text-sm">访问人数</span>
+                        <span id="busuanzi_value_site_uv"></span>
+                    </span>
+                
+                
+                    <span id="busuanzi_container_site_pv" class="lg:!block">
+                        <span class="text-sm">总访问量</span>
+                        <span id="busuanzi_value_site_pv"></span>
+                    </span>
+                
+            </div>
+        
+        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
+            <span class="lg:block text-sm">由 <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a> 驱动</span>
+            <span class="text-sm lg:block">主题&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.6.0</a></span>
+        </div>
+        
+        
+            <div>
+                博客已运行 <span class="odometer" id="runtime_days" ></span> 天 <span class="odometer" id="runtime_hours"></span> 小时 <span class="odometer" id="runtime_minutes"></span> 分钟 <span class="odometer" id="runtime_seconds"></span> 秒
+            </div>
+        
+        
+            <script data-swup-reload-script>
+                try {
+                    function odometer_init() {
+                    const elements = document.querySelectorAll('.odometer');
+                    elements.forEach(el => {
+                        new Odometer({
+                            el,
+                            format: '( ddd).dd',
+                            duration: 200
+                        });
+                    });
+                    }
+                    odometer_init();
+                } catch (error) {}
+            </script>
+        
+        
+        
+    </div>  
+</footer>
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="article-tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="right-bottom-tools page-aside-toggle">
+                <i class="fa-regular fa-outdent"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+            <li class="go-comment">
+                <i class="fa-regular fa-comments"></i>
+            </li>
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-side-tools-container">
+        <div class="side-tools-container">
+    <ul class="hidden-tools-list">
+        <li class="right-bottom-tools tool-font-adjust-plus flex justify-center items-center">
+            <i class="fa-regular fa-magnifying-glass-plus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-font-adjust-minus flex justify-center items-center">
+            <i class="fa-regular fa-magnifying-glass-minus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
+            <i class="fa-regular fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+
+        <li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
+            <i class="fa-regular fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="visible-tools-list">
+        <li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
+            <i class="fa-regular fa-cog fa-spin"></i>
+        </li>
+        
+            <li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
+                <i class="arrow-up fas fa-arrow-up"></i>
+                <span class="percent"></span>
+            </li>
+        
+        
+    </ul>
+</div>
+
+    </div>
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+
+</main>
+
+
+    
+<script src="/js/libs/Swup.min.js"></script>
+
+<script src="/js/libs/SwupSlideTheme.min.js"></script>
+
+<script src="/js/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="/js/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="/js/libs/SwupScrollPlugin.min.js"></script>
+
+<script src="/js/libs/SwupPreloadPlugin.min.js"></script>
+
+<script>
+    const swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+            new SwupPreloadPlugin(),
+        ],
+        containers: ["#swup"],
+    });
+</script>
+
+
+
+
+
+
+
+<script src="/js/tools/imageViewer.js" type="module"></script>
+
+<script src="/js/utils.js" type="module"></script>
+
+<script src="/js/main.js" type="module"></script>
+
+<script src="/js/layouts/navbarShrink.js" type="module"></script>
+
+<script src="/js/tools/scrollTopBottom.js" type="module"></script>
+
+<script src="/js/tools/lightDarkSwitch.js" type="module"></script>
+
+<script src="/js/layouts/categoryList.js" type="module"></script>
+
+
+
+
+
+    
+<script src="/js/tools/codeBlock.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/layouts/lazyload.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/tools/runtime.js"></script>
+
+    
+<script src="/js/libs/odometer.min.js"></script>
+
+    
+<link rel="stylesheet" href="/assets/odometer-theme-minimal.css">
+
+
+
+
+  
+<script src="/js/libs/Typed.min.js"></script>
+
+  
+<script src="/js/plugins/typed.js" type="module"></script>
+
+
+
+
+
+
+
+
+
+<div class="post-scripts" data-swup-reload-script>
+    
+        
+<script src="/js/tools/tocToggle.js" type="module"></script>
+
+<script src="/js/layouts/toc.js" type="module"></script>
+
+<script src="/js/plugins/tabs.js" type="module"></script>
+
+    
+</div>
+
+
+</body>
+</html>
