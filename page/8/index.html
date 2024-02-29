@@ -417,15 +417,15 @@
 
         <div class="statistics flex justify-around my-2.5">
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">77</div>
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">78</div>
         <div class="label text-third-text-color text-sm">标签</div>
     </a>
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">12</div>
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">13</div>
         <div class="label text-third-text-color text-sm">分类</div>
     </a>
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">85</div>
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">86</div>
         <div class="label text-third-text-color text-sm">文章</div>
     </a>
 </div>
@@ -458,15 +458,15 @@
 </div>
                 <div class="statistics flex justify-around my-2.5">
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">77</div>
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">78</div>
         <div class="label text-third-text-color text-sm">标签</div>
     </a>
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">12</div>
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">13</div>
         <div class="label text-third-text-color text-sm">分类</div>
     </a>
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">85</div>
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">86</div>
         <div class="label text-third-text-color text-sm">文章</div>
     </a>
 </div>
@@ -483,6 +483,112 @@
                 
                     <div class="home-content-container">
     <ul class="home-article-list">
+        
+            <li class="home-article-item">
+
+                
+
+                
+
+                
+                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
+                    <h3 class="home-article-title">
+                        <a href="/2021/05/19/CVE-2010-2883-Adobe-Reader-TTF%E5%AD%97%E4%BD%93SING%E8%A1%A8%E6%A0%88%E6%BA%A2%E5%87%BA%E6%BC%8F%E6%B4%9E/">
+                            CVE-2010-2883 Adobe Reader TTF字体SING表栈溢出漏洞
+                        </a>
+                    </h3>
+
+                    <div class="home-article-content markdown-body">
+                        
+                            <h3 id="0x1：漏洞描述"><a href="#0x1：漏洞描述" class="headerlink" title="0x1：漏洞描述"></a>0x1：漏洞描述</h3><p>​	CVE-2010-2883是Adobe Reader和Acrobat中的CoolType.dll库在解析字体文件SING表中的uniqueName项时存在的栈溢出漏洞，用户受骗打开了特制的PDF文件就有可能导致执行任意代码。</p>
+<h3 id="0x2：分析环境"><a href="#0x2：分析环境" class="headerlink" title="0x2：分析环境"></a>0x2：分析环境</h3><table>
+<thead>
+<tr>
+<th align="left"></th>
+<th>推荐使用的环境</th>
+<th>备注</th>
+</tr>
+</thead>
+<tbody><tr>
+<td align="left">操作系统</td>
+<td>Windows XP SP3</td>
+<td>简体中文版</td>
+</tr>
+<tr>
+<td align="left">虚拟机</td>
+<td>VMware</td>
+<td></td>
+</tr>
+<tr>
+<td align="left">调试器</td>
+<td>OD</td>
+<td></td>
+</tr>
+<tr>
+<td align="left">反汇编器</td>
+<td>IDA Pro</td>
+<td>6.8</td>
+</tr>
+<tr>
+<td align="left">漏洞软件</td>
+<td>Adobe Reader</td>
+<td>9.3.4</td>
+</tr>
+</tbody></table>
+                        
+                    </div>
+
+                    <div class="home-article-meta-info-container">
+    <div class="home-article-meta-info">
+        <span><i class="fa-solid fa-calendars"></i>&nbsp;
+            <span class="home-article-date" data-date="Wed May 19 2021 22:42:44 GMT+0800">
+                
+                    2021-05-19
+                
+            </span>
+        </span>
+        
+            <span class="home-article-category">
+                <i class="fa-solid fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/Win%E9%80%86%E5%90%91/">Win逆向</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+        
+        
+            <span class="home-article-tag">
+                <i class="fa-solid fa-tags"></i>&nbsp;
+                <ul>
+                    
+                        <li>
+                            
+                            <a href="/tags/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/">漏洞分析</a>&nbsp;
+                        </li>
+                    
+                        <li>
+                            | 
+                            <a href="/tags/Adobe-Reader%E6%BC%8F%E6%B4%9E/">Adobe Reader漏洞</a>&nbsp;
+                        </li>
+                    
+                </ul>
+            </span>
+        
+    </div>
+
+    <a href="/2021/05/19/CVE-2010-2883-Adobe-Reader-TTF%E5%AD%97%E4%BD%93SING%E8%A1%A8%E6%A0%88%E6%BA%A2%E5%87%BA%E6%BC%8F%E6%B4%9E/">阅读全文<span class="seo-reader-text">CVE-2010-2883 Adobe Reader TTF字体SING表栈溢出漏洞</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
+</div>
+
+                </div>
+            </li>
         
             <li class="home-article-item">
 

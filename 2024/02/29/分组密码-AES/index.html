@@ -1,0 +1,1180 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    
+    <meta name="author" content="xiaoeryu">
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="https://xiaoeeyu.github.io/2024/02/29/分组密码-aes/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+        <meta name="description" content="本章主要是学习AES如何实现，如何对java中的AES方法进行hook，以及定位so文件中的AES 这里以AES-128为例，会对明文分组进行10轮迭代运算，加密的第1轮到第9轮的函数一样，包括4个操作：字节替换、行位移、列混合和轮密钥加。最后一轮迭代不执行行列混合。另外，在第一轮迭代之前，先将明文和原始密钥进行一次异或加密操作。">
+<meta property="og:type" content="article">
+<meta property="og:title" content="分组密码-AES">
+<meta property="og:url" content="https://xiaoeeyu.github.io/2024/02/29/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-AES/index.html">
+<meta property="og:site_name" content="xiaoeryu">
+<meta property="og:description" content="本章主要是学习AES如何实现，如何对java中的AES方法进行hook，以及定位so文件中的AES 这里以AES-128为例，会对明文分组进行10轮迭代运算，加密的第1轮到第9轮的函数一样，包括4个操作：字节替换、行位移、列混合和轮密钥加。最后一轮迭代不执行行列混合。另外，在第一轮迭代之前，先将明文和原始密钥进行一次异或加密操作。">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/02/29/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-AES/image-20240224151413242.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/02/29/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-AES/aes_details-17090032877272.jpg">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/02/29/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-AES/aes_enc_dec.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/02/29/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-AES/format,png.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/02/29/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-AES/%E5%9B%BE%E7%89%87-21.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/02/29/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-AES/format,png-17090177948337.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/02/29/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-AES/%E5%9B%BE%E7%89%87-22-1024x703.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/02/29/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-AES/%E5%9B%BE%E7%89%87-23.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/02/29/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-AES/%E5%9B%BE%E7%89%87-24-1024x704.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/02/29/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-AES/%E5%9B%BE%E7%89%87-25.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/02/29/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-AES/%E5%9B%BE%E7%89%87-26.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/02/29/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-AES/%E5%9B%BE%E7%89%87-27.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/02/29/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-AES/%E5%9B%BE%E7%89%87-28.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/02/29/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-AES/%E5%9B%BE%E7%89%87-29.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/02/29/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-AES/%E5%9B%BE%E7%89%87-30.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/02/29/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-AES/image-20240228231505592.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/02/29/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-AES/image-20240228231548507.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/02/29/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-AES/image-20240228231743503.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/02/29/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-AES/image-20240228232341555.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/02/29/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-AES/image-20240229113043350.png">
+<meta property="article:published_time" content="2024-02-29T03:05:35.000Z">
+<meta property="article:modified_time" content="2024-02-29T03:35:56.798Z">
+<meta property="article:author" content="xiaoeryu">
+<meta property="article:tag" content="Frida Hook">
+<meta property="article:tag" content="AES">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://xiaoeeyu.github.io/2024/02/29/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-AES/image-20240224151413242.png">
+    
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/rabete.jpg" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/rabete.jpg">
+    <meta name="theme-color" content="#A31F34">
+    <link rel="shortcut icon" href="/images/rabete.jpg">
+    <!--- Page Info-->
+    
+    <title>
+        
+            分组密码-AES -
+        
+        xiaoeryu
+    </title>
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+
+    
+        <style>
+    :root {
+        --preloader-background-color: #fff;
+        --preloader-text-color: #000;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        :root {
+            --preloader-background-color: #202124;
+            --preloader-text-color: #fff;
+        }
+    }
+
+    @media (prefers-color-scheme: light) {
+        :root {
+            --preloader-background-color: #fff;
+            --preloader-text-color: #000;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .ml13 {
+            font-size: 2.6rem !important; /* Adjust this value as needed */
+        }
+    }
+
+    .preloader {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem; /* Tailwind 'gap-4' is 1rem */
+        align-items: center;
+        justify-content: center;
+        position: fixed;
+        padding: 12px;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh; /* 'h-screen' is 100% of the viewport height */
+        background-color: var(--preloader-background-color);
+        z-index: 1100; /* 'z-[1100]' sets the z-index */
+        transition: opacity 0.2s ease-in-out;
+    }
+
+    .ml13 {
+        font-size: 3.2rem;
+        /* text-transform: uppercase; */
+        color: var(--preloader-text-color);
+        letter-spacing: -1px;
+        font-weight: 500;
+        font-family: 'Chillax-Variable', sans-serif;
+        text-align: center;
+    }
+
+    .ml13 .word {
+        display: inline-flex;
+        flex-wrap: wrap;
+        white-space: nowrap;
+    }
+
+    .ml13 .letter {
+        display: inline-block;
+        line-height: 1em;
+    }
+</style>
+
+<div class="preloader">
+    
+<script src="/js/libs/anime.min.js"></script>
+
+    <h1 class="ml13">
+        xiaoeryu
+    </h1>
+    <script>
+        var textWrapper = document.querySelector('.ml13');
+        // Split text into words
+        var words = textWrapper.textContent.trim().split(' ');
+
+        // Clear the existing content
+        textWrapper.innerHTML = '';
+
+        // Wrap each word and its letters in spans
+        words.forEach(function(word) {
+            var wordSpan = document.createElement('span');
+            wordSpan.classList.add('word');
+            wordSpan.innerHTML = word.replace(/\S/g, "<span class='letter'>$&</span>");
+            textWrapper.appendChild(wordSpan);
+            textWrapper.appendChild(document.createTextNode(' ')); // Add space between words
+        });
+
+
+        anime.timeline({loop: true})
+            .add({
+                targets: '.ml13 .letter',
+                translateY: [100,0],
+                translateZ: 0,
+                opacity: [0,1],
+                easing: "easeOutExpo",
+                duration: 1400,
+                delay: (el, i) => 300 + 30 * i
+            }).add({
+            targets: '.ml13 .letter',
+            translateY: [0,-100],
+            opacity: [1,0],
+            easing: "easeInExpo",
+            duration: 1200,
+            delay: (el, i) => 100 + 30 * i
+        });
+
+        let themeStatus = JSON.parse(localStorage.getItem('REDEFINE-THEME-STATUS'))?.isDark;
+
+        // If the theme status is not found in local storage, check the preferred color scheme
+        if (themeStatus === undefined || themeStatus === null) {
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                themeStatus = 'dark';
+            } else {
+                themeStatus = 'light';
+            }
+        }
+
+        // Now you can use the themeStatus variable in your code
+        if (themeStatus) {
+            document.documentElement.style.setProperty('--preloader-background-color', '#202124');
+            document.documentElement.style.setProperty('--preloader-text-color', '#fff');
+        } else {
+            document.documentElement.style.setProperty('--preloader-background-color', '#fff');
+            document.documentElement.style.setProperty('--preloader-text-color', '#000');
+        }
+
+        window.addEventListener('load', function () {
+            hidePreloaderAfterTimeout(1000); // Hide after 1000 milliseconds once the window has loaded
+        });
+
+        // Backup failsafe: Hide preloader after a maximum of 5000 milliseconds, regardless of the window load event
+        hidePreloaderAfterTimeout(5000);
+
+        function hidePreloaderAfterTimeout(delay) {
+            setTimeout(function () {
+                var preloader = document.querySelector('.preloader');
+                preloader.style.opacity = '0';
+                setTimeout(function () {
+                    preloader.style.display = 'none';
+                }, 200);
+            }, delay);
+        }
+    </script>
+</div>
+    
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+        
+<link rel="stylesheet" href="/assets/build/styles.css">
+
+    
+
+    
+<link rel="stylesheet" href="/fonts/fonts.css">
+
+    
+<link rel="stylesheet" href="/fonts/Satoshi/satoshi.css">
+
+    <!--- Font Part-->
+    
+    
+    
+    
+
+    <!--- Inject Part-->
+    
+    <script id="hexo-configurations">
+    window.config = {"hostname":"xiaoeeyu.github.io","root":"/","language":"zh-CN","path":"search.xml"};
+    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true,"title_alignment":"left"},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":4,"number":false,"expand":true,"init_open":true},"copyright":{"enable":true,"default":"cc_by_nc_sa"},"lazyload":true,"recommendation":{"enable":false,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/ball-0101.jpg","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"preloader":true,"open_graph":true,"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/wallhaven-jxl31y.png","dark":"/images/wallhaven-o5762l.png"},"title":"XIAOERYU","subtitle":{"text":["明心见性，拨云见日","Don't waite, to create"],"hitokoto":{"enable":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":true,"links":{"github":"https://github.com/xiaoeeyu","instagram":null,"zhihu":null,"twitter":null,"email":"xiaoeryu@163.com"},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null}]},"mermaid":{"enable":false,"version":"9.3.0"}},"version":"2.6.0","navbar":{"auto_hide":false,"color":{"left":"#f78736","right":"#367df7","transparency":35},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Archives":{"path":"/archives","icon":"fa-regular fa-archive"}},"search":{"enable":false,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"blur"},"home":{"sidebar":{"enable":true,"position":"left","first_item":"menu","announcement":null,"links":null},"article_date_format":"auto","categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":3}},"footerStart":"2022/8/17 11:45:14"};
+    window.lang_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"};
+    window.data = {"masonry":false};
+  </script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+<meta name="generator" content="Hexo 6.3.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+<!--        <span class="swup-progress-icon">-->
+<!--            <i class="fa-solid fa-circle-notch fa-spin"></i>-->
+<!--        </span>-->
+    
+</div>
+
+
+<main class="page-container" id="swup">
+
+    
+
+    <div class="main-content-container">
+
+
+        <div class="main-content-header">
+            <header class="navbar-container">
+
+    <div class="navbar-content">
+        <div class="left">
+            
+                <a class="logo-image" href="/">
+                    <img src="/images/rabete.jpg">
+                </a>
+            
+            <a class="logo-title" href="/">
+                
+                xiaoeryu
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/"
+                                        >
+                                    <i class="fa-regular fa-house fa-fw"></i>
+                                    首页
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/archives"
+                                        >
+                                    <i class="fa-regular fa-archive fa-fw"></i>
+                                    归档
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile drawer -->
+    <div class="navbar-drawer h-screen w-full absolute top-0 left-0 bg-background-color flex flex-col justify-between">
+        <ul class="drawer-navbar-list flex flex-col px-4 justify-center items-start">
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/"
+                        >
+                            <span>
+                                首页
+                            </span>
+                            
+                                <i class="fa-regular fa-house fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/archives"
+                        >
+                            <span>
+                                归档
+                            </span>
+                            
+                                <i class="fa-regular fa-archive fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+        </ul>
+
+        <div class="statistics flex justify-around my-2.5">
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">78</div>
+        <div class="label text-third-text-color text-sm">标签</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">13</div>
+        <div class="label text-third-text-color text-sm">分类</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">86</div>
+        <div class="label text-third-text-color text-sm">文章</div>
+    </a>
+</div>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="main-content-body">
+
+            
+
+            <div class="main-content">
+
+                
+                    <div class="post-page-container flex relative justify-between box-border w-full h-full">
+    <div class="article-content-container">
+
+        <div class="article-title relative w-full">
+            
+                <div class="w-full flex items-center pt-6 justify-start">
+                    <h1 class="article-title-regular text-second-text-color text-4xl md:text-6xl font-bold px-2 sm:px-6 md:px-8 py-3">分组密码-AES</h1>
+                </div>
+            
+            </div>
+
+        
+            <div class="article-header flex flex-row gap-2 items-center px-2 sm:px-6 md:px-8">
+                <div class="avatar w-[46px] h-[46px] flex-shrink-0 rounded-medium border border-border-color p-[1px]">
+                    <img src="/images/rabete.jpg">
+                </div>
+                <div class="info flex flex-col justify-between">
+                    <div class="author flex items-center">
+                        <span class="name text-default-text-color text-lg font-semibold">xiaoeryu</span>
+                        
+                            <span class="author-label ml-1.5 text-xs px-2 py-0.5 rounded-small text-third-text-color border border-shadow-color-1">Lv5</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2024-02-29 11:05:35</span>
+        <span class="mobile">2024-02-29 11:05:35</span>
+        <span class="hover-info">创建</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2024-02-29 11:35:56</span>
+            <span class="mobile">2024-02-29 11:35:56</span>
+            <span class="hover-info">更新</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/Android%E9%80%86%E5%90%91/">Android逆向</a>&nbsp;
+                        </li>
+                    
+                    
+                
+                    
+                        
+                            <li>></li>
+                        
+                        <li>
+                            <a href="/categories/Android%E9%80%86%E5%90%91/%E5%8A%A0%E5%AF%86%E8%A7%A3%E5%AF%86/">加密解密</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/Frida-Hook/">Frida Hook</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/AES/">AES</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fa-regular fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        
+
+
+        <div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
+            <p>本章主要是学习AES如何实现，如何对java中的AES方法进行hook，以及定位so文件中的AES</p>
+<p>这里以AES-128为例，会对明文分组进行10轮迭代运算，加密的第1轮到第9轮的函数一样，包括4个操作：字节替换、行位移、列混合和轮密钥加。最后一轮迭代不执行行列混合。另外，在第一轮迭代之前，先将明文和原始密钥进行一次异或加密操作。</p>
+<span id="more"></span>
+
+<img lazyload="" src="/images/loading.svg" data-src="/2024/02/29/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-AES/image-20240224151413242.png" class="" title="image-20240224151413242">
+
+<h2 id="AES加解密理论"><a href="#AES加解密理论" class="headerlink" title="AES加解密理论"></a>AES加解密理论</h2><img lazyload="" src="/images/loading.svg" data-src="/2024/02/29/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-AES/aes_details-17090032877272.jpg" class="" title="img">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2024/02/29/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-AES/aes_enc_dec.png" class="" title="img">
+
+<center>AES实现的原理图</center>
+
+<p>AES的加解密，跟DES一样由左右两部分组成</p>
+<p>左边是对明文（16字节）进行的一个10轮的迭代处理</p>
+<blockquote>
+<p>第一轮到第9轮每一轮都有四个操作：</p>
+<p>AddRoundKey 为 异或<br>SubBytes 为 查表替换<br>ShiftRows 为 按字节循环左移<br>MixColumns 为 矩阵乘法</p>
+</blockquote>
+<p>右边是对密钥（16字节）进行编排，生成每一轮对应的子密钥。</p>
+<h6 id="查表替换（字节替换、字节代换）"><a href="#查表替换（字节替换、字节代换）" class="headerlink" title="查表替换（字节替换、字节代换）"></a>查表替换（字节替换、字节代换）</h6><p>查表替换的主要功能是通过S盒完成一个字节到另一个字节的映射。本质上就是一个查表操作。有两个表一个是S盒一个是S盒逆。S盒用于提高密码算法的混淆性，S盒是快速判断AES加密算法的最有效的特征。</p>
+<h3 id="AES算法流程分析"><a href="#AES算法流程分析" class="headerlink" title="AES算法流程分析"></a>AES算法流程分析</h3><p>这里介绍的是AES-128，也就是密钥的长度为128位，加密轮数为10轮</p>
+<p>AES的加密公式为**C = E(K,P)**，在加密函数E中，会执行一个函数，并且执行10次这个轮函数，这个轮函数的前9次执行的操作是一样的，只有第10次有所不同。也就是说，一个明文分组会被加密10轮。AES的核心就是实现一轮中的所有操作。</p>
+<h5 id="明文矩阵填充"><a href="#明文矩阵填充" class="headerlink" title="明文矩阵填充"></a>明文矩阵填充</h5><p>AES的处理单位是字节，128位的输入明文分组P和输入密钥K都被分成16个字节，分别记为P = P0 P1 … P15和 K = K0 K1 … K15。如，明文分组为P = abcdefghijklmnop,其中的字符a对应P0，p对应P15。一般地，明文分组用字节为单位的正方形矩阵描述，称为状态矩阵。在算法的每一轮中，状态矩阵的内容不断发生变化，最后的结果作为密文输出。该矩阵中字节的排列顺序为从上到下、从左至右依次排列。</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/02/29/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-AES/format,png.png" class="" title="state">
+
+<center>状态矩阵</center>
+
+<h5 id="密钥矩阵填充"><a href="#密钥矩阵填充" class="headerlink" title="密钥矩阵填充"></a>密钥矩阵填充</h5><p>类似地，128位密钥也是用字节为单位的矩阵表示，矩阵的每一列被称为1个32位比特字。通过密钥编排函数该密钥矩阵被扩展成一个44个字组成的序列W[0],W[1], … ,W[43]，该序列的前四个元素W[0],W[1],W[2],W[3]是原始密钥，用于加密运算中的初始密钥（下面介绍）；后面40个字分为10组，每组4个字（4x4x8 = 128bit）分别用于10轮加密运算中的轮密钥加。后面的10组密钥通过初始密钥进行密钥扩展得到。</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/02/29/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-AES/%E5%9B%BE%E7%89%87-21.png" class="" title="img">
+
+<center>密钥矩阵</center>
+
+<h5 id="加解密流程"><a href="#加解密流程" class="headerlink" title="加解密流程"></a>加解密流程</h5><p>AES加解密主要要以下几步操作，完整的加解密流程是通过循环以下步骤来完成的，具体如下图表示</p>
+<ul>
+<li>轮密钥加</li>
+<li>字节替换</li>
+<li>行位移</li>
+<li>列混合</li>
+</ul>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/02/29/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-AES/format,png-17090177948337.png" class="" title="aes_struct">
+
+<center>加解密流程</center>
+
+<h5 id="加解密步骤分析"><a href="#加解密步骤分析" class="headerlink" title="加解密步骤分析"></a>加解密步骤分析</h5><p>字节替换</p>
+<p>AES的字节替换其实就是通过一个简单的查表操作来进行非线性运算。AES定义了一个S盒和一个逆S盒。分别用来加解密操作。</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/02/29/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-AES/%E5%9B%BE%E7%89%87-22-1024x703.png" class="" title="img">
+
+<center>S盒</center>
+
+<p>状态矩阵中的元素按照下面的方式映射为一个新的字节：把该字节的高4位作为行值，低4位作为列值，取出S盒或者逆S盒中对应的行的元素作为输出。例如，加密时输出的字节S1=0X12，则查找S盒的第0X01行和0X02列，得到值0XC9，然后替换S1原有的值0X12为0XC9。状态矩阵经字节代换后的图如下</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/02/29/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-AES/%E5%9B%BE%E7%89%87-23.png" class="" title="img">
+
+<center>字节变换</center>
+
+<p>逆字节代换也就是查逆S盒来变换，逆S盒如下</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/02/29/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-AES/%E5%9B%BE%E7%89%87-24-1024x704.png" class="" title="img">
+
+<center>逆S盒</center>
+
+<h5 id="行移位"><a href="#行移位" class="headerlink" title="行移位"></a>行移位</h5><p>行移位是一个简单的左循环移位操作。当密钥长度为128bit时，状态矩阵的第0行左移0字节，第1行左移1字节，第2行左移2字节。。。如下图所示</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/02/29/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-AES/%E5%9B%BE%E7%89%87-25.png" class="" title="img">
+
+<center>行移位</center>
+
+<p>行移位的逆变换是将状态矩阵中的每一行执行相反的移位操作，例如AES-128中，状态矩阵的第0行右移0字节，第1行右移1字节，第2行右移2字节。。。</p>
+<h5 id="列混合"><a href="#列混合" class="headerlink" title="列混合"></a>列混合</h5><p>列混合变换是通过矩阵相乘来实现的，经行移位后的状态矩阵与固定的矩阵相乘，得到混淆后的状态矩阵，如下图的公式所示</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/02/29/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-AES/%E5%9B%BE%E7%89%87-26.png" class="" title="img">
+
+<center>列混合</center>
+
+<p>状态矩阵中的第j列(0 ≤j≤3)的列混合可以表示为下图所示</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/02/29/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-AES/%E5%9B%BE%E7%89%87-27.png" class="" title="img">
+
+<p>其中，矩阵运算的乘法和加法都是定义在基于GF(2^8)上的二元运算，并不是通常意义上的乘法和加法。</p>
+<p>逆向列混合变换同样可由下图的矩阵乘法定义</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/02/29/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-AES/%E5%9B%BE%E7%89%87-28.png" class="" title="img">
+
+<center>逆列混合</center>
+
+<h5 id="轮密钥加"><a href="#轮密钥加" class="headerlink" title="轮密钥加"></a>轮密钥加</h5><p>轮密钥加是将128位轮密钥Ki同状态矩阵中的数据进行逐位异或操作，如下图所示。其中，密钥Ki中每个字W[4i],W[4i+1],W[4i+2],W[4i+3]为32位bit字，包含4个字节，轮密钥加过程可以看成是字逐位异或的结果，也可以看成字节级别或者位级别的操作。也就是说，可以看成S0、S1、S2、S3组成的32位字与W[4i]的异或运算。</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/02/29/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-AES/%E5%9B%BE%E7%89%87-29.png" class="" title="img">
+
+<center>轮密钥加</center>
+
+<h5 id="密钥扩展"><a href="#密钥扩展" class="headerlink" title="密钥扩展"></a>密钥扩展</h5><p>AES首先将初始密钥输入到一个4×4的状态矩阵中，如下图所示</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/02/29/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-AES/%E5%9B%BE%E7%89%87-30.png" class="" title="img">
+
+<center>密钥扩展</center>
+
+<p>4×4矩阵的每一列的4个字节组成一个字，矩阵4列的4个字依次命名为W[0]、W[1]、W[2]、W[3]，它们构成一个以字为单位的数组W。</p>
+<p>接着，对W数组扩充40个新列，构成总共44列的扩展密钥数组。新列一如下的递归方式产生</p>
+<ol>
+<li><p>如果i不是4的倍数，那么i列由如下等式确定：</p>
+<pre><code class="mathematica">W[i]=W[i-4]⨁W[i-1]
+</code></pre>
+</li>
+<li><p>如果i是4的倍数，那么第i列由如下等式确定：</p>
+<pre><code class="mathematica">W[i]=W[i-4]⨁T(W[i-1])
+</code></pre>
+</li>
+</ol>
+<p>T是一个有点复杂的函数，由3部分组成：自循环、字节代换和轮常量异或，这3部分的作用分别如下</p>
+<ol>
+<li>字循环：将1个字中的4个字节循环左移一个字节。即将输入字[b0, b1, b2, b3]变换成[b1,b2,b3,b0]</li>
+<li>字节代换：对字循环的结果使用S盒进行字节代换</li>
+<li>轮常量异或：将前两步的结果同轮常量Rcon[j]进行异或，其中j表示轮数</li>
+</ol>
+<p>轮常量Rcon[j]是一个字，其值见下表</p>
+<table>
+<thead>
+<tr>
+<th>j</th>
+<th>1</th>
+<th>2</th>
+<th>3</th>
+<th>4</th>
+<th>5</th>
+</tr>
+</thead>
+<tbody><tr>
+<td>Rcon[j]</td>
+<td>01 00 00 00</td>
+<td>02 00 00 00</td>
+<td>04 00 00 00</td>
+<td>08 00 00 00</td>
+<td>10 00 00 00</td>
+</tr>
+<tr>
+<td>j</td>
+<td>6</td>
+<td>7</td>
+<td>8</td>
+<td>9</td>
+<td>10</td>
+</tr>
+<tr>
+<td>Rcon[j]</td>
+<td>20 00 00 00</td>
+<td>40 00 00 00</td>
+<td>80 00 00 00</td>
+<td>1B 00 00 00</td>
+<td>36 00 00 00</td>
+</tr>
+</tbody></table>
+<center>轮常量Rcon[j]</center>
+
+<p>总的来说，密钥扩展的复杂性是确保算法安全性的重要部分。当分组长度和密钥长度都是128bit时，AES的加密算法共迭代10轮，每一轮最后要与一个子密钥进行轮密钥加，再加上最开始的一次轮密钥加，即一个分组共需要扩展为11个128bit的轮密钥。AES的密钥扩展算法是以字节为一个基本单位（一个字为4个字节），刚好是密钥矩阵的一列。因此4个字（128bit）密钥需要扩展成11个子密钥，共44个字。</p>
+<h2 id="AES-hook"><a href="#AES-hook" class="headerlink" title="AES hook"></a>AES hook</h2><h5 id="对java层的AES进行hook"><a href="#对java层的AES进行hook" class="headerlink" title="对java层的AES进行hook"></a>对java层的AES进行hook</h5><p>编写hook脚本通过参数以及返回值获取到加解密前后以及key的值</p>
+<pre><code class="js">package com.xiaoeryu.aes;
+
+import android.os.Build;
+
+import java.io.UnsupportedEncodingException;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.util.Base64;
+
+import javax.crypto.BadPaddingException;
+import javax.crypto.Cipher;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+import javax.crypto.spec.SecretKeySpec;
+
+public class AES {
+    public static String encrypt(String content, String sKey) throws UnsupportedEncodingException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
+        if (sKey == null) {
+            System.out.print("Key is null");
+            return null;
+        }
+        // Determine the key length
+        if (sKey.length() != 16) {
+            System.out.print("Key length is not 16");
+            return null;
+        }
+        byte[] raw = sKey.getBytes("utf-8");
+        SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
+        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding"); // "算法/模式/补码方式"
+        cipher.init(Cipher.ENCRYPT_MODE, skeySpec);
+        byte[] encrypted = cipher.doFinal(content.getBytes("utf-8"));
+        String result = null;
+        if (Build.VERSION.SDK_INT &gt;= Build.VERSION_CODES.O) {
+            result = Base64.getEncoder().encodeToString(encrypted);
+        } else {
+            result = android.util.Base64.encodeToString(encrypted, android.util.Base64.DEFAULT);
+        }
+        return result;
+    }
+    public static String decrypt(String content, String sKey) throws UnsupportedEncodingException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, IllegalBlockSizeException, BadPaddingException {
+        if (sKey == null) {
+            System.out.print("Key is null");
+            return null;
+        }
+        if  (sKey.length() != 16) {
+            System.out.print("Key length is not 16");
+            return null;
+        }
+        byte[] raw = sKey.getBytes("utf-8");
+        SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
+        Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
+        cipher.init(Cipher.DECRYPT_MODE, skeySpec);
+        byte[] encrypted = android.util.Base64.decode(content, android.util.Base64.DEFAULT);
+        byte[] original = cipher.doFinal(encrypted);
+        String originalString = new String(original, "utf-8");
+        return originalString;
+    }
+}
+</code></pre>
+<ul>
+<li>对java层的AES进行hook跟之前hook DES使用的方法基本都是一样的，区别只是在于它们实现的时候调用的方法不同而已。所以相同的代码更改一下hook的函数和重载就可以了</li>
+</ul>
+<h5 id="定位SO中的AES算法"><a href="#定位SO中的AES算法" class="headerlink" title="定位SO中的AES算法"></a>定位SO中的AES算法</h5><p>跟之前一样，使用findcrypt插件直接就可以根据S盒定位到算法的位置，如果定位不到可能是因为插件中没有S盒的特征跟上一章同样的方法添加进去即可。</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/02/29/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-AES/image-20240228231505592.png" class="" title="image-20240228231505592">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2024/02/29/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-AES/image-20240228231548507.png" class="" title="image-20240228231548507">
+
+<ul>
+<li>通过交叉引用定位到调用S盒的函数</li>
+</ul>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/02/29/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-AES/image-20240228231743503.png" class="" title="image-20240228231743503">
+
+<ul>
+<li>跟进去分析</li>
+</ul>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/02/29/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-AES/image-20240228232341555.png" class="" title="image-20240228232341555">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2024/02/29/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-AES/image-20240229113043350.png" class="" title="image-20240229113043350">
+
+<p>跟据汇编代码可知，这里是根据在获取S盒的值</p>
+
+        </div>
+
+        
+            <div class="post-copyright-info w-full my-8 px-2 sm:px-6 md:px-8">
+                <div class="article-copyright-info-container">
+    <ul>
+        <li><strong>标题:</strong> 分组密码-AES</li>
+        <li><strong>作者:</strong> xiaoeryu</li>
+        <li><strong>创建于
+                :</strong> 2024-02-29 11:05:35</li>
+        
+            <li>
+                <strong>更新于
+                    :</strong> 2024-02-29 11:35:56
+            </li>
+        
+        <li>
+            <strong>链接:</strong> https://github.com/xiaoeryu/2024/02/29/分组密码-AES/
+        </li>
+        <li>
+            <strong>
+                版权声明:
+            </strong>
+            
+
+            
+                本文章采用 <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0">CC BY-NC-SA 4.0</a> 进行许可。
+            
+        </li>
+    </ul>
+</div>
+
+            </div>
+        
+
+        
+            <ul class="post-tags-box text-lg mt-1.5 flex-wrap justify-center flex md:hidden">
+                
+                    <li class="tag-item mx-0.5">
+                        <a href="/tags/Frida-Hook/">#Frida Hook</a>&nbsp;
+                    </li>
+                
+                    <li class="tag-item mx-0.5">
+                        <a href="/tags/AES/">#AES</a>&nbsp;
+                    </li>
+                
+            </ul>
+        
+
+        
+
+        
+            <div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
+                
+                
+                    <div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+                        <a class="next"
+                        rel="next"
+                        href="/2024/02/23/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-DES/"
+                        >
+                            <span class="title flex justify-center items-center">
+                                <span class="post-nav-title-item">分组密码-DES</span>
+                                <span class="post-nav-item">下一篇</span>
+                            </span>
+                            <span class="right arrow-icon flex justify-center items-center">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+
+        
+            <div class="comment-container px-2 sm:px-6 md:px-8 pb-8">
+                <div class="comments-container mt-10 w-full ">
+    <div id="comment-anchor" class="w-full h-2.5"></div>
+    <div class="comment-area-title w-full my-1.5 md:my-2.5 text-xl md:text-3xl font-bold">
+        评论
+    </div>
+    
+
+        
+            
+    <div id="gitalk-container"></div>
+    <script data-swup-reload-script
+            src="https://jsd.onmicrosoft.cn/npm/gitalk@1.8.0/dist/gitalk.min.js"></script>
+    <script data-swup-reload-script>
+
+        function loadGitalk() {
+            let __gitalk__pathname = decodeURI(location.pathname);
+            const __gitalk__pathnameLength = __gitalk__pathname.length;
+            const __gitalk__pathnameMaxLength = 50;
+            if (__gitalk__pathnameLength > __gitalk__pathnameMaxLength) {
+                __gitalk__pathname = __gitalk__pathname.substring(0, __gitalk__pathnameMaxLength - 3) + '...';
+            }
+
+            try {
+                Gitalk && new Gitalk({
+                    clientID: '13d9974f24854a639570',
+                    clientSecret: '0c6c11ab3852d24a608e0f95a79829a649afac4b',
+                    repo: 'blog_gitalk',
+                    owner: 'xiaoeeyu',
+                    admin: ['xiaoeeyu'],
+                    id: __gitalk__pathname,
+                    language: 'zh-CN',
+                    proxy: ''
+                }).render('gitalk-container');
+
+            } catch (e) {
+                window.Gitalk = null;
+            }
+        }
+
+        if ('true') {
+            const loadGitalkTimeout = setTimeout(() => {
+                loadGitalk();
+                clearTimeout(loadGitalkTimeout);
+            }, 1000);
+        } else {
+            window.addEventListener('DOMContentLoaded', loadGitalk);
+        }
+    </script>
+
+
+
+        
+    
+</div>
+
+            </div>
+        
+    </div>
+
+    
+        <div class="toc-content-container">
+            <div class="post-toc-wrap">
+    <div class="post-toc">
+        <div class="toc-title">此页目录</div>
+        <div class="page-title">分组密码-AES</div>
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#AES%E5%8A%A0%E8%A7%A3%E5%AF%86%E7%90%86%E8%AE%BA"><span class="nav-text">AES加解密理论</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#AES%E7%AE%97%E6%B3%95%E6%B5%81%E7%A8%8B%E5%88%86%E6%9E%90"><span class="nav-text">AES算法流程分析</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#AES-hook"><span class="nav-text">AES hook</span></a></li></ol>
+
+    </div>
+</div>
+        </div>
+    
+</div>
+
+
+
+                
+
+            </div>
+
+            
+
+        </div>
+
+        <div class="main-content-footer">
+            <footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
+    <div class="info-container py-3 text-center">
+        
+        <div class="text-center">
+            &copy;
+            
+              <span>2022</span>
+              -
+            
+            2024&nbsp;&nbsp;<i class="fa-solid fa-heart fa-beat" style="--fa-animation-duration: 0.5s; color: #f54545"></i>&nbsp;&nbsp;<a href="/">xiaoeryu</a>
+        </div>
+        
+            <script data-swup-reload-script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            <div class="relative text-center lg:absolute lg:right-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-right">
+                
+                    <span id="busuanzi_container_site_uv" class="lg:!block">
+                        <span class="text-sm">访问人数</span>
+                        <span id="busuanzi_value_site_uv"></span>
+                    </span>
+                
+                
+                    <span id="busuanzi_container_site_pv" class="lg:!block">
+                        <span class="text-sm">总访问量</span>
+                        <span id="busuanzi_value_site_pv"></span>
+                    </span>
+                
+            </div>
+        
+        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
+            <span class="lg:block text-sm">由 <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a> 驱动</span>
+            <span class="text-sm lg:block">主题&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.6.0</a></span>
+        </div>
+        
+        
+            <div>
+                博客已运行 <span class="odometer" id="runtime_days" ></span> 天 <span class="odometer" id="runtime_hours"></span> 小时 <span class="odometer" id="runtime_minutes"></span> 分钟 <span class="odometer" id="runtime_seconds"></span> 秒
+            </div>
+        
+        
+            <script data-swup-reload-script>
+                try {
+                    function odometer_init() {
+                    const elements = document.querySelectorAll('.odometer');
+                    elements.forEach(el => {
+                        new Odometer({
+                            el,
+                            format: '( ddd).dd',
+                            duration: 200
+                        });
+                    });
+                    }
+                    odometer_init();
+                } catch (error) {}
+            </script>
+        
+        
+        
+    </div>  
+</footer>
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="article-tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="right-bottom-tools page-aside-toggle">
+                <i class="fa-regular fa-outdent"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+            <li class="go-comment">
+                <i class="fa-regular fa-comments"></i>
+            </li>
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-side-tools-container">
+        <div class="side-tools-container">
+    <ul class="hidden-tools-list">
+        <li class="right-bottom-tools tool-font-adjust-plus flex justify-center items-center">
+            <i class="fa-regular fa-magnifying-glass-plus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-font-adjust-minus flex justify-center items-center">
+            <i class="fa-regular fa-magnifying-glass-minus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
+            <i class="fa-regular fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+
+        <li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
+            <i class="fa-regular fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="visible-tools-list">
+        <li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
+            <i class="fa-regular fa-cog fa-spin"></i>
+        </li>
+        
+            <li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
+                <i class="arrow-up fas fa-arrow-up"></i>
+                <span class="percent"></span>
+            </li>
+        
+        
+    </ul>
+</div>
+
+    </div>
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+
+</main>
+
+
+    
+<script src="/js/libs/Swup.min.js"></script>
+
+<script src="/js/libs/SwupSlideTheme.min.js"></script>
+
+<script src="/js/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="/js/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="/js/libs/SwupScrollPlugin.min.js"></script>
+
+<script src="/js/libs/SwupPreloadPlugin.min.js"></script>
+
+<script>
+    const swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+            new SwupPreloadPlugin(),
+        ],
+        containers: ["#swup"],
+    });
+</script>
+
+
+
+
+
+
+
+<script src="/js/tools/imageViewer.js" type="module"></script>
+
+<script src="/js/utils.js" type="module"></script>
+
+<script src="/js/main.js" type="module"></script>
+
+<script src="/js/layouts/navbarShrink.js" type="module"></script>
+
+<script src="/js/tools/scrollTopBottom.js" type="module"></script>
+
+<script src="/js/tools/lightDarkSwitch.js" type="module"></script>
+
+<script src="/js/layouts/categoryList.js" type="module"></script>
+
+
+
+
+
+    
+<script src="/js/tools/codeBlock.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/layouts/lazyload.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/tools/runtime.js"></script>
+
+    
+<script src="/js/libs/odometer.min.js"></script>
+
+    
+<link rel="stylesheet" href="/assets/odometer-theme-minimal.css">
+
+
+
+
+  
+<script src="/js/libs/Typed.min.js"></script>
+
+  
+<script src="/js/plugins/typed.js" type="module"></script>
+
+
+
+
+
+
+
+
+
+<div class="post-scripts" data-swup-reload-script>
+    
+        
+<script src="/js/tools/tocToggle.js" type="module"></script>
+
+<script src="/js/layouts/toc.js" type="module"></script>
+
+<script src="/js/plugins/tabs.js" type="module"></script>
+
+    
+</div>
+
+
+</body>
+</html>
