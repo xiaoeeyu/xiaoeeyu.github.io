@@ -1,0 +1,1185 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    
+    <meta name="author" content="xiaoeryu">
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="https://xiaoeeyu.github.io/2024/03/05/分组密码-逆向实践/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+        <meta name="description" content="之前几章已经对分组密码的原理以及填充进行了详细介绍，本章使用一个demo来进行实战分析  一个两层密钥的demo，第一层是java中的AES，第二层是native层的AES加密  第一层   以32位安装方便进行分析测试  一个简单demo，打开界面是输入框和按钮，点击按钮后校验密码错误的话，会弹窗提示错误      GDA打开看到有360的加固，先脱壳 不想刷脱壳机使用frida_fart_ho">
+<meta property="og:type" content="article">
+<meta property="og:title" content="分组密码-逆向实践">
+<meta property="og:url" content="https://xiaoeeyu.github.io/2024/03/05/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-%E9%80%86%E5%90%91%E5%AE%9E%E8%B7%B5/index.html">
+<meta property="og:site_name" content="xiaoeryu">
+<meta property="og:description" content="之前几章已经对分组密码的原理以及填充进行了详细介绍，本章使用一个demo来进行实战分析  一个两层密钥的demo，第一层是java中的AES，第二层是native层的AES加密  第一层   以32位安装方便进行分析测试  一个简单demo，打开界面是输入框和按钮，点击按钮后校验密码错误的话，会弹窗提示错误      GDA打开看到有360的加固，先脱壳 不想刷脱壳机使用frida_fart_ho">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/03/05/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-%E9%80%86%E5%90%91%E5%AE%9E%E8%B7%B5/image-20240302153336992.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/03/05/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-%E9%80%86%E5%90%91%E5%AE%9E%E8%B7%B5/image-20240302153810848.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/03/05/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-%E9%80%86%E5%90%91%E5%AE%9E%E8%B7%B5/image-20240302210407725.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/03/05/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-%E9%80%86%E5%90%91%E5%AE%9E%E8%B7%B5/image-20240302210847042.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/03/05/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-%E9%80%86%E5%90%91%E5%AE%9E%E8%B7%B5/image-20240302213934522.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/03/05/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-%E9%80%86%E5%90%91%E5%AE%9E%E8%B7%B5/image-20240302215805830.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/03/05/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-%E9%80%86%E5%90%91%E5%AE%9E%E8%B7%B5/image-20240302224232576.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/03/05/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-%E9%80%86%E5%90%91%E5%AE%9E%E8%B7%B5/image-20240302224535913.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/03/05/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-%E9%80%86%E5%90%91%E5%AE%9E%E8%B7%B5/image-20240303135914400.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/03/05/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-%E9%80%86%E5%90%91%E5%AE%9E%E8%B7%B5/image-20240303154024866.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/03/05/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-%E9%80%86%E5%90%91%E5%AE%9E%E8%B7%B5/image-20240305011501631.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/03/05/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-%E9%80%86%E5%90%91%E5%AE%9E%E8%B7%B5/image-20240303161147250.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/03/05/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-%E9%80%86%E5%90%91%E5%AE%9E%E8%B7%B5/image-20240303165307864.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/03/05/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-%E9%80%86%E5%90%91%E5%AE%9E%E8%B7%B5/image-20240304004816743.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/03/05/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-%E9%80%86%E5%90%91%E5%AE%9E%E8%B7%B5/image-20240305005650025.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/03/05/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-%E9%80%86%E5%90%91%E5%AE%9E%E8%B7%B5/image-20240305010033525.png">
+<meta property="article:published_time" content="2024-03-04T17:31:05.000Z">
+<meta property="article:modified_time" content="2024-03-04T17:34:11.272Z">
+<meta property="article:author" content="xiaoeryu">
+<meta property="article:tag" content="Frida Hook">
+<meta property="article:tag" content="AES">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://xiaoeeyu.github.io/2024/03/05/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-%E9%80%86%E5%90%91%E5%AE%9E%E8%B7%B5/image-20240302153336992.png">
+    
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/rabete.jpg" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/rabete.jpg">
+    <meta name="theme-color" content="#A31F34">
+    <link rel="shortcut icon" href="/images/rabete.jpg">
+    <!--- Page Info-->
+    
+    <title>
+        
+            分组密码-逆向实践 -
+        
+        xiaoeryu
+    </title>
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+
+    <!--- Inject Part-->
+    
+
+    
+        <style>
+    :root {
+        --preloader-background-color: #fff;
+        --preloader-text-color: #000;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        :root {
+            --preloader-background-color: #202124;
+            --preloader-text-color: #fff;
+        }
+    }
+
+    @media (prefers-color-scheme: light) {
+        :root {
+            --preloader-background-color: #fff;
+            --preloader-text-color: #000;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .ml13 {
+            font-size: 2.6rem !important; /* Adjust this value as needed */
+        }
+    }
+
+    .preloader {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem; /* Tailwind 'gap-4' is 1rem */
+        align-items: center;
+        justify-content: center;
+        position: fixed;
+        padding: 12px;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh; /* 'h-screen' is 100% of the viewport height */
+        background-color: var(--preloader-background-color);
+        z-index: 1100; /* 'z-[1100]' sets the z-index */
+        transition: opacity 0.2s ease-in-out;
+    }
+
+    .ml13 {
+        font-size: 3.2rem;
+        /* text-transform: uppercase; */
+        color: var(--preloader-text-color);
+        letter-spacing: -1px;
+        font-weight: 500;
+        font-family: 'Chillax-Variable', sans-serif;
+        text-align: center;
+    }
+
+    .ml13 .word {
+        display: inline-flex;
+        flex-wrap: wrap;
+        white-space: nowrap;
+    }
+
+    .ml13 .letter {
+        display: inline-block;
+        line-height: 1em;
+    }
+</style>
+
+<div class="preloader">
+    
+<script src="/js/libs/anime.min.js"></script>
+
+    <h1 class="ml13">
+        xiaoeryu
+    </h1>
+    <script>
+        var textWrapper = document.querySelector('.ml13');
+        // Split text into words
+        var words = textWrapper.textContent.trim().split(' ');
+
+        // Clear the existing content
+        textWrapper.innerHTML = '';
+
+        // Wrap each word and its letters in spans
+        words.forEach(function(word) {
+            var wordSpan = document.createElement('span');
+            wordSpan.classList.add('word');
+            wordSpan.innerHTML = word.replace(/\S/g, "<span class='letter'>$&</span>");
+            textWrapper.appendChild(wordSpan);
+            textWrapper.appendChild(document.createTextNode(' ')); // Add space between words
+        });
+
+
+        anime.timeline({loop: true})
+            .add({
+                targets: '.ml13 .letter',
+                translateY: [100,0],
+                translateZ: 0,
+                opacity: [0,1],
+                easing: "easeOutExpo",
+                duration: 1400,
+                delay: (el, i) => 300 + 30 * i
+            }).add({
+            targets: '.ml13 .letter',
+            translateY: [0,-100],
+            opacity: [1,0],
+            easing: "easeInExpo",
+            duration: 1200,
+            delay: (el, i) => 100 + 30 * i
+        });
+
+        let themeStatus = JSON.parse(localStorage.getItem('REDEFINE-THEME-STATUS'))?.isDark;
+
+        // If the theme status is not found in local storage, check the preferred color scheme
+        if (themeStatus === undefined || themeStatus === null) {
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                themeStatus = 'dark';
+            } else {
+                themeStatus = 'light';
+            }
+        }
+
+        // Now you can use the themeStatus variable in your code
+        if (themeStatus) {
+            document.documentElement.style.setProperty('--preloader-background-color', '#202124');
+            document.documentElement.style.setProperty('--preloader-text-color', '#fff');
+        } else {
+            document.documentElement.style.setProperty('--preloader-background-color', '#fff');
+            document.documentElement.style.setProperty('--preloader-text-color', '#000');
+        }
+
+        window.addEventListener('load', function () {
+            hidePreloaderAfterTimeout(1000); // Hide after 1000 milliseconds once the window has loaded
+        });
+
+        // Backup failsafe: Hide preloader after a maximum of 5000 milliseconds, regardless of the window load event
+        hidePreloaderAfterTimeout(5000);
+
+        function hidePreloaderAfterTimeout(delay) {
+            setTimeout(function () {
+                var preloader = document.querySelector('.preloader');
+                preloader.style.opacity = '0';
+                setTimeout(function () {
+                    preloader.style.display = 'none';
+                }, 200);
+            }, delay);
+        }
+    </script>
+</div>
+    
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+        
+<link rel="stylesheet" href="/assets/build/styles.css">
+
+    
+
+    
+<link rel="stylesheet" href="/fonts/fonts.css">
+
+    
+<link rel="stylesheet" href="/fonts/Satoshi/satoshi.css">
+
+    <!--- Font Part-->
+    
+    
+    
+    
+
+
+    <script id="hexo-configurations">
+    window.config = {"hostname":"xiaoeeyu.github.io","root":"/","language":"zh-CN","path":"search.xml"};
+    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true,"title_alignment":"left","headings_top_spacing":{"h1":"5rem","h2":"4rem","h3":"2.8rem","h4":"2.5rem","h5":"2.2rem","h6":"2rem"}},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":4,"number":false,"expand":true,"init_open":true},"copyright":{"enable":true,"default":"cc_by_nc_sa"},"lazyload":true,"recommendation":{"enable":false,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/ball-0101.jpg","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null,"default_mode":"light"},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"preloader":true,"open_graph":true,"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/wallhaven-jxl31y.png","dark":"/images/wallhaven-o5762l.png"},"title":"XIAOERYU","subtitle":{"text":["明心见性，拨云见日","Don't waite, to create"],"hitokoto":{"enable":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":true,"style":"default","links":{"github":"https://github.com/xiaoeeyu","instagram":null,"zhihu":null,"twitter":null,"email":"xiaoeryu@163.com"},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null}]},"mermaid":{"enable":false,"version":"9.3.0"}},"version":"2.6.1","navbar":{"auto_hide":false,"color":{"left":"#f78736","right":"#367df7","transparency":35},"width":{"home":"1200px","pages":"1000px"},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Archives":{"path":"/archives","icon":"fa-regular fa-archive"}},"search":{"enable":false,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"blur"},"home":{"sidebar":{"enable":true,"position":"left","first_item":"menu","announcement":null,"show_on_mobile":true,"links":null},"article_date_format":"auto","categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":3}},"footerStart":"2022/8/17 11:45:14"};
+    window.lang_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"};
+    window.data = {"masonry":false};
+  </script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+<meta name="generator" content="Hexo 6.3.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+<!--        <span class="swup-progress-icon">-->
+<!--            <i class="fa-solid fa-circle-notch fa-spin"></i>-->
+<!--        </span>-->
+    
+</div>
+
+
+<main class="page-container" id="swup">
+
+    
+
+    <div class="main-content-container">
+
+
+        <div class="main-content-header">
+            <header class="navbar-container px-6 md:px-12">
+
+    <div class="navbar-content ">
+        <div class="left">
+            
+                <a class="logo-image" href="/">
+                    <img src="/images/rabete.jpg">
+                </a>
+            
+            <a class="logo-title" href="/">
+                
+                xiaoeryu
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/"
+                                        >
+                                    <i class="fa-regular fa-house fa-fw"></i>
+                                    首页
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/archives"
+                                        >
+                                    <i class="fa-regular fa-archive fa-fw"></i>
+                                    归档
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile sheet -->
+    <div class="navbar-drawer h-screen w-full absolute top-0 left-0 bg-background-color flex flex-col justify-between">
+        <ul class="drawer-navbar-list flex flex-col px-4 justify-center items-start">
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/"
+                        >
+                            <span>
+                                首页
+                            </span>
+                            
+                                <i class="fa-regular fa-house fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/archives"
+                        >
+                            <span>
+                                归档
+                            </span>
+                            
+                                <i class="fa-regular fa-archive fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+
+            
+            
+        </ul>
+
+        <div class="statistics flex justify-around my-2.5">
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">79</div>
+        <div class="label text-third-text-color text-sm">标签</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">13</div>
+        <div class="label text-third-text-color text-sm">分类</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">88</div>
+        <div class="label text-third-text-color text-sm">文章</div>
+    </a>
+</div>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="main-content-body">
+
+            
+
+            <div class="main-content">
+
+                
+                    <div class="post-page-container flex relative justify-between box-border w-full h-full">
+    <div class="article-content-container">
+
+        <div class="article-title relative w-full">
+            
+                <div class="w-full flex items-center pt-6 justify-start">
+                    <h1 class="article-title-regular text-second-text-color text-4xl md:text-6xl font-bold px-2 sm:px-6 md:px-8 py-3">分组密码-逆向实践</h1>
+                </div>
+            
+            </div>
+
+        
+            <div class="article-header flex flex-row gap-2 items-center px-2 sm:px-6 md:px-8">
+                <div class="avatar w-[46px] h-[46px] flex-shrink-0 rounded-medium border border-border-color p-[1px]">
+                    <img src="/images/rabete.jpg">
+                </div>
+                <div class="info flex flex-col justify-between">
+                    <div class="author flex items-center">
+                        <span class="name text-default-text-color text-lg font-semibold">xiaoeryu</span>
+                        
+                            <span class="author-label ml-1.5 text-xs px-2 py-0.5 rounded-small text-third-text-color border border-shadow-color-1">Lv5</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2024-03-05 01:31:05</span>
+        <span class="mobile">2024-03-05 01:31:05</span>
+        <span class="hover-info">创建</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2024-03-05 01:34:11</span>
+            <span class="mobile">2024-03-05 01:34:11</span>
+            <span class="hover-info">更新</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/Android%E9%80%86%E5%90%91/">Android逆向</a>&nbsp;
+                        </li>
+                    
+                    
+                
+                    
+                        
+                            <li>></li>
+                        
+                        <li>
+                            <a href="/categories/Android%E9%80%86%E5%90%91/%E5%8A%A0%E5%AF%86%E8%A7%A3%E5%AF%86/">加密解密</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/Frida-Hook/">Frida Hook</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/AES/">AES</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fa-regular fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        
+
+
+        <div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
+            <p>之前几章已经对分组密码的原理以及填充进行了详细介绍，本章使用一个demo来进行实战分析</p>
+<ul>
+<li>一个两层密钥的demo，第一层是java中的AES，第二层是native层的AES加密</li>
+</ul>
+<h4 id="第一层"><a href="#第一层" class="headerlink" title="第一层"></a>第一层</h4><img lazyload="" src="/images/loading.svg" data-src="/2024/03/05/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-%E9%80%86%E5%90%91%E5%AE%9E%E8%B7%B5/image-20240302153336992.png" class="" title="image-20240302153336992">
+
+<ul>
+<li><p>以32位安装方便进行分析测试</p>
+</li>
+<li><p>一个简单demo，打开界面是输入框和按钮，点击按钮后校验密码错误的话，会弹窗提示错误</p>
+</li>
+</ul>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/03/05/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-%E9%80%86%E5%90%91%E5%AE%9E%E8%B7%B5/image-20240302153810848.png" class="" title="image-20240302153810848">
+
+<ul>
+<li>GDA打开看到有360的加固，先脱壳</li>
+<li>不想刷脱壳机使用<a class="link" target="_blank" rel="noopener" href="https://github.com/hanbinglengyue/FART">frida_fart_hook <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>脚本脱壳也行，使用方法脚本里面写的很清楚，<a href="https://xiaoeeyu.github.io/2024/02/13/%E5%AF%86%E7%A0%81%E5%AD%A6%E5%88%9D%E6%AD%A5%E8%AE%A4%E8%AF%86/#%E8%84%B1%E5%A3%B3">之前</a>也讲过了这里不再赘述</li>
+</ul>
+<h5 id="分析脱壳后的dex"><a href="#分析脱壳后的dex" class="headerlink" title="分析脱壳后的dex"></a>分析脱壳后的dex</h5><img lazyload="" src="/images/loading.svg" data-src="/2024/03/05/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-%E9%80%86%E5%90%91%E5%AE%9E%E8%B7%B5/image-20240302210407725.png" class="" title="image-20240302210407725">
+
+<ul>
+<li>直接查看<em>onClick()<em>函数，看到这里的校验是在</em>test4()<em>函数里面做的，那就继续分析</em>test4()</em></li>
+</ul>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/03/05/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-%E9%80%86%E5%90%91%E5%AE%9E%E8%B7%B5/image-20240302210847042.png" class="" title="image-20240302210847042">
+
+<ul>
+<li>这里算法特征相关的函数和字符串都已经被隐藏了。这里只能看到一个key、IV以及要与之比较的一个值，不能看到是什么加密和工作以及填充模式</li>
+<li>所以如果想要搞清楚这些东西，需要使用hook的方式来获取</li>
+</ul>
+<h5 id="编写frida-hook脚本"><a href="#编写frida-hook脚本" class="headerlink" title="编写frida_hook脚本"></a>编写frida_hook脚本</h5><img lazyload="" src="/images/loading.svg" data-src="/2024/03/05/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-%E9%80%86%E5%90%91%E5%AE%9E%E8%B7%B5/image-20240302213934522.png" class="" title="image-20240302213934522">
+
+<blockquote>
+<ol>
+<li>hook *loadClass()*获取它的参数看是加载了哪个类</li>
+<li>hook *contains()*获取它的参数查看前面获取了哪个method</li>
+</ol>
+<pre><code class="js">function main(){
+    if(Java.available){
+        Java.perform(function(){
+            Java.use("java.lang.ClassLoader").loadClass.overload('java.lang.String').implementation = function(arg0){
+                console.log("java.lang.ClassLoader-&gt;loadClass: ", arg0);
+                var result = this.loadClass(arg0);
+                return result;
+            }
+            Java.use("java.lang.String").contains.implementation = function(arg0){
+                var result = this.contains(arg0);
+                // 这里因为dex中的代码是使用反射的方式来调用函数的，所以按函数逻辑加一个结果为true才打印，看起来会清楚点，不然打印的结果会非常多
+                if(result == true){
+                    console.log("java.lang.String-&gt;contains: ", arg0);
+                }
+                return result;
+            }
+        })
+    }
+}
+
+setImmediate(main)
+</code></pre>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/03/05/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-%E9%80%86%E5%90%91%E5%AE%9E%E8%B7%B5/image-20240302215805830.png" class="" title="image-20240302215805830">
+
+<ul>
+<li>让脚本以<strong>Attach</strong>附加的方式启动，在*onClick()*点击的时候触发。不然这种通用函数触发的位置太多了</li>
+<li>根据触发后的打印结果来看：<ul>
+<li>*loadClass()*加载了Cipher类</li>
+<li>然后通过反射的方式拿到了getInstance()、doFinal()、init()三个方法</li>
+</ul>
+</li>
+<li>通过打印结果知道了它的调用方法之后，就直接hook这些函数就可以了</li>
+</ul>
+<pre><code class="js">function hookCipher(){
+    Java.perform(function(){
+        Java.use('javax.crypto.Cipher').getInstance.overload('java.lang.String').implementation = function(arg0){
+            console.log('javax.crypto.Cipher.getInstance is called!', arg0);
+            var result = this.getInstance(arg0);
+            return result;
+        };
+        // cipher.init(Cipher.ENCRYPT_MODE, getRawKey(key), iv);
+        Java.use('javax.crypto.Cipher').init.overload('int', 'java.security.Key', 'java.security.spec.AlgorithmParameterSpec').implementation = function(arg0, arg1, arg2){
+            // console.log("javax.crypto.Cipher.init is called!", arg0, arg1, arg2);
+            var mode = arg0;
+            var key = arg1;
+            var iv = arg2;
+            var KeyClass = Java.use('java.security.Key');
+            var keyobj = Java.cast(key, KeyClass);
+            var key_bytes = keyobj.getEncoded();
+            // 把ASCII编码的字符数组转为字符打印出来，方便我们查看
+            var StringClass = Java.use('java.lang.String');
+            var key_string = StringClass.$new(key_bytes);
+            console.log("key_string: ", key_string);
+
+            var IVClass = Java.use('javax.crypto.spec.IvParameterSpec');
+            var ivobj = Java.cast(iv, IVClass);
+            var iv_bytes = ivobj.getIV();
+            // 这里同样打印出来方便查看
+            var iv_string = StringClass.$new(iv_bytes);
+            console.log("iv_string: ", iv_string);
+
+            console.log("javax.crypto.Cipher.init is called!", mode, JSON.stringify(key_bytes), JSON.stringify(iv_bytes));
+            var result = this.init(arg0, arg1, arg2);
+            return result;
+        };
+        // doFinal
+        Java.use('javax.crypto.Cipher').doFinal.overload('[B').implementation = function(arg0){
+            console.log("javax.crypto.Cipher.doFinal is called!", JSON.stringify(arg0));
+            var data = arg0;
+            var result = this.doFinal(arg0);
+            console.log("javax.crypto.Cipher.doFinal is called!", JSON.stringify(data), "encrypt: ", JSON.stringify(result));
+            return result;
+        };
+    })
+}
+</code></pre>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/03/05/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-%E9%80%86%E5%90%91%E5%AE%9E%E8%B7%B5/image-20240302224232576.png" class="" title="image-20240302224232576">
+
+<p>现在就可以去<a class="link" target="_blank" rel="noopener" href="https://gchq.github.io/CyberChef/">CyberChef <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>中计算出AES的明文了：qazwsxedcrfvtgbyhnujm</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/03/05/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-%E9%80%86%E5%90%91%E5%AE%9E%E8%B7%B5/image-20240302224535913.png" class="" title="image-20240302224535913">
+</blockquote>
+<h4 id="第二层"><a href="#第二层" class="headerlink" title="第二层"></a>第二层</h4><h5 id="分析native层AES加密"><a href="#分析native层AES加密" class="headerlink" title="分析native层AES加密"></a>分析native层AES加密</h5><img lazyload="" src="/images/loading.svg" data-src="/2024/03/05/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-%E9%80%86%E5%90%91%E5%AE%9E%E8%B7%B5/image-20240303135914400.png" class="" title="image-20240303135914400">
+
+<ul>
+<li>第二层获取密钥需要分析这个*test3()*函数 ，它是一个静态注册的native函数，我们用ida打开so文件进行分析</li>
+</ul>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/03/05/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-%E9%80%86%E5%90%91%E5%AE%9E%E8%B7%B5/image-20240303154024866.png" class="" title="image-20240303154024866">
+
+<ul>
+<li><p>分析这个函数</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/03/05/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-%E9%80%86%E5%90%91%E5%AE%9E%E8%B7%B5/image-20240305011501631.png" class="" title="image-20240305011501631">
+
+<ul>
+<li>对这个函数经过分析之后，发现*sub_9744()*这个函数的返回值比较重要，要参与到后面的循环中让v5和v7两个字符数组进行比较，而且这个函数的接受了我们输入的字符串，和一串疑似是key的字符串。</li>
+<li>那等下就可以来hook这个函数看它的参数和返回值是什么，不出意外应该就是返回加密后的字符数组。然后让加密后的数组v5和v7进行对比，数组长度是32位</li>
+</ul>
+</li>
+<li><p>但是，现在我们还没有在so中看出来这里用到了什么算法和什么工作模式、填充方式</p>
+<p>这里使用FindCrypt插件去分析匹配一下</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/03/05/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-%E9%80%86%E5%90%91%E5%AE%9E%E8%B7%B5/image-20240303161147250.png" class="" title="image-20240303161147250">
+
+<p>匹配到了AES的S盒跟S盒逆，通过这些S盒进行交叉引用就能跟踪到它最终在*sub_9744()*中进行了调用</p>
+</li>
+</ul>
+<h5 id="编写frida-hook脚本-1"><a href="#编写frida-hook脚本-1" class="headerlink" title="编写frida_hook脚本"></a>编写frida_hook脚本</h5><p>对*sub_9744()*函数进行主动调用和hook</p>
+<p>在前面我们分析源码的时候看过在Android中对so的加载是通过*loadLibrary()*进行加载的</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/03/05/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-%E9%80%86%E5%90%91%E5%AE%9E%E8%B7%B5/image-20240303165307864.png" class="" title="image-20240303165307864">
+
+<blockquote>
+<ol>
+<li>在之前的文章中已经分析过源码，这里不能直接对*loadLibrary()*进行hook，而要对loadelibrary()下面的加载函数进行hook</li>
+</ol>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/03/05/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-%E9%80%86%E5%90%91%E5%AE%9E%E8%B7%B5/image-20240304004816743.png" class="" title="image-20240304004816743">
+
+<ul>
+<li><p>在Android8.0的源码中是*loadLibrary0()*，这个要根据不同版本来hook不同的函数</p>
+</li>
+<li><p>对于so的hook要选择一个时机，在*loadLibrary0()*加载了so文件之后，我们就可以对so文件中的函数进行hook了</p>
+<pre><code class="js">function hooksoMain(){
+    if(Java.available){
+        Java.perform(function(){
+            Java.use("java.lang.Runtime").loadLibrary0.implementation = function(arg0, arg1){
+                console.log("java.lang.Runtime-&gt;loadLibrary0: ", arg1);
+                var result = this.loadLibrary0(arg0, arg1);
+                if(arg1.indexOf('native-lib') != -1){
+                    hookso();
+                }
+                return result;
+            }
+        })
+    }
+}
+</code></pre>
+</li>
+</ul>
+<ol start="2">
+<li><p>根据前面的分析，我们这里对*sub_9744()*进行hook</p>
+<pre><code class="js">function hookso() {
+    var nativelibmodul = Process.getModuleByName("libnative-lib.so");
+    var sub_9744_addr = nativelibmodul.base.add(0x9745);
+    console.log("sub_9744:",sub_9744_addr);
+    Interceptor.attach(sub_9744_addr, {
+        onEnter: function (args) {
+            console.log("sub_9744_addr arg0:", hexdump(args[0]));
+            console.log("sub_9744_addr arg1:", hexdump(args[1]));
+            console.log("sub_9744_addr arg2:", hexdump(args[2]));
+        }, onLeave: function (retval) {
+            console.log("sub_9744_addr retval:", hexdump(ptr(retval)));
+        }
+    })
+}
+</code></pre>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/03/05/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-%E9%80%86%E5%90%91%E5%AE%9E%E8%B7%B5/image-20240305005650025.png" class="" title="image-20240305005650025">
+
+<ul>
+<li><p>以<strong>Spawn（生成模式）</strong>运行脚本<code>frida -U -f 包名 -l 脚本名 --no-pause</code>，需要先手动输入第一层密码，然后再尝试随便输入一个字符串当作第二层密码（这里输入的还是第一层的密码），查看被hook函数的返回值</p>
+<blockquote>
+<p>arg0是要加密的明文</p>
+<p>arg1是key</p>
+<p>arg2是IV</p>
+<p>返回值是加密后的串</p>
+</blockquote>
+</li>
+<li><p>现在根据返回值和我们前面在ida中识别到的S盒，得知这是一个AES加密函数。但是对于工作模式和填充方式还是不知道。在有IV的情况下CBC、OFB、CFB都有可能可以在CyberChef中把这三种都尝试一下，看哪个结果能对上</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/03/05/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-%E9%80%86%E5%90%91%E5%AE%9E%E8%B7%B5/image-20240305010033525.png" class="" title="image-20240305010033525">
+
+<p>经过验证，CBC模式的加密结果和我们上面hook后得到的返回值是相同的，说明他就是CBC工作模式，加密后的结果长度是32位=明文的整数倍，可知它的填充模式是<strong>PKCS5Padding</strong>或者<strong>PKCS7Padding</strong></p>
+</li>
+</ul>
+</li>
+<li><p>最后在补充一点</p>
+<p>在测试的时候有时候一遍遍的重启app，手动输入第一层的密码比较麻烦，可以使用frida提供的*NativeFunction()*来直接主动调用目标函数比较方便</p>
+<pre><code class="js">function activecallsub_9744() {
+    var arg0=Memory.alloc(21);
+    ptr(arg0).writeUtf8String('qazwsxedcrfvtgbyhnujm');
+    var arg1=Memory.alloc(21);
+    ptr(arg1).writeUtf8String('0123456789abcdef');
+    var arg2=Memory.alloc(21);
+    ptr(arg2).writeUtf8String('0123456789abcdef');
+    var retval=sub_9744(arg0,arg1,arg2);
+    console.log("activecallsub_9744",hexdump(ptr(retval)));
+}
+</code></pre>
+</li>
+</ol>
+</blockquote>
+<h5 id="附件"><a href="#附件" class="headerlink" title="附件"></a>附件</h5><p><a class="link" target="_blank" rel="noopener" href="https://github.com/xiaoeeyu/cipher7test_decrypt/tree/main">完整代码 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+
+        </div>
+
+        
+            <div class="post-copyright-info w-full my-8 px-2 sm:px-6 md:px-8">
+                <div class="article-copyright-info-container">
+    <ul>
+        <li><strong>标题:</strong> 分组密码-逆向实践</li>
+        <li><strong>作者:</strong> xiaoeryu</li>
+        <li><strong>创建于
+                :</strong> 2024-03-05 01:31:05</li>
+        
+            <li>
+                <strong>更新于
+                    :</strong> 2024-03-05 01:34:11
+            </li>
+        
+        <li>
+            <strong>链接:</strong> https://github.com/xiaoeryu/2024/03/05/分组密码-逆向实践/
+        </li>
+        <li>
+            <strong>
+                版权声明:
+            </strong>
+            
+
+            
+                本文章采用 <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0">CC BY-NC-SA 4.0</a> 进行许可。
+            
+        </li>
+    </ul>
+</div>
+
+            </div>
+        
+
+        
+            <ul class="post-tags-box text-lg mt-1.5 flex-wrap justify-center flex md:hidden">
+                
+                    <li class="tag-item mx-0.5">
+                        <a href="/tags/Frida-Hook/">#Frida Hook</a>&nbsp;
+                    </li>
+                
+                    <li class="tag-item mx-0.5">
+                        <a href="/tags/AES/">#AES</a>&nbsp;
+                    </li>
+                
+            </ul>
+        
+
+        
+
+        
+            <div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
+                
+                
+                    <div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+                        <a class="next"
+                        rel="next"
+                        href="/2024/03/02/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81%E7%9A%84%E5%A1%AB%E5%85%85%E5%8F%8A%E5%B7%A5%E4%BD%9C%E6%A8%A1%E5%BC%8F/"
+                        >
+                            <span class="title flex justify-center items-center">
+                                <span class="post-nav-title-item">分组密码的填充及工作模式</span>
+                                <span class="post-nav-item">下一篇</span>
+                            </span>
+                            <span class="right arrow-icon flex justify-center items-center">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+
+        
+            <div class="comment-container px-2 sm:px-6 md:px-8 pb-8">
+                <div class="comments-container mt-10 w-full ">
+    <div id="comment-anchor" class="w-full h-2.5"></div>
+    <div class="comment-area-title w-full my-1.5 md:my-2.5 text-xl md:text-3xl font-bold">
+        评论
+    </div>
+    
+
+        
+            
+    <div id="gitalk-container"></div>
+    <script data-swup-reload-script
+            src="//cdn.staticfile.org/gitalk/1.8.0/gitalk.min.js"></script>
+    <script data-swup-reload-script>
+
+        function loadGitalk() {
+            let __gitalk__pathname = decodeURI(location.pathname);
+            const __gitalk__pathnameLength = __gitalk__pathname.length;
+            const __gitalk__pathnameMaxLength = 50;
+            if (__gitalk__pathnameLength > __gitalk__pathnameMaxLength) {
+                __gitalk__pathname = __gitalk__pathname.substring(0, __gitalk__pathnameMaxLength - 3) + '...';
+            }
+
+            try {
+                Gitalk && new Gitalk({
+                    clientID: '13d9974f24854a639570',
+                    clientSecret: '0c6c11ab3852d24a608e0f95a79829a649afac4b',
+                    repo: 'blog_gitalk',
+                    owner: 'xiaoeeyu',
+                    admin: ['xiaoeeyu'],
+                    id: __gitalk__pathname,
+                    language: 'zh-CN',
+                    proxy: 'https://github.com/login/oauth/access_token'
+                }).render('gitalk-container');
+
+            } catch (e) {
+                window.Gitalk = null;
+            }
+        }
+
+        if ('true') {
+            const loadGitalkTimeout = setTimeout(() => {
+                loadGitalk();
+                clearTimeout(loadGitalkTimeout);
+            }, 1000);
+        } else {
+            window.addEventListener('DOMContentLoaded', loadGitalk);
+        }
+    </script>
+
+
+
+        
+    
+</div>
+
+            </div>
+        
+    </div>
+
+    
+        <div class="toc-content-container">
+            <div class="post-toc-wrap">
+    <div class="post-toc">
+        <div class="toc-title">此页目录</div>
+        <div class="page-title">分组密码-逆向实践</div>
+        <ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AC%AC%E4%B8%80%E5%B1%82"><span class="nav-text">第一层</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%AC%AC%E4%BA%8C%E5%B1%82"><span class="nav-text">第二层</span></a></li></ol>
+
+    </div>
+</div>
+        </div>
+    
+</div>
+
+
+
+                
+
+            </div>
+
+            
+
+        </div>
+
+        <div class="main-content-footer">
+            <footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
+    <div class="info-container py-3 text-center">
+        
+        <div class="text-center">
+            &copy;
+            
+              <span>2022</span>
+              -
+            
+            2024&nbsp;&nbsp;<i class="fa-solid fa-heart fa-beat" style="--fa-animation-duration: 0.5s; color: #f54545"></i>&nbsp;&nbsp;<a href="/">xiaoeryu</a>
+            
+                
+                <p class="post-count space-x-0.5">
+                    <span>
+                        共 88 篇文章
+                    </span>
+                    
+                </p>
+            
+        </div>
+        
+            <script data-swup-reload-script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            <div class="relative text-center lg:absolute lg:right-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-right">
+                
+                    <span id="busuanzi_container_site_uv" class="lg:!block">
+                        <span class="text-sm">访问人数</span>
+                        <span id="busuanzi_value_site_uv"></span>
+                    </span>
+                
+                
+                    <span id="busuanzi_container_site_pv" class="lg:!block">
+                        <span class="text-sm">总访问量</span>
+                        <span id="busuanzi_value_site_pv"></span>
+                    </span>
+                
+            </div>
+        
+        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
+            <span class="lg:block text-sm">由 <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a> 驱动</span>
+            <span class="text-sm lg:block">主题&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.6.1</a></span>
+        </div>
+        
+        
+            <div>
+                博客已运行 <span class="odometer" id="runtime_days" ></span> 天 <span class="odometer" id="runtime_hours"></span> 小时 <span class="odometer" id="runtime_minutes"></span> 分钟 <span class="odometer" id="runtime_seconds"></span> 秒
+            </div>
+        
+        
+            <script data-swup-reload-script>
+                try {
+                    function odometer_init() {
+                    const elements = document.querySelectorAll('.odometer');
+                    elements.forEach(el => {
+                        new Odometer({
+                            el,
+                            format: '( ddd).dd',
+                            duration: 200
+                        });
+                    });
+                    }
+                    odometer_init();
+                } catch (error) {}
+            </script>
+        
+        
+        
+    </div>  
+</footer>
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="article-tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="right-bottom-tools page-aside-toggle">
+                <i class="fa-regular fa-outdent"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+            <li class="go-comment">
+                <i class="fa-regular fa-comments"></i>
+            </li>
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-side-tools-container">
+        <div class="side-tools-container">
+    <ul class="hidden-tools-list">
+        <li class="right-bottom-tools tool-font-adjust-plus flex justify-center items-center">
+            <i class="fa-regular fa-magnifying-glass-plus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-font-adjust-minus flex justify-center items-center">
+            <i class="fa-regular fa-magnifying-glass-minus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
+            <i class="fa-regular fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+
+        <li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
+            <i class="fa-regular fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="visible-tools-list">
+        <li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
+            <i class="fa-regular fa-cog fa-spin"></i>
+        </li>
+        
+            <li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
+                <i class="arrow-up fas fa-arrow-up"></i>
+                <span class="percent"></span>
+            </li>
+        
+        
+    </ul>
+</div>
+
+    </div>
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+
+</main>
+
+
+    
+<script src="/js/libs/Swup.min.js"></script>
+
+<script src="/js/libs/SwupSlideTheme.min.js"></script>
+
+<script src="/js/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="/js/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="/js/libs/SwupScrollPlugin.min.js"></script>
+
+<script src="/js/libs/SwupPreloadPlugin.min.js"></script>
+
+<script>
+    const swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+            new SwupPreloadPlugin(),
+        ],
+        containers: ["#swup"],
+    });
+</script>
+
+
+
+
+
+
+
+<script src="/js/tools/imageViewer.js" type="module"></script>
+
+<script src="/js/utils.js" type="module"></script>
+
+<script src="/js/main.js" type="module"></script>
+
+<script src="/js/layouts/navbarShrink.js" type="module"></script>
+
+<script src="/js/tools/scrollTopBottom.js" type="module"></script>
+
+<script src="/js/tools/lightDarkSwitch.js" type="module"></script>
+
+<script src="/js/layouts/categoryList.js" type="module"></script>
+
+
+
+
+
+    
+<script src="/js/tools/codeBlock.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/layouts/lazyload.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/tools/runtime.js"></script>
+
+    
+<script src="/js/libs/odometer.min.js"></script>
+
+    
+<link rel="stylesheet" href="/assets/odometer-theme-minimal.css">
+
+
+
+
+  
+<script src="/js/libs/Typed.min.js"></script>
+
+  
+<script src="/js/plugins/typed.js" type="module"></script>
+
+
+
+
+
+
+
+
+
+<div class="post-scripts" data-swup-reload-script>
+    
+        
+<script src="/js/tools/tocToggle.js" type="module"></script>
+
+<script src="/js/layouts/toc.js" type="module"></script>
+
+<script src="/js/plugins/tabs.js" type="module"></script>
+
+    
+</div>
+
+
+</body>
+</html>
