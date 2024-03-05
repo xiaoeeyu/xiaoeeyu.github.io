@@ -13,18 +13,26 @@
     
     <!--- Seo Part-->
     
-    <link rel="canonical" href="https://xiaoeeyu.github.io/tags/jni访问java类函数/"/>
+    <link rel="canonical" href="https://xiaoeeyu.github.io/2024/03/05/非对称密码-rsa/"/>
     <meta name="robots" content="index,follow">
     <meta name="googlebot" content="index,follow">
     <meta name="revisit-after" content="1 days">
     
-        <meta property="og:type" content="website">
-<meta property="og:title" content="xiaoeryu">
-<meta property="og:url" content="https://xiaoeeyu.github.io/tags/JNI%E8%AE%BF%E9%97%AEJava%E7%B1%BB%E5%87%BD%E6%95%B0/index.html">
+        <meta name="description" content="本章内容主要为RSA密码的原理以及定位 分组密码在应用和协议的加解密中比较常用，非对称加密RSA因为加密效率的原因更多的用在密钥的分发方面 非对称密码中的RSA在当前互联网时代被广泛使用（网站、app、协议、桌面应用、服务器等等）。RSA加密算法是公钥密码体制中的一种，改算法基于数学理论而不是对称密码中的混淆和扩散。RSA密码算法当中加密和解密使用的是不同的密钥，因此被称为非对称密码。RSA是19">
+<meta property="og:type" content="article">
+<meta property="og:title" content="非对称密码-RSA">
+<meta property="og:url" content="https://xiaoeeyu.github.io/2024/03/05/%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%AF%86%E7%A0%81-RSA/index.html">
 <meta property="og:site_name" content="xiaoeryu">
+<meta property="og:description" content="本章内容主要为RSA密码的原理以及定位 分组密码在应用和协议的加解密中比较常用，非对称加密RSA因为加密效率的原因更多的用在密钥的分发方面 非对称密码中的RSA在当前互联网时代被广泛使用（网站、app、协议、桌面应用、服务器等等）。RSA加密算法是公钥密码体制中的一种，改算法基于数学理论而不是对称密码中的混淆和扩散。RSA密码算法当中加密和解密使用的是不同的密钥，因此被称为非对称密码。RSA是19">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/03/05/%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%AF%86%E7%A0%81-RSA/image-20240305110855142.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/03/05/%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%AF%86%E7%A0%81-RSA/image-20240305162959247.png">
+<meta property="article:published_time" content="2024-03-05T10:01:10.000Z">
+<meta property="article:modified_time" content="2024-03-05T10:04:37.598Z">
 <meta property="article:author" content="xiaoeryu">
+<meta property="article:tag" content="RSA">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://xiaoeeyu.github.io/2024/03/05/%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%AF%86%E7%A0%81-RSA/image-20240305110855142.png">
     
     
     <!--- Icon Part-->
@@ -36,7 +44,7 @@
     
     <title>
         
-            标签: JNI访问Java类函数 -
+            非对称密码-RSA -
         
         xiaoeryu
     </title>
@@ -419,46 +427,332 @@
             <div class="main-content">
 
                 
-                    <div class="tag-container">
-	<div class="tag-name">
-		<i class="fa-solid fa-tag"></i>&nbsp;JNI访问Java类函数
-	</div>
-	<div class="tag-post-list">
-		
+                    <div class="post-page-container flex relative justify-between box-border w-full h-full">
+    <div class="article-content-container">
 
-<div class="archive-list-container">
-    
-        <section class="archive-item mb-spacing-unit last:mb-0">
-            <div class="archive-item-header flex flex-row items-center mb-2">
-                <span class="archive-year font-semibold text-3xl mr-2">2023</span>
-                <span class="archive-year-post-count text-xs md:text-sm font-bold rounded-small bg-third-background-color py-[2px] px-[10px] border border-border-color">1</span>
+        <div class="article-title relative w-full">
+            
+                <div class="w-full flex items-center pt-6 justify-start">
+                    <h1 class="article-title-regular text-second-text-color text-4xl md:text-6xl font-bold px-2 sm:px-6 md:px-8 py-3">非对称密码-RSA</h1>
+                </div>
+            
             </div>
-            <ul class="article-list pl-0 md:pl-8 text-lg leading-[1.5]">
-              
+
+        
+            <div class="article-header flex flex-row gap-2 items-center px-2 sm:px-6 md:px-8">
+                <div class="avatar w-[46px] h-[46px] flex-shrink-0 rounded-medium border border-border-color p-[1px]">
+                    <img src="/images/rabete.jpg">
+                </div>
+                <div class="info flex flex-col justify-between">
+                    <div class="author flex items-center">
+                        <span class="name text-default-text-color text-lg font-semibold">xiaoeryu</span>
+                        
+                            <span class="author-label ml-1.5 text-xs px-2 py-0.5 rounded-small text-third-text-color border border-shadow-color-1">Lv5</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2024-03-05 18:01:10</span>
+        <span class="mobile">2024-03-05 18:01:10</span>
+        <span class="hover-info">创建</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2024-03-05 18:04:37</span>
+            <span class="mobile">2024-03-05 18:04:37</span>
+            <span class="hover-info">更新</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
                 
                     
-                    <li class="article-item space-y-2 px-6 pt-10 pb-2 text-xl relative border-l-2 border-border-color" date-is='10-14'>
+                        
+                        <li>
+                            <a href="/categories/Android%E9%80%86%E5%90%91/">Android逆向</a>&nbsp;
+                        </li>
+                    
+                    
                 
                     
-                        <a href="/2023/10/14/JNI%E8%AE%BF%E9%97%AEJava%E7%B1%BB%E5%87%BD%E6%95%B0/" class="block overflow-hidden w-fit">
-                            <span class="article-title mb-0.5 text-2xl">JNI访问Java类函数</span>
-                        </a>
+                        
+                            <li>></li>
+                        
+                        <li>
+                            <a href="/categories/Android%E9%80%86%E5%90%91/%E5%8A%A0%E5%AF%86%E8%A7%A3%E5%AF%86/">加密解密</a>&nbsp;
+                        </li>
                     
-              
+                    
+                
             </ul>
-        </section>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/RSA/">RSA</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fa-regular fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
     
 </div>
 
-	</div>
+                    </div>
+                </div>
+            </div>
+        
+
+        
+
+
+        <div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
+            <p>本章内容主要为RSA密码的原理以及定位</p>
+<p>分组密码在应用和协议的加解密中比较常用，非对称加密RSA因为加密效率的原因更多的用在密钥的分发方面</p>
+<p>非对称密码中的RSA在当前互联网时代被广泛使用（网站、app、协议、桌面应用、服务器等等）。RSA加密算法是公钥密码体制中的一种，改算法基于数学理论而不是对称密码中的混淆和扩散。RSA密码算法当中加密和解密使用的是不同的密钥，因此被称为非对称密码。RSA是1977年由罗纳德·里维斯特、阿迪·萨莫尔和伦纳德·阿德曼一起提出的。RSA就是他们三人姓氏开头字母拼在一起的。</p>
+<span id="more"></span>
+
+<p>RSA原理来自数论相关知识。RSA公开密钥密码体制的原理是：根据数论，寻求两个大素数比较简单，而将它们的乘积进行因式分解却极其困难，因此可以将乘积公开作为加密密钥。</p>
+<blockquote>
+<p>找素数</p>
+<ul>
+<li>选取两个大的随机素数</li>
+</ul>
+<p>计算模n和Euler函数<strong>φ(n)</strong></p>
+<ul>
+<li>$n = pq$</li>
+<li>$φ(n) = (p-1)(q-1)$</li>
+</ul>
+<p>找$ed ≡ 1 mod φ(n)$</p>
+<ul>
+<li>随机取一个数e（与φ(n)互素），用扩展Euclid算法求d即可</li>
+</ul>
+<p>发布</p>
+<ul>
+<li>d保密，（d，n）是私钥$K_s$</li>
+<li>发布（e，n），这是公钥$K_p$</li>
+<li>销毁p、q</li>
+</ul>
+<p>加密</p>
+<p>​	$c = m^e ,mod ,n$</p>
+<p>解密</p>
+<p>​	$m = c^d,mod,n$</p>
+<p>明文分组m为整数且必须小于n</p>
+</blockquote>
+<h6 id="消息发送的流程"><a href="#消息发送的流程" class="headerlink" title="消息发送的流程"></a>消息发送的流程</h6><img lazyload="" src="/images/loading.svg" data-src="/2024/03/05/%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%AF%86%E7%A0%81-RSA/image-20240305110855142.png" class="" title="image-20240305110855142">
+
+<blockquote>
+<ol>
+<li><p>随机选择两个不相等的质数p和q例如61和53</p>
+</li>
+<li><p>计算p和q的乘积n，$n = 61 ✖️ 53 = 3233$，3233写成二进制是110010100001，一共有12位，即这个密钥就是12位</p>
+</li>
+<li><p>计算n的欧拉函数$φ(n)$</p>
+<p>根据公式：$φ(n) = (p-1)(q-1)$ 算出$φ(3233)$等于60✖️52，即3120</p>
+</li>
+<li><p>选择一个整数e，条件是$1 &lt; e &lt; φ(n)$，且e与φ(n)互质。在1到3120之间，随机选择了17（实际应用中，常常选择65537）</p>
+</li>
+<li><p>计算e对于φ(n)的模反元素d</p>
+<p>所谓“模反元素”就是指有一个整数d，可以使得ed被φ(n)除的余数为1</p>
+<p>​	$ed ≡ 1(mod,φ(n))$</p>
+<p>​	等价于</p>
+<p>​	$ed -1 = kφ(n)$</p>
+<p>于是，找到模反元素d，实质上就是对下面这个二元一次方程求解</p>
+<p>​	$ex + φ(n)y = 1$</p>
+<p>已知$e = 17$ $φ(n) = 3120$</p>
+<p>​		$17x + 3120y = 1$</p>
+<p>这个方程可以用“扩展欧几里得算法”求解，此处省略具体过程。总之，算出一组整数解为$(x, y) = (2753, -15)$，即$d = 2753$</p>
+</li>
+<li><p>将n和e封装成公钥，n和d封装成私钥</p>
+<p>例如：n = 3233，e = 17， d = 2753，所以公钥就是（3233， 17），私钥就是（3233， 2753）。有了公钥和私钥，就能进行加密和解密了。</p>
+</li>
+</ol>
+<p>下面具体过程可以参考<a class="link" target="_blank" rel="noopener" href="https://blog.csdn.net/lu1196700392/article/details/102593536">这篇帖子 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+</blockquote>
+<h6 id="安全性"><a href="#安全性" class="headerlink" title="安全性"></a>安全性</h6><p>对极大整数做因式分解的难度决定了RSA算法的可靠性。到目前为止公开的被破解的最长RSA密钥是768位。实际应用中一般情况下用1024位，重要场合2048位还都是安全的。</p>
+<h6 id="如何加密长信息"><a href="#如何加密长信息" class="headerlink" title="如何加密长信息"></a>如何加密长信息</h6><p>公钥（n，e）只能加密小于n的整数m，那么如果要加密大于n的整数，该怎么办？有两种解决方法：一种是把长信息分割成若干段短消息，每段分别加密；另一种是先选择一种“对称加密算法（例如：DES）”，用这种算法的密钥加密信息，再用RSA公钥加密DES密钥</p>
+<p>因为RSA的加密效率原因，通常会采用第二种方式</p>
+<h6 id="RSA中的填充"><a href="#RSA中的填充" class="headerlink" title="RSA中的填充"></a>RSA中的填充</h6><p>在之前的分组加密中，Padding只是用来填充数据到指定的长度，而RSA通常不会加密特别长的数据，因此没有分组模式的概念，对于RSA来说Padding是既有分组模式的概念又有随机数的概念。即RSA的Padding包含了将数据填充到RSA密钥位数的长度的方法，还有填充随机数到RSA原文的方法</p>
+<p>RSA算法的本质就是大数运算</p>
+<p>​	$m^e ≡ c(mod\ n)$</p>
+<p>​	$c^d ≡ c(mod\ n)$</p>
+<p>其中m是原文，c是密文。如果使用原始的RSA做加解密操作，则并不包含随机数，相同的密文会生成相同的明文。同时由于大部分情况下m相比n小很多，甚至$m^e$都比n要小，这时候很容易通过枚举倍数破解明文。因此RSA加解密算法很需要有效的Padding算法讲明文填充到足够长保证不容易被暴力破解，这也就是加入随机因子保证密文的随机性的一个原因。</p>
+<h6 id="查看RSA密钥"><a href="#查看RSA密钥" class="headerlink" title="查看RSA密钥"></a>查看RSA密钥</h6><p>用openssl生成一个RSA的key来看一下</p>
+<p>生成</p>
+<p><code>openssl genrsa -out pv.key 1024</code></p>
+<p>从私钥中获取p、q、n、e、d信息</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/03/05/%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%AF%86%E7%A0%81-RSA/image-20240305162959247.png" class="" title="image-20240305162959247">
+
+<h6 id="实现RSA"><a href="#实现RSA" class="headerlink" title="实现RSA"></a>实现RSA</h6><p>在C/C++中使用RSA：不得不提的OpenSSL</p>
+<p>OpenSSL开源库中针对当前流行密码学领域相关算法都进行了实现，其中就包含有非对称密码中的RSA算法。对于开发人员来说，很难去自己实现一个兼顾鲁棒性和效率的RSA加解密代码，因此也就一般都直接使用OpenSSL开源库。Google创建了OpenSSL分支：BoringSSL，但Google不打算取代OpenSSL，使用BoringSSL的代码不能保证API或ABI的稳定性，他们会继续向OpenSSL递交bug修正，继续资助相关的开源基金会。</p>
+<h6 id="hook和定位RSA"><a href="#hook和定位RSA" class="headerlink" title="hook和定位RSA"></a>hook和定位RSA</h6><p>对于Java层的RSA还是和之前DES、AES一样，都是调用cipher实现的，所以还是同样的hook方式</p>
+<p>对于so层来说，它的实现基本都是直接使用openssl的公开库，直接调用的。因此对于它的识别只需要使用ida插件快速定位到openssl库就可以了</p>
+<p>定位RSA算法主要有：识别常量表、控制流、重放、识别OpenSSL库的版本制作签名库几种方法。</p>
+
+        </div>
+
+        
+            <div class="post-copyright-info w-full my-8 px-2 sm:px-6 md:px-8">
+                <div class="article-copyright-info-container">
+    <ul>
+        <li><strong>标题:</strong> 非对称密码-RSA</li>
+        <li><strong>作者:</strong> xiaoeryu</li>
+        <li><strong>创建于
+                :</strong> 2024-03-05 18:01:10</li>
+        
+            <li>
+                <strong>更新于
+                    :</strong> 2024-03-05 18:04:37
+            </li>
+        
+        <li>
+            <strong>链接:</strong> https://github.com/xiaoeryu/2024/03/05/非对称密码-RSA/
+        </li>
+        <li>
+            <strong>
+                版权声明:
+            </strong>
+            
+
+            
+                本文章采用 <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0">CC BY-NC-SA 4.0</a> 进行许可。
+            
+        </li>
+    </ul>
 </div>
 
-<div class="tag-paginator">
-	<div class="paginator">
-    <span class="page-number current">1</span>
+            </div>
+        
+
+        
+            <ul class="post-tags-box text-lg mt-1.5 flex-wrap justify-center flex md:hidden">
+                
+                    <li class="tag-item mx-0.5">
+                        <a href="/tags/RSA/">#RSA</a>&nbsp;
+                    </li>
+                
+            </ul>
+        
+
+        
+
+        
+            <div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
+                
+                
+                    <div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+                        <a class="next"
+                        rel="next"
+                        href="/2024/03/05/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-%E9%80%86%E5%90%91%E5%AE%9E%E8%B7%B5/"
+                        >
+                            <span class="title flex justify-center items-center">
+                                <span class="post-nav-title-item">分组密码-逆向实践</span>
+                                <span class="post-nav-item">下一篇</span>
+                            </span>
+                            <span class="right arrow-icon flex justify-center items-center">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+
+        
+            <div class="comment-container px-2 sm:px-6 md:px-8 pb-8">
+                <div class="comments-container mt-10 w-full ">
+    <div id="comment-anchor" class="w-full h-2.5"></div>
+    <div class="comment-area-title w-full my-1.5 md:my-2.5 text-xl md:text-3xl font-bold">
+        评论
+    </div>
+    
+
+        
+            
+    <div id="gitalk-container"></div>
+    <script data-swup-reload-script
+            src="//cdn.staticfile.org/gitalk/1.8.0/gitalk.min.js"></script>
+    <script data-swup-reload-script>
+
+        function loadGitalk() {
+            let __gitalk__pathname = decodeURI(location.pathname);
+            const __gitalk__pathnameLength = __gitalk__pathname.length;
+            const __gitalk__pathnameMaxLength = 50;
+            if (__gitalk__pathnameLength > __gitalk__pathnameMaxLength) {
+                __gitalk__pathname = __gitalk__pathname.substring(0, __gitalk__pathnameMaxLength - 3) + '...';
+            }
+
+            try {
+                Gitalk && new Gitalk({
+                    clientID: '13d9974f24854a639570',
+                    clientSecret: '0c6c11ab3852d24a608e0f95a79829a649afac4b',
+                    repo: 'blog_gitalk',
+                    owner: 'xiaoeeyu',
+                    admin: ['xiaoeeyu'],
+                    id: __gitalk__pathname,
+                    language: 'zh-CN',
+                    proxy: 'https://github.com/login/oauth/access_token'
+                }).render('gitalk-container');
+
+            } catch (e) {
+                window.Gitalk = null;
+            }
+        }
+
+        if ('true') {
+            const loadGitalkTimeout = setTimeout(() => {
+                loadGitalk();
+                clearTimeout(loadGitalkTimeout);
+            }, 1000);
+        } else {
+            window.addEventListener('DOMContentLoaded', loadGitalk);
+        }
+    </script>
+
+
+
+        
+    
 </div>
 
+            </div>
+        
+    </div>
+
+    
+        <div class="toc-content-container">
+            <div class="post-toc-wrap">
+    <div class="post-toc">
+        <div class="toc-title">此页目录</div>
+        <div class="page-title">非对称密码-RSA</div>
+        
+
+    </div>
 </div>
+        </div>
+    
+</div>
+
 
 
                 
@@ -541,6 +835,27 @@
         </div>
     </div>
 
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="article-tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="right-bottom-tools page-aside-toggle">
+                <i class="fa-regular fa-outdent"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+            <li class="go-comment">
+                <i class="fa-regular fa-comments"></i>
+            </li>
+        
+    </ul>
+</div>
+
+        </div>
     
 
     <div class="right-side-tools-container">
