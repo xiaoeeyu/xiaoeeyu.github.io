@@ -424,15 +424,15 @@
 
         <div class="statistics flex justify-around my-2.5">
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">80</div>
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">82</div>
         <div class="label text-third-text-color text-sm">标签</div>
     </a>
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">13</div>
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">14</div>
         <div class="label text-third-text-color text-sm">分类</div>
     </a>
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">90</div>
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">91</div>
         <div class="label text-third-text-color text-sm">文章</div>
     </a>
 </div>
@@ -465,15 +465,15 @@
 </div>
                 <div class="statistics flex justify-around my-2.5">
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">80</div>
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">82</div>
         <div class="label text-third-text-color text-sm">标签</div>
     </a>
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">13</div>
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">14</div>
         <div class="label text-third-text-color text-sm">分类</div>
     </a>
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">90</div>
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">91</div>
         <div class="label text-third-text-color text-sm">文章</div>
     </a>
 </div>
@@ -490,6 +490,83 @@
                 
                     <div class="home-content-container">
     <ul class="home-article-list">
+        
+            <li class="home-article-item">
+
+                
+
+                
+
+                
+                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
+                    <h3 class="home-article-title">
+                        <a href="/2023/07/09/CTF003/">
+                            CTF003
+                        </a>
+                    </h3>
+
+                    <div class="home-article-content markdown-body">
+                        
+                            
+
+分析函数逻辑打开入口函数后，可以发现把校验函数写在so库里了
+
+
+IDA分析so库文件那接下来用ida打开_native-lib.so_进行分析，文件打开之后可以直接搜索到这个函数，可以看到如果没有动态加载的话，java层映射到native层的本...
+                        
+                    </div>
+
+                    <div class="home-article-meta-info-container">
+    <div class="home-article-meta-info">
+        <span><i class="fa-solid fa-calendars"></i>&nbsp;
+            <span class="home-article-date" data-date="Sun Jul 09 2023 14:43:10 GMT+0800">
+                
+                    2023-07-09
+                
+            </span>
+        </span>
+        
+            <span class="home-article-category">
+                <i class="fa-solid fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/Android%E9%80%86%E5%90%91/">Android逆向</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+        
+        
+            <span class="home-article-tag">
+                <i class="fa-solid fa-tags"></i>&nbsp;
+                <ul>
+                    
+                        <li>
+                            
+                            <a href="/tags/Android-CTF/">Android CTF</a>&nbsp;
+                        </li>
+                    
+                        <li>
+                            | 
+                            <a href="/tags/frida-hook/">frida-hook</a>&nbsp;
+                        </li>
+                    
+                </ul>
+            </span>
+        
+    </div>
+
+    <a href="/2023/07/09/CTF003/">阅读全文<span class="seo-reader-text">CTF003</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
+</div>
+
+                </div>
+            </li>
         
             <li class="home-article-item">
 
@@ -1269,73 +1346,6 @@ PS：这个题目比较简单，尝试采用多种不同的方式去获取flag
                 </div>
             </li>
         
-            <li class="home-article-item">
-
-                
-
-                
-
-                
-                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
-                    <h3 class="home-article-title">
-                        <a href="/2022/12/11/24-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4/">
-                            存储器的保护
-                        </a>
-                    </h3>
-
-                    <div class="home-article-content markdown-body">
-                        
-                            <h2 id="01-MOV-DS-AX和-MOV-DS-EAX"><a href="#01-MOV-DS-AX和-MOV-DS-EAX" class="headerlink" title="01. MOV DS, AX和 MOV DS, EAX"></a>01. MOV DS, AX和 MOV DS, EAX</h2><p>这两条指令计算GDT的逻辑段地址,使用64位除法指令: eax(商)保存段地址, edx(余数)保存偏移<br><code>div r/m32</code></p>
-                        
-                    </div>
-
-                    <div class="home-article-meta-info-container">
-    <div class="home-article-meta-info">
-        <span><i class="fa-solid fa-calendars"></i>&nbsp;
-            <span class="home-article-date" data-date="Sun Dec 11 2022 22:42:00 GMT+0800">
-                
-                    2022-12-11
-                
-            </span>
-        </span>
-        
-            <span class="home-article-category">
-                <i class="fa-solid fa-folders"></i>&nbsp;
-            <ul>
-                
-                
-                    
-                        
-                        <li>
-                            <a href="/categories/X86%E6%B1%87%E7%BC%96%EF%BC%9A%E5%AE%9E%E6%A8%A1%E5%BC%8F%E5%88%B0%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F/">X86汇编：实模式到保护模式</a>&nbsp;
-                        </li>
-                    
-                    
-                
-            </ul>
-        </span>
-        
-        
-            <span class="home-article-tag">
-                <i class="fa-solid fa-tags"></i>&nbsp;
-                <ul>
-                    
-                        <li>
-                            
-                            <a href="/tags/X86%E5%AD%98%E5%82%A8%E5%99%A8%E5%8F%8A%E5%85%B6%E4%BF%9D%E6%8A%A4/">X86存储器及其保护</a>&nbsp;
-                        </li>
-                    
-                </ul>
-            </span>
-        
-    </div>
-
-    <a href="/2022/12/11/24-%E5%AD%98%E5%82%A8%E5%99%A8%E7%9A%84%E4%BF%9D%E6%8A%A4/">阅读全文<span class="seo-reader-text">存储器的保护</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
-</div>
-
-                </div>
-            </li>
-        
     </ul>
 
     <div class="home-paginator px-7 py-5">
@@ -1370,7 +1380,7 @@ PS：这个题目比较简单，尝试采用多种不同的方式去获取flag
                 
                 <p class="post-count space-x-0.5">
                     <span>
-                        共 90 篇文章
+                        共 91 篇文章
                     </span>
                     
                 </p>

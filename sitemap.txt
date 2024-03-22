@@ -1,6 +1,7 @@
+https://xiaoeeyu.github.io/2024/03/22/Hook%E6%B1%87%E6%80%BB%EF%BC%88%E4%B8%80%EF%BC%89/
+https://xiaoeeyu.github.io/2024/03/05/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-%E9%80%86%E5%90%91%E5%AE%9E%E8%B7%B5/
 https://xiaoeeyu.github.io/2024/03/10/%E5%AF%86%E7%A0%81%E5%AD%A6%E4%B8%AD%E7%9A%84HASH%E7%AE%97%E6%B3%95/
 https://xiaoeeyu.github.io/2024/03/05/%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%AF%86%E7%A0%81-RSA/
-https://xiaoeeyu.github.io/2024/03/05/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-%E9%80%86%E5%90%91%E5%AE%9E%E8%B7%B5/
 https://xiaoeeyu.github.io/2024/03/02/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81%E7%9A%84%E5%A1%AB%E5%85%85%E5%8F%8A%E5%B7%A5%E4%BD%9C%E6%A8%A1%E5%BC%8F/
 https://xiaoeeyu.github.io/2024/02/29/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-AES/
 https://xiaoeeyu.github.io/2024/02/23/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-DES/
@@ -174,6 +175,8 @@ https://xiaoeeyu.github.io/tags/DES/
 https://xiaoeeyu.github.io/tags/AES/
 https://xiaoeeyu.github.io/tags/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81/
 https://xiaoeeyu.github.io/tags/HASH/
+https://xiaoeeyu.github.io/tags/Java%E5%B1%82hook/
+https://xiaoeeyu.github.io/tags/Native%E5%B1%82%E9%9D%99%E6%80%81%E6%B3%A8%E5%86%8C%E5%87%BD%E6%95%B0hook/
 https://xiaoeeyu.github.io/categories/X86%E6%B1%87%E7%BC%96%EF%BC%9A%E5%AE%9E%E6%A8%A1%E5%BC%8F%E5%88%B0%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F/
 https://xiaoeeyu.github.io/categories/Win%E9%80%86%E5%90%91/
 https://xiaoeeyu.github.io/categories/ARM%E6%B1%87%E7%BC%96/
@@ -187,3 +190,4 @@ https://xiaoeeyu.github.io/categories/%E7%A4%BE%E7%A7%91/
 https://xiaoeeyu.github.io/categories/%E5%8A%A0%E5%AF%86%E8%A7%A3%E5%AF%86/
 https://xiaoeeyu.github.io/categories/%E5%8A%A0%E5%AF%86%E8%A7%A3%E5%AF%86/Android%E9%80%86%E5%90%91/
 https://xiaoeeyu.github.io/categories/Android%E9%80%86%E5%90%91/%E5%8A%A0%E5%AF%86%E8%A7%A3%E5%AF%86/
+https://xiaoeeyu.github.io/categories/Frida-Hook/
