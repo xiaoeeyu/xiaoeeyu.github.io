@@ -8973,13 +8973,6 @@ function test(){
 <h6 id="附件："><a href="#附件：" class="headerlink" title="附件："></a>附件：</h6><p><a class="link" href="https://github.com/xiaoeeyu/demoso1">demo源码 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
 <p><a class="link" href="https://github.com/xiaoeeyu/FridaHook-/blob/main/fridaHook_01.js">Frida Hook脚本 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
 ]]></content>
-      <categories>
-        <category>Frida Hook</category>
-      </categories>
-      <tags>
-        <tag>Java层hook</tag>
-        <tag>Native层静态注册函数hook</tag>
-      </tags>
   </entry>
   <entry>
     <title>JAVA反射</title>
@@ -15979,6 +15972,436 @@ com.android.settings on (google: 10) [net] #
       </categories>
       <tags>
         <tag>RSA</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>JNI框架层Hook</title>
+    <url>/2024/03/24/JNI%E6%A1%86%E6%9E%B6%E5%B1%82Hook/</url>
+    <content><![CDATA[<h3 id="系统框架native-hook"><a href="#系统框架native-hook" class="headerlink" title="系统框架native hook"></a>系统框架native hook</h3><ul>
+<li>JNI函数符号hook</li>
+<li>JNI函数参数、返回值打印和替换</li>
+<li>动态注册JNI_OnLoad</li>
+<li>hook RegisterNatives</li>
+<li>jnitrace</li>
+</ul>
+<p>本章对系统框架层的函数进行了hook、以及hook Registernatives获取其中的信息</p>
+<span id="more"></span>
+
+<p>Frida相对于Xposed的优势在于可以对Native层进行hook、对内存进行搜索</p>
+<p>除了对用户层native代码进行hook之外也可以对系统框架层进行hook，而对更深层进行hook有时候可以更容易得到需要的信息。</p>
+<p>jnitrace脚本是hook了所有的JNI函数，app经过了JNI的任何函数都可以打印出操作流程。</p>
+<p>这里还是以之前写的demo中的JNI函数为例</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/03/24/JNI%E6%A1%86%E6%9E%B6%E5%B1%82Hook/image-20240323111033560.png" class="" title="image-20240323111033560">
+
+<ul>
+<li>例如这里hook <em>env-&gt;GetStringUTFChars</em></li>
+<li>要hook这个函数还是首先要找到它的地址，查找函数的地址可以用上一章的方法从导出表或者导出符号中找到函数地址，但是首先要知道这个函数在哪个so中，如果对源码不熟悉不确定在哪个so中的话可以上网搜索一下这个函数所在的so</li>
+</ul>
+<h4 id="hook-env-gt-GetStringUTFChars"><a href="#hook-env-gt-GetStringUTFChars" class="headerlink" title="hook env->GetStringUTFChars"></a>hook env-&gt;GetStringUTFChars</h4><h5 id="获取函数地址"><a href="#获取函数地址" class="headerlink" title="获取函数地址"></a>获取函数地址</h5><pre><code class="js">function hook_JNI() {
+    Java.perform(function() {
+        var GetStringUTFChars_addr = null;
+        var symbols = Module.enumerateSymbols("libart.so");
+
+        symbols.forEach(function(symbol) {
+            // 排除包含 "CheckJNI" 的符号，并且包含 "JNI" 的符号
+            if (symbol.name.includes("JNI") &amp;&amp; !symbol.name.includes("CheckJNI")) {
+                // 查找包含 "GetStringUTFChars" 的符号
+                if (symbol.name.includes("GetStringUTFChars")) {
+                    console.log("GetStringUTFChars: " + symbol.name);
+                    GetStringUTFChars_addr = symbol.address;
+                }
+            }
+        });
+    });
+}
+</code></pre>
+<ul>
+<li><p>因为这个so库中有两个<em>GetStringUTFChars</em>，需要把<em>CheckJNI</em>给筛选掉。最后得到的结果是：**_ZN3art3JNI17GetStringUTFCharsEP7_JNIEnvP8_jstringPh**</p>
+</li>
+<li><p>对这个结果进行<a class="link" href="http://demangler.com/">demangler <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>可以看到获取到完整的函数名：<em><em>art::JNI::GetStringUTFChars(_JNIEnv</em>, _jstring</em>, unsigned char*)**</p>
+</li>
+<li><p>使用attach对它进行hook就可以获取到所有调用这个函数的参数和返回值了</p>
+</li>
+</ul>
+<pre><code class="js">function hook_JNI() {
+    Java.perform(function () {
+        var GetStringUTFChars_addr = null;
+        var symbols = Module.enumerateSymbols("libart.so");
+
+        symbols.forEach(function (symbol) {
+            // 排除包含 "CheckJNI" 的符号，并且包含 "JNI" 的符号
+            if (symbol.name.includes("JNI") &amp;&amp; !symbol.name.includes("CheckJNI")) {
+                // 查找包含 "GetStringUTFChars" 的符号
+                if (symbol.name.includes("GetStringUTFChars")) {
+                    console.log("GetStringUTFChars: " + symbol.name);
+                    GetStringUTFChars_addr = symbol.address;
+                }
+            }
+        });
+        Interceptor.attach(GetStringUTFChars_addr, {
+            onEnter: function (args) {
+                console.log("art::JNI::GetStringUTFChars(_JNIEnv*, _jstring*, unsigned char*)=&gt; " + args[0], Java.vm.getEnv().getStringUtfChars(args[1], null).readCString(), args[2]);
+                // console.log('CCCryptorCreate called from:\n' +
+                //     Thread.backtrace(this.context, Backtracer.ACCURATE)
+                //         .map(DebugSymbol.fromAddress).join('\n') + '\n');
+            },
+            onLeave: function (retval) {
+                console.log("GetStringUTFChars retval: " + retval.readCString());
+            }
+        })
+    });
+}
+</code></pre>
+<h5 id="运行结果"><a href="#运行结果" class="headerlink" title="运行结果"></a>运行结果</h5><img lazyload="" src="/images/loading.svg" data-src="/2024/03/24/JNI%E6%A1%86%E6%9E%B6%E5%B1%82Hook/image-20240323200640655.png" class="" title="image-20240323200640655">
+
+<ul>
+<li>参数和返回值总共变了三次，说明这个函数也被调用了三次</li>
+<li>尝试了打印调用栈，不过调用栈打印的结果不太准确</li>
+</ul>
+<h4 id="hook-env-gt-NewStringUTF"><a href="#hook-env-gt-NewStringUTF" class="headerlink" title="hook env->NewStringUTF"></a>hook env-&gt;NewStringUTF</h4><p>替换env-&gt;NewStringUTF()的参数和返回值，流程跟刚才差不多区别在于这里是一个带参数的函数，尝试替换它的参数看返回值是否被改变</p>
+<pre><code class="js">function replace_JNI() {
+    Java.perform(function () {
+        var NewStringUTF_addr = null;
+        var symbols = Module.enumerateSymbols("libart.so");
+
+        symbols.forEach(function (symbol) {
+            // 排除包含 "CheckJNI" 的符号，并且包含 "JNI" 的符号
+            if (symbol.name.includes("JNI") &amp;&amp; !symbol.name.includes("CheckJNI")) {
+                // 查找包含 "NewStringUTF" 的符号
+                if (symbol.name.includes("NewStringUTF")) {
+                    console.log("NewStringUTF name: " + symbol.name);
+                    NewStringUTF_addr = symbol.address;
+                }
+            }
+        });
+
+        // 定义原始 NewStringUTF 函数
+        var original_NewStringUTF = new NativeFunction(NewStringUTF_addr, "pointer", ["pointer", "pointer"]);
+
+        // 替换原始 NewStringUTF 函数
+        Interceptor.replace(NewStringUTF_addr, new NativeCallback(function (env, str) {
+            console.log("NewStringUTF args: ", env, str.readCString());
+            
+            // 调用原始 NewStringUTF 函数
+            var original_result = original_NewStringUTF(env, Memory.allocUtf8String("hooked_NewStringUTF"));
+            console.log("NewStringUTF result: ", original_result);
+
+            // 创建新的字符串并返回
+            var newStr = Memory.allocUtf8String("hooked_NewStringUTF");
+            var newRet = original_NewStringUTF(env, newStr);
+            return newRet;
+        }, "pointer", ["pointer", "pointer"]));
+    });
+}
+</code></pre>
+<h5 id="执行结果"><a href="#执行结果" class="headerlink" title="执行结果"></a>执行结果</h5><img lazyload="" src="/images/loading.svg" data-src="/2024/03/24/JNI%E6%A1%86%E6%9E%B6%E5%B1%82Hook/image-20240323205323112.png" class="" title="image-20240323205323112">
+
+<ul>
+<li>hook脚本执行后，NewStringUTF()的值就被替换为了脚本中传入的值</li>
+</ul>
+<h4 id="hook动态绑定的RegisterNatives"><a href="#hook动态绑定的RegisterNatives" class="headerlink" title="hook动态绑定的RegisterNatives"></a>hook动态绑定的RegisterNatives</h4><img lazyload="" src="/images/loading.svg" data-src="/2024/03/24/JNI%E6%A1%86%E6%9E%B6%E5%B1%82Hook/image-20240323210435046.png" class="" title="image-20240323210435046">
+
+<pre><code class="js">function hook_RegisterNatives() {
+    Java.perform(function () {
+        var RegisterNatives_addr = null;  // 初始化 RegisterNatives 函数的地址变量
+        var symbols = Module.enumerateSymbols("libart.so");  // 枚举 libart.so 中的所有符号
+
+        symbols.forEach(function (symbol) {  // 遍历所有的符号
+            // 排除包含 "CheckJNI" 的符号，并且包含 "JNI" 的符号
+            if (symbol.name.includes("JNI") &amp;&amp; !symbol.name.includes("CheckJNI")) {
+                // 查找包含 "RegisterNatives" 的符号
+                if (symbol.name.includes("RegisterNatives")) {
+                    console.log("RegisterNatives name: " + symbol.name);  // 打印找到的 RegisterNatives 函数名
+                    RegisterNatives_addr = symbol.address;  // 将找到的 RegisterNatives 函数地址赋给 RegisterNatives_addr 变量
+                }
+            }
+        });
+
+        if (RegisterNatives_addr != null) {  // 如果 RegisterNatives 函数地址不为 null
+            // 在 RegisterNatives 函数上创建一个 Interceptor
+            Interceptor.attach(RegisterNatives_addr, {
+                onEnter: function (args) {  // 进入函数时的回调
+                    console.log("RegisterNative method counts =&gt; ", args[3]);  // 打印注册的方法数量
+                    var env = args[0];  // 获取 JNIEnv 指针
+                    var clazz = args[1];  // 获取 jclass 对象
+                    var class_name = Java.vm.getEnv().getClassName(clazz);  // 获取类名
+                    var methods_ptr = ptr(args[2]);  // 获取方法数组指针
+                    var method_count = args[3].toInt32();  // 将方法数量转换为整数
+
+                    // 遍历方法数组
+                    for (var i = 0; i &lt; method_count; i++) {
+                        // 获取方法名、方法签名和函数指针
+                        var name_ptr = methods_ptr.add(i * Process.pointerSize * 3).readPointer();
+                        var sig_ptr = methods_ptr.add(i * Process.pointerSize * 3 + Process.pointerSize).readPointer();
+                        var fnPtr_ptr = methods_ptr.add(i * Process.pointerSize * 3 + Process.pointerSize * 2).readPointer();
+
+                        // 查找函数指针所在的模块
+                        var find_module = Process.findModuleByAddress(fnPtr_ptr);
+
+                        // 打印注册的方法信息
+                        console.log("RegisterNative class_name =&gt; ", class_name);
+                        console.log("RegisterNative name =&gt; ", Memory.readCString(name_ptr));
+                        console.log("RegisterNative sig =&gt; ", Memory.readCString(sig_ptr));
+                        console.log("RegisterNative fnPtr_ptr =&gt; ", JSON.stringify(DebugSymbol.fromAddress(fnPtr_ptr)));
+                        console.log("RegisterNative find_module =&gt; ", JSON.stringify(find_module));
+                        console.log("callee =&gt; ", DebugSymbol.fromAddress(this.returnAddress));
+                        console.log("offset =&gt; ", ptr(fnPtr_ptr).sub(find_module.base));
+                    }
+                },
+                onLeave: function () { }  // 离开函数时的回调
+            });
+        } else {
+            console.log("RegisterNatives_addr is null");  // 如果 RegisterNatives 函数地址为 null，则打印提示信息
+        }
+    });
+}
+</code></pre>
+<ul>
+<li>这段稍微长一点，分为两个部分，第一部分还是获取*RegisterNatives()*的地址，第二部分对其中的参数进行解析</li>
+</ul>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/03/24/JNI%E6%A1%86%E6%9E%B6%E5%B1%82Hook/image-20240324103737110.png" class="" title="image-20240324103737110">
+
+<ul>
+<li>可以解析出来的内容包括：类名、注册前的函数名、sig、注册函数在内存中的信息、所在模块的信息、 RegisterNative()的返回地址和所在库名以及在库中的偏移、最后还获取了一下注册函数所在的偏移（其实已经知道了函数地址和库的基址已经可以直接算出来了）</li>
+</ul>
+<h6 id="附件"><a href="#附件" class="headerlink" title="附件"></a>附件</h6><p>使用的被hook demo还是上一章中使用的<a class="link" href="https://github.com/xiaoeeyu/demoso1">demo <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<p>本章完整的<a class="link" href="https://github.com/xiaoeeyu/JNI-hook-/blob/main/JNI_hook.js">hook脚本 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+]]></content>
+      <categories>
+        <category>Android逆向</category>
+      </categories>
+      <tags>
+        <tag>Frida Hook</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Frida基础hook汇总</title>
+    <url>/2024/03/24/Frida%E5%9F%BA%E7%A1%80hook%E6%B1%87%E6%80%BB/</url>
+    <content><![CDATA[<p>本章主要总结对Java层代码以及native代码的hook</p>
+<ul>
+<li>Java以及Native函数的hook以及主动调用</li>
+<li>Native静态注册函数参数、返回值打印和替换</li>
+</ul>
+<span id="more"></span>
+
+<p>这里对自己写的demo为例进行hook（代码中包含了Java、JNI、C各种实现），源码链接放文末附件。</p>
+<p>安装Frida的源码包，可以方便写Frida的时候随时查看函数实现</p>
+<p><code>npm install --save @types/frida-gum</code></p>
+<h3 id="基础hook"><a href="#基础hook" class="headerlink" title="基础hook"></a>基础hook</h3><p>包括Java层和native层的基础hook</p>
+<h4 id="Java层的静态函数"><a href="#Java层的静态函数" class="headerlink" title="Java层的静态函数"></a>Java层的静态函数</h4><img lazyload="" src="/images/loading.svg" data-src="Frida基础hook汇总/image-20240319205221270.png" alt="image-20240319205221270" style="zoom: 33%;">
+
+<p>hook和主动调用的代码</p>
+<pre><code class="js">Java.use("com.xiaoeryu.demoso1.MainActivity").stringFromJNI.implementation = function(){
+            var result = this.stringFromJNI();
+            console.log("stringFromJNI result is =&gt; ", result);
+            return result;
+        }
+        console.log("invoke stringFromJNI: " + Java.use('com.xiaoeryu.demoso1.MainActivity').stringFromJNI);
+</code></pre>
+<h4 id="Java层非静态函数"><a href="#Java层非静态函数" class="headerlink" title="Java层非静态函数"></a>Java层非静态函数</h4><img lazyload="" src="/images/loading.svg" data-src="Frida基础hook汇总/image-20240319213153309.png" alt="image-20240319213153309" style="zoom: 50%;">
+
+<p>hook和主动调用代码：这个函数没写返回值，我们就只打印一个log</p>
+<pre><code class="js">        Java.use('com.xiaoeryu.demoso1.MainActivity').init.implementation = function(){
+            console.log("hook init successfully!");
+            return this.init;
+        }
+        Java.choose('com.xiaoeryu.demoso1.MainActivity',{
+            onMatch:function(instance){
+                console.log('Found instance');
+                instance.init();
+            },onComplete:function(){console.log('Search complete!')}
+        })
+</code></pre>
+<h4 id="静态注册函数的native层hook"><a href="#静态注册函数的native层hook" class="headerlink" title="静态注册函数的native层hook"></a>静态注册函数的native层hook</h4><img lazyload="" src="/images/loading.svg" data-src="Frida基础hook汇总/image-20240319221014380.png" alt="image-20240319221014380" style="zoom: 50%;">
+
+<ul>
+<li><p>对于第三方App通过查找它的导出函数可以获取获取完整函数名<em>（如果不是调用RegisterNatives进行的动态注册的话）</em>。用ida或者objection中的<code>memory list exports 库名.so</code>都可以</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/03/24/Frida%E5%9F%BA%E7%A1%80hook%E6%B1%87%E6%80%BB/image-20240319221232058.png" class="" title="image-20240319221232058">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2024/03/24/Frida%E5%9F%BA%E7%A1%80hook%E6%B1%87%E6%80%BB/image-20240319221328508.png" class="" title="image-20240319221328508"></li>
+</ul>
+<p>native层的hook不需要Java.perform因为它已经不在虚拟机中了。</p>
+<blockquote>
+<ol>
+<li><p>找到native的so名称和函数的完整名</p>
+<p>通过so库的名称和函数名找到函数地址</p>
+</li>
+<li><p>找到函数地址之后就可以通过<code>Interceptor.attach()</code>去hook这个函数获取它的参数或者返回值了</p>
+<p>需要注意的一点是，我们使用frida脚本去打印native层的参数的时候，直接打印的话只能打印它的地址，需要根据参数类型使用Frida提供的方法去解析<em>（下面的代码以jstring为例）</em></p>
+</li>
+</ol>
+</blockquote>
+<pre><code class="js">function hook_nativelib(){
+    var nativelib_addr = Module.findBaseAddress('libdemoso1.so');
+    console.log("nativelib_addr is =&gt; ", nativelib_addr);
+
+    var myfirstjniJNI_addr = Module.findExportByName('libdemoso1.so','Java_com_xiaoeryu_demoso1_MainActivity_myfirstjniJNI');
+    console.log("myfirstjniJNI_addr is =&gt; ", myfirstjniJNI_addr);
+
+    Interceptor.attach(myfirstjniJNI_addr, {
+        onEnter: function(args){
+            console.log("Interceptor.attach myfristjniJNI args: ", args[0], args[1], args[2]);
+            console.log("args[2] jstring is ", Java.vm.getEnv().getStringUtfChars(args[2],null).readCString());
+        },onLeave:function(retval){
+            console.log("Interceptor.attach myfirstjniJNI retval: ", retval);
+            console.log("retval jstring is ", Java.vm.getEnv().getStringUtfChars(retval, null).readCString());
+        }
+    })
+}
+</code></pre>
+<hr>
+<h3 id="一些hook技巧"><a href="#一些hook技巧" class="headerlink" title="一些hook技巧"></a>一些hook技巧</h3><p>静态注册函数参数、返回值打印和替换</p>
+<p>调用栈</p>
+<p>主动调用、replace</p>
+<p>符号hook == 偏移hook</p>
+<p>枚举并保存结果</p>
+<h4 id="替换native层的参数和返回值"><a href="#替换native层的参数和返回值" class="headerlink" title="替换native层的参数和返回值"></a>替换native层的参数和返回值</h4><p>这里还是以前面hook的目标app中的目标函数为例</p>
+<img lazyload="" src="/images/loading.svg" data-src="Frida基础hook汇总/image-20240320180558522.png" alt="image-20240320180558522" style="zoom:50%;">
+
+<ul>
+<li>这个native函数的类型是jstring，它的返回值类型是使用Java提供的方法创建一个字符串来返回，所以我们要改变返回值同样也需要使用相同的类型来替换</li>
+</ul>
+<p>这里查看<a class="link" href="https://github.com/frida/frida-java-bridge/blob/main/lib/env.js">Frida的源码 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>提供的方法</p>
+<img lazyload="" src="/images/loading.svg" data-src="Frida基础hook汇总/image-20240320181128555.png" alt="image-20240320181128555" style="zoom:50%;">
+
+<p>测试代码</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/03/24/Frida%E5%9F%BA%E7%A1%80hook%E6%B1%87%E6%80%BB/image-20240320183427207.png" class="" title="image-20240320183427207">
+
+<ul>
+<li>这里替换掉了它的参数和返回值，只需要调用Frida提供的方法创建一个新的字符串，然后直接替换就可以了</li>
+</ul>
+<h4 id="C函数主动调用"><a href="#C函数主动调用" class="headerlink" title="C函数主动调用"></a>C函数主动调用</h4><p>先拿一个简单的C函数来进行测试，它没有复杂的参数</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/03/24/Frida%E5%9F%BA%E7%A1%80hook%E6%B1%87%E6%80%BB/image-20240320210250576.png" class="" title="image-20240320210250576">
+
+<ul>
+<li>还是跟之前一样，不论是想对native层的函数进行hook还是主动调用都需要先找到它的地址，然后才能进行hook或者主动调用</li>
+</ul>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/03/24/Frida%E5%9F%BA%E7%A1%80hook%E6%B1%87%E6%80%BB/image-20240320202658138.png" class="" title="image-20240320202658138">
+
+<ul>
+<li>通过函数名来找到它的地址，函数名要使用它在内存中的名字，这里的名字跟原本函数名字不同是因为它做了demangler处理，可以在<a class="link" href="http://demangler.com/">解码网站 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>对它进行解码处理</li>
+</ul>
+<pre><code class="js">function hookAndInvoke_add(){
+    // 获取函数地址
+    var r0add_addr = Module.findExportByName('libdemoso1.so', '_Z5r0addii');
+    console.log("r0add_addr is =&gt; ", r0add_addr);
+    // hook函数
+    Interceptor.attach(r0add_addr, {
+        onEnter: function(args){
+            console.log("x =&gt; ", args[0], "y =&gt; ", args[1]);
+        },onLeave:function(retval){
+            console.log("retval =&gt; ", retval);
+        }
+    })
+    // 进行主动调用
+    var r0add = new NativeFunction(r0add_addr, 'int', ['int', 'int']);
+    var r0add_result = r0add(1, 2);
+    // 打印返回值
+    console.log("r0add_result =&gt; ", r0add_result);
+}
+</code></pre>
+<p>执行结果：</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/03/24/Frida%E5%9F%BA%E7%A1%80hook%E6%B1%87%E6%80%BB/image-20240320210800273.png" class="" title="image-20240320210800273">
+
+<h4 id="JNI函数主动调用"><a href="#JNI函数主动调用" class="headerlink" title="JNI函数主动调用"></a>JNI函数主动调用</h4><p>还以我们之前hook的<em>myfirstjniJNI</em>的native层实现为例，对它的调用需要我们先构造它的参数第一个参数env第二个参数jclass接下来才是传入的参数</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/03/24/Frida%E5%9F%BA%E7%A1%80hook%E6%B1%87%E6%80%BB/image-20240320215347716.png" class="" title="image-20240320215347716">
+
+<ul>
+<li><p>如上图按这个函数的参数和返回值，先定义一个NativeFunction，然后进行主动调用。其实和刚才调用C函数差不多</p>
+</li>
+<li><p>但是如果我们在app源码中没有执行过这个函数的话，就需要再使用*Java.use()*在java层调用一下这个函数</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/03/24/Frida%E5%9F%BA%E7%A1%80hook%E6%B1%87%E6%80%BB/image-20240320220303783.png" class="" title="image-20240320220303783"></li>
+</ul>
+<h4 id="调用栈"><a href="#调用栈" class="headerlink" title="调用栈"></a>调用栈</h4><p>获取调用栈需要用到Frida提供的*backtrace()*方法</p>
+<img lazyload="" src="/images/loading.svg" data-src="Frida基础hook汇总/image-20240321113245401.png" alt="image-20240321113245401" style="zoom:50%;">
+
+<p>使用提供的方法可以在onEnter的时候打印出来</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/03/24/Frida%E5%9F%BA%E7%A1%80hook%E6%B1%87%E6%80%BB/image-20240321174439161.png" class="" title="image-20240321174439161">
+
+<p>打印调用栈其实提供了两种方法</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/03/24/Frida%E5%9F%BA%E7%A1%80hook%E6%B1%87%E6%80%BB/image-20240321175641965.png" class="" title="image-20240321175641965">
+
+<ul>
+<li>ACCURATE这种方法，如果在有调试信息的情况下可以获取非常精准的结果</li>
+<li>反之或许FUZZY这个猜测的方式效果更好</li>
+<li>实际使用可以两者结合起来使用</li>
+</ul>
+<h4 id="replace"><a href="#replace" class="headerlink" title="replace"></a>replace</h4><p>流程跟之前也是一样，找到函数地址后使用*Interceptor.replace()*直接替换就好了</p>
+<pre><code class="js">function hook_replace(){
+    var myfirstjniJNI_addr = Module.findExportByName('libdemoso1.so', 'Java_com_xiaoeryu_demoso1_MainActivity_myfirstjniJNI');
+    console.log("myfirstjniJNI_addr is =&gt; ", myfirstjniJNI_addr);
+
+    // var myfirstjniJNI_invoke = new NativeFunction(myfirstjniJNI_addr, 'pointer', ['pointer', 'pointer', 'pointer']);
+
+    Interceptor.replace(myfirstjniJNI_addr, new NativeCallback(function(args0, args1, args2){
+        console.log("Interceptor.replace myfirstjniJNI args: ", args0, args1, args2);
+        return Java.vm.getEnv().newStringUtf("hookedReplaceXiaoyu");
+    }, 'pointer', ['pointer', 'pointer', 'pointer']
+    ))
+}
+</code></pre>
+<p>替换成功</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/03/24/Frida%E5%9F%BA%E7%A1%80hook%E6%B1%87%E6%80%BB/image-20240321195508809.png" class="" title="image-20240321195508809">
+
+<h4 id="枚举所有函数"><a href="#枚举所有函数" class="headerlink" title="枚举所有函数"></a>枚举所有函数</h4><p>使用Frida提供的API，枚举所有非动态注册的函数，然后再进行过滤找到想要寻找的就ok了</p>
+<pre><code class="js">function EnumerateAllExports(){
+    var modules = Process.enumerateModules();
+    // console.log("modules is =&gt; ", JSON.stringify(modules));
+    for(var i = 0; i &lt; modules.length; i++){
+        var module = modules[i];
+        var name = module.name;
+        var exports = module.enumerateExports();
+        console.log("name is =&gt; ", JSON.stringify(name), "export is =&gt; ", JSON.stringify(exports));
+    }
+}
+</code></pre>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/03/24/Frida%E5%9F%BA%E7%A1%80hook%E6%B1%87%E6%80%BB/image-20240321203617680.png" class="" title="image-20240321203617680">
+
+<h3 id="hook内容的补充"><a href="#hook内容的补充" class="headerlink" title="hook内容的补充"></a>hook内容的补充</h3><p>前面进行的所有hook或者主动调用、替换，都是找到目标函数的地址然后对这个函数进行操作。所以本质上都是对这个函数的地址进行hook（虽然使用ida也能找到目标函数的地址和基址，不过如果是动态加载的话它的地址是会变的。所以还是使用调用Frida提供的API获取地址比较方便）。</p>
+<h4 id="Frida提供的其它API"><a href="#Frida提供的其它API" class="headerlink" title="Frida提供的其它API"></a>Frida提供的其它API</h4><p>详细信息可以看Frida提供的<a class="link" href="https://frida.re/docs/javascript-api/#nativepointer">文档 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>，提供了很多的方法来获取更多的信息</p>
+<h5 id="Process"><a href="#Process" class="headerlink" title="Process"></a>Process</h5><blockquote>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/03/24/Frida%E5%9F%BA%E7%A1%80hook%E6%B1%87%E6%80%BB/image-20240321211322713.png" class="" title="image-20240321211322713">
+
+<ul>
+<li>例如这里面的一些API，我们使用Frida附加到app之后就可以直接使用</li>
+</ul>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/03/24/Frida%E5%9F%BA%E7%A1%80hook%E6%B1%87%E6%80%BB/image-20240321212229466.png" class="" title="image-20240321212229466">
+</blockquote>
+<h5 id="Module"><a href="#Module" class="headerlink" title="Module"></a>Module</h5><blockquote>
+<p>枚举模块的信息，具体都能枚举什么东 西可以在Frida的<a class="link" href="https://frida.re/docs/javascript-api/#nativepointer">文档 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>中查看</p>
+<pre><code class="js">// 第一种方式
+function module(){
+ var nativelib_addr = Process.findModuleByAddress(Module.findBaseAddress("libutils.so"));
+ // var nativelib_addr = Process.findModuleByAddress(Module.findBaseAddress("libdemoso1.so"));
+ // console.log("nativelib_addr =&gt; ", JSON.stringify(nativelib_addr));
+ for(var i = 0; i &lt; nativelib_addr.enumerateImports().length; i++){
+     console.log("enumerateSymbols =&gt; ", JSON.stringify(nativelib_addr.enumerateImports()[i]));
+ }
+}
+// 第二种方式
+function test(){
+ Java.perform(function(){
+     var imports = Module.enumerateImports("libutils.so");
+     for(var i = 0; i &lt; imports.length; i++){
+         console.log("imports =&gt; ", JSON.stringify(imports[i]));
+     }
+ })
+}
+</code></pre>
+<ul>
+<li>第一种获取到目标so的地址，通过枚举找出模块的信息</li>
+<li>第二种更直接一点，直接用模块名枚举就行了</li>
+</ul>
+</blockquote>
+<p>等等更多的不再列举，都可以通过Frida的<a class="link" href="https://frida.re/docs/javascript-api/#nativepointer">文档 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>查看使用方法</p>
+<h6 id="附件："><a href="#附件：" class="headerlink" title="附件："></a>附件：</h6><p><a class="link" href="https://github.com/xiaoeeyu/demoso1">demo源码 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<p><a class="link" href="https://github.com/xiaoeeyu/FridaHook-/blob/main/fridaHook_01.js">Frida Hook脚本 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+]]></content>
+      <categories>
+        <category>Android逆向</category>
+      </categories>
+      <tags>
+        <tag>Frida Hook</tag>
       </tags>
   </entry>
 </search>

@@ -13,18 +13,29 @@
     
     <!--- Seo Part-->
     
-    <link rel="canonical" href="https://xiaoeeyu.github.io/categories/frida-hook/"/>
+    <link rel="canonical" href="https://xiaoeeyu.github.io/2024/03/24/jni框架层hook/"/>
     <meta name="robots" content="index,follow">
     <meta name="googlebot" content="index,follow">
     <meta name="revisit-after" content="1 days">
     
-        <meta property="og:type" content="website">
-<meta property="og:title" content="xiaoeryu">
-<meta property="og:url" content="https://xiaoeeyu.github.io/categories/Frida-Hook/index.html">
+        <meta name="description" content="系统框架native hook JNI函数符号hook JNI函数参数、返回值打印和替换 动态注册JNI_OnLoad hook RegisterNatives jnitrace  本章对系统框架层的函数进行了hook、以及hook Registernatives获取其中的信息">
+<meta property="og:type" content="article">
+<meta property="og:title" content="JNI框架层Hook">
+<meta property="og:url" content="https://xiaoeeyu.github.io/2024/03/24/JNI%E6%A1%86%E6%9E%B6%E5%B1%82Hook/index.html">
 <meta property="og:site_name" content="xiaoeryu">
+<meta property="og:description" content="系统框架native hook JNI函数符号hook JNI函数参数、返回值打印和替换 动态注册JNI_OnLoad hook RegisterNatives jnitrace  本章对系统框架层的函数进行了hook、以及hook Registernatives获取其中的信息">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/03/24/JNI%E6%A1%86%E6%9E%B6%E5%B1%82Hook/image-20240323111033560.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/03/24/JNI%E6%A1%86%E6%9E%B6%E5%B1%82Hook/image-20240323200640655.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/03/24/JNI%E6%A1%86%E6%9E%B6%E5%B1%82Hook/image-20240323205323112.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/03/24/JNI%E6%A1%86%E6%9E%B6%E5%B1%82Hook/image-20240323210435046.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/03/24/JNI%E6%A1%86%E6%9E%B6%E5%B1%82Hook/image-20240324103737110.png">
+<meta property="article:published_time" content="2024-03-24T02:56:34.000Z">
+<meta property="article:modified_time" content="2024-03-24T03:09:44.765Z">
 <meta property="article:author" content="xiaoeryu">
+<meta property="article:tag" content="Frida Hook">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://xiaoeeyu.github.io/2024/03/24/JNI%E6%A1%86%E6%9E%B6%E5%B1%82Hook/image-20240323111033560.png">
     
     
     <!--- Icon Part-->
@@ -36,7 +47,7 @@
     
     <title>
         
-            分类: Frida Hook -
+            JNI框架层Hook -
         
         xiaoeryu
     </title>
@@ -398,15 +409,15 @@
 
         <div class="statistics flex justify-around my-2.5">
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">82</div>
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">80</div>
         <div class="label text-third-text-color text-sm">标签</div>
     </a>
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">14</div>
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">13</div>
         <div class="label text-third-text-color text-sm">分类</div>
     </a>
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">91</div>
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">93</div>
         <div class="label text-third-text-color text-sm">文章</div>
     </a>
 </div>
@@ -426,44 +437,428 @@
             <div class="main-content">
 
                 
-                    <div class="category-container">
-    <div class="category-name">
-        <i class="fa-solid fa-folder"></i>&nbsp;Frida Hook
-    </div>
-    <div class="category-post-list">
+                    <div class="post-page-container flex relative justify-between box-border w-full h-full">
+    <div class="article-content-container">
+
+        <div class="article-title relative w-full">
+            
+                <div class="w-full flex items-center pt-6 justify-start">
+                    <h1 class="article-title-regular text-second-text-color text-4xl md:text-6xl font-bold px-2 sm:px-6 md:px-8 py-3">JNI框架层Hook</h1>
+                </div>
+            
+            </div>
+
+        
+            <div class="article-header flex flex-row gap-2 items-center px-2 sm:px-6 md:px-8">
+                <div class="avatar w-[46px] h-[46px] flex-shrink-0 rounded-medium border border-border-color p-[1px]">
+                    <img src="/images/rabete.jpg">
+                </div>
+                <div class="info flex flex-col justify-between">
+                    <div class="author flex items-center">
+                        <span class="name text-default-text-color text-lg font-semibold">xiaoeryu</span>
+                        
+                            <span class="author-label ml-1.5 text-xs px-2 py-0.5 rounded-small text-third-text-color border border-shadow-color-1">Lv5</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2024-03-24 10:56:34</span>
+        <span class="mobile">2024-03-24 10:56:34</span>
+        <span class="hover-info">创建</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2024-03-24 11:09:44</span>
+            <span class="mobile">2024-03-24 11:09:44</span>
+            <span class="hover-info">更新</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/Android%E9%80%86%E5%90%91/">Android逆向</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/Frida-Hook/">Frida Hook</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fa-regular fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
         
 
-<div class="archive-list-container">
-    
-        <section class="archive-item mb-spacing-unit last:mb-0">
-            <div class="archive-item-header flex flex-row items-center mb-2">
-                <span class="archive-year font-semibold text-3xl mr-2">2024</span>
-                <span class="archive-year-post-count text-xs md:text-sm font-bold rounded-small bg-third-background-color py-[2px] px-[10px] border border-border-color">1</span>
+        
+
+
+        <div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
+            <h3 id="系统框架native-hook"><a href="#系统框架native-hook" class="headerlink" title="系统框架native hook"></a>系统框架native hook</h3><ul>
+<li>JNI函数符号hook</li>
+<li>JNI函数参数、返回值打印和替换</li>
+<li>动态注册JNI_OnLoad</li>
+<li>hook RegisterNatives</li>
+<li>jnitrace</li>
+</ul>
+<p>本章对系统框架层的函数进行了hook、以及hook Registernatives获取其中的信息</p>
+<span id="more"></span>
+
+<p>Frida相对于Xposed的优势在于可以对Native层进行hook、对内存进行搜索</p>
+<p>除了对用户层native代码进行hook之外也可以对系统框架层进行hook，而对更深层进行hook有时候可以更容易得到需要的信息。</p>
+<p>jnitrace脚本是hook了所有的JNI函数，app经过了JNI的任何函数都可以打印出操作流程。</p>
+<p>这里还是以之前写的demo中的JNI函数为例</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/03/24/JNI%E6%A1%86%E6%9E%B6%E5%B1%82Hook/image-20240323111033560.png" class="" title="image-20240323111033560">
+
+<ul>
+<li>例如这里hook <em>env-&gt;GetStringUTFChars</em></li>
+<li>要hook这个函数还是首先要找到它的地址，查找函数的地址可以用上一章的方法从导出表或者导出符号中找到函数地址，但是首先要知道这个函数在哪个so中，如果对源码不熟悉不确定在哪个so中的话可以上网搜索一下这个函数所在的so</li>
+</ul>
+<h4 id="hook-env-gt-GetStringUTFChars"><a href="#hook-env-gt-GetStringUTFChars" class="headerlink" title="hook env->GetStringUTFChars"></a>hook env-&gt;GetStringUTFChars</h4><h5 id="获取函数地址"><a href="#获取函数地址" class="headerlink" title="获取函数地址"></a>获取函数地址</h5><pre><code class="js">function hook_JNI() {
+    Java.perform(function() {
+        var GetStringUTFChars_addr = null;
+        var symbols = Module.enumerateSymbols("libart.so");
+
+        symbols.forEach(function(symbol) {
+            // 排除包含 "CheckJNI" 的符号，并且包含 "JNI" 的符号
+            if (symbol.name.includes("JNI") &amp;&amp; !symbol.name.includes("CheckJNI")) {
+                // 查找包含 "GetStringUTFChars" 的符号
+                if (symbol.name.includes("GetStringUTFChars")) {
+                    console.log("GetStringUTFChars: " + symbol.name);
+                    GetStringUTFChars_addr = symbol.address;
+                }
+            }
+        });
+    });
+}
+</code></pre>
+<ul>
+<li><p>因为这个so库中有两个<em>GetStringUTFChars</em>，需要把<em>CheckJNI</em>给筛选掉。最后得到的结果是：**_ZN3art3JNI17GetStringUTFCharsEP7_JNIEnvP8_jstringPh**</p>
+</li>
+<li><p>对这个结果进行<a class="link" target="_blank" rel="noopener" href="http://demangler.com/">demangler <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>可以看到获取到完整的函数名：<em><em>art::JNI::GetStringUTFChars(_JNIEnv</em>, _jstring</em>, unsigned char*)**</p>
+</li>
+<li><p>使用attach对它进行hook就可以获取到所有调用这个函数的参数和返回值了</p>
+</li>
+</ul>
+<pre><code class="js">function hook_JNI() {
+    Java.perform(function () {
+        var GetStringUTFChars_addr = null;
+        var symbols = Module.enumerateSymbols("libart.so");
+
+        symbols.forEach(function (symbol) {
+            // 排除包含 "CheckJNI" 的符号，并且包含 "JNI" 的符号
+            if (symbol.name.includes("JNI") &amp;&amp; !symbol.name.includes("CheckJNI")) {
+                // 查找包含 "GetStringUTFChars" 的符号
+                if (symbol.name.includes("GetStringUTFChars")) {
+                    console.log("GetStringUTFChars: " + symbol.name);
+                    GetStringUTFChars_addr = symbol.address;
+                }
+            }
+        });
+        Interceptor.attach(GetStringUTFChars_addr, {
+            onEnter: function (args) {
+                console.log("art::JNI::GetStringUTFChars(_JNIEnv*, _jstring*, unsigned char*)=&gt; " + args[0], Java.vm.getEnv().getStringUtfChars(args[1], null).readCString(), args[2]);
+                // console.log('CCCryptorCreate called from:\n' +
+                //     Thread.backtrace(this.context, Backtracer.ACCURATE)
+                //         .map(DebugSymbol.fromAddress).join('\n') + '\n');
+            },
+            onLeave: function (retval) {
+                console.log("GetStringUTFChars retval: " + retval.readCString());
+            }
+        })
+    });
+}
+</code></pre>
+<h5 id="运行结果"><a href="#运行结果" class="headerlink" title="运行结果"></a>运行结果</h5><img lazyload="" src="/images/loading.svg" data-src="/2024/03/24/JNI%E6%A1%86%E6%9E%B6%E5%B1%82Hook/image-20240323200640655.png" class="" title="image-20240323200640655">
+
+<ul>
+<li>参数和返回值总共变了三次，说明这个函数也被调用了三次</li>
+<li>尝试了打印调用栈，不过调用栈打印的结果不太准确</li>
+</ul>
+<h4 id="hook-env-gt-NewStringUTF"><a href="#hook-env-gt-NewStringUTF" class="headerlink" title="hook env->NewStringUTF"></a>hook env-&gt;NewStringUTF</h4><p>替换env-&gt;NewStringUTF()的参数和返回值，流程跟刚才差不多区别在于这里是一个带参数的函数，尝试替换它的参数看返回值是否被改变</p>
+<pre><code class="js">function replace_JNI() {
+    Java.perform(function () {
+        var NewStringUTF_addr = null;
+        var symbols = Module.enumerateSymbols("libart.so");
+
+        symbols.forEach(function (symbol) {
+            // 排除包含 "CheckJNI" 的符号，并且包含 "JNI" 的符号
+            if (symbol.name.includes("JNI") &amp;&amp; !symbol.name.includes("CheckJNI")) {
+                // 查找包含 "NewStringUTF" 的符号
+                if (symbol.name.includes("NewStringUTF")) {
+                    console.log("NewStringUTF name: " + symbol.name);
+                    NewStringUTF_addr = symbol.address;
+                }
+            }
+        });
+
+        // 定义原始 NewStringUTF 函数
+        var original_NewStringUTF = new NativeFunction(NewStringUTF_addr, "pointer", ["pointer", "pointer"]);
+
+        // 替换原始 NewStringUTF 函数
+        Interceptor.replace(NewStringUTF_addr, new NativeCallback(function (env, str) {
+            console.log("NewStringUTF args: ", env, str.readCString());
+            
+            // 调用原始 NewStringUTF 函数
+            var original_result = original_NewStringUTF(env, Memory.allocUtf8String("hooked_NewStringUTF"));
+            console.log("NewStringUTF result: ", original_result);
+
+            // 创建新的字符串并返回
+            var newStr = Memory.allocUtf8String("hooked_NewStringUTF");
+            var newRet = original_NewStringUTF(env, newStr);
+            return newRet;
+        }, "pointer", ["pointer", "pointer"]));
+    });
+}
+</code></pre>
+<h5 id="执行结果"><a href="#执行结果" class="headerlink" title="执行结果"></a>执行结果</h5><img lazyload="" src="/images/loading.svg" data-src="/2024/03/24/JNI%E6%A1%86%E6%9E%B6%E5%B1%82Hook/image-20240323205323112.png" class="" title="image-20240323205323112">
+
+<ul>
+<li>hook脚本执行后，NewStringUTF()的值就被替换为了脚本中传入的值</li>
+</ul>
+<h4 id="hook动态绑定的RegisterNatives"><a href="#hook动态绑定的RegisterNatives" class="headerlink" title="hook动态绑定的RegisterNatives"></a>hook动态绑定的RegisterNatives</h4><img lazyload="" src="/images/loading.svg" data-src="/2024/03/24/JNI%E6%A1%86%E6%9E%B6%E5%B1%82Hook/image-20240323210435046.png" class="" title="image-20240323210435046">
+
+<pre><code class="js">function hook_RegisterNatives() {
+    Java.perform(function () {
+        var RegisterNatives_addr = null;  // 初始化 RegisterNatives 函数的地址变量
+        var symbols = Module.enumerateSymbols("libart.so");  // 枚举 libart.so 中的所有符号
+
+        symbols.forEach(function (symbol) {  // 遍历所有的符号
+            // 排除包含 "CheckJNI" 的符号，并且包含 "JNI" 的符号
+            if (symbol.name.includes("JNI") &amp;&amp; !symbol.name.includes("CheckJNI")) {
+                // 查找包含 "RegisterNatives" 的符号
+                if (symbol.name.includes("RegisterNatives")) {
+                    console.log("RegisterNatives name: " + symbol.name);  // 打印找到的 RegisterNatives 函数名
+                    RegisterNatives_addr = symbol.address;  // 将找到的 RegisterNatives 函数地址赋给 RegisterNatives_addr 变量
+                }
+            }
+        });
+
+        if (RegisterNatives_addr != null) {  // 如果 RegisterNatives 函数地址不为 null
+            // 在 RegisterNatives 函数上创建一个 Interceptor
+            Interceptor.attach(RegisterNatives_addr, {
+                onEnter: function (args) {  // 进入函数时的回调
+                    console.log("RegisterNative method counts =&gt; ", args[3]);  // 打印注册的方法数量
+                    var env = args[0];  // 获取 JNIEnv 指针
+                    var clazz = args[1];  // 获取 jclass 对象
+                    var class_name = Java.vm.getEnv().getClassName(clazz);  // 获取类名
+                    var methods_ptr = ptr(args[2]);  // 获取方法数组指针
+                    var method_count = args[3].toInt32();  // 将方法数量转换为整数
+
+                    // 遍历方法数组
+                    for (var i = 0; i &lt; method_count; i++) {
+                        // 获取方法名、方法签名和函数指针
+                        var name_ptr = methods_ptr.add(i * Process.pointerSize * 3).readPointer();
+                        var sig_ptr = methods_ptr.add(i * Process.pointerSize * 3 + Process.pointerSize).readPointer();
+                        var fnPtr_ptr = methods_ptr.add(i * Process.pointerSize * 3 + Process.pointerSize * 2).readPointer();
+
+                        // 查找函数指针所在的模块
+                        var find_module = Process.findModuleByAddress(fnPtr_ptr);
+
+                        // 打印注册的方法信息
+                        console.log("RegisterNative class_name =&gt; ", class_name);
+                        console.log("RegisterNative name =&gt; ", Memory.readCString(name_ptr));
+                        console.log("RegisterNative sig =&gt; ", Memory.readCString(sig_ptr));
+                        console.log("RegisterNative fnPtr_ptr =&gt; ", JSON.stringify(DebugSymbol.fromAddress(fnPtr_ptr)));
+                        console.log("RegisterNative find_module =&gt; ", JSON.stringify(find_module));
+                        console.log("callee =&gt; ", DebugSymbol.fromAddress(this.returnAddress));
+                        console.log("offset =&gt; ", ptr(fnPtr_ptr).sub(find_module.base));
+                    }
+                },
+                onLeave: function () { }  // 离开函数时的回调
+            });
+        } else {
+            console.log("RegisterNatives_addr is null");  // 如果 RegisterNatives 函数地址为 null，则打印提示信息
+        }
+    });
+}
+</code></pre>
+<ul>
+<li>这段稍微长一点，分为两个部分，第一部分还是获取*RegisterNatives()*的地址，第二部分对其中的参数进行解析</li>
+</ul>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/03/24/JNI%E6%A1%86%E6%9E%B6%E5%B1%82Hook/image-20240324103737110.png" class="" title="image-20240324103737110">
+
+<ul>
+<li>可以解析出来的内容包括：类名、注册前的函数名、sig、注册函数在内存中的信息、所在模块的信息、 RegisterNative()的返回地址和所在库名以及在库中的偏移、最后还获取了一下注册函数所在的偏移（其实已经知道了函数地址和库的基址已经可以直接算出来了）</li>
+</ul>
+<h6 id="附件"><a href="#附件" class="headerlink" title="附件"></a>附件</h6><p>使用的被hook demo还是上一章中使用的<a class="link" target="_blank" rel="noopener" href="https://github.com/xiaoeeyu/demoso1">demo <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<p>本章完整的<a class="link" target="_blank" rel="noopener" href="https://github.com/xiaoeeyu/JNI-hook-/blob/main/JNI_hook.js">hook脚本 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+
+        </div>
+
+        
+            <div class="post-copyright-info w-full my-8 px-2 sm:px-6 md:px-8">
+                <div class="article-copyright-info-container">
+    <ul>
+        <li><strong>标题:</strong> JNI框架层Hook</li>
+        <li><strong>作者:</strong> xiaoeryu</li>
+        <li><strong>创建于
+                :</strong> 2024-03-24 10:56:34</li>
+        
+            <li>
+                <strong>更新于
+                    :</strong> 2024-03-24 11:09:44
+            </li>
+        
+        <li>
+            <strong>链接:</strong> https://github.com/xiaoeryu/2024/03/24/JNI框架层Hook/
+        </li>
+        <li>
+            <strong>
+                版权声明:
+            </strong>
+            
+
+            
+                本文章采用 <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0">CC BY-NC-SA 4.0</a> 进行许可。
+            
+        </li>
+    </ul>
+</div>
+
             </div>
-            <ul class="article-list pl-0 md:pl-8 text-lg leading-[1.5]">
-              
+        
+
+        
+            <ul class="post-tags-box text-lg mt-1.5 flex-wrap justify-center flex md:hidden">
                 
-                    
-                    <li class="article-item space-y-2 px-6 pt-10 pb-2 text-xl relative border-l-2 border-border-color" date-is='03-22'>
+                    <li class="tag-item mx-0.5">
+                        <a href="/tags/Frida-Hook/">#Frida Hook</a>&nbsp;
+                    </li>
                 
-                    
-                        <a href="/2024/03/22/Hook%E6%B1%87%E6%80%BB%EF%BC%88%E4%B8%80%EF%BC%89/" class="block overflow-hidden w-fit">
-                            <span class="article-title mb-0.5 text-2xl">Hook汇总（一）</span>
-                        </a>
-                    
-              
             </ul>
-        </section>
+        
+
+        
+
+        
+            <div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
+                
+                
+                    <div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+                        <a class="next"
+                        rel="next"
+                        href="/2024/03/24/Frida%E5%9F%BA%E7%A1%80hook%E6%B1%87%E6%80%BB/"
+                        >
+                            <span class="title flex justify-center items-center">
+                                <span class="post-nav-title-item">Frida基础hook汇总</span>
+                                <span class="post-nav-item">下一篇</span>
+                            </span>
+                            <span class="right arrow-icon flex justify-center items-center">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+
+        
+            <div class="comment-container px-2 sm:px-6 md:px-8 pb-8">
+                <div class="comments-container mt-10 w-full ">
+    <div id="comment-anchor" class="w-full h-2.5"></div>
+    <div class="comment-area-title w-full my-1.5 md:my-2.5 text-xl md:text-3xl font-bold">
+        评论
+    </div>
+    
+
+        
+            
+    <div id="gitalk-container"></div>
+    <script data-swup-reload-script
+            src="//cdn.staticfile.org/gitalk/1.8.0/gitalk.min.js"></script>
+    <script data-swup-reload-script>
+
+        function loadGitalk() {
+            let __gitalk__pathname = decodeURI(location.pathname);
+            const __gitalk__pathnameLength = __gitalk__pathname.length;
+            const __gitalk__pathnameMaxLength = 50;
+            if (__gitalk__pathnameLength > __gitalk__pathnameMaxLength) {
+                __gitalk__pathname = __gitalk__pathname.substring(0, __gitalk__pathnameMaxLength - 3) + '...';
+            }
+
+            try {
+                Gitalk && new Gitalk({
+                    clientID: '13d9974f24854a639570',
+                    clientSecret: '0c6c11ab3852d24a608e0f95a79829a649afac4b',
+                    repo: 'blog_gitalk',
+                    owner: 'xiaoeeyu',
+                    admin: ['xiaoeeyu'],
+                    id: __gitalk__pathname,
+                    language: 'zh-CN',
+                    proxy: 'https://github.com/login/oauth/access_token'
+                }).render('gitalk-container');
+
+            } catch (e) {
+                window.Gitalk = null;
+            }
+        }
+
+        if ('true') {
+            const loadGitalkTimeout = setTimeout(() => {
+                loadGitalk();
+                clearTimeout(loadGitalkTimeout);
+            }, 1000);
+        } else {
+            window.addEventListener('DOMContentLoaded', loadGitalk);
+        }
+    </script>
+
+
+
+        
     
 </div>
+
+            </div>
+        
+    </div>
+
+    
+        <div class="toc-content-container">
+            <div class="post-toc-wrap">
+    <div class="post-toc">
+        <div class="toc-title">此页目录</div>
+        <div class="page-title">JNI框架层Hook</div>
+        <ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%B3%BB%E7%BB%9F%E6%A1%86%E6%9E%B6native-hook"><span class="nav-text">系统框架native hook</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#hook-env-gt-GetStringUTFChars"><span class="nav-text">hook env-&gt;GetStringUTFChars</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#hook-env-gt-NewStringUTF"><span class="nav-text">hook env-&gt;NewStringUTF</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#hook%E5%8A%A8%E6%80%81%E7%BB%91%E5%AE%9A%E7%9A%84RegisterNatives"><span class="nav-text">hook动态绑定的RegisterNatives</span></a></li></ol></li></ol>
 
     </div>
 </div>
-<div class="category-paginator">
-    <div class="paginator">
-    <span class="page-number current">1</span>
-</div>
-
+        </div>
+    
 </div>
 
 
@@ -491,7 +886,7 @@
                 
                 <p class="post-count space-x-0.5">
                     <span>
-                        共 91 篇文章
+                        共 93 篇文章
                     </span>
                     
                 </p>
@@ -548,6 +943,27 @@
         </div>
     </div>
 
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="article-tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="right-bottom-tools page-aside-toggle">
+                <i class="fa-regular fa-outdent"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+            <li class="go-comment">
+                <i class="fa-regular fa-comments"></i>
+            </li>
+        
+    </ul>
+</div>
+
+        </div>
     
 
     <div class="right-side-tools-container">
