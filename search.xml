@@ -15753,7 +15753,7 @@ com.android.settings on (google: 10) [net] #
   <entry>
     <title>JNI框架层Hook</title>
     <url>/2024/03/24/JNI%E6%A1%86%E6%9E%B6%E5%B1%82Hook/</url>
-    <content><![CDATA[<h3 id="系统框架native-hook"><a href="#系统框架native-hook" class="headerlink" title="系统框架native hook"></a>系统框架native hook</h3><ul>
+    <content><![CDATA[<ul>
 <li>JNI函数符号hook</li>
 <li>JNI函数参数、返回值打印和替换</li>
 <li>动态注册JNI_OnLoad</li>
