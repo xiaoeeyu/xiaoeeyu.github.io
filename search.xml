@@ -9057,7 +9057,7 @@ XposedHelpers.findAndHookConstructor("com.xiaoeryu.xposedhook01.Student", loadPa
       </tags>
   </entry>
   <entry>
-    <title>JNI框架层Hook</title>
+    <title>JNIHook</title>
     <url>/2024/03/24/JNI%E6%A1%86%E6%9E%B6%E5%B1%82Hook/</url>
     <content><![CDATA[<ul>
 <li>JNI函数符号hook</li>
@@ -9254,6 +9254,7 @@ XposedHelpers.findAndHookConstructor("com.xiaoeryu.xposedhook01.Student", loadPa
       </categories>
       <tags>
         <tag>Frida Hook</tag>
+        <tag>框架层Hook</tag>
       </tags>
   </entry>
   <entry>
@@ -16178,6 +16179,200 @@ com.android.settings on (google: 10) [net] #
       </categories>
       <tags>
         <tag>RSA</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>libcHook</title>
+    <url>/2024/03/25/libcHook/</url>
+    <content><![CDATA[<ul>
+<li>libc函数符号hook</li>
+<li>libc函数参数、返回值打印和替换</li>
+<li>主动调用libc读写文件</li>
+</ul>
+<p>本章主要是对libc中的线程创建函数进行hook以拦截将要执行的函数，以及主动调用libc中创建文件的一系列函数</p>
+<h3 id="hook-libc中的函数"><a href="#hook-libc中的函数" class="headerlink" title="hook libc中的函数"></a>hook libc中的函数</h3><p>这里我们以hook下面的反调试函数为例，一般反调试都是新开一个线程来执行的。那我们能不能直接hook线程创建函数来拦截反调试函数的执行呢</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/03/25/libcHook/image-20240324202301195.png" class="" title="image-20240324202301195">
+
+<p>我们先来hook *pthread_create()*把它的参数和返回值打印出来，然后主动调用init函数看看它的执行效果。</p>
+<pre><code class="js">function beginAnti(){
+    Java.perform(function(){
+        Java.choose("com.xiaoeryu.demoso1.MainActivity",{
+            onMatch: function(instance){
+                console.log("found instance")
+                instance.init()
+            }, onComplete:function(){
+                console.log("Search complete")
+            }
+        })
+    })
+}
+function hook_pthread(){
+    var pthread_create_addr = Module.findExportByName("libc.so", 'pthread_create')
+    console.log("pthread_create_addr =&gt; ", pthread_create_addr)
+    Interceptor.attach(pthread_create_addr, {
+        onEnter: function(args){
+            console.log("args =&gt; ", args[0], args[1], args[2], args[3])
+        }, onLeave: function(retval){
+            console.log("retval =&gt; ", retval)
+        }
+    })
+}
+
+setImmediate(hook_pthread)
+</code></pre>
+<ul>
+<li><p>以spawn模式启动进程看看*pthread_create()*是否hook成功</p>
+<p><code>frida -U -f com.xiaoeryu.demoso1 -l libc_hook.js --no-pause</code></p>
+</li>
+<li><p>再主动调用*init()*执行</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/03/25/libcHook/image-20240325132804060.png" class="" title="image-20240325132804060">
+
+<ul>
+<li>执行后成功打印出了参数和返回值，根据函数原型可以知道第三个参数是*detect_frida_loop()*函数的地址</li>
+<li>那么怎么让*detect_frida_loop()*不执行从而过掉检测呢</li>
+</ul>
+</li>
+</ul>
+<h4 id="替换参数和替换函数"><a href="#替换参数和替换函数" class="headerlink" title="替换参数和替换函数"></a>替换参数和替换函数</h4><ol>
+<li><p>hook *pthread_create()*方法，过滤一下如果偏移相同说明是同一个函数，替换掉第三个参数让他去执行一个无关紧要的函数</p>
+<pre><code class="js">function hook_pthread(){
+    // 查找 libc.so 中 pthread_create 和 time 函数的地址(后面使用time函数的地址来替换原本要执行的函数的地址)
+    var pthread_create_addr = Module.findExportByName("libc.so", 'pthread_create')
+    var time_addr = Module.findExportByName("libc.so", 'time')
+    
+    // 打印 pthread_create 和 time 函数的地址
+    console.log("pthread_create_addr =&gt; ", pthread_create_addr)
+    console.log("time_addr =&gt; ", time_addr)
+    
+    // 拦截 pthread_create 函数
+    Interceptor.attach(pthread_create_addr, {
+        onEnter: function(args){
+            // 打印 pthread_create 函数的参数
+            console.log("args =&gt; ", args[0], args[1], args[2], args[3])
+            
+            // 查找 libdemoso1.so 的基地址
+            var libdemoso1_addr = Module.findBaseAddress("libdemoso1.so")
+            if(libdemoso1_addr != null){
+                // 打印 libdemoso1.so 的基地址
+                console.log("libdemoso1_addr =&gt; ", libdemoso1_addr)
+                
+                // 计算 detect_frida_loop 函数在 libdemoso1.so 中的偏移量
+                var dete_frida_loop_addr = args[2] - libdemoso1_addr
+                console.log("detect_frida_loop_offset is =&gt; ", dete_frida_loop_addr)
+                
+                // 如果 detect_frida_loop 函数的偏移量为 126276，则将 pthread_create 的第三个参数替换为 time 函数的地址
+                if(args[2] - libdemoso1_addr == 126276){
+                    args[2] = time_addr
+                    console.log("end args[2] =&gt; ", args[2])
+                }
+            }
+        }, 
+        onLeave: function(retval){
+            // 打印 pthread_create 函数的返回值
+            console.log("retval =&gt; ", retval)
+        }
+    })
+}
+</code></pre>
+</li>
+<li><p>过滤一下如果符合条件就替换掉*pthread_create()*让其直接返回不执行，不符合过滤条件就让其照旧执行</p>
+<pre><code class="js">function replace_pthread(){
+    // 查找 libc.so 中 pthread_create 函数的地址
+    var pthread_create_addr = Module.findExportByName("libc.so", 'pthread_create')
+    console.log("pthread_create_addr =&gt; ", pthread_create_addr)
+    
+    // 创建一个 NativeFunction 对象，用于调用 pthread_create 函数
+    var pthread_create = new NativeFunction(pthread_create_addr, 'int', ['pointer', 'pointer', 'pointer', 'pointer'])
+    
+    // 替换 pthread_create 函数
+    Interceptor.replace(pthread_create_addr, new NativeCallback(function(args0, args1, args2, args3){
+        // 打印替换后的 pthread_create 函数的参数
+        console.log("replace_pthread args: ", args0, args1, args2, args3)
+        
+        // 查找 libdemoso1.so 的基地址
+        var libdemoso1_addr = Module.findBaseAddress("libdemoso1.so")
+        if(libdemoso1_addr != null){
+            // 打印 libdemoso1.so 的基地址
+            console.log("libdemoso1_addr =&gt; ", libdemoso1_addr)
+            
+            // 如果 detect_frida_loop 函数的偏移量为 126276，则返回 null
+            if(args2 - libdemoso1_addr == 126276){
+                console.log("detect_frida_loop_offset is =&gt; ", args2 - libdemoso1_addr)
+                return null
+            }
+        }
+        
+        // 调用原始的 pthread_create 函数
+        return pthread_create(args0, args1, args2, args3)
+    }, 'int', ['pointer', 'pointer', 'pointer', 'pointer']
+    ))
+}
+</code></pre>
+</li>
+</ol>
+<h3 id="主动调用libc中的函数"><a href="#主动调用libc中的函数" class="headerlink" title="主动调用libc中的函数"></a>主动调用libc中的函数</h3><p>这里调用libc中的一系列写文件的函数</p>
+<pre><code class="js">function writeSomething(){
+    // 查找 libc.so 中 fopen、fputs、fclose 函数的地址
+    var fopen_addr = Module.findExportByName("libc.so", 'fopen')
+    var fputs_addr = Module.findExportByName("libc.so", 'fputs')
+    var fclose_addr = Module.findExportByName("libc.so", 'fclose')
+    console.log("fopen_addr =&gt; ", fopen_addr, "fputs_addr =&gt; ", fputs_addr, "fclose_addr =&gt; ", fclose_addr)
+
+    // 创建 NativeFunction 对象，用于调用 fopen 函数
+    var fopen = new NativeFunction(fopen_addr, 'pointer', ['pointer', 'pointer'])
+    // 创建 NativeFunction 对象，用于调用 fputs 函数
+    var fputs = new NativeFunction(fputs_addr, 'int', ['pointer', 'pointer'])
+    // 创建 NativeFunction 对象，用于调用 fclose 函数
+    var fclose = new NativeFunction(fclose_addr, 'int', ['pointer'])
+
+    // 指定文件名和模式
+    var fileName = Memory.allocUtf8String("/sdcard/hello.txt")
+    var mode = Memory.allocUtf8String("a+")
+    
+    // 打开文件
+    var fp = fopen(fileName, mode)
+    
+    // 指定要写入的内容
+    var context1 = Memory.allocUtf8String("hello world")
+    
+    // 写入内容到文件中
+    fputs(context1, fp)
+    
+    // 关闭文件
+    fclose(fp)
+}
+</code></pre>
+<ul>
+<li><p>这里要需要用*Memory.allocUtf8String()<em>将字符串以内存地址的方式传递给</em>fopen()*使用</p>
+</li>
+<li><p>还需要注意的一个点是如果应用没有写文件权限是无法写入的，测试的时候可以把脚本注入<strong>com.android.settings</strong>等有文件读写权限的应用来测试</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/03/25/libcHook/image-20240325224115284.png" class="" title="image-20240325224115284"></li>
+</ul>
+<p>接下来尝试将<em>libc.so</em>库的所有导出函数全部写入文件中</p>
+<pre><code class="js">function EnumerateAllExports(){
+    var modules = Process.enumerateModulesSync()
+    for(var i = 0; i &lt; modules.length; i++){
+        // console.log("modules =&gt; ", JSON.stringify(modules[i]))
+        var modele_name = modules[i].name
+        var exports = modules[i].enumerateExports()
+        console.log("exports =&gt; ", JSON.stringify(exports))
+        for(var j = 0; j &lt; exports.length; j++){
+            writeSomething("/sdcard/settings/" + modele_name + ".txt", "type: " + exports[j].type + " name: " + exports[j].name + " addr: " + exports[j].address + "\n")
+        }
+    }
+}
+</code></pre>
+<ul>
+<li>稍微修改一下刚才的*writeSomething()*函数把路径名和写入内容改为传入的两个参数</li>
+</ul>
+<h6 id="附件"><a href="#附件" class="headerlink" title="附件"></a>附件</h6><p><a class="link" href="https://github.com/xiaoeeyu/libc_hook/blob/main/libc_hook.js">本章完整代码 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+]]></content>
+      <categories>
+        <category>Android逆向</category>
+      </categories>
+      <tags>
+        <tag>Frida Hook</tag>
+        <tag>框架层Hook</tag>
       </tags>
   </entry>
 </search>
