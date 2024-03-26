@@ -18,12 +18,12 @@
     <meta name="googlebot" content="index,follow">
     <meta name="revisit-after" content="1 days">
     
-        <meta name="description" content="JNI函数符号hook JNI函数参数、返回值打印和替换 动态注册JNI_OnLoad hook RegisterNatives jnitrace  本章对系统框架层的函数进行了hook、以及hook Registernatives获取其中的信息">
+        <meta name="description" content="JNI函数符号hook JNI函数参数、返回值打印和替换 动态注册JNI_OnLoad hook RegisterNatives jnitrace  本章对系统框架层的函数进行了hook、以及hook Registernatives获取其中的信息 Frida相对于Xposed的优势在于可以对Native层进行hook、对内存进行搜索 除了对用户层native代码进行hook之外也可以对系统框架层">
 <meta property="og:type" content="article">
 <meta property="og:title" content="JNIHook">
 <meta property="og:url" content="https://xiaoeeyu.github.io/2024/03/24/JNI%E6%A1%86%E6%9E%B6%E5%B1%82Hook/index.html">
 <meta property="og:site_name" content="xiaoeryu">
-<meta property="og:description" content="JNI函数符号hook JNI函数参数、返回值打印和替换 动态注册JNI_OnLoad hook RegisterNatives jnitrace  本章对系统框架层的函数进行了hook、以及hook Registernatives获取其中的信息">
+<meta property="og:description" content="JNI函数符号hook JNI函数参数、返回值打印和替换 动态注册JNI_OnLoad hook RegisterNatives jnitrace  本章对系统框架层的函数进行了hook、以及hook Registernatives获取其中的信息 Frida相对于Xposed的优势在于可以对Native层进行hook、对内存进行搜索 除了对用户层native代码进行hook之外也可以对系统框架层">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://xiaoeeyu.github.io/2024/03/24/JNI%E6%A1%86%E6%9E%B6%E5%B1%82Hook/image-20240323111033560.png">
 <meta property="og:image" content="https://xiaoeeyu.github.io/2024/03/24/JNI%E6%A1%86%E6%9E%B6%E5%B1%82Hook/image-20240323200640655.png">
@@ -31,7 +31,7 @@
 <meta property="og:image" content="https://xiaoeeyu.github.io/2024/03/24/JNI%E6%A1%86%E6%9E%B6%E5%B1%82Hook/image-20240323210435046.png">
 <meta property="og:image" content="https://xiaoeeyu.github.io/2024/03/24/JNI%E6%A1%86%E6%9E%B6%E5%B1%82Hook/image-20240324103737110.png">
 <meta property="article:published_time" content="2024-03-24T02:56:34.000Z">
-<meta property="article:modified_time" content="2024-03-25T15:42:49.313Z">
+<meta property="article:modified_time" content="2024-03-26T01:17:36.698Z">
 <meta property="article:author" content="xiaoeryu">
 <meta property="article:tag" content="Frida Hook">
 <meta property="article:tag" content="框架层Hook">
@@ -472,8 +472,8 @@
     
         <span class="article-date article-meta-item">
             <i class="fa-regular fa-wrench"></i>&nbsp;
-            <span class="desktop">2024-03-25 23:42:49</span>
-            <span class="mobile">2024-03-25 23:42:49</span>
+            <span class="desktop">2024-03-26 09:17:36</span>
+            <span class="mobile">2024-03-26 09:17:36</span>
             <span class="hover-info">更新</span>
         </span>
     
@@ -539,8 +539,6 @@
 <li>jnitrace</li>
 </ul>
 <p>本章对系统框架层的函数进行了hook、以及hook Registernatives获取其中的信息</p>
-<span id="more"></span>
-
 <p>Frida相对于Xposed的优势在于可以对Native层进行hook、对内存进行搜索</p>
 <p>除了对用户层native代码进行hook之外也可以对系统框架层进行hook，而对更深层进行hook有时候可以更容易得到需要的信息。</p>
 <p>jnitrace脚本是hook了所有的JNI函数，app经过了JNI的任何函数都可以打印出操作流程。</p>
@@ -734,7 +732,7 @@
         
             <li>
                 <strong>更新于
-                    :</strong> 2024-03-25 23:42:49
+                    :</strong> 2024-03-26 09:17:36
             </li>
         
         <li>

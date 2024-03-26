@@ -9067,8 +9067,6 @@ XposedHelpers.findAndHookConstructor("com.xiaoeryu.xposedhook01.Student", loadPa
 <li>jnitrace</li>
 </ul>
 <p>本章对系统框架层的函数进行了hook、以及hook Registernatives获取其中的信息</p>
-<span id="more"></span>
-
 <p>Frida相对于Xposed的优势在于可以对Native层进行hook、对内存进行搜索</p>
 <p>除了对用户层native代码进行hook之外也可以对系统框架层进行hook，而对更深层进行hook有时候可以更容易得到需要的信息。</p>
 <p>jnitrace脚本是hook了所有的JNI函数，app经过了JNI的任何函数都可以打印出操作流程。</p>
