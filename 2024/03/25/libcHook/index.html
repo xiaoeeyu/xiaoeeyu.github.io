@@ -29,7 +29,7 @@
 <meta property="og:image" content="https://xiaoeeyu.github.io/2024/03/25/libcHook/image-20240325132804060.png">
 <meta property="og:image" content="https://xiaoeeyu.github.io/2024/03/25/libcHook/image-20240325224115284.png">
 <meta property="article:published_time" content="2024-03-25T15:41:22.000Z">
-<meta property="article:modified_time" content="2024-03-25T15:42:29.537Z">
+<meta property="article:modified_time" content="2024-03-26T09:50:47.136Z">
 <meta property="article:author" content="xiaoeryu">
 <meta property="article:tag" content="Frida Hook">
 <meta property="article:tag" content="框架层Hook">
@@ -416,7 +416,7 @@
         <div class="label text-third-text-color text-sm">分类</div>
     </a>
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">93</div>
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">94</div>
         <div class="label text-third-text-color text-sm">文章</div>
     </a>
 </div>
@@ -470,8 +470,8 @@
     
         <span class="article-date article-meta-item">
             <i class="fa-regular fa-wrench"></i>&nbsp;
-            <span class="desktop">2024-03-25 23:42:29</span>
-            <span class="mobile">2024-03-25 23:42:29</span>
+            <span class="desktop">2024-03-26 17:50:47</span>
+            <span class="mobile">2024-03-26 17:50:47</span>
             <span class="hover-info">更新</span>
         </span>
     
@@ -641,7 +641,7 @@ setImmediate(hook_pthread)
             console.log("libdemoso1_addr =&gt; ", libdemoso1_addr)
             
             // 如果 detect_frida_loop 函数的偏移量为 126276，则返回 null
-            if(args2 - libdemoso1_addr == 126276){
+            if(args2 - libdemoso1_addr == args2-libdemoso1_addr){
                 console.log("detect_frida_loop_offset is =&gt; ", args2 - libdemoso1_addr)
                 return null
             }
@@ -655,6 +655,7 @@ setImmediate(hook_pthread)
 </code></pre>
 </li>
 </ol>
+<p><strong>这里需要注意的一点是，如果设备重启函数的偏移大概率会改变，这时候需要手动修改一下偏移</strong></p>
 <h3 id="主动调用libc中的函数"><a href="#主动调用libc中的函数" class="headerlink" title="主动调用libc中的函数"></a>主动调用libc中的函数</h3><p>这里调用libc中的一系列写文件的函数</p>
 <pre><code class="js">function writeSomething(){
     // 查找 libc.so 中 fopen、fputs、fclose 函数的地址
@@ -695,14 +696,20 @@ setImmediate(hook_pthread)
 </ul>
 <p>接下来尝试将<em>libc.so</em>库的所有导出函数全部写入文件中</p>
 <pre><code class="js">function EnumerateAllExports(){
-    var modules = Process.enumerateModulesSync()
+    // 同步枚举所有模块
+    var modules = Process.enumerateModulesSync();
+    // 遍历所有模块
     for(var i = 0; i &lt; modules.length; i++){
-        // console.log("modules =&gt; ", JSON.stringify(modules[i]))
-        var modele_name = modules[i].name
-        var exports = modules[i].enumerateExports()
-        console.log("exports =&gt; ", JSON.stringify(exports))
+        // 获取当前模块的名称
+        var modele_name = modules[i].name;
+        // 枚举当前模块的所有导出函数
+        var exports = modules[i].enumerateExports();
+        // 遍历当前模块的所有导出函数
         for(var j = 0; j &lt; exports.length; j++){
-            writeSomething("/sdcard/settings/" + modele_name + ".txt", "type: " + exports[j].type + " name: " + exports[j].name + " addr: " + exports[j].address + "\n")
+            // 将导出函数的信息写入文件
+            // 使用 writeSomething 函数将信息写入到指定的文件路径
+            // 导出函数的类型、名称和地址写入文件，以便后续分析
+            writeSomething("/sdcard/settings/" + modele_name + ".txt", "type: " + exports[j].type + " name: " + exports[j].name + " addr: " + exports[j].address + "\n");
         }
     }
 }
@@ -725,7 +732,7 @@ setImmediate(hook_pthread)
         
             <li>
                 <strong>更新于
-                    :</strong> 2024-03-25 23:42:29
+                    :</strong> 2024-03-26 17:50:47
             </li>
         
         <li>
@@ -765,6 +772,21 @@ setImmediate(hook_pthread)
 
         
             <div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
+                
+                    <div class="article-prev border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+                        <a class="prev"
+                        rel="prev"
+                        href="/2024/04/10/linkHook-init-array%E8%87%AA%E5%90%90/"
+                        >
+                            <span class="left arrow-icon flex justify-center items-center">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </span>
+                            <span class="title flex justify-center items-center">
+                                <span class="post-nav-title-item">linkHook_init_array自吐</span>
+                                <span class="post-nav-item">上一篇</span>
+                            </span>
+                        </a>
+                    </div>
                 
                 
                     <div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
@@ -886,7 +908,7 @@ setImmediate(hook_pthread)
                 
                 <p class="post-count space-x-0.5">
                     <span>
-                        共 93 篇文章
+                        共 94 篇文章
                     </span>
                     
                 </p>

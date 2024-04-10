@@ -16294,7 +16294,7 @@ setImmediate(hook_pthread)
             console.log("libdemoso1_addr =&gt; ", libdemoso1_addr)
             
             // 如果 detect_frida_loop 函数的偏移量为 126276，则返回 null
-            if(args2 - libdemoso1_addr == 126276){
+            if(args2 - libdemoso1_addr == args2-libdemoso1_addr){
                 console.log("detect_frida_loop_offset is =&gt; ", args2 - libdemoso1_addr)
                 return null
             }
@@ -16308,6 +16308,7 @@ setImmediate(hook_pthread)
 </code></pre>
 </li>
 </ol>
+<p><strong>这里需要注意的一点是，如果设备重启函数的偏移大概率会改变，这时候需要手动修改一下偏移</strong></p>
 <h3 id="主动调用libc中的函数"><a href="#主动调用libc中的函数" class="headerlink" title="主动调用libc中的函数"></a>主动调用libc中的函数</h3><p>这里调用libc中的一系列写文件的函数</p>
 <pre><code class="js">function writeSomething(){
     // 查找 libc.so 中 fopen、fputs、fclose 函数的地址
@@ -16348,14 +16349,20 @@ setImmediate(hook_pthread)
 </ul>
 <p>接下来尝试将<em>libc.so</em>库的所有导出函数全部写入文件中</p>
 <pre><code class="js">function EnumerateAllExports(){
-    var modules = Process.enumerateModulesSync()
+    // 同步枚举所有模块
+    var modules = Process.enumerateModulesSync();
+    // 遍历所有模块
     for(var i = 0; i &lt; modules.length; i++){
-        // console.log("modules =&gt; ", JSON.stringify(modules[i]))
-        var modele_name = modules[i].name
-        var exports = modules[i].enumerateExports()
-        console.log("exports =&gt; ", JSON.stringify(exports))
+        // 获取当前模块的名称
+        var modele_name = modules[i].name;
+        // 枚举当前模块的所有导出函数
+        var exports = modules[i].enumerateExports();
+        // 遍历当前模块的所有导出函数
         for(var j = 0; j &lt; exports.length; j++){
-            writeSomething("/sdcard/settings/" + modele_name + ".txt", "type: " + exports[j].type + " name: " + exports[j].name + " addr: " + exports[j].address + "\n")
+            // 将导出函数的信息写入文件
+            // 使用 writeSomething 函数将信息写入到指定的文件路径
+            // 导出函数的类型、名称和地址写入文件，以便后续分析
+            writeSomething("/sdcard/settings/" + modele_name + ".txt", "type: " + exports[j].type + " name: " + exports[j].name + " addr: " + exports[j].address + "\n");
         }
     }
 }
@@ -16372,5 +16379,335 @@ setImmediate(hook_pthread)
         <tag>Frida Hook</tag>
         <tag>框架层Hook</tag>
       </tags>
+  </entry>
+  <entry>
+    <title>linkHook_init_array自吐</title>
+    <url>/2024/04/10/linkHook-init-array%E8%87%AA%E5%90%90/</url>
+    <content><![CDATA[<p>本章的主要内容为</p>
+<ul>
+<li>通过源码分析init_array原理so加载执行流程</li>
+<li>hook_linker init_array 自吐</li>
+</ul>
+<span id="more"></span>
+
+<p>在对<strong>linker</strong>进行hook之前先分析一下so文件的加载流程</p>
+<p>在so被加载之后，如果so文件中存在.init和.init_array段的话它们会先被动态链接器调用进行一些初始化的操作。所以这两个函数无论有没有被调用它都会优先执行</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/04/10/linkHook-init-array%E8%87%AA%E5%90%90/image-20240405211947048.png" class="" title="image-20240405211947048">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2024/04/10/linkHook-init-array%E8%87%AA%E5%90%90/image-20240405212720542.png" class="" title="image-20240405212720542">
+
+<ul>
+<li>例如这里我们并没有主动调用这个**_init()**，但是它还是会在so加载的时候主动执行</li>
+</ul>
+<p>去源码中搜索一下加载so的dlopen函数调用过程</p>
+<h3 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h3><p>测试用的设备是Android 10.0所以这里以<a class="link" href="http://aospxref.com/android-10.0.0_r47/">Android 10.0的源码 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>为例，到目前最新的Android14为止对so的加载都是通过*dlopen()*进行的</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/04/10/linkHook-init-array%E8%87%AA%E5%90%90/image-20240326211109629.png" class="" title="image-20240326211109629">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2024/04/10/linkHook-init-array%E8%87%AA%E5%90%90/image-20240326211308718.png" class="" title="image-20240326211308718">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2024/04/10/linkHook-init-array%E8%87%AA%E5%90%90/image-20240326211337950.png" class="" title="image-20240326211337950">
+
+<pre><code class="c++">void* do_dlopen(const char* name, int flags,
+                const android_dlextinfo* extinfo,
+                const void* caller_addr) {
+    // 创建一个带有"dlopen: "前缀的跟踪对象，用于记录加载库的跟踪信息
+  std::string trace_prefix = std::string("dlopen: ") + (name == nullptr ? "(nullptr)" : name);
+  ScopedTrace trace(trace_prefix.c_str());
+    // 创建一个带有"dlopen: - loading and linking"前缀的跟踪对象，用于记录加载和链接库的跟踪信息
+  ScopedTrace loading_trace((trace_prefix + " - loading and linking").c_str());
+    // 查找调用者的soinfo结构体
+  soinfo* const caller = find_containing_library(caller_addr);
+    // 获取调用者的命名空间
+  android_namespace_t* ns = get_caller_namespace(caller);
+    // 记录dlopen调用的详细信息
+  LD_LOG(kLogDlopen,
+         "dlopen(name=\"%s\", flags=0x%x, extinfo=%s, caller=\"%s\", caller_ns=%s@%p, targetSdkVersion=%i) ...",
+         name,
+         flags,
+         android_dlextinfo_to_string(extinfo).c_str(),
+         caller == nullptr ? "(null)" : caller-&gt;get_realpath(),
+         ns == nullptr ? "(null)" : ns-&gt;get_name(),
+         ns,
+         get_application_target_sdk_version());
+    // 创建自动清理对象，用于在作用域结束时调用purge_unused_memory函数
+  auto purge_guard = android::base::make_scope_guard([&amp;]() { purge_unused_memory(); });
+    // 创建自动清理对象，用于在作用域结束时记录dlopen失败信息
+  auto failure_guard = android::base::make_scope_guard(
+      [&amp;]() { LD_LOG(kLogDlopen, "... dlopen failed: %s", linker_get_error_buffer()); });
+    // 检查flags是否包含无效标志，如果包含则返回nullptr
+  if ((flags &amp; ~(RTLD_NOW|RTLD_LAZY|RTLD_LOCAL|RTLD_GLOBAL|RTLD_NODELETE|RTLD_NOLOAD)) != 0) {
+    DL_ERR("invalid flags to dlopen: %x", flags);
+    return nullptr;
+  }
+    // 检查extinfo是否包含无效标志，如果包含则返回nullptr
+  if (extinfo != nullptr) {
+    if ((extinfo-&gt;flags &amp; ~(ANDROID_DLEXT_VALID_FLAG_BITS)) != 0) {
+      DL_ERR("invalid extended flags to android_dlopen_ext: 0x%" PRIx64, extinfo-&gt;flags);
+      return nullptr;
+    }
+
+    if ((extinfo-&gt;flags &amp; ANDROID_DLEXT_USE_LIBRARY_FD) == 0 &amp;&amp;
+        (extinfo-&gt;flags &amp; ANDROID_DLEXT_USE_LIBRARY_FD_OFFSET) != 0) {
+      DL_ERR("invalid extended flag combination (ANDROID_DLEXT_USE_LIBRARY_FD_OFFSET without "
+          "ANDROID_DLEXT_USE_LIBRARY_FD): 0x%" PRIx64, extinfo-&gt;flags);
+      return nullptr;
+    }
+
+    if ((extinfo-&gt;flags &amp; ANDROID_DLEXT_USE_NAMESPACE) != 0) {
+      if (extinfo-&gt;library_namespace == nullptr) {
+        DL_ERR("ANDROID_DLEXT_USE_NAMESPACE is set but extinfo-&gt;library_namespace is null");
+        return nullptr;
+      }
+      ns = extinfo-&gt;library_namespace;
+    }
+  }
+
+  // Workaround for dlopen(/system/lib/&lt;soname&gt;) when .so is in /apex. http://b/121248172
+  // The workaround works only when targetSdkVersion &lt; Q.
+  std::string name_to_apex;
+  if (translateSystemPathToApexPath(name, &amp;name_to_apex)) {
+    const char* new_name = name_to_apex.c_str();
+    LD_LOG(kLogDlopen, "dlopen considering translation from %s to APEX path %s",
+           name,
+           new_name);
+    // Some APEXs could be optionally disabled. Only translate the path
+    // when the old file is absent and the new file exists.
+    // TODO(b/124218500): Re-enable it once app compat issue is resolved
+    /*
+    if (file_exists(name)) {
+      LD_LOG(kLogDlopen, "dlopen %s exists, not translating", name);
+    } else
+    */
+    if (!file_exists(new_name)) {
+      LD_LOG(kLogDlopen, "dlopen %s does not exist, not translating",
+             new_name);
+    } else {
+      LD_LOG(kLogDlopen, "dlopen translation accepted: using %s", new_name);
+      name = new_name;
+    }
+  }
+  // End Workaround for dlopen(/system/lib/&lt;soname&gt;) when .so is in /apex.
+
+  std::string asan_name_holder;
+
+  const char* translated_name = name;
+  if (g_is_asan &amp;&amp; translated_name != nullptr &amp;&amp; translated_name[0] == '/') {
+    char original_path[PATH_MAX];
+    if (realpath(name, original_path) != nullptr) {
+      asan_name_holder = std::string(kAsanLibDirPrefix) + original_path;
+      if (file_exists(asan_name_holder.c_str())) {
+        soinfo* si = nullptr;
+        if (find_loaded_library_by_realpath(ns, original_path, true, &amp;si)) {
+          PRINT("linker_asan dlopen NOT translating \"%s\" -&gt; \"%s\": library already loaded", name,
+                asan_name_holder.c_str());
+        } else {
+          PRINT("linker_asan dlopen translating \"%s\" -&gt; \"%s\"", name, translated_name);
+          translated_name = asan_name_holder.c_str();
+        }
+      }
+    }
+  }
+    // 创建受保护的数据对象，用于在加载库期间保护数据
+  ProtectedDataGuard guard;
+    // 在命名空间中查找库并加载
+  soinfo* si = find_library(ns, translated_name, flags, extinfo, caller);
+  loading_trace.End();
+    // 如果加载成功，则调用构造函数，并记录加载信息，然后返回句柄
+  if (si != nullptr) {
+    void* handle = si-&gt;to_handle();
+    LD_LOG(kLogDlopen,
+           "... dlopen calling constructors: realpath=\"%s\", soname=\"%s\", handle=%p",
+           si-&gt;get_realpath(), si-&gt;get_soname(), handle);
+      // 调用库的构造函数
+    si-&gt;call_constructors();	// &lt;&lt;&lt;&lt;&lt; 跟进看看之后的调用流程
+      // 禁用dlopen失败的清理回调
+    failure_guard.Disable();
+      // 记录加载成功的信息，并返回句柄
+    LD_LOG(kLogDlopen,
+           "... dlopen successful: realpath=\"%s\", soname=\"%s\", handle=%p",
+           si-&gt;get_realpath(), si-&gt;get_soname(), handle);
+    return handle;
+  }
+    // 如果加载失败，则返回nullptr
+  return nullptr;
+}
+</code></pre>
+<ul>
+<li>这段代码前面做了一堆非空值的判断</li>
+<li>然后调用<code>si-&gt;call_constructors()</code>来完成so函数的加载</li>
+</ul>
+<p>进入<code>si-&gt;call_constructors()</code>后<strong>DT_INIT</strong>以及<strong>DT_INIT_ARRAY</strong>会依次执行</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/04/10/linkHook-init-array%E8%87%AA%E5%90%90/image-20240326213902401.png" class="" title="image-20240326213902401">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2024/04/10/linkHook-init-array%E8%87%AA%E5%90%90/image-20240326214454916.png" class="" title="image-20240326214454916">
+
+<ul>
+<li><p>不论<strong>DT_INIT</strong>还是<strong>DT_INIT_ARRAY</strong>都是通过*call_function()*调用执行</p>
+</li>
+<li><p>其中的*call_array()*是模板函数</p>
+<blockquote>
+<p>这里了解一下共享库初始化函数的执行流程</p>
+<ol>
+<li><p><code>call_function("DT_INIT", init_func_, get_realpath());</code></p>
+<p>这行代码调用了 <code>call_function</code> 函数，传递了三个参数：<code>"DT_INIT"</code>、<code>init_func_</code> 和 <code>get_realpath()</code>。其中：</p>
+<ul>
+<li><code>"DT_INIT"</code> 是一个字符串，用于标识所调用的初始化函数的类型，这里表示调用的是 <code>DT_INIT</code> 函数。</li>
+<li><code>init_func_</code> 是一个函数指针，指向了共享库中的 <code>DT_INIT</code> 函数。</li>
+<li><code>get_realpath()</code> 是一个函数，用于获取共享库的路径。</li>
+</ul>
+<p>在函数内部，它会首先检查 <code>init_func_</code> 是否为空，如果不为空，则调用 <code>function()</code> 函数执行初始化操作，即执行共享库中的 <code>DT_INIT</code> 函数。在执行前后，会通过 <code>TRACE</code> 打印调试信息。</p>
+</li>
+<li><p><code>call_array("DT_INIT_ARRAY", init_array_, init_array_count_, false, get_realpath());</code></p>
+<p>这行代码调用了 <code>call_array</code> 函数，传递了五个参数：<code>"DT_INIT_ARRAY"</code>、<code>init_array_</code>、<code>init_array_count_</code>、<code>false</code> 和 <code>get_realpath()</code>。其中：</p>
+<ul>
+<li><code>"DT_INIT_ARRAY"</code> 是一个字符串，用于标识所调用的初始化数组的类型，这里表示调用的是 <code>DT_INIT_ARRAY</code> 数组。</li>
+<li><code>init_array_</code> 是一个指向初始化数组的指针，该数组包含了一系列的初始化函数。</li>
+<li><code>init_array_count_</code> 是初始化数组中元素的数量。</li>
+<li><code>false</code> 表示不需要对初始化数组进行反向遍历。</li>
+<li><code>get_realpath()</code> 是一个函数，用于获取共享库的路径。</li>
+</ul>
+<p><code>call_array</code> 函数会遍历 <code>init_array_</code> 数组，依次调用数组中的初始化函数。在每次调用初始化函数前后，同样会通过 <code>TRACE</code> 打印调试信息。</p>
+<p>这两行代码的作用是在共享库加载过程中，执行共享库中的初始化函数，以完成一些必要的初始化工作，比如初始化全局变量、注册回调函数等。</p>
+</li>
+</ol>
+</blockquote>
+</li>
+<li><blockquote>
+<p>跟进去可以看到*call_function()*函数它的文件路径是在<code>/bionic/linker/linker_soinfo.cpp</code></p>
+<pre><code class="C++">/**
+ * @brief 调用链接器构造函数
+ * 
+ * @param function_name 构造函数的名称
+ * @param function 构造函数的函数指针
+ * @param realpath 文件的实际路径
+ */
+static void call_function(const char* function_name __unused,
+                          linker_ctor_function_t function,
+                          const char* realpath __unused) {
+    // 如果构造函数为空指针或者指针的值为 -1，则直接返回，不进行任何操作
+    if (function == nullptr || reinterpret_cast&lt;uintptr_t&gt;(function) == static_cast&lt;uintptr_t&gt;(-1)) {
+        return;
+    }
+
+    // 打印调试信息，包括构造函数的名称、函数指针和文件路径
+    TRACE("[ Calling c-tor %s @ %p for '%s' ]", function_name, function, realpath);
+    
+    // 调用构造函数，传递全局变量 g_argc、g_argv 和 g_envp
+    function(g_argc, g_argv, g_envp);
+    
+    // 再次打印调试信息，表示构造函数调用结束
+    TRACE("[ Done calling c-tor %s @ %p for '%s' ]", function_name, function, realpath);
+}
+
+/**
+ * @brief 调用链接器析构函数
+ * 
+ * @param function_name 析构函数的名称
+ * @param function 析构函数的函数指针
+ * @param realpath 文件的实际路径
+ */
+static void call_function(const char* function_name __unused,
+                          linker_dtor_function_t function,
+                          const char* realpath __unused) {
+    // 如果析构函数为空指针或者指针的值为 -1，则直接返回，不进行任何操作
+    if (function == nullptr || reinterpret_cast&lt;uintptr_t&gt;(function) == static_cast&lt;uintptr_t&gt;(-1)) {
+        return;
+    }
+
+    // 打印调试信息，包括析构函数的名称、函数指针和文件路径
+    TRACE("[ Calling d-tor %s @ %p for '%s' ]", function_name, function, realpath);
+    
+    // 调用析构函数
+    function();
+    
+    // 再次打印调试信息，表示析构函数调用结束
+    TRACE("[ Done calling d-tor %s @ %p for '%s' ]", function_name, function, realpath);
+}
+</code></pre>
+<ul>
+<li>这两个函数的作用分别是调用链接器构造函数（constructor）和析构函数（destructor）。</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<h3 id="用Frida获取模块的符号"><a href="#用Frida获取模块的符号" class="headerlink" title="用Frida获取模块的符号"></a>用Frida获取模块的符号</h3><pre><code class="js">function get_addr(){
+    var linker_sym = Module.enumerateSymbols("linker")
+    console.log("do_dlopen_addr =&gt; ", JSON.stringify(linker_sym))
+}
+</code></pre>
+<ul>
+<li><p>linker分为32位和64位两个，32位环境名字是<strong>linker</strong>，64位环境是<strong>linker64</strong></p>
+<blockquote>
+<p>在脚本打印出的符号中没有看到*call_function()*，可能是被优化掉了。用IDA确认一下</p>
+<ol>
+<li><p>用adb命令从手机系统中导出<strong>linker库</strong>文件</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/04/10/linkHook-init-array%E8%87%AA%E5%90%90/image-20240404213119392.png" class="" title="image-20240404213119392">
+</li>
+<li><p>在IDA中检查后没有发现<em>call_function()</em></p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/04/10/linkHook-init-array%E8%87%AA%E5%90%90/image-20240404213731538.png" class="" title="image-20240404213731538">
+
+<ul>
+<li>可以看到分别调用了构造函数<code>call_constructors()</code>、析构函数<code>call_destructors()</code>、<code>call_array()</code></li>
+</ul>
+</li>
+<li><p>跟进去分析之后发现*call_function()*函数是被优化成代码片段，插入在<code>call_constructors()</code>、<code>call_array()</code>中间了</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/04/10/linkHook-init-array%E8%87%AA%E5%90%90/image-20240405221059543.png" class="" title="image-20240405221059543">
+
+<ul>
+<li>既然这样的话，根据反编译的伪代码我们可以尝试hook这个*_dl_async_safe_format_log()*通过这个函数来获取构造函数的名称<code>function_name</code>、函数指针<code>function</code>和文件路径<code>realpath</code></li>
+<li>不过需要注意的是，这个函数执行有一个条件是<code>_dl_g_ld_debug_verbosity &gt;= 2</code>，所以在hook这个函数之前先使用frida去这个变量的地址修改它的变量值让*_dl_async_safe_format_log()*符合执行条件。</li>
+</ul>
+</li>
+</ol>
+</blockquote>
+</li>
+</ul>
+<p>通过上面的脚本获取到<strong>linker</strong>的地址之后，根据IDA反编译的结果知道它有5个参数，参照源码参数的类型将结果打印出来，因为函数被优化了所以参数类型跟源码中略有差别，多尝试几次就ok了。</p>
+<pre><code class="js">function hook_constructors(linker_sym){
+    for(var i = 0; i &lt; linker_sym.length; i++){
+        var name = linker_sym[i].name
+        if(name.indexOf("__dl_g_ld_debug_verbosity") &gt;= 0){
+            var addr__dl_g_ld_debug_verbosity = linker_sym[i].address
+            // console.log("addr__dl_g_ld_debug_verbosity =&gt; ", addr__dl_g_ld_debug_verbosity)
+            ptr(addr__dl_g_ld_debug_verbosity).writeInt(2)
+        }
+        if(name.indexOf("__dl_async_safe_format_log") &gt;= 0 &amp;&amp; name.indexOf("va_list") &lt; 0){
+            // console.log("__dl_async_safe_format_log", JSON.stringify(linker_sym[i]))
+            var addr__dl_async_safe_format_log = linker_sym[i].address
+        }
+    }
+    if(addr__dl_async_safe_format_log){
+        Interceptor.attach(addr__dl_async_safe_format_log, {
+            onEnter: function(args){
+                this.log_level = args[0]
+                this.tag = ptr(args[1]).readCString()
+                this.fmt = ptr(args[2]).readCString()
+                if(this.fmt.indexOf("c-tor") &gt;= 0 &amp;&amp; this.fmt.indexOf("Done") &lt; 0){
+                    this.function_type = ptr(args[3]).readCString()
+                    this.so_path = ptr(args[5]).readCString()
+                    var strs = new Array()	// 创建一个车数组
+                    strs = this.so_path.split("/")	// 字符分割
+                    this.so_name = strs.pop()
+                    this.func_offset = ptr(args[4]).sub(Module.findBaseAddress(this.so_name))
+                    console.log("func_type: ", this.function_type,
+                    "\nso_name: ", this.so_name,
+                    "\nso_path: ", this.so_path,
+                    "\nfunc_offset: ", this.func_offset.toString(16))
+                }
+            }, onLeave: function(retval){}
+        })
+    }
+}
+</code></pre>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/04/10/linkHook-init-array%E8%87%AA%E5%90%90/image-20240410003035124.png" class="" title="image-20240410003035124">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2024/04/10/linkHook-init-array%E8%87%AA%E5%90%90/image-20240410091216247.png" class="" title="image-20240410091216247">
+
+
+
+
+
+<h6 id="附件"><a href="#附件" class="headerlink" title="附件"></a>附件</h6><p><a class="link" href="https://github.com/xiaoeeyu/link_hook/blob/main/init_arrayAuto.js">hook脚本 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+]]></content>
   </entry>
 </search>
