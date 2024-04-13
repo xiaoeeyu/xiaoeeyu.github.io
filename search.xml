@@ -16709,5 +16709,12 @@ static void call_function(const char* function_name __unused,
 
 <h6 id="附件"><a href="#附件" class="headerlink" title="附件"></a>附件</h6><p><a class="link" href="https://github.com/xiaoeeyu/link_hook/blob/main/init_arrayAuto.js">hook脚本 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
 ]]></content>
+      <categories>
+        <category>Android逆向</category>
+      </categories>
+      <tags>
+        <tag>Frida Hook</tag>
+        <tag>框架层Hook</tag>
+      </tags>
   </entry>
 </search>
