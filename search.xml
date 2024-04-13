@@ -16397,7 +16397,7 @@ setImmediate(hook_pthread)
 <img lazyload="" src="/images/loading.svg" data-src="/2024/04/10/linkHook-init-array%E8%87%AA%E5%90%90/image-20240405212720542.png" class="" title="image-20240405212720542">
 
 <ul>
-<li>例如这里我们并没有主动调用这个**_init()**，但是它还是会在so加载的时候主动执行</li>
+<li>例如这里我们并没有主动调用这个*_init()*，但是它还是会在so加载的时候主动执行</li>
 </ul>
 <p>去源码中搜索一下加载so的dlopen函数调用过程</p>
 <h3 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h3><p>测试用的设备是Android 10.0所以这里以<a class="link" href="http://aospxref.com/android-10.0.0_r47/">Android 10.0的源码 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>为例，到目前最新的Android14为止对so的加载都是通过*dlopen()*进行的</p>
