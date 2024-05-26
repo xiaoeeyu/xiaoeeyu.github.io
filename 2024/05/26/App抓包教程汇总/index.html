@@ -1,0 +1,1511 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    
+    <meta name="author" content="xiaoeryu">
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="https://xiaoeeyu.github.io/2024/05/26/app抓包教程汇总/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+        <meta name="description" content="HTTPS抓包详解 HTTP + SSL + 认证 + 完整性保护 &#x3D; HTTPS 预共享证书的非对称加解密技术 HTTPS通信完整流程 中间人抓包核心原理 Charles、Burp Suite开启SSL抓包  把Charles和burp的证书安装在手机里面是为了通过HTTPS的证书校验   认证机关的公开密钥必须安全的转交给客户端。使用通信方式时，如何安全转交是一件很困难的事情。因此，多数浏览器">
+<meta property="og:type" content="article">
+<meta property="og:title" content="App抓包教程汇总">
+<meta property="og:url" content="https://xiaoeeyu.github.io/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/index.html">
+<meta property="og:site_name" content="xiaoeryu">
+<meta property="og:description" content="HTTPS抓包详解 HTTP + SSL + 认证 + 完整性保护 &#x3D; HTTPS 预共享证书的非对称加解密技术 HTTPS通信完整流程 中间人抓包核心原理 Charles、Burp Suite开启SSL抓包  把Charles和burp的证书安装在手机里面是为了通过HTTPS的证书校验   认证机关的公开密钥必须安全的转交给客户端。使用通信方式时，如何安全转交是一件很困难的事情。因此，多数浏览器">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240420205934810.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240420210227284.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/attach-785a37ddf4e976170336b107822babe49522c1b2.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240420211247853.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240420212253526.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240420212333931.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240420213954648.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240420214443297.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240420215003916.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240420215253731.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240420220754963.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240421100544388-17137163326311.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240422184253573.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240422001731416.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240511075319817.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240518105102514.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240518112900658.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240518114326096.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240518115718036.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240518165901310.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240518111127677.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240518173423763.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240518173829795.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240518175232931.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240520014812300.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240518233108973.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240518233415503.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240518233515197.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240519232703324.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240520004036542.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240520012935176.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240520011441743.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240520011841509.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240520012544437.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240523104537106.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240525231734665.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240526000243895.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240526002331197.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240526002443399.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240526003526516.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240526005733253.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240526011136873.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240526011418954.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240526012533728.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240526182237451.png">
+<meta property="article:published_time" content="2024-05-26T15:08:29.000Z">
+<meta property="article:modified_time" content="2024-05-26T15:10:33.268Z">
+<meta property="article:author" content="xiaoeryu">
+<meta property="article:tag" content="App抓包">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://xiaoeeyu.github.io/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240420205934810.png">
+    
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/rabete.jpg" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/rabete.jpg">
+    <meta name="theme-color" content="#A31F34">
+    <link rel="shortcut icon" href="/images/rabete.jpg">
+    <!--- Page Info-->
+    
+    <title>
+        
+            App抓包教程汇总 -
+        
+        xiaoeryu
+    </title>
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+
+    <!--- Inject Part-->
+    
+
+    
+        <style>
+    :root {
+        --preloader-background-color: #fff;
+        --preloader-text-color: #000;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        :root {
+            --preloader-background-color: #202124;
+            --preloader-text-color: #fff;
+        }
+    }
+
+    @media (prefers-color-scheme: light) {
+        :root {
+            --preloader-background-color: #fff;
+            --preloader-text-color: #000;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .ml13 {
+            font-size: 2.6rem !important; /* Adjust this value as needed */
+        }
+    }
+
+    .preloader {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem; /* Tailwind 'gap-4' is 1rem */
+        align-items: center;
+        justify-content: center;
+        position: fixed;
+        padding: 12px;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh; /* 'h-screen' is 100% of the viewport height */
+        background-color: var(--preloader-background-color);
+        z-index: 1100; /* 'z-[1100]' sets the z-index */
+        transition: opacity 0.2s ease-in-out;
+    }
+
+    .ml13 {
+        font-size: 3.2rem;
+        /* text-transform: uppercase; */
+        color: var(--preloader-text-color);
+        letter-spacing: -1px;
+        font-weight: 500;
+        font-family: 'Chillax-Variable', sans-serif;
+        text-align: center;
+    }
+
+    .ml13 .word {
+        display: inline-flex;
+        flex-wrap: wrap;
+        white-space: nowrap;
+    }
+
+    .ml13 .letter {
+        display: inline-block;
+        line-height: 1em;
+    }
+</style>
+
+<div class="preloader">
+    
+<script src="/js/libs/anime.min.js"></script>
+
+    <h1 class="ml13">
+        xiaoeryu
+    </h1>
+    <script>
+        var textWrapper = document.querySelector('.ml13');
+        // Split text into words
+        var words = textWrapper.textContent.trim().split(' ');
+
+        // Clear the existing content
+        textWrapper.innerHTML = '';
+
+        // Wrap each word and its letters in spans
+        words.forEach(function(word) {
+            var wordSpan = document.createElement('span');
+            wordSpan.classList.add('word');
+            wordSpan.innerHTML = word.replace(/\S/g, "<span class='letter'>$&</span>");
+            textWrapper.appendChild(wordSpan);
+            textWrapper.appendChild(document.createTextNode(' ')); // Add space between words
+        });
+
+
+        anime.timeline({loop: true})
+            .add({
+                targets: '.ml13 .letter',
+                translateY: [100,0],
+                translateZ: 0,
+                opacity: [0,1],
+                easing: "easeOutExpo",
+                duration: 1400,
+                delay: (el, i) => 300 + 30 * i
+            }).add({
+            targets: '.ml13 .letter',
+            translateY: [0,-100],
+            opacity: [1,0],
+            easing: "easeInExpo",
+            duration: 1200,
+            delay: (el, i) => 100 + 30 * i
+        });
+
+        let themeStatus = JSON.parse(localStorage.getItem('REDEFINE-THEME-STATUS'))?.isDark;
+
+        // If the theme status is not found in local storage, check the preferred color scheme
+        if (themeStatus === undefined || themeStatus === null) {
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                themeStatus = 'dark';
+            } else {
+                themeStatus = 'light';
+            }
+        }
+
+        // Now you can use the themeStatus variable in your code
+        if (themeStatus) {
+            document.documentElement.style.setProperty('--preloader-background-color', '#202124');
+            document.documentElement.style.setProperty('--preloader-text-color', '#fff');
+        } else {
+            document.documentElement.style.setProperty('--preloader-background-color', '#fff');
+            document.documentElement.style.setProperty('--preloader-text-color', '#000');
+        }
+
+        window.addEventListener('load', function () {
+            hidePreloaderAfterTimeout(1000); // Hide after 1000 milliseconds once the window has loaded
+        });
+
+        // Backup failsafe: Hide preloader after a maximum of 5000 milliseconds, regardless of the window load event
+        hidePreloaderAfterTimeout(5000);
+
+        function hidePreloaderAfterTimeout(delay) {
+            setTimeout(function () {
+                var preloader = document.querySelector('.preloader');
+                preloader.style.opacity = '0';
+                setTimeout(function () {
+                    preloader.style.display = 'none';
+                }, 200);
+            }, delay);
+        }
+    </script>
+</div>
+    
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+        
+<link rel="stylesheet" href="/assets/build/styles.css">
+
+    
+
+    
+<link rel="stylesheet" href="/fonts/fonts.css">
+
+    
+<link rel="stylesheet" href="/fonts/Satoshi/satoshi.css">
+
+    <!--- Font Part-->
+    
+    
+    
+    
+
+
+    <script id="hexo-configurations">
+    window.config = {"hostname":"xiaoeeyu.github.io","root":"/","language":"zh-CN","path":"search.xml"};
+    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true,"title_alignment":"left","headings_top_spacing":{"h1":"5rem","h2":"4rem","h3":"2.8rem","h4":"2.5rem","h5":"2.2rem","h6":"2rem"}},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":4,"number":false,"expand":true,"init_open":true},"copyright":{"enable":true,"default":"cc_by_nc_sa"},"lazyload":true,"recommendation":{"enable":false,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/ball-0101.jpg","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null,"default_mode":"light"},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"preloader":true,"open_graph":true,"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/wallhaven-jxl31y.png","dark":"/images/wallhaven-o5762l.png"},"title":"XIAOERYU","subtitle":{"text":["明心见性，拨云见日","Don't wait, to create"],"hitokoto":{"enable":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":true,"style":"default","links":{"github":"https://github.com/xiaoeeyu","instagram":null,"zhihu":null,"twitter":null,"email":"xiaoeryu@163.com"},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null}]},"mermaid":{"enable":false,"version":"9.3.0"}},"version":"2.6.1","navbar":{"auto_hide":false,"color":{"left":"#f78736","right":"#367df7","transparency":35},"width":{"home":"1200px","pages":"1000px"},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Archives":{"path":"/archives","icon":"fa-regular fa-archive"}},"search":{"enable":true,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"blur"},"home":{"sidebar":{"enable":true,"position":"left","first_item":"menu","announcement":null,"show_on_mobile":true,"links":null},"article_date_format":"auto","categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":3}},"footerStart":"2022/8/17 11:45:14"};
+    window.lang_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"};
+    window.data = {"masonry":false};
+  </script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+<meta name="generator" content="Hexo 6.3.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+<!--        <span class="swup-progress-icon">-->
+<!--            <i class="fa-solid fa-circle-notch fa-spin"></i>-->
+<!--        </span>-->
+    
+</div>
+
+
+<main class="page-container" id="swup">
+
+    
+
+    <div class="main-content-container">
+
+
+        <div class="main-content-header">
+            <header class="navbar-container px-6 md:px-12">
+
+    <div class="navbar-content ">
+        <div class="left">
+            
+                <a class="logo-image" href="/">
+                    <img src="/images/rabete.jpg">
+                </a>
+            
+            <a class="logo-title" href="/">
+                
+                xiaoeryu
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/"
+                                        >
+                                    <i class="fa-regular fa-house fa-fw"></i>
+                                    首页
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/archives"
+                                        >
+                                    <i class="fa-regular fa-archive fa-fw"></i>
+                                    归档
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                    
+                        <li class="navbar-item search search-popup-trigger">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fa-solid fa-magnifying-glass"></i>
+                    </div>
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile sheet -->
+    <div class="navbar-drawer h-screen w-full absolute top-0 left-0 bg-background-color flex flex-col justify-between">
+        <ul class="drawer-navbar-list flex flex-col px-4 justify-center items-start">
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/"
+                        >
+                            <span>
+                                首页
+                            </span>
+                            
+                                <i class="fa-regular fa-house fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/archives"
+                        >
+                            <span>
+                                归档
+                            </span>
+                            
+                                <i class="fa-regular fa-archive fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+
+            
+            
+        </ul>
+
+        <div class="statistics flex justify-around my-2.5">
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">82</div>
+        <div class="label text-third-text-color text-sm">标签</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">13</div>
+        <div class="label text-third-text-color text-sm">分类</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">95</div>
+        <div class="label text-third-text-color text-sm">文章</div>
+    </a>
+</div>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="main-content-body">
+
+            
+
+            <div class="main-content">
+
+                
+                    <div class="post-page-container flex relative justify-between box-border w-full h-full">
+    <div class="article-content-container">
+
+        <div class="article-title relative w-full">
+            
+                <div class="w-full flex items-center pt-6 justify-start">
+                    <h1 class="article-title-regular text-second-text-color text-4xl md:text-6xl font-bold px-2 sm:px-6 md:px-8 py-3">App抓包教程汇总</h1>
+                </div>
+            
+            </div>
+
+        
+            <div class="article-header flex flex-row gap-2 items-center px-2 sm:px-6 md:px-8">
+                <div class="avatar w-[46px] h-[46px] flex-shrink-0 rounded-medium border border-border-color p-[1px]">
+                    <img src="/images/rabete.jpg">
+                </div>
+                <div class="info flex flex-col justify-between">
+                    <div class="author flex items-center">
+                        <span class="name text-default-text-color text-lg font-semibold">xiaoeryu</span>
+                        
+                            <span class="author-label ml-1.5 text-xs px-2 py-0.5 rounded-small text-third-text-color border border-shadow-color-1">Lv5</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2024-05-26 23:08:29</span>
+        <span class="mobile">2024-05-26 23:08:29</span>
+        <span class="hover-info">创建</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2024-05-26 23:10:33</span>
+            <span class="mobile">2024-05-26 23:10:33</span>
+            <span class="hover-info">更新</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/Android%E9%80%86%E5%90%91/">Android逆向</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/App%E6%8A%93%E5%8C%85/">App抓包</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fa-regular fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        
+
+
+        <div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
+            <h2 id="HTTPS抓包详解"><a href="#HTTPS抓包详解" class="headerlink" title="HTTPS抓包详解"></a>HTTPS抓包详解</h2><ul>
+<li>HTTP + SSL + 认证 + 完整性保护 = HTTPS</li>
+<li>预共享证书的非对称加解密技术</li>
+<li>HTTPS通信完整流程</li>
+<li>中间人抓包核心原理</li>
+<li>Charles、Burp Suite开启SSL抓包</li>
+</ul>
+<p>把Charles和burp的证书安装在手机里面是为了通过HTTPS的证书校验</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240420205934810.png" class="" title="image-20240420205934810">
+
+<p>认证机关的公开密钥必须安全的转交给客户端。使用通信方式时，如何安全转交是一件很困难的事情。因此，多数浏览器开发商发布版本时，会事先在内部植入常用认证机关的公开密钥</p>
+<h3 id="中间人抓包流程"><a href="#中间人抓包流程" class="headerlink" title="中间人抓包流程"></a>中间人抓包流程</h3><img lazyload="" src="/images/loading.svg" data-src="/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240420210227284.png" class="" title="image-20240420210227284">
+
+<ul>
+<li>在这种情况下，app本质上是和Charles通信，服务器本质上也是跟Charles通信</li>
+<li>所以在这个时候需要把Charles的证书放在手机里面</li>
+<li>在把证书放到手机信任凭据的根目录之后，App和抓包工具之间以及抓包工具与服务器之间的校验就没有问题了</li>
+</ul>
+<h2 id="HTTPS到底是什么"><a href="#HTTPS到底是什么" class="headerlink" title="HTTPS到底是什么"></a>HTTPS到底是什么</h2><p>HTTP作为一种被广泛使用的传输协议，也存在一些缺点：</p>
+<ol>
+<li>无状态（可以通过Cookie或Session解决）</li>
+<li>明文传输</li>
+<li>不安全</li>
+</ol>
+<p>为了解决“明文”和“不安全“两个问题，就产生了HTTPS。HTTPS不是一种单独的协议，它是由HTTP + SSL/TLS组成</p>
+<h3 id="一图讲解单向认证和双向认证"><a href="#一图讲解单向认证和双向认证" class="headerlink" title="一图讲解单向认证和双向认证"></a>一图讲解单向认证和双向认证</h3><img lazyload="" src="/images/loading.svg" data-src="/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/attach-785a37ddf4e976170336b107822babe49522c1b2.png" class="" title="1364.png">
+
+<h3 id="抓包工具抓HTTP包的原理"><a href="#抓包工具抓HTTP包的原理" class="headerlink" title="抓包工具抓HTTP包的原理"></a>抓包工具抓HTTP包的原理</h3><ol>
+<li>首先抓包工具会提供出代理服务，客户端需要连接该代理</li>
+<li>客户端发出HTTP请求时，会经过抓包工具，抓包工具将请求的原文进行展示</li>
+<li>抓包工具使用该原文将请求发送给服务器</li>
+<li>服务器返回结果给抓包工具，抓包工具将返回结果进行展示</li>
+<li>抓包工具将服务器返回的结果原样返回给客户端</li>
+</ol>
+<p>抓包工具就相当于一个透明的中间人，数据经过的时候它一手接收数据，另一手奖数据传出去</p>
+<h3 id="抓包工具抓HTTPS包的原理"><a href="#抓包工具抓HTTPS包的原理" class="headerlink" title="抓包工具抓HTTPS包的原理"></a>抓包工具抓HTTPS包的原理</h3><p>这个时候抓包工具对客户端来说相当于服务器，对服务器来说相当于客户端。在这个传输过程中，客户端会以为它就是目标服务器，服务器也会以为它就是请求发起的客户端</p>
+<ol>
+<li>客户端连接抓包工具提供的代理服务</li>
+<li>客户端需要安装抓包工具的根证书</li>
+<li>客户端发出HTTPS请求，抓包工具模拟服务器与客户端进行TLS握手交换密钥等流程</li>
+<li>抓包工具发送一个HTTPS请求给客户端请求的目标服务器，并与目标服务器进行TLS握手交换密钥等流程</li>
+<li>客户端使用与抓包工具协定好的密钥加密数据后发送给抓包工具</li>
+<li>抓包工具使用与客户端协定好的密钥解密数据，并将结果进行展示</li>
+<li>抓包工具将解密后的客户端数据，使用与服务器协定好的密钥进行加密后发送给目标服务器</li>
+<li>服务器解密数据后，做对应的逻辑处理，然后将返回结果使用与抓包工具协定好的密钥进行加密发送给抓包工具</li>
+<li>抓包工具将服务器返回的结果，用与服务器协定好的密钥解密，并将结果进行展示</li>
+<li>抓包工具将解密后的服务器返回数据，使用与客户端协定好的密钥进行加密后发送给客户端</li>
+<li>客户端解密数据</li>
+</ol>
+<h3 id="VPN抓包"><a href="#VPN抓包" class="headerlink" title="VPN抓包"></a>VPN抓包</h3><h4 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h4><blockquote>
+<p>Pixel XL Android8.1、已经root</p>
+<p>Postern: 3.1.3</p>
+<p>Charles: 4.6.5</p>
+<p>Burpsuite: 2023.6</p>
+</blockquote>
+<p>在没有防止中间人抓包的情况下，我们在之前<a href="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/#%E9%85%8D%E7%BD%AE%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83">安装配置抓包环境</a>的文章中已经尝试过了。</p>
+<p>但是如果App为了防止中间人抓包，特意设置了不走代理这个选项，那我们单独使用Fiddler、BurpSuite这些工具是抓不到包的。这种情况下可以尝试使用VPN抓包，例如：使用Postern + Charles这个组合，是因为Charles没有直接监听到App，Charles是监听到了Postern上，Postern是VPN，它通过VPN将所有流量转发到Charles的socks代理，再打开Charles的External Proxy Server –（外部代理服务器）转发到Burpsuite，从而实施中间人抓包。</p>
+<p>如果有服务器对客户端的校验的话，可以尝试使用VPN代理抓包。这样VPN会代理所有的流量，开启VPN会添加一个网卡这时候等于是我们从应用层的抓包变为了网络层抓包。能抓到手机通过网卡发出去的所有包。这个模式burp不支持，可以使用Charles + Postern进行</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240420211247853.png" class="" title="image-20240420211247853">
+
+<p>这个时候我们需要使用socket来抓包，因为HTTPS协议是运行在应用层为应用程序提供服务。而socket是位于传输层的，可以使用这种方式来绕过应用层的检测。</p>
+<h4 id="配置socket"><a href="#配置socket" class="headerlink" title="配置socket"></a>配置socket</h4><p>Charles打开socket端口</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240420212253526.png" class="" title="image-20240420212253526">
+
+<p>手机Wi-Fi连接socket端口</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240420212333931.png" class="" title="image-20240420212333931">
+
+<h4 id="Postern配置代理"><a href="#Postern配置代理" class="headerlink" title="Postern配置代理"></a>Postern配置代理</h4><h6 id="配置代理"><a href="#配置代理" class="headerlink" title="配置代理"></a>配置代理</h6><p>删除默认的代理并添加自己的代理服务器</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240420213954648.png" class="" title="image-20240420213954648">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240420214443297.png" class="" title="image-20240420214443297">
+
+<h6 id="配置规则"><a href="#配置规则" class="headerlink" title="配置规则"></a>配置规则</h6><p>删除掉其它的规则防止干扰，只保留当前要使用的规则</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240420215003916.png" class="" title="image-20240420215003916">
+
+<h6 id="打开-x2F-关闭Postern"><a href="#打开-x2F-关闭Postern" class="headerlink" title="打开/关闭Postern"></a>打开/关闭Postern</h6><img lazyload="" src="/images/loading.svg" data-src="/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240420215253731.png" class="" title="image-20240420215253731">
+
+<h6 id="抓包测试"><a href="#抓包测试" class="headerlink" title="抓包测试"></a>抓包测试</h6><p>如果打不开网页的话，重启手机试试</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240420220754963.png" class="" title="image-20240420220754963">
+
+<h4 id="Postern-Charles-Burpsuite对App抓包"><a href="#Postern-Charles-Burpsuite对App抓包" class="headerlink" title="Postern + Charles + Burpsuite对App抓包"></a>Postern + Charles + Burpsuite对App抓包</h4><p>Postern还是跟上面一样配置不用修改</p>
+<p>打开Charles 勾选 Proxy $\rightarrow$ External Proxy Settings就是要将Charles作为手机端的代理，再由Charles将包转发给Burpsuite。这种情况下对于Charles来说，Burpsuite就成了一个External Proxy Server(外部代理服务器)</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240421100544388-17137163326311.png" class="" title="image-20240421100544388">
+
+<ul>
+<li>勾选HTTP和HTTPS代理，这里HTTP和HTTPS的代理服务器地址都是127.0.0.1:8080（这里的配置与Burpsuite代理一致）</li>
+</ul>
+<p>已经设置了外部代理了，就必须打开 burp（当然了主要是要打开 burp 中对 127.0.0.1:8080 的监听），否则就会出现 连不上网了 的现象。在 burp 的菜单栏中的 Proxy 选项下的 Options 中打开 127.0.0.1:8080 的代理监听（默认应该是已经打开的），在 Intercept 中关闭请求拦截。</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240422184253573.png" class="" title="image-20240422184253573">
+
+<p>配置完成之后在手机上搜索内容，就可以抓到数据包，并且数据包也从Charles转发到Burpsuite了</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240422001731416.png" class="" title="image-20240422001731416">
+
+<h4 id="VPN抓包的对抗-–-VPN检测"><a href="#VPN抓包的对抗-–-VPN检测" class="headerlink" title="VPN抓包的对抗 – VPN检测"></a>VPN抓包的对抗 – VPN检测</h4><p>现在随着使用VPN抓包变成常用手段，很多App会增加一些对抗措施。例如App增加了对VPN是否开启的检测</p>
+<ol>
+<li><p><code>java.net.NetworkInterface.getName()</code>是检测VPN的API</p>
+<pre><code class="js">Enumeration&lt;NetworkInterface&gt; networkInterfaces = NetworkInterface.getNetworkInterfaces();
+while (networkInterfaces.hasMoreElements()) {
+    NetworkInterface next = networkInterfaces.nextElement();
+    logOutPut("getName获得网络设备名称=" + next.getName());
+    logOutPut("getDisplayName获得网络设备显示名称=" + next.getDisplayName());
+    logOutPut("getIndex获得网络接口的索引=" + next.getIndex());
+    logOutPut("isUp是否已经开启并运行=" + next.isUp());
+    logOutPut("isBoopback是否为回调接口=" + next.isLoopback());
+}
+</code></pre>
+<p>可以通过检测返回值否等于<code>tun0</code>或<code>ppp0</code>来判断是否开启VPN，如果开启的话就hook <code>java.net.NetworkInterface.getName()</code>绕过VPN检测</p>
+<pre><code class="js">function hook_vpn(){
+   Java.perform(function() {
+       var NetworkInterface = Java.use("java.net.NetworkInterface");
+       NetworkInterface.getName.implementation = function() {
+           var name = this.getName();
+           console.log("name: " + name);
+           if(name == "tun0" || name == "ppp0"){
+               return "rmnet_data0";
+           }else {
+               return name;
+           }
+       }
+   })
+}
+</code></pre>
+<p>如果开启VPN，NetworkCapabilities.hasTransport 会返回 true。通过hook，修改其返回值为false</p>
+<pre><code class="js">var NetworkCapabilities = Java.use("android.net.NetworkCapabilities");
+NetworkCapabilities.hasTransport.implementation = function () {
+    return false;
+}
+</code></pre>
+</li>
+</ol>
+<p>上面的方法可以过掉大部分VPN检测，如果还有少数VPN检测过不掉，可以通过Objection Hook的方式，大范围hook java库中的网络或系统函数，找出监测点，进行绕过。</p>
+<h3 id="服务端校验客户端绕过"><a href="#服务端校验客户端绕过" class="headerlink" title="服务端校验客户端绕过"></a>服务端校验客户端绕过</h3><p>如果服务器要对客户端进行证书校验的话，因为抓包工具本身没有App的证书，所以是无法通过校验的。</p>
+<p>这时候我们就要找到证书，然后把证书导入到抓包工具中再进行抓包</p>
+<h4 id="举例测试"><a href="#举例测试" class="headerlink" title="举例测试"></a>举例测试</h4><p>便利蜂这个App正好有服务端对客户端证书的校验，接下来我们以这个App为例进行实战测试</p>
+<h5 id="方式一"><a href="#方式一" class="headerlink" title="方式一"></a>方式一</h5><p>直接使用r0capture脚本来获取证书和证书密码</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240511075319817.png" class="" title="image-20240511075319817">
+
+<h6 id="环境-1"><a href="#环境-1" class="headerlink" title="环境"></a>环境</h6><blockquote>
+<p>frida-server：12.8</p>
+<p>Python：3.8.0</p>
+<p>Android：8.1</p>
+<p>给App打开文件存储的权限</p>
+</blockquote>
+<h6 id="使用r0capture脚本获取证书信息"><a href="#使用r0capture脚本获取证书信息" class="headerlink" title="使用r0capture脚本获取证书信息"></a>使用r0capture脚本获取证书信息</h6><p><code>frida -U -f com.bianlifeng.customer.android -l script.js --no-pause -o r0capture.txt</code></p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240518105102514.png" class="" title="image-20240518105102514">
+
+<ul>
+<li><p>在手机路径下查找dump下来的证书文件</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240518112900658.png" class="" title="image-20240518112900658">
+
+<ul>
+<li>这里dump下来了非常多，随便拿一个就行了</li>
+</ul>
+</li>
+</ul>
+<h6 id="导入证书"><a href="#导入证书" class="headerlink" title="导入证书"></a>导入证书</h6><p>拿到之后，把证书导入到抓包工具中</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240518114326096.png" class="" title="image-20240518114326096">
+
+<ul>
+<li>导入<strong>p12</strong>文件，密码刚刚也获取到了是<strong>r0ysue</strong></li>
+<li>这里的<strong>Host</strong>和<strong>Port</strong>可以填通配符也可以只填写400访问失败的地址</li>
+</ul>
+<p>导入证书之后再重新抓取登录包</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240518115718036.png" class="" title="image-20240518115718036">
+
+<ul>
+<li>成功通过校验抓到了数据包</li>
+</ul>
+<h5 id="方式二"><a href="#方式二" class="headerlink" title="方式二"></a>方式二</h5><p>手动分析找到证书的位置并将其保存成证书文件</p>
+<h6 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h6><p>参考<a class="link" target="_blank" rel="noopener" href="https://blog.csdn.net/u013424496/article/details/51161647">这篇文章 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>可知我们可以通过系统中的<code>keyStrore.load</code>拿到证书的名字和密码</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240518165901310.png" class="" title="image-20240518165901310">
+
+<ul>
+<li>PS：在8.1系统中还生效，在Android10.0的源码中不生效。可能是没有<code>load()</code>这个方法了</li>
+</ul>
+<p>在Android8.1上可以通过Hook **keyStore.load()**这个接口拿到证书密码</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240518111127677.png" class="" title="image-20240518111127677">
+
+<p>拿到之后，因为有壳所以先对便利蜂App进行脱壳然后分析</p>
+<h6 id="脱壳"><a href="#脱壳" class="headerlink" title="脱壳"></a>脱壳</h6><p>使用frida自带的脱壳工具</p>
+<p><code>frida-dexdump -UF</code></p>
+<ul>
+<li>不用指定参数，把App打开放在前台就行</li>
+</ul>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240518173423763.png" class="" title="image-20240518173423763">
+
+<h6 id="定位"><a href="#定位" class="headerlink" title="定位"></a>定位</h6><p>用<code>grep</code>命令搜索一下关键字，看主要逻辑在哪个dex文件中</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240518173829795.png" class="" title="image-20240518173829795">
+
+<ul>
+<li>根据搜索的结果<strong>classes07.dex</strong>每次都会出现，那主要逻辑应该就在这个文件中了，分析一下这个文件</li>
+</ul>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240518175232931.png" class="" title="image-20240518175232931">
+
+<ul>
+<li><p><strong>getKeyStore</strong>是一个native函数，那就需要去native中去分析了</p>
+<p>分析so之前先定位要分析的函数在哪个so文件中缩小分析范围，可以使用<a class="link" target="_blank" rel="noopener" href="https://github.com/Simp1er/MobileSec/blob/master/hook_RegisterNative.js">脚本 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>来辅助进行定位（不管静态注册还是动态注册，最终都要走RegisterNative，那此时就可以枚举符号找到符号的地址，通过此地址再结合Frida ModuleMap api可以反推出so的名称）</p>
+<blockquote>
+<p><strong>脚本报错：</strong></p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240520014812300.png" class="" title="image-20240520014812300">
+
+<ul>
+<li><p>原因是因为这个方法在我们使用的frida12里面没有，在frida14之后才有。所以需要切换一下frida和Python版本</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240518233108973.png" class="" title="image-20240518233108973">
+
+<p>重新执行脚本<code>frida -U -f com.bianlifeng.customer.android -l HookRegisterNative.js --runtime=v8</code></p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240518233415503.png" class="" title="image-20240518233415503">
+
+<p>定位到了<code>getKeyStore()</code>在<strong>libbreakpad.so</strong>中，offset=&gt;0x6f58</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240518233515197.png" class="" title="image-20240518233515197"></li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<h6 id="用IDA分析libbreakpad-so"><a href="#用IDA分析libbreakpad-so" class="headerlink" title="用IDA分析libbreakpad.so"></a>用IDA分析libbreakpad.so</h6><img lazyload="" src="/images/loading.svg" data-src="/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240519232703324.png" class="" title="image-20240519232703324">
+
+<ul>
+<li><p>打开后直接搜索<strong>getKeyStore</strong>搜索到之后按F5，然后如果参数类型不对的话，先把参数类型改了然后其中的一些JNI函数就能识别出来了。</p>
+</li>
+<li><p>分析反编译出来的代码，发现其中的<strong>FindClass()<strong>的参数</strong>v2</strong>是通过<strong>sub_7B7C</strong>获取到的，那就先hook这个函数看**FindClass()**都加载了什么类</p>
+<blockquote>
+<pre><code class="js">function hook_dlopen(module_name, fun) {
+    var android_dlopen_ext = Module.findExportByName(null, "android_dlopen_ext");
+
+    if (android_dlopen_ext) {
+        Interceptor.attach(android_dlopen_ext, {
+            onEnter: function (args) {
+                var pathptr = args[0];
+                if (pathptr) {
+                    this.path = (pathptr).readCString();
+                    if (this.path.indexOf(module_name) &gt;= 0) {
+                        this.canhook = true;
+                        console.log("android_dlopen_ext:", this.path);
+                    }
+                }
+            },
+            onLeave: function (retval) {
+                if (this.canhook) {
+                    fun();
+                }
+            }
+        });
+    }
+    var dlopen = Module.findExportByName(null, "dlopen");
+    if (dlopen) {
+        Interceptor.attach(dlopen, {
+            onEnter: function (args) {
+                var pathptr = args[0];
+                if (pathptr) {
+                    this.path = (pathptr).readCString();
+                    if (this.path.indexOf(module_name) &gt;= 0) {
+                        this.canhook = true;
+                        console.log("dlopen:", this.path);
+                    }
+                }
+            },
+            onLeave: function (retval) {
+                if (this.canhook) {
+                    fun();
+                }
+            }
+        });
+    }
+    console.log("android_dlopen_ext:", android_dlopen_ext, "dlopen:", dlopen);
+}
+
+
+function hook7B7C(){
+    var breakpad = Process.findModuleByName("libbreakpad.so")
+    Interceptor.attach(breakpad.base.add('0x7b7c'),{
+        onEnter:function(args){
+            console.log("entering 7B7C...")
+        }, onLeave:function(ret){
+            console.log("leaving 7b7c:", ret, ret.readCString())
+        }
+    })
+}
+
+function main() {
+    hook_dlopen("libbreakpad.so", hook7B7C);
+}
+
+setImmediate(main);
+</code></pre>
+<p>执行hook脚本：<code>frida -U -f com.bianlifeng.customer.android -l hookartMethod.js --runtime=v8</code></p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240520004036542.png" class="" title="image-20240520004036542">
+
+<ul>
+<li>根据返回结果可以猜测证书是一个P12类型的，加密使用的base64，参数类型是string和int返回值是byte数组，证书密码是blibee</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<h6 id="解密"><a href="#解密" class="headerlink" title="解密"></a>解密</h6><p>继续分析IDA反编译的代码，猜测这段最长的加密字符串就是证书文件</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240520012935176.png" class="" title="image-20240520012935176">
+
+<p>根据上一个脚本执行的结果猜测这串字符是base64加密，接下来再写一个脚本hook <strong>android.util.Base64.decode</strong>的所有输出，拿到解密后的字符串</p>
+<pre><code class="js">function hookBase64decode(){
+    Java.perform(function(){
+        Java.use("android/util/Base64").decode.overload('java.lang.String', 'int').implementation = function(str,i){
+            var result = this.decode(str,i)
+            var ByteString = Java.use("com.android.okhttp.okio.ByteString")
+            console.log("str: " + str + "\n" + "i: " + i + "\n" + "result: " + ByteString.of(result).hex())
+            return result
+        }
+    })
+}
+
+function main() {
+    // hook_dlopen("libbreakpad.so", hook7B7C);
+    hookBase64decode();
+}
+
+setImmediate(main);
+</code></pre>
+<p>执行：<code>frida -U -f com.bianlifeng.customer.android -l hookartMethod.js --runtime=v8 --no-pause</code></p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240520011441743.png" class="" title="image-20240520011441743">
+
+<h6 id="保存为证书"><a href="#保存为证书" class="headerlink" title="保存为证书"></a>保存为证书</h6><p>把这段result的结果拷贝下来保存为**.p12**文件</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240520011841509.png" class="" title="image-20240520011841509">
+
+<p>打开保存的文件，密码是<strong>blibee</strong></p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240520012544437.png" class="" title="image-20240520012544437">
+
+
+
+<h4 id="混淆后的SSL-Pinning解绑定"><a href="#混淆后的SSL-Pinning解绑定" class="headerlink" title="混淆后的SSL Pinning解绑定"></a>混淆后的SSL Pinning解绑定</h4><p>SSL Pinning（SSL 证书固定）是一种安全机制，旨在防止中间人攻击和伪造证书的攻击。它通过将预定义的服务器证书或公钥嵌入到客户端应用程序中，确保客户端只信任特定的证书或公钥，即使是证书颁发机构（CA）被攻破或信任链出现问题，客户端也能安全地与服务器通信。</p>
+<p><strong>环境</strong></p>
+<blockquote>
+<p>Android: 8.1</p>
+<p>frida-server: 14.2.8</p>
+<p>pyenv: 3.9.0</p>
+<p>frida: 14.2.8</p>
+<p>frida-tools: 8.1.2</p>
+<p>使用postern开起了vpn抓包，在开始抓包之前可以先拿酷安的App点击登录试一下看抓包环境是否畅通</p>
+</blockquote>
+<p><strong>案例App</strong>：滴答清单</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240523104537106.png" class="" title="image-20240523104537106">
+
+<ul>
+<li>这里是在对SSL Pinning的App进行抓包的时候，因为证书校验不通过，发送登录账号的请求被拒绝了</li>
+<li>这种情况说明App做了SSL证书的绑定</li>
+</ul>
+<h5 id="什么是SSL证书绑定"><a href="#什么是SSL证书绑定" class="headerlink" title="什么是SSL证书绑定"></a>什么是SSL证书绑定</h5><p>Google搜索一下“okhttp3 certificatePinner”，看看 它是怎么实现的</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240525231734665.png" class="" title="image-20240525231734665">
+
+<ul>
+<li>官网上写解释了它是用来防止中间人攻击的，例如我们通常情况下的抓包是把一段请求拆分成了两段，那么他的证书肯定是变了的</li>
+<li>示例代码中也介绍了它的实现通过提前配置好的域名，在进行握手的过程中验证<strong>客户端/服务器</strong>的证书与预定证书指纹是否相匹配，如果这时候请求的证书是charles的那么校验肯定是失败了的</li>
+</ul>
+<blockquote>
+<p>去<a class="link" target="_blank" rel="noopener" href="https://github.com/square/okhttp/blob/54238b4c713080c3fd32fb1a070fb5d6814c9a09/okhttp/src/main/kotlin/okhttp3/CertificatePinner.kt#L149">github <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>看一下它的校验函数</p>
+<pre><code class="kotlin">fun check(
+    hostname: String,
+    peerCertificates: List&lt;Certificate&gt;,
+  ) {
+    return check(hostname) {
+      (certificateChainCleaner?.clean(peerCertificates, hostname) ?: peerCertificates)
+        .map { it as X509Certificate }
+    }
+  }
+
+  internal fun check(
+    hostname: String,
+    cleanedPeerCertificatesFn: () -&gt; List&lt;X509Certificate&gt;,
+  ) {
+    val pins = findMatchingPins(hostname)
+    if (pins.isEmpty()) return
+
+    val peerCertificates = cleanedPeerCertificatesFn()
+
+    for (peerCertificate in peerCertificates) {
+      // Lazily compute the hashes for each certificate.
+      var sha1: ByteString? = null
+      var sha256: ByteString? = null
+
+      for (pin in pins) {
+        when (pin.hashAlgorithm) {
+          "sha256" -&gt; {
+            if (sha256 == null) sha256 = peerCertificate.sha256Hash()
+            if (pin.hash == sha256) return // Success!
+          }
+          "sha1" -&gt; {
+            if (sha1 == null) sha1 = peerCertificate.sha1Hash()
+            if (pin.hash == sha1) return // Success!
+          }
+          else -&gt; throw AssertionError("unsupported hashAlgorithm: ${pin.hashAlgorithm}")
+        }
+      }
+    }
+
+    // If we couldn't find a matching pin, format a nice exception.
+    val message =
+      buildString {
+        append("Certificate pinning failure!")
+        append("\n  Peer certificate chain:")
+        for (element in peerCertificates) {
+          append("\n    ")
+          append(pin(element))
+          append(": ")
+          append(element.subjectDN.name)
+        }
+        append("\n  Pinned certificates for ")
+        append(hostname)
+        append(":")
+        for (pin in pins) {
+          append("\n    ")
+          append(pin)
+        }
+      }
+    throw SSLPeerUnverifiedException(message)
+  }
+</code></pre>
+<ul>
+<li>通过校验确保了只有预定义的证书才能通过验证</li>
+</ul>
+</blockquote>
+<h5 id="标准SSL-Pinning的解绑定"><a href="#标准SSL-Pinning的解绑定" class="headerlink" title="标准SSL Pinning的解绑定"></a>标准SSL Pinning的解绑定</h5><p>比较常用的就是<a class="link" target="_blank" rel="noopener" href="https://github.com/sensepost/objection/blob/master/agent/src/android/pinning.ts">objection <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240526000243895.png" class="" title="image-20240526000243895">
+
+<ul>
+<li>objection中hook的就是用于校验的<strong>check</strong>函数</li>
+</ul>
+<h6 id="解绑定"><a href="#解绑定" class="headerlink" title="解绑定"></a>解绑定</h6><p>有一些对各种种类的证书绑定比较全面的<a class="link" target="_blank" rel="noopener" href="https://github.com/WooyunDota/DroidSSLUnpinning/blob/master/ObjectionUnpinningPlus/hooks.js">脚本 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>，拷贝下来试一下</p>
+<p>这里用spwn模式运行frida脚本，因为这里hook的okhttp的时机是在创建的时候，所以如果错过了这个点就不生效了</p>
+<p><code>frida -U -f cn.ticktick.task -l StandardSSLpinningBypass.js --no-pause</code></p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240526002331197.png" class="" title="image-20240526002331197">
+
+<ul>
+<li><p>脚本执行成功了可以看到经过了很多hook的点，再试试抓包是否能成功</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240526002443399.png" class="" title="image-20240526002443399">
+
+<ul>
+<li>还是一样的，没有通过</li>
+<li>如果没能成功的话，就怀疑这个证书是不是混淆了</li>
+</ul>
+</li>
+</ul>
+<h6 id="混淆证书的解绑定"><a href="#混淆证书的解绑定" class="headerlink" title="混淆证书的解绑定"></a>混淆证书的解绑定</h6><p>怎么对混淆的证书解绑定呢，首先对证书校验的原理考虑它打开文件的过程肯定是绕不过的（因为要打开证书文件进行校验）。所以可以考虑使用frida去hook所有打开文件的动作，这里使用<a class="link" target="_blank" rel="noopener" href="https://github.com/r0ysue/r0tracer/blob/main/r0tracer.js">r0tracer <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>这个frida脚本是基于frida16的，那我们切换为frida16的环境</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240526003526516.png" class="" title="image-20240526003526516">
+
+<p><strong>切换环境</strong></p>
+<blockquote>
+<p>frida-server: 16.2.1 </p>
+<p>pyenv: 3.12.0</p>
+<p>frida: 16.2.1</p>
+</blockquote>
+<p>执行脚本<code>frida -U -f cn.ticktick.task -l r0tracer.js -o dida.txt</code></p>
+<ul>
+<li>因为文件操作非常多，所以多等一会儿</li>
+<li>结束了之后，去刚刚输出的<strong>dida.txt</strong>文件中查找关键字看能不能找到</li>
+</ul>
+<p>这里尝试直接搜索我们前面分析查看okhttp代码中间里面的<code>certificatePinner</code></p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240526005733253.png" class="" title="image-20240526005733253">
+
+<ul>
+<li><p>这里直接找到 了，那用GDA打开apk看一下找到的这个函数是什么</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240526011136873.png" class="" title="image-20240526011136873">
+
+<ul>
+<li><p>找到了这个函数，看到它的参数跟okhttp源码中的<code>check</code>函数是相同的</p>
+</li>
+<li><p>另外包括它结尾校验失败抛出的异常也是跟源码中相同的</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240526011418954.png" class="" title="image-20240526011418954">
+
+<ul>
+<li>所以这个函数大概率就是check函数了，那接下来尝试直接hook它</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p>写一个简单的hook脚本直接hook这个函数</p>
+<pre><code class="js">Java.perform(function() {
+    // 获取目标类
+    var TargetClass = Java.use("z1.g");
+    // Hook目标方法并重写其实现
+    TargetClass.a.implementation = function(x, y) {
+        // 打印调用信息
+        console.log('z1.g.a called with arguments: ' + x + ', ' + y);
+    };
+});
+</code></pre>
+<p>执行脚本<code>frida -U -f cn.ticktick.task -l didaSSLbypass.js </code></p>
+<p>然后再点击登录就成功的抓到了数据包</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240526012533728.png" class="" title="image-20240526012533728">
+
+
+
+<h4 id="flutter库的SSL-Pinning解绑定"><a href="#flutter库的SSL-Pinning解绑定" class="headerlink" title="flutter库的SSL Pinning解绑定"></a>flutter库的SSL Pinning解绑定</h4><p>暂时没找到合适的案例</p>
+<p>如果在尝试的时候也无法抓到登录包，包括使用r0capture等脚本也无法抓到包的话。</p>
+<p>可以通过反编译查看源码，看主要逻辑是否被flutter包裹了</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240526182237451.png" class="" title="image-20240526182237451">
+
+<p>尝试使用一些flutter解绑定的脚本</p>
+<p>暂时参考一些帖子吧，找到合适的案例再补上</p>
+<p><a class="link" target="_blank" rel="noopener" href="https://bbs.kanxue.com/thread-280261.htm">flutter抓包绕过-Android安全-看雪-安全社区|安全招聘|kanxue.com <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<p>[<a class="link" target="_blank" rel="noopener" href="https://bbs.kanxue.com/thread-261941.htm">原创]一种基于frida和drony的针对flutter抓包的方法-Android安全-看雪-安全社区|安全招聘|kanxue.com <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<p><a class="link" target="_blank" rel="noopener" href="https://github.com/horangi-cyops/flutter-ssl-pinning-bypass">horangi-cyops/flutter-ssl-pinning-bypass: Horangi tools for Android penetration testing (github.com) <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+
+        </div>
+
+        
+            <div class="post-copyright-info w-full my-8 px-2 sm:px-6 md:px-8">
+                <div class="article-copyright-info-container">
+    <ul>
+        <li><strong>标题:</strong> App抓包教程汇总</li>
+        <li><strong>作者:</strong> xiaoeryu</li>
+        <li><strong>创建于
+                :</strong> 2024-05-26 23:08:29</li>
+        
+            <li>
+                <strong>更新于
+                    :</strong> 2024-05-26 23:10:33
+            </li>
+        
+        <li>
+            <strong>链接:</strong> https://github.com/xiaoeryu/2024/05/26/App抓包教程汇总/
+        </li>
+        <li>
+            <strong>
+                版权声明:
+            </strong>
+            
+
+            
+                本文章采用 <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0">CC BY-NC-SA 4.0</a> 进行许可。
+            
+        </li>
+    </ul>
+</div>
+
+            </div>
+        
+
+        
+            <ul class="post-tags-box text-lg mt-1.5 flex-wrap justify-center flex md:hidden">
+                
+                    <li class="tag-item mx-0.5">
+                        <a href="/tags/App%E6%8A%93%E5%8C%85/">#App抓包</a>&nbsp;
+                    </li>
+                
+            </ul>
+        
+
+        
+
+        
+            <div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
+                
+                
+                    <div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+                        <a class="next"
+                        rel="next"
+                        href="/2024/04/10/linkHook-init-array%E8%87%AA%E5%90%90/"
+                        >
+                            <span class="title flex justify-center items-center">
+                                <span class="post-nav-title-item">linkHook_init_array自吐</span>
+                                <span class="post-nav-item">下一篇</span>
+                            </span>
+                            <span class="right arrow-icon flex justify-center items-center">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+
+        
+            <div class="comment-container px-2 sm:px-6 md:px-8 pb-8">
+                <div class="comments-container mt-10 w-full ">
+    <div id="comment-anchor" class="w-full h-2.5"></div>
+    <div class="comment-area-title w-full my-1.5 md:my-2.5 text-xl md:text-3xl font-bold">
+        评论
+    </div>
+    
+
+        
+            
+    <div id="gitalk-container"></div>
+    <script data-swup-reload-script
+            src="//cdn.staticfile.org/gitalk/1.8.0/gitalk.min.js"></script>
+    <script data-swup-reload-script>
+
+        function loadGitalk() {
+            let __gitalk__pathname = decodeURI(location.pathname);
+            const __gitalk__pathnameLength = __gitalk__pathname.length;
+            const __gitalk__pathnameMaxLength = 50;
+            if (__gitalk__pathnameLength > __gitalk__pathnameMaxLength) {
+                __gitalk__pathname = __gitalk__pathname.substring(0, __gitalk__pathnameMaxLength - 3) + '...';
+            }
+
+            try {
+                Gitalk && new Gitalk({
+                    clientID: '13d9974f24854a639570',
+                    clientSecret: '0c6c11ab3852d24a608e0f95a79829a649afac4b',
+                    repo: 'blog_gitalk',
+                    owner: 'xiaoeeyu',
+                    admin: ['xiaoeeyu'],
+                    id: __gitalk__pathname,
+                    language: 'zh-CN',
+                    proxy: 'https://github.com/login/oauth/access_token'
+                }).render('gitalk-container');
+
+            } catch (e) {
+                window.Gitalk = null;
+            }
+        }
+
+        if ('true') {
+            const loadGitalkTimeout = setTimeout(() => {
+                loadGitalk();
+                clearTimeout(loadGitalkTimeout);
+            }, 1000);
+        } else {
+            window.addEventListener('DOMContentLoaded', loadGitalk);
+        }
+    </script>
+
+
+
+        
+    
+</div>
+
+            </div>
+        
+    </div>
+
+    
+        <div class="toc-content-container">
+            <div class="post-toc-wrap">
+    <div class="post-toc">
+        <div class="toc-title">此页目录</div>
+        <div class="page-title">App抓包教程汇总</div>
+        <ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#HTTPS%E6%8A%93%E5%8C%85%E8%AF%A6%E8%A7%A3"><span class="nav-text">HTTPS抓包详解</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%AD%E9%97%B4%E4%BA%BA%E6%8A%93%E5%8C%85%E6%B5%81%E7%A8%8B"><span class="nav-text">中间人抓包流程</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#HTTPS%E5%88%B0%E5%BA%95%E6%98%AF%E4%BB%80%E4%B9%88"><span class="nav-text">HTTPS到底是什么</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%80%E5%9B%BE%E8%AE%B2%E8%A7%A3%E5%8D%95%E5%90%91%E8%AE%A4%E8%AF%81%E5%92%8C%E5%8F%8C%E5%90%91%E8%AE%A4%E8%AF%81"><span class="nav-text">一图讲解单向认证和双向认证</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%93%E5%8C%85%E5%B7%A5%E5%85%B7%E6%8A%93HTTP%E5%8C%85%E7%9A%84%E5%8E%9F%E7%90%86"><span class="nav-text">抓包工具抓HTTP包的原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%93%E5%8C%85%E5%B7%A5%E5%85%B7%E6%8A%93HTTPS%E5%8C%85%E7%9A%84%E5%8E%9F%E7%90%86"><span class="nav-text">抓包工具抓HTTPS包的原理</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#VPN%E6%8A%93%E5%8C%85"><span class="nav-text">VPN抓包</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83"><span class="nav-text">环境</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E9%85%8D%E7%BD%AEsocket"><span class="nav-text">配置socket</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Postern%E9%85%8D%E7%BD%AE%E4%BB%A3%E7%90%86"><span class="nav-text">Postern配置代理</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Postern-Charles-Burpsuite%E5%AF%B9App%E6%8A%93%E5%8C%85"><span class="nav-text">Postern + Charles + Burpsuite对App抓包</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#VPN%E6%8A%93%E5%8C%85%E7%9A%84%E5%AF%B9%E6%8A%97-%E2%80%93-VPN%E6%A3%80%E6%B5%8B"><span class="nav-text">VPN抓包的对抗 – VPN检测</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%9C%8D%E5%8A%A1%E7%AB%AF%E6%A0%A1%E9%AA%8C%E5%AE%A2%E6%88%B7%E7%AB%AF%E7%BB%95%E8%BF%87"><span class="nav-text">服务端校验客户端绕过</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E4%B8%BE%E4%BE%8B%E6%B5%8B%E8%AF%95"><span class="nav-text">举例测试</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B7%B7%E6%B7%86%E5%90%8E%E7%9A%84SSL-Pinning%E8%A7%A3%E7%BB%91%E5%AE%9A"><span class="nav-text">混淆后的SSL Pinning解绑定</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#flutter%E5%BA%93%E7%9A%84SSL-Pinning%E8%A7%A3%E7%BB%91%E5%AE%9A"><span class="nav-text">flutter库的SSL Pinning解绑定</span></a></li></ol></li></ol></li></ol>
+
+    </div>
+</div>
+        </div>
+    
+</div>
+
+
+
+                
+
+            </div>
+
+            
+
+        </div>
+
+        <div class="main-content-footer">
+            <footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
+    <div class="info-container py-3 text-center">
+        
+        <div class="text-center">
+            &copy;
+            
+              <span>2022</span>
+              -
+            
+            2024&nbsp;&nbsp;<i class="fa-solid fa-heart fa-beat" style="--fa-animation-duration: 0.5s; color: #f54545"></i>&nbsp;&nbsp;<a href="/">xiaoeryu</a>
+            
+                
+                <p class="post-count space-x-0.5">
+                    <span>
+                        共 95 篇文章
+                    </span>
+                    
+                </p>
+            
+        </div>
+        
+            <script data-swup-reload-script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            <div class="relative text-center lg:absolute lg:right-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-right">
+                
+                    <span id="busuanzi_container_site_uv" class="lg:!block">
+                        <span class="text-sm">访问人数</span>
+                        <span id="busuanzi_value_site_uv"></span>
+                    </span>
+                
+                
+                    <span id="busuanzi_container_site_pv" class="lg:!block">
+                        <span class="text-sm">总访问量</span>
+                        <span id="busuanzi_value_site_pv"></span>
+                    </span>
+                
+            </div>
+        
+        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
+            <span class="lg:block text-sm">由 <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a> 驱动</span>
+            <span class="text-sm lg:block">主题&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.6.1</a></span>
+        </div>
+        
+        
+            <div>
+                博客已运行 <span class="odometer" id="runtime_days" ></span> 天 <span class="odometer" id="runtime_hours"></span> 小时 <span class="odometer" id="runtime_minutes"></span> 分钟 <span class="odometer" id="runtime_seconds"></span> 秒
+            </div>
+        
+        
+            <script data-swup-reload-script>
+                try {
+                    function odometer_init() {
+                    const elements = document.querySelectorAll('.odometer');
+                    elements.forEach(el => {
+                        new Odometer({
+                            el,
+                            format: '( ddd).dd',
+                            duration: 200
+                        });
+                    });
+                    }
+                    odometer_init();
+                } catch (error) {}
+            </script>
+        
+        
+        
+    </div>  
+</footer>
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="article-tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="right-bottom-tools page-aside-toggle">
+                <i class="fa-regular fa-outdent"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+            <li class="go-comment">
+                <i class="fa-regular fa-comments"></i>
+            </li>
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-side-tools-container">
+        <div class="side-tools-container">
+    <ul class="hidden-tools-list">
+        <li class="right-bottom-tools tool-font-adjust-plus flex justify-center items-center">
+            <i class="fa-regular fa-magnifying-glass-plus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-font-adjust-minus flex justify-center items-center">
+            <i class="fa-regular fa-magnifying-glass-minus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
+            <i class="fa-regular fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+
+        <li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
+            <i class="fa-regular fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="visible-tools-list">
+        <li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
+            <i class="fa-regular fa-cog fa-spin"></i>
+        </li>
+        
+            <li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
+                <i class="arrow-up fas fa-arrow-up"></i>
+                <span class="percent"></span>
+            </li>
+        
+        
+    </ul>
+</div>
+
+    </div>
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fa-solid fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜索..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="popup-btn-close">
+                <i class="fa-solid fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fa-solid fa-spinner fa-spin-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+</main>
+
+
+    
+<script src="/js/libs/Swup.min.js"></script>
+
+<script src="/js/libs/SwupSlideTheme.min.js"></script>
+
+<script src="/js/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="/js/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="/js/libs/SwupScrollPlugin.min.js"></script>
+
+<script src="/js/libs/SwupPreloadPlugin.min.js"></script>
+
+<script>
+    const swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+            new SwupPreloadPlugin(),
+        ],
+        containers: ["#swup"],
+    });
+</script>
+
+
+
+
+
+
+
+<script src="/js/tools/imageViewer.js" type="module"></script>
+
+<script src="/js/utils.js" type="module"></script>
+
+<script src="/js/main.js" type="module"></script>
+
+<script src="/js/layouts/navbarShrink.js" type="module"></script>
+
+<script src="/js/tools/scrollTopBottom.js" type="module"></script>
+
+<script src="/js/tools/lightDarkSwitch.js" type="module"></script>
+
+<script src="/js/layouts/categoryList.js" type="module"></script>
+
+
+
+    
+<script src="/js/tools/localSearch.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/tools/codeBlock.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/layouts/lazyload.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/tools/runtime.js"></script>
+
+    
+<script src="/js/libs/odometer.min.js"></script>
+
+    
+<link rel="stylesheet" href="/assets/odometer-theme-minimal.css">
+
+
+
+
+  
+<script src="/js/libs/Typed.min.js"></script>
+
+  
+<script src="/js/plugins/typed.js" type="module"></script>
+
+
+
+
+
+
+
+
+
+<div class="post-scripts" data-swup-reload-script>
+    
+        
+<script src="/js/tools/tocToggle.js" type="module"></script>
+
+<script src="/js/layouts/toc.js" type="module"></script>
+
+<script src="/js/plugins/tabs.js" type="module"></script>
+
+    
+</div>
+
+
+</body>
+</html>
