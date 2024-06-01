@@ -17283,4 +17283,525 @@ setImmediate(main);
         <tag>App抓包</tag>
       </tags>
   </entry>
+  <entry>
+    <title>Java层socket抓包与源码分析（上）</title>
+    <url>/2024/06/01/Java%E5%B1%82socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%8A%EF%BC%89/</url>
+    <content><![CDATA[<p>tcp/udp协议以及一些字段的溯源，快速定位一些字段（例如用户名和密码）是怎么加密的，分析出来之后怎么去进行枚举、重放。</p>
+<p>典型的应用就是怎么去编写爬虫去爬去例如商城的商品等</p>
+<hr>
+<h2 id="问题"><a href="#问题" class="headerlink" title="问题"></a>问题</h2><p>接下来几篇文章我们需要解决的问题</p>
+<blockquote>
+<p>如何对自定义协议进行逆向分析？</p>
+<p>发送参数被加密，如何快速完成参数处理流程的定位？</p>
+<p>加密算法复杂，如何主动调用完成对数据包的处理和重放？</p>
+</blockquote>
+<h2 id="目标"><a href="#目标" class="headerlink" title="目标"></a>目标</h2><p>通过分析需要达到的目的</p>
+<blockquote>
+<p>掌握阅读和分析Android系统框架层网络数据包接收发送的源码逻辑</p>
+<p>掌握快速进行字段追踪溯源的技巧</p>
+<p>掌握基于frida、xposed、AndroidNativeEmu、Unidbg等的主动调用技巧，从而完成对协议的枚举和爆破、甚至是数据的爬取</p>
+</blockquote>
+<h2 id="逆向分析思想"><a href="#逆向分析思想" class="headerlink" title="逆向分析思想"></a>逆向分析思想</h2><p>堆栈回溯思想</p>
+<blockquote>
+<p>逐层向上追溯、对参数的处理，关键函数和参数处理放在so中。所以分别在Java和JNI中怎么处理</p>
+</blockquote>
+<p>控制流分析与数据流分析相结合思想</p>
+<blockquote>
+<p>参数处理流程、关键API</p>
+</blockquote>
+<p>关键字符串、关键API定位思想</p>
+<blockquote>
+<p>对这些关键点要格外注意跟Windows分析一样</p>
+</blockquote>
+<hr>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/06/01/Java%E5%B1%82socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%8A%EF%BC%89/image-20240527165013099.png" class="" title="image-20240527165013099">
+
+<ul>
+<li>socket协议就在传输层</li>
+<li>再上层的就是tcp、udp等协议在应用层</li>
+</ul>
+<p>有些App不会自己去调用socket来完成网络请求，因为麻烦。</p>
+<p>通过hook** java.net.Socket**背后所封装的关键API，获取信息</p>
+<hr>
+<h2 id="创建demo来作为分析案例"><a href="#创建demo来作为分析案例" class="headerlink" title="创建demo来作为分析案例"></a>创建demo来作为分析案例</h2><p>这里写一个简单的客户端和服务端的收发数据的demo</p>
+<blockquote>
+<p>服务端：<a class="link" href="https://github.com/xiaoeeyu/TcpServer-Demo">python接收器 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/06/01/Java%E5%B1%82socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%8A%EF%BC%89/image-20240531123232991.png" class="" title="image-20240531123232991">
+
+<p>客户端：<a class="link" href="https://github.com/xiaoeeyu/okhttp2.6">App Demo <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/06/01/Java%E5%B1%82socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%8A%EF%BC%89/image-20240531123256577.png" class="" title="image-20240531123256577">
+</blockquote>
+<p>要使用的工具安装</p>
+<blockquote>
+<p>安装tcpdump：等下用来抓包测试通信是否畅通</p>
+<ul>
+<li>下载<a class="link" href="https://www.androidtcpdump.com/download/4.99.4.1.10.4/tcpdump">tcpdump包 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>，将其拷贝到手机<code>adb push tcpdump /data/local/tmp/</code></li>
+<li>设置执行权限<code>chmod 755 tcpdump</code></li>
+<li>添加到环境变量<code>export PATH=$PATH:/data/local/tmp</code></li>
+</ul>
+<p>安装wire shark：Ubuntu自身没有带，如果是kali的话自带的就有</p>
+<pre><code># 更新软件包列表
+sudo apt update
+
+# 安装Wireshark
+sudo apt install wireshark-qt
+
+# 在安装过程中选择允许非超级用户捕获数据包（如果提示）
+
+# 将当前用户添加到wireshark组
+sudo usermod -aG wireshark $(whoami)
+</code></pre>
+</blockquote>
+<p>使用tcpdump对手机上的所有通信进行抓包然后用wireshark打开分析</p>
+<ul>
+<li><p>tcpdump抓包</p>
+<pre><code>adb shell
+su
+cd /data/local/tmp/
+tcpdump -i any -s 0 -w /sdcard/01.pcap
+</code></pre>
+</li>
+</ul>
+<p>然后运行我们demo的客户端和服务端</p>
+<p>抓完后用wireshark打开查看，确认数据收发通信正常</p>
+<p>把我们抓到的数据包pull下来用wireshark查看<code>wireshark 01.pcap</code></p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/06/01/Java%E5%B1%82socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%8A%EF%BC%89/image-20240531122459703.png" class="" title="image-20240531122459703">
+
+<ul>
+<li>这里我们的demo没有对数据进行加密，所以抓到的包都是明文的。现在的App一般都会对数据进行加密，不会使用这种http明文传输</li>
+<li>抓包看到通信没有问题，接下来调试分析我们的代码，分析合适的hook点</li>
+</ul>
+<h2 id="代码分析"><a href="#代码分析" class="headerlink" title="代码分析"></a>代码分析</h2><p>调试分析客户端的的源码来获取抓包的hook时机</p>
+<p>调试的时候注意下载好对应系统的sdk，在设置&gt;androidSDK里面可以直接下载，具体的配置过程都可以搜索到不在这里啰嗦</p>
+<ul>
+<li>下面这段代码分析比较简单也比较啰嗦可以直接看分析结果</li>
+</ul>
+<h5 id="构造socket"><a href="#构造socket" class="headerlink" title="构造socket"></a>构造socket</h5><p>从socket构造开始调试我们的客户端代码</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/06/01/Java%E5%B1%82socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%8A%EF%BC%89/image-20240531152406588.png" class="" title="image-20240531152406588">
+
+<ul>
+<li>按F7步入</li>
+</ul>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/06/01/Java%E5%B1%82socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%8A%EF%BC%89/image-20240531164140370.png" class="" title="image-20240531164140370">
+
+<p>创建套接字，建立连接</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/06/01/Java%E5%B1%82socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%8A%EF%BC%89/image-20240531164319343.png" class="" title="image-20240531164319343">
+
+<ul>
+<li><p>socket有很多重载，这里使用的是这四个参数的重载</p>
+</li>
+<li><p>在for循环中使用工厂模式创建套接字实例<code>setImpl()</code></p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/06/01/Java%E5%B1%82socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%8A%EF%BC%89/image-20240531182636108.png" class="" title="image-20240531182636108">
+
+<ul>
+<li>impl -&gt; java.net.SocksSocketImpl</li>
+</ul>
+</li>
+<li><p>使用connect建立连接使用的方法</p>
+<p>connect(SocketAddress endpoint)</p>
+</li>
+</ul>
+<h5 id="接收数据"><a href="#接收数据" class="headerlink" title="接收数据"></a>接收数据</h5><p>清除其它断点直接断在接收数据处，看看接收数据使用的方法</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/06/01/Java%E5%B1%82socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%8A%EF%BC%89/image-20240531185409687.png" class="" title="image-20240531185409687">
+
+<ul>
+<li>java.net.SocketInputStream.read（byte[]）</li>
+</ul>
+<h5 id="发送数据"><a href="#发送数据" class="headerlink" title="发送数据"></a>发送数据</h5><p>同样直接断下载看发送数据使用的方法</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/06/01/Java%E5%B1%82socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%8A%EF%BC%89/image-20240531185801277.png" class="" title="image-20240531185801277">
+
+<ul>
+<li>java.net.SocketOutputStream.write(byte[])</li>
+</ul>
+<h5 id="分析结果"><a href="#分析结果" class="headerlink" title="分析结果"></a>分析结果</h5><p>经过分析我们拿到了下面这些hook点</p>
+<blockquote>
+<p>java.net.Socket类构造函数：new Socket(ip, port);</p>
+<p>​	private Socket(InetAddress[] addresses, int port, SocketAddress localAddr,boolean stream)</p>
+<p>​		创建套接字：impl -&gt; java.net.SocksSocketImpl</p>
+<p>建立连接：connect(SocketAddress endpoint)</p>
+<p>接收数据：java.net.SocketInputStream.read(byte[])</p>
+<p>发送数据：java.net.SocketOutputStream.write(byte[])</p>
+</blockquote>
+<h2 id="Android源码分析"><a href="#Android源码分析" class="headerlink" title="Android源码分析"></a>Android<a class="link" href="http://androidxref.com/8.1.0_r33/">源码 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>分析</h2><p>接下来分析Android源码，获取我们方才分析拿到的方法，在框架背后的实现</p>
+<p>暂时我们的源码分析先到java层结束为止，不进入native层分析。后面如果碰到不使用Java层的API，直接调用libc中的API进行通信的再继续往下分析，当然还有更进一步的跳过libc中的API，直接使用系统调用的情况，如果遇到再进行单独分析</p>
+<h5 id="接收数据：java-net-SocketInputStream-read-byte"><a href="#接收数据：java-net-SocketInputStream-read-byte" class="headerlink" title="接收数据：java.net.SocketInputStream.read(byte[])"></a>接收数据：java.net.SocketInputStream.read(byte[])</h5><img lazyload="" src="/images/loading.svg" data-src="/2024/06/01/Java%E5%B1%82socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%8A%EF%BC%89/image-20240531233558633.png" class="" title="image-20240531233558633">
+
+<pre><code class="java">    public int read(byte b[]) throws IOException {
+        return read(b, 0, b.length);
+    }
+-&gt;这里的回调指向了下面有三个参数的read函数
+    
+     public int read(byte b[], int off, int length) throws IOException {
+        return read(b, off, length, impl.getTimeout());
+    }   
+-&gt;这里的回调指向了下面有四个参数的read函数
+    
+        int read(byte b[], int off, int length, int timeout) throws IOException {
+        int n;
+
+        // EOF already encountered
+        if (eof) {
+            return -1;
+        }
+
+        // connection reset
+        if (impl.isConnectionReset()) {
+            throw new SocketException("Connection reset");
+        }
+
+        // bounds check
+        if (length &lt;= 0 || off &lt; 0 || length &gt; b.length - off) {
+            if (length == 0) {
+                return 0;
+            }
+            throw new ArrayIndexOutOfBoundsException("length == " + length
+                    + " off == " + off + " buffer length == " + b.length);
+        }
+
+        // acquire file descriptor and do the read
+        FileDescriptor fd = impl.acquireFD();
+        try {
+            // Android-added: Check BlockGuard policy in read().
+            BlockGuard.getThreadPolicy().onNetwork();
+            n = socketRead(fd, b, off, length, timeout);	// 这个函数中时机调用了socketRead()来进行读，跟进去这个函数
+            if (n &gt; 0) {
+                return n;
+            }
+        } catch (ConnectionResetException rstExc) {
+            impl.setConnectionReset();
+        } finally {
+            impl.releaseFD();
+        }
+
+        /*
+         * If we get here we are at EOF, the socket has been closed,
+         * or the connection has been reset.
+         */
+        if (impl.isClosedOrPending()) {
+            throw new SocketException("Socket closed");
+        }
+        if (impl.isConnectionReset()) {
+            throw new SocketException("Connection reset");
+        }
+        eof = true;
+        return -1;
+    }
+
+&gt;&gt;&gt;跟进上面的socketRead()
+        private int socketRead(FileDescriptor fd,
+                           byte b[], int off, int len,
+                           int timeout)
+        throws IOException {
+        return socketRead0(fd, b, off, len, timeout);
+    }
+-&gt;这里的回调是socketRead0()
+        private native int socketRead0(FileDescriptor fd,
+                                   byte b[], int off, int len,
+                                   int timeout)	// 可以看到这个socketRead0是一个JNI函数，TCP协议接收处理的框架Java层到这里就结束了
+</code></pre>
+<ul>
+<li>接收数据的调用链</li>
+</ul>
+<h5 id="发送数据：java-net-SocketOutputStream-write-byte"><a href="#发送数据：java-net-SocketOutputStream-write-byte" class="headerlink" title="发送数据：java.net.SocketOutputStream.write(byte[])"></a>发送数据：java.net.SocketOutputStream.write(byte[])</h5><pre><code class="java">    public void write(byte b[]) throws IOException {
+        socketWrite(b, 0, b.length);	// 跟进回调
+    }
+-&gt;
+        private void socketWrite(byte b[], int off, int len) throws IOException {
+
+
+        if (len &lt;= 0 || off &lt; 0 || len &gt; b.length - off) {
+            if (len == 0) {
+                return;
+            }
+            throw new ArrayIndexOutOfBoundsException("len == " + len
+                    + " off == " + off + " buffer length == " + b.length);
+        }
+
+        FileDescriptor fd = impl.acquireFD();
+        try {
+            // Android-added: Check BlockGuard policy in socketWrite.
+            BlockGuard.getThreadPolicy().onNetwork();
+            socketWrite0(fd, b, off, len);	// 继续往下跟进
+        } catch (SocketException se) {
+            if (impl.isClosedOrPending()) {
+                throw new SocketException("Socket closed");
+            } else {
+                throw se;
+            }
+        } finally {
+            impl.releaseFD();
+        }
+    }
+-&gt;
+        private native void socketWrite0(FileDescriptor fd, byte[] b, int off,
+                                     int len) throws IOException;	// 到这里跟接收数据的代码一样，Java层的代码调用就结束了
+</code></pre>
+<ul>
+<li>发送数据的调用链</li>
+</ul>
+<p>根据对Android源码的分析，我们hook刚才框架层调用链中的任何一个函数都可以得到它发送和接收的原始数据包，当然这里通过hook拿到的数据可能是已经加密处理过的数据</p>
+<p>接下来就根据我们之前调试代码的时候分析到这些点来编写一个简单的hook代码</p>
+<pre><code class="js">function hooktcp() {
+    Java.perform(function () {
+        var SocketClass = Java.use('java.net.Socket')
+        SocketClass.$init.overload('java.lang.String', 'int').implementation = function (arg0, arg1) {
+            console.log("[" + Process.getCurrentThreadId() + "]new Socket connection: " + arg0 + "port: " + arg1)
+            return this.$init(arg0, arg1)
+        }
+
+        var SocketInputStreamClass = Java.use('java.net.SocketInputStream')
+        // hook socketRead0()
+        SocketInputStreamClass.socketRead0.implementation = function (arg0, arg1, arg2, arg3, arg4) {
+            var size = this.socketRead0(arg0, arg1, arg2, arg3, arg4)
+            console.log("[" + Process.getCurrentThreadId() + "]socketRead0 &gt; size: " + size)
+            return size;
+        }
+
+
+        var SocketOutputStreamClass = Java.use('java.net.SocketOutputStream')
+        // hook socketWrite0()
+        SocketOutputStreamClass.socketWrite0.implementation = function (arg0, arg1, arg2, arg3) {
+            var size = this.socketWrite0(arg0, arg1, arg2, arg3)
+            console.log("[" + Process.getCurrentThreadId() + "]socketWrite0 &gt; size: " + arg3 + "--content: " + JSON.stringify(arg1))
+            return size;
+        }
+    })
+}
+
+function main() {
+    hooktcp()
+}
+
+setImmediate(main)
+</code></pre>
+<ul>
+<li>hook发送和接收数据的点选择了Java层调用链最后的JNI函数</li>
+</ul>
+<p>执行结果：打印出了调用过程中传递的参数</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/06/01/Java%E5%B1%82socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%8A%EF%BC%89/image-20240601013358738.png" class="" title="image-20240601013358738">
+
+<p>通过hook成功的获取了通信的数据包，同样的在这个过程中如果把堆栈打印出来也就能成功的定位到是哪个地方发起了通信请求</p>
+<p>添加堆栈打印代码：</p>
+<pre><code class="java">function LogPrint(log) {
+    var theDate = new Date();
+    var hour = theDate.getHours();
+    var minute = theDate.getMinutes();
+    var second = theDate.getSeconds();
+    var mSecond = theDate.getMilliseconds();
+
+    hour &lt; 10 ? hour = "0" + hour : hour;
+    minute &lt; 10 ? minute = "0" + minute : minute;
+    second &lt; 10 ? second = "0" + second : second;
+    mSecond &lt; 10 ? mSecond = "00" + mSecond : mSecond &lt; 100 ? mSecond = "0" + mSecond : mSecond;
+    var time = hour + ":" + minute + ":" + second + ":" + mSecond;
+    var threadid = Process.getCurrentThreadId();
+    console.log("[" + time + "]" + "-&gt;threadid:" + threadid + "--" + log);
+
+}
+function printJavaStack(name) {
+    Java.perform(function () {
+        var Exception = Java.use("java.lang.Exception");
+        var ins = Exception.$new("Exception");
+        var straces = ins.getStackTrace();
+        if (straces != undefined &amp;&amp; straces != null) {
+            var strace = straces.toString();
+            var replaceStr = strace.replace(/,/g, " \n ");
+            LogPrint("=============================" + name + " Stack strat=======================");
+            LogPrint(replaceStr);
+            LogPrint("=============================" + name + " Stack end======================= \n ");
+            Exception.$dispose();
+        }
+    });
+}
+</code></pre>
+<p>最终的打印结果：</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/06/01/Java%E5%B1%82socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%8A%EF%BC%89/image-20240601022304835.png" class="" title="image-20240601022304835">
+
+<ul>
+<li>打印出来了堆栈信息，代码中还添加了打印出接收到的信息并处理了一下转为字符串</li>
+</ul>
+<h3 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h3><p>这样对于一些明文的请求，或者一些简单的base64编码的http协议就可以直接抓取下来</p>
+<h6 id="附件："><a href="#附件：" class="headerlink" title="附件："></a>附件：</h6><p>本章写的<a class="link" href="https://github.com/xiaoeeyu/hookTcp-demo">frida脚本 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+]]></content>
+      <categories>
+        <category>Android逆向</category>
+      </categories>
+      <tags>
+        <tag>Frida Hook</tag>
+        <tag>App抓包</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Ubuntu配置静态ip</title>
+    <url>/2024/06/01/Ubuntu%E9%85%8D%E7%BD%AE%E9%9D%99%E6%80%81ip/</url>
+    <content><![CDATA[<p>例如要将Ubuntu虚拟机的IP地址更改为192.168.1.23，并且使用VMware的桥接模式，可以按照以下步骤进行：</p>
+<p>环境：这里示例环境是Ubuntu22.04，在其它环境下可能也有所不同</p>
+<h3 id="在VMware中设置桥接模式"><a href="#在VMware中设置桥接模式" class="headerlink" title="在VMware中设置桥接模式"></a>在VMware中设置桥接模式</h3><ol>
+<li><strong>打开VMware并启动虚拟机</strong>： 确保你的Ubuntu虚拟机已启动并正在运行。</li>
+<li><strong>进入虚拟机的设置</strong>： 右键点击虚拟机，然后选择“Settings”或“虚拟机设置”。</li>
+<li><strong>选择网络适配器</strong>： 在设置窗口中，找到并选择“Network Adapter”（网络适配器）。</li>
+<li><strong>选择桥接模式</strong>： 在网络适配器设置中，选择“Bridged: Connected directly to the physical network”（桥接：直接连接到物理网络）。确保取消勾选“Replicate physical network connection state”（复制物理网络连接状态）。</li>
+</ol>
+<h3 id="在Ubuntu中设置静态IP地址"><a href="#在Ubuntu中设置静态IP地址" class="headerlink" title="在Ubuntu中设置静态IP地址"></a>在Ubuntu中设置静态IP地址</h3><ol>
+<li><p><strong>打开终端</strong>： 在Ubuntu虚拟机中打开终端。</p>
+</li>
+<li><p><strong>编辑Netplan配置文件</strong>： 使用<code>sudo</code>权限编辑Netplan配置文件。Netplan是Ubuntu用于管理网络配置的工具。通常，配置文件位于<code>/etc/netplan/</code>目录下，文件名可能是<code>01-netcfg.yaml</code>或类似的。</p>
+<pre><code>sudo nano /etc/netplan/01-netcfg.yaml
+</code></pre>
+</li>
+<li><p><strong>配置静态IP地址</strong>： 编辑配置文件，使其包含以下内容：</p>
+<pre><code>network:
+  version: 2
+  ethernets:
+    ens33:  # 确认接口名称是否为ens33，如果不同则修改为实际名称
+      dhcp4: no
+      addresses: [192.168.1.23/24]
+      routes:
+        - to: default
+          via: 192.168.1.1  # 根据实际网关地址修改
+      nameservers:
+        addresses: [8.8.8.8, 8.8.4.4]
+</code></pre>
+<p>请注意：</p>
+<ul>
+<li><code>ens33</code>是网络接口的名称，可能会根据具体情况有所不同，可以使用<code>ip a</code>命令查看实际的接口名称。</li>
+<li><code>gateway4</code>设置为你的网关地址，通常是路由器的IP地址。</li>
+</ul>
+</li>
+<li><p><strong>应用配置</strong>： 保存文件并退出编辑器，然后应用新的网络配置：</p>
+<pre><code>sudo netplan apply
+</code></pre>
+</li>
+<li><p><strong>验证配置</strong>： 使用以下命令检查IP地址是否已成功更改：</p>
+<pre><code>ip a
+</code></pre>
+<p>确认网络接口已经获得了新的IP地址<code>192.168.1.23</code>。</p>
+</li>
+</ol>
+<h3 id="确认网络连通性"><a href="#确认网络连通性" class="headerlink" title="确认网络连通性"></a>确认网络连通性</h3><ol>
+<li><p><strong>检查连接</strong>： 在终端中使用<code>ping</code>命令检查是否可以连接到网关或其他网络设备：</p>
+<pre><code>ping 192.168.1.1
+</code></pre>
+</li>
+<li><p><strong>确保互联网连接</strong>： 还可以使用<code>ping</code>命令检查是否可以访问互联网：</p>
+<pre><code>ping baidu.com
+</code></pre>
+</li>
+</ol>
+<p>这样，Ubuntu虚拟机的IP地址应该已经成功更改为192.168.1.23，并且连接到你的主机所在的网络上。如果在执行过程中遇到任何问题，请确保虚拟机网络适配器的设置正确，并且配置文件中的语法没有错误。</p>
+]]></content>
+      <categories>
+        <category>工具</category>
+      </categories>
+      <tags>
+        <tag>环境配置</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>i茅台+葫芦娃预约平台搭建</title>
+    <url>/2024/06/01/i%E8%8C%85%E5%8F%B0-%E8%91%AB%E8%8A%A6%E5%A8%83%E9%A2%84%E7%BA%A6%E5%B9%B3%E5%8F%B0%E6%90%AD%E5%BB%BA/</url>
+    <content><![CDATA[<p>i茅台直接使用docker安装就可以，然后再把葫芦娃平台也添加进去就ok</p>
+<h2 id="docker安装"><a href="#docker安装" class="headerlink" title="docker安装"></a>docker安装</h2><blockquote>
+<p>系统：Ubuntu</p>
+</blockquote>
+<ol>
+<li><p>更新软件源并添加Docker官方证书</p>
+<pre><code>sudo apt-get update
+sudo apt-get install ca-certificates curl gnupg
+sudo install -m 0755 -d /etc/apt/keyrings
+curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /etc/apt/keyrings/docker.gpg
+sudo chmod a+r /etc/apt/keyrings/docker.gpg
+</code></pre>
+</li>
+<li><p>添加Docker在线安装源</p>
+<pre><code>echo \
+  "deb [arch=$(dpkg --print-architecture) signed-by=/etc/apt/keyrings/docker.gpg] https://download.docker.com/linux/ubuntu \
+  $(. /etc/os-release &amp;&amp; echo "$VERSION_CODENAME") stable" | \
+  sudo tee /etc/apt/sources.list.d/docker.list &gt; /dev/null
+</code></pre>
+</li>
+<li><p>更新软件源</p>
+<pre><code>sudo apt-get update
+</code></pre>
+</li>
+<li><p>安装Docker</p>
+<pre><code>sudo apt-get install docker-ce docker-ce-cli containerd.io docker-buildx-plugin docker-compose-plugin
+</code></pre>
+</li>
+<li><p>验证Docker安装结果</p>
+<pre><code>sudo docker run hello-world
+</code></pre>
+</li>
+</ol>
+<h2 id="i茅台自动申购预约"><a href="#i茅台自动申购预约" class="headerlink" title="i茅台自动申购预约"></a>i茅台自动申购预约</h2><h4 id="下载官方的Docker部署包，并解压"><a href="#下载官方的Docker部署包，并解压" class="headerlink" title="下载官方的Docker部署包，并解压"></a>下载官方的Docker<a class="link" href="https://github.com/oddfar/campus-imaotai/releases">部署包 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>，并解压</h4><p>目前因为官方提供的Docker部署包最新是<strong>V1.0.11</strong>的，如果要使用最新的需要用新版的**.jar<strong>和</strong>dist**把原来旧版的替换掉</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/06/01/i%E8%8C%85%E5%8F%B0-%E8%91%AB%E8%8A%A6%E5%A8%83%E9%A2%84%E7%BA%A6%E5%B9%B3%E5%8F%B0%E6%90%AD%E5%BB%BA/image-20240514183814359.png" class="" title="image-20240514183814359">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2024/06/01/i%E8%8C%85%E5%8F%B0-%E8%91%AB%E8%8A%A6%E5%A8%83%E9%A2%84%E7%BA%A6%E5%B9%B3%E5%8F%B0%E6%90%AD%E5%BB%BA/image-20240514184323156.png" class="" title="image-20240514184323156">
+
+<ul>
+<li>PS：最好在升级葫芦娃之前替换，如果升级完葫芦娃之后再替换的话因为葫芦娃自己也有单独的dist会有冲突</li>
+</ul>
+<h4 id="修改campus-dockerfile文件"><a href="#修改campus-dockerfile文件" class="headerlink" title="修改campus-dockerfile文件"></a>修改campus-dockerfile文件</h4><img lazyload="" src="/images/loading.svg" data-src="/2024/06/01/i%E8%8C%85%E5%8F%B0-%E8%91%AB%E8%8A%A6%E5%A8%83%E9%A2%84%E7%BA%A6%E5%B9%B3%E5%8F%B0%E6%90%AD%E5%BB%BA/image-20240514192021367.png" class="" title="image-20240514192021367">
+
+<ul>
+<li>把原来的java改成<strong>openjdk</strong></li>
+</ul>
+<h4 id="把需要用到的镜像提前下载下来"><a href="#把需要用到的镜像提前下载下来" class="headerlink" title="把需要用到的镜像提前下载下来"></a>把需要用到的镜像提前下载下来</h4><pre><code>docker pull nginx
+docker pull mysql:5.7
+docker pull redis
+docker pull oddfar/campus-imaotai
+</code></pre>
+<h4 id="然后进行编译生成对应的镜像文件"><a href="#然后进行编译生成对应的镜像文件" class="headerlink" title="然后进行编译生成对应的镜像文件"></a>然后进行编译生成对应的镜像文件</h4><pre><code>cd campus-imt-V1.0.11
+docker-compose build
+</code></pre>
+<h4 id="启动服务"><a href="#启动服务" class="headerlink" title="启动服务"></a>启动服务</h4><pre><code>docker-compose up -d
+</code></pre>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/06/01/i%E8%8C%85%E5%8F%B0-%E8%91%AB%E8%8A%A6%E5%A8%83%E9%A2%84%E7%BA%A6%E5%B9%B3%E5%8F%B0%E6%90%AD%E5%BB%BA/image-20240514184821908.png" class="" title="image-20240514184821908">
+
+<ul>
+<li>如果没有报错这时候i茅台就安装成功了</li>
+</ul>
+<h4 id="浏览器打开"><a href="#浏览器打开" class="headerlink" title="浏览器打开"></a>浏览器打开</h4><p>这里测试是本地安装的所以打开<code>http://127.0.0.1</code>即可</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/06/01/i%E8%8C%85%E5%8F%B0-%E8%91%AB%E8%8A%A6%E5%A8%83%E9%A2%84%E7%BA%A6%E5%B9%B3%E5%8F%B0%E6%90%AD%E5%BB%BA/image-20240514185052170.png" class="" title="image-20240514185052170">
+
+<h2 id="葫芦娃"><a href="#葫芦娃" class="headerlink" title="葫芦娃"></a>葫芦娃</h2><p>葫芦娃的包是从<a class="link" href="https://mp.weixin.qq.com/s/MTZzF9xcIWRlJESkeoG9-w">公众号 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>里面获取的</p>
+<h4 id="下载下来之后，上传到i茅台服务部署的目录"><a href="#下载下来之后，上传到i茅台服务部署的目录" class="headerlink" title="下载下来之后，上传到i茅台服务部署的目录"></a>下载下来之后，上传到i茅台服务部署的目录</h4><img lazyload="" src="/images/loading.svg" data-src="/2024/06/01/i%E8%8C%85%E5%8F%B0-%E8%91%AB%E8%8A%A6%E5%A8%83%E9%A2%84%E7%BA%A6%E5%B9%B3%E5%8F%B0%E6%90%AD%E5%BB%BA/image-20240514192346277.png" class="" title="image-20240514192346277">
+
+<h4 id="查看docker的名称"><a href="#查看docker的名称" class="headerlink" title="查看docker的名称"></a>查看docker的名称</h4><p><code>docker ps -a</code></p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/06/01/i%E8%8C%85%E5%8F%B0-%E8%91%AB%E8%8A%A6%E5%A8%83%E9%A2%84%E7%BA%A6%E5%B9%B3%E5%8F%B0%E6%90%AD%E5%BB%BA/image-20240514192805497.png" class="" title="image-20240514192805497">
+
+<ul>
+<li><p>我们这里Docker的名称是<strong>campus-server</strong></p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/06/01/i%E8%8C%85%E5%8F%B0-%E8%91%AB%E8%8A%A6%E5%A8%83%E9%A2%84%E7%BA%A6%E5%B9%B3%E5%8F%B0%E6%90%AD%E5%BB%BA/image-20240514193120024.png" class="" title="image-20240514193120024"></li>
+</ul>
+<h4 id="进入目录执行脚本"><a href="#进入目录执行脚本" class="headerlink" title="进入目录执行脚本"></a>进入目录执行脚本</h4><pre><code>cd maotai-upgrade-v1.3.2
+./upgrade-imaotai.sh
+</code></pre>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/06/01/i%E8%8C%85%E5%8F%B0-%E8%91%AB%E8%8A%A6%E5%A8%83%E9%A2%84%E7%BA%A6%E5%B9%B3%E5%8F%B0%E6%90%AD%E5%BB%BA/image-20240514193324191.png" class="" title="image-20240514193324191">
+
+<h4 id="刷新浏览器查看"><a href="#刷新浏览器查看" class="headerlink" title="刷新浏览器查看"></a>刷新浏览器查看</h4><img lazyload="" src="/images/loading.svg" data-src="/2024/06/01/i%E8%8C%85%E5%8F%B0-%E8%91%AB%E8%8A%A6%E5%A8%83%E9%A2%84%E7%BA%A6%E5%B9%B3%E5%8F%B0%E6%90%AD%E5%BB%BA/image-20240514193420238.png" class="" title="image-20240514193420238">
+
+<h4 id="添加账号"><a href="#添加账号" class="headerlink" title="添加账号"></a>添加账号</h4><p>直接抓电脑上微信公众号的包就行</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/06/01/i%E8%8C%85%E5%8F%B0-%E8%91%AB%E8%8A%A6%E5%A8%83%E9%A2%84%E7%BA%A6%E5%B9%B3%E5%8F%B0%E6%90%AD%E5%BB%BA/image-20240514193827178.png" class="" title="image-20240514193827178">
+
+<ul>
+<li><p>从post包里面拿到<strong>X-Access-Token</strong>，然后选择平台填入token登陆就可以</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/06/01/i%E8%8C%85%E5%8F%B0-%E8%91%AB%E8%8A%A6%E5%A8%83%E9%A2%84%E7%BA%A6%E5%B9%B3%E5%8F%B0%E6%90%AD%E5%BB%BA/image-20240514194019140.png" class="" title="image-20240514194019140"></li>
+</ul>
+<h2 id="使用体验"><a href="#使用体验" class="headerlink" title="使用体验"></a>使用体验</h2><ol>
+<li>部署完之后可以成功预约</li>
+</ol>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/06/01/i%E8%8C%85%E5%8F%B0-%E8%91%AB%E8%8A%A6%E5%A8%83%E9%A2%84%E7%BA%A6%E5%B9%B3%E5%8F%B0%E6%90%AD%E5%BB%BA/image-20240601101925881.png" class="" title="image-20240601101925881">
+
+<ol start="2">
+<li>现在茅台预约每个月要发短信验证一次，验证窗口还老弹不出来比较麻烦。回头看看能不能构造数据包通过这个短信校验</li>
+</ol>
+]]></content>
+      <categories>
+        <category>未定义分类</category>
+      </categories>
+      <tags>
+        <tag>抢茅台</tag>
+      </tags>
+  </entry>
 </search>
