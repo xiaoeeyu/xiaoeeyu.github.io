@@ -17614,11 +17614,42 @@ function printJavaStack(name) {
     });
 }
 </code></pre>
-<p>最终的打印结果：</p>
+<p>执行后的打印结果：</p>
 <img lazyload="" src="/images/loading.svg" data-src="/2024/06/01/Java%E5%B1%82socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%8A%EF%BC%89/image-20240601022304835.png" class="" title="image-20240601022304835">
 
 <ul>
 <li>打印出来了堆栈信息，代码中还添加了打印出接收到的信息并处理了一下转为字符串</li>
+</ul>
+<h5 id="打印IP地址"><a href="#打印IP地址" class="headerlink" title="打印IP地址"></a>打印IP地址</h5><p>通过调试断在发送和接收数据的地方，看他的IP地址在那个字段中放着</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/06/01/Java%E5%B1%82socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%8A%EF%BC%89/image-20240601223536475.png" class="" title="image-20240601223536475">
+
+<ul>
+<li>从这个地方拿到通信对端的IP和端口</li>
+</ul>
+<p>添加frida脚本代码</p>
+<pre><code class="js">            var socketimpl = this.impl.value;
+            var address = socketimpl.address.value;
+            var port = socketimpl.port.value;
+</code></pre>
+<p>发送的时候也是一样</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/06/01/Java%E5%B1%82socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%8A%EF%BC%89/image-20240601230334985.png" class="" title="image-20240601230334985">
+
+<p>脚本跟刚才的一摸一样都不用变</p>
+<pre><code class="js">            var socketimpl = this.impl.value;
+            var address = socketimpl.address.value;
+            var port = socketimpl.port.value;
+</code></pre>
+<p>添加完之后再将这些信息再打印出来</p>
+<h6 id="执行脚本"><a href="#执行脚本" class="headerlink" title="执行脚本"></a>执行脚本<img lazyload="" src="/images/loading.svg" data-src="/2024/06/01/Java%E5%B1%82socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%8A%EF%BC%89/image-20240601232134172.png" class="" title="image-20240601232134172"></h6><ul>
+<li>可以看到ip和端口都打印出来了</li>
+</ul>
+<h6 id="拿其它的App试一下"><a href="#拿其它的App试一下" class="headerlink" title="拿其它的App试一下"></a>拿其它的App试一下</h6><p>例如测试了嘿嘿连载和咸鱼的App</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/06/01/Java%E5%B1%82socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%8A%EF%BC%89/image-20240601234311781.png" class="" title="image-20240601234311781">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2024/06/01/Java%E5%B1%82socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%8A%EF%BC%89/image-20240601234258302.png" class="" title="image-20240601234258302">
+
+<ul>
+<li>都可以成功拿到ip和端口</li>
 </ul>
 <h3 id="后记"><a href="#后记" class="headerlink" title="后记"></a>后记</h3><p>这样对于一些明文的请求，或者一些简单的base64编码的http协议就可以直接抓取下来</p>
 <h6 id="附件："><a href="#附件：" class="headerlink" title="附件："></a>附件：</h6><p>本章写的<a class="link" href="https://github.com/xiaoeeyu/hookTcp-demo">frida脚本 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
@@ -17802,6 +17833,181 @@ docker-compose build
       </categories>
       <tags>
         <tag>抢茅台</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>Java层socket抓包与源码分析（下）</title>
+    <url>/2024/06/02/Java%E5%B1%82socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%8B%EF%BC%89/</url>
+    <content><![CDATA[<h2 id="创建demo作为分析案例"><a href="#创建demo作为分析案例" class="headerlink" title="创建demo作为分析案例"></a>创建demo作为分析案例</h2><p>本章将创建一个简单的udp通信demo，来进行分析并编写Frida Hook脚本</p>
+<blockquote>
+<p>服务端：<a class="link" href="https://github.com/xiaoeeyu/UdpServer-Demo">Python接收器 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/06/02/Java%E5%B1%82socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%8B%EF%BC%89/image-20240602224429057.png" class="" title="image-20240602224429057">
+
+<p>客户端：<a class="link" href="https://github.com/xiaoeeyu/okhttp2.6">App Demo <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/06/02/Java%E5%B1%82socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%8B%EF%BC%89/image-20240603003631819.png" class="" title="image-20240603003631819">
+</blockquote>
+<h2 id="代码分析"><a href="#代码分析" class="headerlink" title="代码分析"></a>代码分析</h2><p>跟上篇一样对接收和发送数据的流程进行hook来获取hook点</p>
+<h3 id="调试分析"><a href="#调试分析" class="headerlink" title="调试分析"></a>调试分析</h3><p>在<code>receive()</code>和<code>send()</code>处下断点进行调试</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/06/02/Java%E5%B1%82socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%8B%EF%BC%89/image-20240602224543633.png" class="" title="image-20240602224543633">
+
+<ul>
+<li>以调试模式运行之后会首先断在<code>receive()</code>处</li>
+</ul>
+<p>这里继续F7步入</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/06/02/Java%E5%B1%82socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%8B%EF%BC%89/image-20240602235850255.png" class="" title="image-20240602235850255">
+
+<ul>
+<li><p>记录下来最后的调用，等下在源码中查找</p>
+<pre><code>java.net.DatagramSocket-&gt;receive
+    java.net.PlainDatagramSocketImpl-&gt;doRecv
+</code></pre>
+</li>
+</ul>
+<p>继续往下执行断在<code>send()</code></p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/06/02/Java%E5%B1%82socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%8B%EF%BC%89/image-20240602231618715.png" class="" title="image-20240602231618715">
+
+<p><strong>F7</strong>步入</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/06/02/Java%E5%B1%82socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%8B%EF%BC%89/image-20240602235643806.png" class="" title="image-20240602235643806">
+
+<ul>
+<li><p>记录下来最后的调用</p>
+<pre><code>java.net.DatagramSocket-&gt;send
+    java.net.PlainDatagramSocketImpl-&gt;send
+</code></pre>
+</li>
+</ul>
+<h3 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h3><p>在源码中查找我们刚才记录到的最后的调用</p>
+<h4 id="receive"><a href="#receive" class="headerlink" title="receive"></a>receive</h4><p><code>java.net.DatagramSocket-&gt;receive     java.net.PlainDatagramSocketImpl-&gt;doRecv</code></p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/06/02/Java%E5%B1%82socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%8B%EF%BC%89/image-20240603000251123.png" class="" title="image-20240603000251123">
+
+<pre><code class="java">143      private void doRecv(DatagramPacket p, int flags) throws IOException {	// 找到了doRecv
+144          if (isClosed()) {
+145              throw new SocketException("Socket closed");
+146          }
+147  
+148          if (timeout != 0) {
+149              IoBridge.poll(fd, POLLIN | POLLERR, timeout);
+150          }
+151  
+152          IoBridge.recvfrom(false, fd, p.getData(), p.getOffset(), p.bufLength, flags, p,
+153                  connected);	// 进入IoBridge类找到recvfrom()
+154      }
+---&gt;&gt;&gt;
+606      public static int recvfrom(boolean isRead, FileDescriptor fd, byte[] bytes, int byteOffset, int byteCount, int flags, DatagramPacket packet, boolean isConnected) throws IOException {
+607          int result;
+608          try {
+609              InetSocketAddress srcAddress = packet != null ? new InetSocketAddress() : null;
+610              result = Libcore.os.recvfrom(fd, bytes, byteOffset, byteCount, flags, srcAddress);	// 进入libcore类找到os对象，再找到recvfrom()
+611              result = postRecvfrom(isRead, packet, srcAddress, result);
+612          } catch (ErrnoException errnoException) {
+613              result = maybeThrowAfterRecvfrom(isRead, isConnected, errnoException);
+614          }
+615          return result;
+616      }
+---&gt;&gt;&gt;
+</code></pre>
+<p>跟进libcore类</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/06/02/Java%E5%B1%82socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%8B%EF%BC%89/image-20240603001026632.png" class="" title="image-20240603001026632">
+
+<ul>
+<li>到了这里画个图比较清晰，最后传进来的参数是<code>linux()</code>对象</li>
+</ul>
+<p>跟进去Linux对象找<code>recvfrom()</code></p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/06/02/Java%E5%B1%82socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%8B%EF%BC%89/image-20240603001516258.png" class="" title="image-20240603001516258">
+
+<ul>
+<li><p>进来之后找到了<code>recvfrom()</code>它最后调用了JNI函数<code>recvfromBytes()</code></p>
+<p><code>private native int recvfromBytes(FileDescriptor fd, Object buffer, int byteOffset, int byteCount, int flags, InetSocketAddress srcAddress) throws ErrnoException, SocketException;</code></p>
+</li>
+<li><p>还有一个意外之喜，这里也有<code>sendtoBytes()</code>方法，大概率就是我们接下来要找的<code>send()</code>的java层最终调用</p>
+</li>
+</ul>
+<h4 id="send"><a href="#send" class="headerlink" title="send"></a>send</h4><p><code>java.net.DatagramSocket-&gt;send     java.net.PlainDatagramSocketImpl-&gt;send</code></p>
+<p>跟之前一样</p>
+<pre><code class="java">114      protected void send(DatagramPacket p) throws IOException {
+115          if (isClosed()) {
+116              throw new SocketException("Socket closed");
+117          }
+118          if (p.getData() == null || p.getAddress() == null) {
+119              throw new NullPointerException("null buffer || null address");
+120          }
+121  
+122          int port = connected ? 0 : p.getPort();
+123          InetAddress address = connected ? null : p.getAddress();
+124          IoBridge.sendto(fd, p.getData(), p.getOffset(), p.getLength(), 0, address, port);	// 进入IoBridge类找到sendto()
+125      }
+---&gt;&gt;&gt;
+562      public static int sendto(FileDescriptor fd, byte[] bytes, int byteOffset, int byteCount, int flags, InetAddress inetAddress, int port) throws IOException {
+563          boolean isDatagram = (inetAddress != null);
+564          if (!isDatagram &amp;&amp; byteCount &lt;= 0) {
+565              return 0;
+566          }
+567          int result;
+568          try {
+569              result = Libcore.os.sendto(fd, bytes, byteOffset, byteCount, flags, inetAddress, port);	// 这里跟刚才一样进入libcore类找到os对象，再找到recvfrom()
+570          } catch (ErrnoException errnoException) {
+571              result = maybeThrowAfterSendto(isDatagram, errnoException);
+572          }
+573          return result;
+574      }
+</code></pre>
+<p>进来之后我们把调用的图画出来</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/06/02/Java%E5%B1%82socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%8B%EF%BC%89/image-20240603002716445.png" class="" title="image-20240603002716445">
+
+<p>最后调用的Java层JNI函数是<code>sendtoBytes()</code>：这个函数有两个重载，我们调用的是七个参数的重载</p>
+<p><code>private native int sendtoBytes(FileDescriptor fd, Object buffer, int byteOffset, int byteCount, int flags, InetAddress inetAddress, int port) throws ErrnoException, SocketException;</code></p>
+<h3 id="写hook代码"><a href="#写hook代码" class="headerlink" title="写hook代码"></a>写hook代码</h3><p>直接hook最后的这两个JNI函数，并且把其中传递的buf以及IP等信息打印出来</p>
+<pre><code class="js">function hookudp() {
+    Java.perform(function () {
+        var LinuxClass = Java.use('libcore.io.Linux')
+        // 数据接收
+        // private native int recvfromBytes(FileDescriptor fd, Object buffer, int byteOffset, int byteCount, int flags, InetSocketAddress srcAddress) throws ErrnoException, SocketException;
+        LinuxClass.recvfromBytes.implementation = function (arg0, arg1, arg2, arg3, arg4,arg5) {
+            var size = this.recvfromBytes(arg0, arg1, arg2, arg3, arg4, arg5)
+
+            var byteArray = Java.array('byte', arg1)
+            var content = ""
+            for(var i = 0; i &lt; size; i++){
+                content = content + String.fromCharCode(byteArray[i])
+            }
+            console.log("address" + arg5 + "[" + Process.getCurrentThreadId() + "]socketRead0 &gt; size: " + size + "--content: " + content)
+
+            printJavaStack('recvfromBytes...')
+            return size;
+        }
+
+        // 发送数据这里使用的是七个参数的重载
+        // private native int sendtoBytes(FileDescriptor fd, Object buffer, int byteOffset, int byteCount, int flags, InetAddress inetAddress, int port) throws ErrnoException, SocketException;
+        LinuxClass.sendtoBytes.overload('java.io.FileDescriptor', 'java.lang.Object', 'int', 'int', 'int', 'java.net.InetAddress', 'int').implementation = function (arg0, arg1, arg2, arg3, arg4, arg5, arg6) {
+            var size = this.sendtoBytes(arg0, arg1, arg2, arg3, arg4, arg5, arg6)
+
+            var byteArray = Java.array('byte', arg1)
+            var content = "";
+            for(var i=0; i&lt;size; i++){
+                content = content + String.fromCharCode(byteArray[i])
+            }
+            console.log("address" + arg5 + ":" + arg6 + "[" + Process.getCurrentThreadId() + "]sendtoBytes &gt; len: " + size + "--content: " + content)
+            
+            printJavaStack('sendtoBytes()...')
+            return size;
+        }
+    })
+}
+</code></pre>
+<h4 id="打印的结果"><a href="#打印的结果" class="headerlink" title="打印的结果"></a>打印的结果</h4><p>把打印结果写入文件方便查看</p>
+<p><code>frida -U -f com.example.okhttp  -l hookUDP.js  --no-pause -o udp.log</code></p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/06/02/Java%E5%B1%82socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%8B%EF%BC%89/image-20240602183020968.png" class="" title="image-20240602183020968">
+
+
+
+<h6 id="附件："><a href="#附件：" class="headerlink" title="附件："></a>附件：</h6><p><a class="link" href="https://github.com/xiaoeeyu/hookUdp-demo">完整的Frida Hook代码 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+]]></content>
+      <categories>
+        <category>Android逆向</category>
+      </categories>
+      <tags>
+        <tag>Frida Hook</tag>
+        <tag>App抓包</tag>
       </tags>
   </entry>
 </search>
