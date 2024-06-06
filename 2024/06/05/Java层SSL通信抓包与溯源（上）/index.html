@@ -35,7 +35,7 @@
 <meta property="og:image" content="https://xiaoeeyu.github.io/2024/06/05/Java%E5%B1%82SSL%E9%80%9A%E4%BF%A1%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%AF%E6%BA%90%EF%BC%88%E4%B8%8A%EF%BC%89/image-20240606044754605.png">
 <meta property="og:image" content="https://xiaoeeyu.github.io/2024/06/05/Java%E5%B1%82SSL%E9%80%9A%E4%BF%A1%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%AF%E6%BA%90%EF%BC%88%E4%B8%8A%EF%BC%89/image-20240606052048409.png">
 <meta property="article:published_time" content="2024-06-05T07:39:47.000Z">
-<meta property="article:modified_time" content="2024-06-05T22:06:02.285Z">
+<meta property="article:modified_time" content="2024-06-06T03:12:58.092Z">
 <meta property="article:author" content="xiaoeryu">
 <meta property="article:tag" content="Frida Hook">
 <meta property="article:tag" content="App抓包">
@@ -477,8 +477,8 @@
     
         <span class="article-date article-meta-item">
             <i class="fa-regular fa-wrench"></i>&nbsp;
-            <span class="desktop">2024-06-06 06:06:02</span>
-            <span class="mobile">2024-06-06 06:06:02</span>
+            <span class="desktop">2024-06-06 11:12:58</span>
+            <span class="mobile">2024-06-06 11:12:58</span>
             <span class="hover-info">更新</span>
         </span>
     
@@ -551,17 +551,17 @@
 
 <p>环境：</p>
 <blockquote>
-<p>环境跟前两篇文章用的不同，因为pixel XL的手机电池鼓包game over了，可能电脑连接的USB接口上电流不稳定时间长没拔发热严重的原因。换了一台pixel 5来测试，虚拟机换了kali，因为安装的在Ubuntu上安装了Charles界面显示有点问题，还是新版kali更好看点</p>
+<p>环境跟前两篇文章用的不同，因为pixel XL的手机电池鼓包game over了，可能电脑连接的USB接口上电流不稳定+时间长没拔发热严重的原因。换了一台pixel 5来测试，虚拟机换了kali，因为安装的在Ubuntu上安装了新版Charles界面显示有点问题，还是新版kali更好看点</p>
 <p>Android版本：11.0</p>
 <p>虚拟机：kali 2023.4</p>
 </blockquote>
 <h3 id="那环境配置不再啰嗦，直接开始调试吧"><a href="#那环境配置不再啰嗦，直接开始调试吧" class="headerlink" title="那环境配置不再啰嗦，直接开始调试吧"></a>那环境配置不再啰嗦，直接开始调试吧</h3><img lazyload="" src="/images/loading.svg" data-src="/2024/06/05/Java%E5%B1%82SSL%E9%80%9A%E4%BF%A1%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%AF%E6%BA%90%EF%BC%88%E4%B8%8A%EF%BC%89/image-20240606020010121.png" class="" title="image-20240606020010121">
 
-<p>因为这里都是多线程，所以没法一步一步的单步调试，只能下断点F9执行然后往断点上撞了：因为无论如何都是要执行socket的所以我们这里在<code>sonnectSocket</code>都下了断点</p>
+<p>因为这里都是多线程，所以没法一步一步的单步调试，只能下断点F9执行然后往断点上撞了：因为HTTP/HTTPS无论如何都是要经过socket执行的所以我们这里在<code>connectSocket</code>都下了断点</p>
 <img lazyload="" src="/images/loading.svg" data-src="/2024/06/05/Java%E5%B1%82SSL%E9%80%9A%E4%BF%A1%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%AF%E6%BA%90%EF%BC%88%E4%B8%8A%EF%BC%89/image-20240606034621189.png" class="" title="image-20240606034621189">
 
-<ul>
-<li><p>分析这段代码可知</p>
+<p>分析这段代码可知</p>
+<blockquote>
 <pre><code class="java">    try {
       Platform.get().connectSocket(rawSocket, route.socketAddress(), connectTimeout);
     } catch (ConnectException e) {
@@ -571,16 +571,14 @@
 <ul>
 <li>使用前面创建的套接字来尝试连接目标地址</li>
 </ul>
-</li>
-<li><p>创建缓冲的输入和输出流，方便后续的读写操作</p>
+<p>创建缓冲的输入和输出流，方便后续的读写操作</p>
 <pre><code class="java">source = Okio.buffer(Okio.source(rawSocket));	// 创建一个带缓冲的输入流
 sink = Okio.buffer(Okio.sink(rawSocket));		// 创建一个带缓冲的输出流
 </code></pre>
 <ul>
-<li>使用<strong>Okio</strong>库为套接字创建输入和输出流缓冲区，我们最后的目的就是通过hook拿到输入（接收数据）和输出（发送数据），跟进Okio.java分析</li>
+<li>使用<strong>Okio</strong>库为套接字创建输入和输出流缓冲区，我们抓包的目的就是通过hook拿到输入（接收数据）和输出（发送数据），跟进Okio.java分析</li>
 </ul>
-</li>
-</ul>
+</blockquote>
 <h4 id="分析Okio-java中对输出流缓冲区的操作"><a href="#分析Okio-java中对输出流缓冲区的操作" class="headerlink" title="分析Okio.java中对输出流缓冲区的操作"></a>分析<code>Okio.java</code>中对输出流缓冲区的操作</h4><img lazyload="" src="/images/loading.svg" data-src="/2024/06/05/Java%E5%B1%82SSL%E9%80%9A%E4%BF%A1%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%AF%E6%BA%90%EF%BC%88%E4%B8%8A%EF%BC%89/image-20240606041858434.png" class="" title="image-20240606041858434">
 
 <ul>
@@ -832,7 +830,7 @@ com.android.org.conscrypt.NativeCrypto.SSL_write
         
             <li>
                 <strong>更新于
-                    :</strong> 2024-06-06 06:06:02
+                    :</strong> 2024-06-06 11:12:58
             </li>
         
         <li>
