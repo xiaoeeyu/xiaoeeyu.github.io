@@ -10740,7 +10740,6 @@ com.android.org.conscrypt.NativeCrypto.SSL_write
       <tags>
         <tag>App抓包</tag>
         <tag>Frida Hook</tag>
-        <tag>SSL抓包</tag>
       </tags>
   </entry>
   <entry>
@@ -18314,6 +18313,322 @@ com.android.settings on (google: 10) [net] #
       </categories>
       <tags>
         <tag>RSA</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>JNI层Socket抓包与溯源</title>
+    <url>/2024/07/04/JNI%E5%B1%82Socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%AF%E6%BA%90/</url>
+    <content><![CDATA[<p>之前几章分析了Java层的socket与SSL通信源码，了解了如何通过fridaHook抓取Java层的Socket和SSL通信</p>
+<p>接下来两章通过对C层源码分析，了解如何抓取C层的通信</p>
+<span id="more"></span>
+
+<h2 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h2><p>Android：11.0</p>
+<p>测试demo：使用系统框架层套接字进行通信</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/04/JNI%E5%B1%82Socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%AF%E6%BA%90/image-20240607222130737.png" class="" title="image-20240607222130737">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/04/JNI%E5%B1%82Socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%AF%E6%BA%90/image-20240607222200319.png" class="" title="image-20240607222200319">
+
+<ul>
+<li>根据抓包的结果可以看到使用Charles和wireshark都可以抓到包，但是使用我们的java层的hook脚本抓不到任何数据包。说明其没有使用Java层框架的API进行通信</li>
+</ul>
+<h2 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h2><h4 id="从之前分析到的JNI开始往下分析"><a href="#从之前分析到的JNI开始往下分析" class="headerlink" title="从之前分析到的JNI开始往下分析"></a>从之前分析到的JNI开始往下分析</h4><p>接下来我们从之前的JNI函数<strong>socketWrite0</strong>、<strong>socketRead0</strong>开始继续往下进入C层分析</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/04/JNI%E5%B1%82Socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%AF%E6%BA%90/image-20240607102635904.png" class="" title="image-20240607102635904">
+
+<p>在Android源码中的命名非常规范，直接搜索<strong>类名_函数名</strong>可以直接找到</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/04/JNI%E5%B1%82Socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%AF%E6%BA%90/image-20240607103451902.png" class="" title="image-20240607103451902">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/04/JNI%E5%B1%82Socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%AF%E6%BA%90/image-20240607103626937.png" class="" title="image-20240607103626937">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/04/JNI%E5%B1%82Socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%AF%E6%BA%90/image-20240607224701528.png" class="" title="image-20240607224701528">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/04/JNI%E5%B1%82Socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%AF%E6%BA%90/image-20240607224715476.png" class="" title="image-20240607224715476">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/04/JNI%E5%B1%82Socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%AF%E6%BA%90/image-20240607224724936.png" class="" title="image-20240607224724936">
+
+<ul>
+<li><p>里面分别使用了<code>NET_Send</code>、<code>NET_Read</code>来进行后续的网络通信</p>
+</li>
+<li><p>它是一个JNI函数那么编译完之后自然就是一个SO库了</p>
+</li>
+<li><p>静态注册的JNI有自己的命名规则<strong>Java_包名_类名_自定义函数名_签名</strong>，根据这个函数的命名规范可以判断它不是静态注册的函数</p>
+</li>
+</ul>
+<h4 id="so文件分析"><a href="#so文件分析" class="headerlink" title="so文件分析"></a>so文件分析</h4><p>找到源码生成的so文件，用IDA对其调用流程进行分析</p>
+<blockquote>
+<p>在源码中找到<code>SocketOutputStream.c</code>生成的so文件名字</p>
+<p>之前编译源码的时候下载过Android11的源码，我们去源码中去找一下<code>SocketOutputStream.c</code>编译后的so文件应该叫什么名字</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/04/JNI%E5%B1%82Socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%AF%E6%BA%90/image-20240607223144832.png" class="" title="image-20240607223144832">
+
+<ul>
+<li>从找到的信息中可以看到<code>SocketOutputStream.c</code>文件在Android11中会被编译成<strong>libopenjdk.so</strong>文件</li>
+</ul>
+<p>去设备中搜索一下这个文件pull下来用IDA分析</p>
+<pre><code>adb shell
+find / -name "libopenjdk.so" 2&gt;/dev/null
+adb pull ***
+</code></pre>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/04/JNI%E5%B1%82Socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%AF%E6%BA%90/image-20240607225624015.png" class="" title="image-20240607225624015">
+</blockquote>
+<h4 id="用IDA分析libopenjdk找到hook点"><a href="#用IDA分析libopenjdk找到hook点" class="headerlink" title="用IDA分析libopenjdk找到hook点"></a>用IDA分析libopenjdk找到hook点</h4><img lazyload="" src="/images/loading.svg" data-src="/2024/07/04/JNI%E5%B1%82Socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%AF%E6%BA%90/image-20240609170858933.png" class="" title="image-20240609170858933">
+
+<ul>
+<li>因为是动态函数，我们需要去<code>JNI_OnLoad</code>中查找，JNI_OnLoad()参数如果识别的不对的话手动修改一下<code>int __fastcall JNI_OnLoad(JavaVM *a1, void *a2)</code></li>
+</ul>
+<p>继续往下查看能看到对Java层输入、输出流函数的注册，先不管它</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/04/JNI%E5%B1%82Socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%AF%E6%BA%90/image-20240607234534869.png" class="" title="image-20240607234534869">
+
+<p>先直接在字符串中搜索，看能不能直接搜索到<code>SocketInputStream_socketRead0</code></p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/04/JNI%E5%B1%82Socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%AF%E6%BA%90/image-20240607233558844.png" class="" title="image-20240607233558844">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/04/JNI%E5%B1%82Socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%AF%E6%BA%90/image-20240607233902230.png" class="" title="image-20240607233902230">
+
+<ul>
+<li>这里可以使用交叉引用直接定位到输入输出流函数</li>
+</ul>
+<p>找到了这两个函数的为止之后，看一下他们的调用图（Xrefs graph from）</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/04/JNI%E5%B1%82Socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%AF%E6%BA%90/image-20240608102715357.png" class="" title="image-20240608102715357">
+
+<blockquote>
+<p>JNI:socketRead0 -&gt; j_NET_Read -&gt; NET_Read -&gt; recvfrom -&gt; __imp_recvfrom</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/04/JNI%E5%B1%82Socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%AF%E6%BA%90/image-20240608104334305.png" class="" title="image-20240608104334305">
+
+<ul>
+<li><p>搜索这个函数可以看到最后调用的是<code>recvfrom</code>再往后就是got表了，所以等下可以选取<code>recvfrom</code>作为hook点</p>
+<p><code>ssize_t recvfrom(int fd, void *buf, size_t n, int flags, struct sockaddr *addr, socklen_t *addr_len)</code></p>
+</li>
+</ul>
+</blockquote>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/04/JNI%E5%B1%82Socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%AF%E6%BA%90/image-20240608102721931.png" class="" title="image-20240608102721931">
+
+<blockquote>
+<p>JNI:socketWrite0 -&gt; j_NET_Send -&gt; NET_Send -&gt; sendto -&gt; __imp_sendto</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/04/JNI%E5%B1%82Socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%AF%E6%BA%90/image-20240608104612759.png" class="" title="image-20240608104612759">
+
+<ul>
+<li><p>跟前面的一样，这里同样可以选择<code>sendto</code>作为hook点</p>
+<p><code>ssize_t sendto(int fd, const void *buf, size_t n, int flags, const struct sockaddr *addr, socklen_t addr_len)</code></p>
+<blockquote>
+<p><strong>参数：</strong></p>
+<p>**<code>int fd</code>**：这是一个文件描述符，它表示要发送数据的套接字。在网络编程中，套接字是一个抽象的网络通信端点，它可以是一个监听套接字（用于接受连接），也可以是一个已连接套接字（用于与远程主机进行通信）。在 <code>sendto</code> 中，<code>fd</code> 表示的是要向其发送数据的套接字。</p>
+<p>**<code>const void \*buf</code>**：这是一个指向数据缓冲区的指针，其中包含要发送的数据。<code>buf</code> 是一个 <code>void</code> 类型的指针，这意味着它可以指向任何类型的数据。发送的数据通常是一个字节数组，可以是文本、二进制数据等等。</p>
+<p>**<code>size_t n</code>**：这是一个 <code>size_t</code> 类型的参数，表示要发送的数据的大小（字节数）。<code>size_t</code> 是无符号整数类型，它的大小通常与系统的地址位数相同，用于表示内存中对象的大小。在 <code>sendto</code> 中，<code>n</code> 表示要发送的数据的字节数。</p>
+<p>**<code>int flags</code>**：这是一个整数参数，用于指定发送操作的标志。<code>flags</code> 参数通常用于控制发送操作的行为，比如设置发送的方式（阻塞或非阻塞）、设置发送的优先级等。</p>
+<p>**<code>const struct sockaddr \*addr</code>**：这是一个指向目标地址信息结构体的指针，用于指定要发送数据的目标地址。在网络编程中，<code>sockaddr</code> 结构体用于表示网络地址信息，它包含了目标主机的 IP 地址和端口号等信息。</p>
+<p>**<code>socklen_t addr_len</code>**：这是一个 <code>socklen_t</code> 类型的参数，表示目标地址结构体的大小（字节数）。<code>socklen_t</code> 是一个整数类型，用于表示套接字地址结构体的长度。在 <code>sendto</code> 中，<code>addr_len</code> 表示目标地址结构体的实际大小。</p>
+<p><strong>返回值：</strong></p>
+<p>返回值如果是负值表示发送错误，如果发送成功，返回值就是发送的字节数。</p>
+</blockquote>
+</li>
+</ul>
+</blockquote>
+<ul>
+<li>根据调用图可以很清晰的看到其中接收和发送数据都调用了哪些函数</li>
+<li><code>recvfrom</code>和<code>sendto</code>的参数类型都一样不进行重复解释了</li>
+</ul>
+<p><code>recvfrom</code>和<code>sendto</code>都是来自libc.so的，可以也pull下来继续分析。（不感兴趣不分析也行，已经找到hook点了）</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/04/JNI%E5%B1%82Socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%AF%E6%BA%90/image-20240608105231002.png" class="" title="image-20240608105231002">
+
+<h4 id="分析libc-so了解怎么进入系统调用"><a href="#分析libc-so了解怎么进入系统调用" class="headerlink" title="分析libc.so了解怎么进入系统调用"></a>分析libc.so了解怎么进入系统调用</h4><p>这里简单介绍一下libc.so</p>
+<blockquote>
+<p><code>libc.so</code> 是 Android 系统中的标准 C 库，提供了 C 语言标准库函数和 POSIX 标准函数的实现。它是 Android 平台上的核心库之一，提供基本的系统调用和底层操作支持，包括内存管理、文件操作、线程管理、网络通信等。</p>
+</blockquote>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/04/JNI%E5%B1%82Socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%AF%E6%BA%90/image-20240608110114232.png" class="" title="image-20240608110114232">
+
+<ul>
+<li>既然能被调用，它们自然是导出函数。可以直接被搜索到</li>
+</ul>
+<h5 id="recvFrom"><a href="#recvFrom" class="headerlink" title="recvFrom"></a>recvFrom</h5><img lazyload="" src="/images/loading.svg" data-src="/2024/07/04/JNI%E5%B1%82Socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%AF%E6%BA%90/image-20240608120030118.png" class="" title="image-20240608120030118">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/04/JNI%E5%B1%82Socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%AF%E6%BA%90/image-20240608125804037.png" class="" title="image-20240608125804037">
+
+<pre><code class="armasm">.text:000716B0                               ; unsigned int __fastcall recvfrom(int, void *, size_t, int)	// 函数原型有四个参数
+.text:000716B0                               EXPORT recvfrom
+.text:000716B0                               recvfrom                                ; CODE XREF: j_recvfrom+8↓j
+.text:000716B0                                                                       ; DATA XREF: LOAD:000064FC↑o
+.text:000716B0                                                                       ; .got.plt:off_8B280↓o
+.text:000716B0                               ; __unwind {
+.text:000716B0 0D C0 A0 E1                   MOV             R12, SP		// 将当前的堆栈指针保存到寄存器R12中。R12寄存器在ARM EABI中有时被称为IP（临时寄存器，作为函数调用过程中的临时寄存器）
+.text:000716B4 F0 00 2D E9                   PUSH            {R4-R7}		// 将寄存器R4~R7的值压入堆栈。在调用结束后方便恢复堆栈
+.text:000716B8 70 00 9C E8                   LDM             R12, {R4-R6}	// 从R12（SP）开始取出R4、R5、R6的值存储在这三个寄存器中作为参数
+.text:000716BC 49 7F A0 E3                   MOV             R7, #292		// 将系统调用号 292（即 __NR_recvfrom 的值）存储到 R7 中。R7 在 ARM 系统调用约定中用于存储系统调用号
+.text:000716C0 00 00 00 EF                   SVC             0				// 触发一个软中断（Supervisor Call），使处理器进入内核模式执行系统调用。此时，寄存器 R0 到 R6 的值将作为参数传递给系统调用，R7 则作为系统调用号
+.text:000716C4 F0 00 BD E8                   POP             {R4-R7}		// 恢复堆栈现场
+.text:000716C8 01 0A 70 E3                   CMN             R0, #0x1000	// 比较 R0 的值与 0x1000。CMN 指令实际上是执行 R0 + 0x1000 并设置条件标志
+.text:000716CC 1E FF 2F 91                   BXLS            LR				// 如果 R0 小于 0x1000（即系统调用成功），则跳转到 LR（返回地址），结束函数执行
+.text:000716CC
+.text:000716D0 00 00 60 E2                   RSB             R0, R0, #0		// 如果系统调用失败（R0 &gt;= 0x1000），将 R0 的值取负（相当于 R0 = 0 - R0）。此步骤转换错误码为负值
+.text:000716D4 A5 51 00 EA                   B               __ARMV7PILongThunk___set_errno_internal	// 跳转到错误处理函数 __ARMV7PILongThunk___set_errno_internal，设置 errno
+.text:000716D4                               ; } // starts at 716B0
+</code></pre>
+<ul>
+<li>这段汇编执行了系统调用（recvfrom）并处理返回值，根据返回结果看是处理错误还是直接返回</li>
+</ul>
+<h5 id="sendto"><a href="#sendto" class="headerlink" title="sendto"></a>sendto</h5><img lazyload="" src="/images/loading.svg" data-src="/2024/07/04/JNI%E5%B1%82Socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%AF%E6%BA%90/image-20240608120134184.png" class="" title="image-20240608120134184">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/04/JNI%E5%B1%82Socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%AF%E6%BA%90/image-20240608125942213.png" class="" title="image-20240608125942213">
+
+<pre><code class="armasm">.text:00071688                               ; unsigned int __fastcall _sendto(int, const void *, size_t, int)
+.text:00071688                               __sendto                                ; CODE XREF: sendto+E↑j
+.text:00071688                                                                       ; DATA XREF: sendto+6↑o
+.text:00071688                                                                       ; .data:off_8CB70↓o
+.text:00071688                               ; __unwind {
+.text:00071688 0D C0 A0 E1                   MOV             R12, SP		// 保存堆栈指针
+.text:0007168C F0 00 2D E9                   PUSH            {R4-R7}		// 保存寄存器值
+.text:00071690 70 00 9C E8                   LDM             R12, {R4-R6}	// 加载函数参数
+.text:00071694 22 71 00 E3                   MOVW            R7, #0x122		// 设置系统调用号（系统调用号 290，对应 sendto）
+.text:00071698 00 00 00 EF                   SVC             0				// 发起系统调用
+.text:0007169C F0 00 BD E8                   POP             {R4-R7}		// 恢复寄存器值
+.text:000716A0 01 0A 70 E3                   CMN             R0, #0x1000	
+.text:000716A4 1E FF 2F 91                   BXLS            LR				// 检查返回值
+.text:000716A4
+.text:000716A8 00 00 60 E2                   RSB             R0, R0, #0
+.text:000716AC AF 51 00 EA                   B               __ARMV7PILongThunk___set_errno_internal	// 错误处理
+.text:000716AC                               ; } // starts at 71688
+.text:000716AC
+.text:000716AC                               ; End of function __sendto
+</code></pre>
+<ul>
+<li>这段汇编实现了一个 <code>_sendto</code> 函数，通过系统调用 <code>sendto</code> 向网络套接字发送数据</li>
+</ul>
+<p>通过对<code>libc.so</code>的分析，知道了在libc中是怎么通过系统调用号配合软中断进入内核的</p>
+<h3 id="Frida-Hook脚本编写"><a href="#Frida-Hook脚本编写" class="headerlink" title="Frida-Hook脚本编写"></a>Frida-Hook脚本编写</h3><p>以上就是数据接收和发送从JNI到C层所经过的API，以及最后是如何发起系统调用，交给内核进行处理的</p>
+<p>之前我们写的java层的hook代码，可以拦截到使用Java层框架API完成通信的抓包，并且可以很方便的打印出调用堆栈。但是对于像我们这次的demo中直接使用系统函数<code>send</code>、<code>recv</code>进行通信的方式无法拦截。</p>
+<p>接下来我们写一个对SO层的hook，来hook<code>libc.so</code>中的<code>sendto</code>、<code>recvFrom</code>抓取数据包并打印SO层的调用栈</p>
+<pre><code class="js">function LogPrint(log) {
+    var theDate = new Date();
+    var time = theDate.toISOString().split('T')[1].replace('Z', '');
+    var threadid = Process.getCurrentThreadId();
+    console.log(`[${time}] -&gt; threadid:${threadid} -- ${log}`);
+}
+
+function isprintable(value) {
+    return value &gt;= 32 &amp;&amp; value &lt;= 126;
+}
+
+// 使用frida提供的工具解析socket获取IP和port
+function getsocketdetail(fd) {
+    var type = Socket.type(fd);
+    if (type !== null) {
+        var peer = Socket.peerAddress(fd);
+        var local = Socket.localAddress(fd);
+        return `type:${type}, address:${JSON.stringify(peer)}, local:${JSON.stringify(local)}`;
+    }
+    return "unknown";
+}
+
+function hooklibc() {
+    var libcmodule = Process.getModuleByName("libc.so");
+    var recvfrom_addr = libcmodule.getExportByName("recvfrom");
+    var sendto_addr = libcmodule.getExportByName("sendto");
+    console.log(recvfrom_addr + "---" + sendto_addr);
+    
+    // ssize_t recvfrom(int fd, void *buf, size_t n, int flags, struct sockaddr *addr, socklen_t *addr_len)
+    Interceptor.attach(recvfrom_addr, {
+        onEnter: function (args) {
+            this.arg0 = args[0];
+            this.arg1 = args[1];
+            this.arg2 = args[2];
+            this.arg4 = args[4];
+
+            LogPrint("go into libc.so-&gt;recvfrom");
+
+        }, onLeave: function (retval) {
+            var size = this.arg2.toInt32();
+            if (size &gt; 0) {
+                var result = getsocketdetail(this.arg0.toInt32());
+                console.log(result + "---libc.so-&gt;recvfrom:" + hexdump(this.arg1, {
+                    length: size
+                }));
+            }
+
+            LogPrint("leave libc.so-&gt;recvfrom");
+        }
+    });
+
+    // ssize_t sendto(int fd, const void *buf, size_t n, int flags, const struct sockaddr *addr, socklen_t addr_len)
+    Interceptor.attach(sendto_addr, {
+        onEnter: function (args) {
+            this.arg0 = args[0];
+            this.arg1 = args[1];
+            this.arg2 = args[2];
+            this.arg4 = args[4];
+
+            LogPrint("go into libc.so-&gt;sendto");
+        }, onLeave: function (retval) {
+            var size = this.arg2.toInt32();
+            if (size &gt; 0) {
+                var result = getsocketdetail(this.arg0.toInt32());
+                console.log(result + "---libc.so-&gt;sendto:" + hexdump(this.arg1, {
+                    length: size
+                }));
+            }
+
+            LogPrint("leave libc.so-&gt;sendto");
+        }
+    });
+}
+
+function main() {
+    hooklibc();
+}
+
+setImmediate(main);
+</code></pre>
+<blockquote>
+<p>IP和port解析</p>
+<p><code>ssize_t sendto(int fd, const void *buf, size_t n, int flags, const struct sockaddr *addr, socklen_t addr_len)</code></p>
+<p>socket有ID或者叫句柄。对于<code>sendto</code>、<code>recvfrom</code>来说它的第一个参数就是socket的ID，所以可以通过解析这个ID来得到通信对端的IP和port。</p>
+<p>在<a class="link" href="https://frida.re/docs/javascript-api/#socket">Frida中有相关的API <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>可以来对ID进行解析</p>
+</blockquote>
+<p>抓包结果：</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/04/JNI%E5%B1%82Socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%AF%E6%BA%90/image-20240609101052882.png" class="" title="image-20240609101052882">
+
+<h4 id="添加栈回溯信息"><a href="#添加栈回溯信息" class="headerlink" title="添加栈回溯信息"></a>添加栈回溯信息</h4><p>使用frida的Thread功能打印当前线程的栈回溯信息，这里用腾讯新闻的App作为例子抓包试一下</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/04/JNI%E5%B1%82Socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%AF%E6%BA%90/image-20240609101845491.png" class="" title="image-20240609101845491">
+
+<pre><code class="js">function printNativeStack(context, name) {
+    var trace = Thread.backtrace(context, Backtracer.ACCURATE).map(DebugSymbol.fromAddress).join("\n");
+    LogPrint("-----------start:" + name + "--------------");
+    LogPrint(trace);
+    LogPrint("-----------end:" + name + "--------------");
+
+}
+</code></pre>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/04/JNI%E5%B1%82Socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%AF%E6%BA%90/image-20240612235818564.png" class="" title="image-20240612235818564">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/04/JNI%E5%B1%82Socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%AF%E6%BA%90/image-20240613000706891.png" class="" title="image-20240613000706891">
+
+<ul>
+<li>成功的打印出了函数调用流程</li>
+<li>不过结果中有一些采用UDP通信的IP是null，没有解析出来</li>
+</ul>
+<h4 id="解析UDP通信的IP"><a href="#解析UDP通信的IP" class="headerlink" title="解析UDP通信的IP"></a>解析UDP通信的IP</h4><pre><code class="js">function getip(ip_ptr) {
+    return Array.from({ length: 4 }, (_, i) =&gt; ptr(ip_ptr.add(i)).readU8()).join('.');
+}
+
+function getUdpAddr(addrptr) {
+    var port = addrptr.add(2).readU16();
+    var ip_addr = getip(addrptr.add(4));
+    return `peer:${ip_addr}--port:${port}`;
+}
+
+function handleUdp(socketType, sockaddr_in_ptr, sizeofsockaddr_in) {
+    var addr_info = getUdpAddr(sockaddr_in_ptr);
+    console.log(`this is a ${socketType} udp! -&gt; ${addr_info} --- size of sockaddr_in: ${sizeofsockaddr_in}`);
+}
+</code></pre>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/04/JNI%E5%B1%82Socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%AF%E6%BA%90/image-20240613001859925.png" class="" title="image-20240613001859925">
+
+<h3 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h3><p>本章完成了对SO库函数的socket抓包，包括打印IP以及C层堆栈调用。</p>
+<p>如果需要打印Java层的堆栈调用，还是需要使用之前写的Java层的hook脚本</p>
+<h6 id="附件"><a href="#附件" class="headerlink" title="附件"></a>附件</h6><p><a class="link" href="https://github.com/xiaoeeyu/hookLibcSocket">完整fridaHook脚本 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+]]></content>
+      <categories>
+        <category>Android逆向</category>
+      </categories>
+      <tags>
+        <tag>App抓包</tag>
+        <tag>Frida Hook</tag>
       </tags>
   </entry>
 </search>

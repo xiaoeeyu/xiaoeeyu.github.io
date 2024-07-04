@@ -490,7 +490,7 @@
 
         <div class="statistics flex justify-around my-2.5">
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">85</div>
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">84</div>
         <div class="label text-third-text-color text-sm">标签</div>
     </a>
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
@@ -498,7 +498,7 @@
         <div class="label text-third-text-color text-sm">分类</div>
     </a>
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">100</div>
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">101</div>
         <div class="label text-third-text-color text-sm">文章</div>
     </a>
 </div>
@@ -531,7 +531,7 @@
 </div>
                 <div class="statistics flex justify-around my-2.5">
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">85</div>
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">84</div>
         <div class="label text-third-text-color text-sm">标签</div>
     </a>
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
@@ -539,7 +539,7 @@
         <div class="label text-third-text-color text-sm">分类</div>
     </a>
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">100</div>
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">101</div>
         <div class="label text-third-text-color text-sm">文章</div>
     </a>
 </div>
@@ -556,6 +556,79 @@
                 
                     <div class="home-content-container">
     <ul class="home-article-list">
+        
+            <li class="home-article-item">
+
+                
+
+                
+
+                
+                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
+                    <h3 class="home-article-title">
+                        <a href="/2024/07/04/JNI%E5%B1%82Socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%AF%E6%BA%90/">
+                            JNI层Socket抓包与溯源
+                        </a>
+                    </h3>
+
+                    <div class="home-article-content markdown-body">
+                        
+                            <p>之前几章分析了Java层的socket与SSL通信源码，了解了如何通过fridaHook抓取Java层的Socket和SSL通信</p>
+<p>接下来两章通过对C层源码分析，了解如何抓取C层的通信</p>
+                        
+                    </div>
+
+                    <div class="home-article-meta-info-container">
+    <div class="home-article-meta-info">
+        <span><i class="fa-solid fa-calendars"></i>&nbsp;
+            <span class="home-article-date" data-date="Thu Jul 04 2024 20:44:59 GMT+0800">
+                
+                    2024-07-04
+                
+            </span>
+        </span>
+        
+            <span class="home-article-category">
+                <i class="fa-solid fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/Android%E9%80%86%E5%90%91/">Android逆向</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+        
+        
+            <span class="home-article-tag">
+                <i class="fa-solid fa-tags"></i>&nbsp;
+                <ul>
+                    
+                        <li>
+                            
+                            <a href="/tags/App%E6%8A%93%E5%8C%85/">App抓包</a>&nbsp;
+                        </li>
+                    
+                        <li>
+                            | 
+                            <a href="/tags/Frida-Hook/">Frida Hook</a>&nbsp;
+                        </li>
+                    
+                </ul>
+            </span>
+        
+    </div>
+
+    <a href="/2024/07/04/JNI%E5%B1%82Socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%AF%E6%BA%90/">阅读全文<span class="seo-reader-text">JNI层Socket抓包与溯源</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
+</div>
+
+                </div>
+            </li>
         
             <li class="home-article-item">
 
@@ -617,11 +690,6 @@
                         <li>
                             | 
                             <a href="/tags/Frida-Hook/">Frida Hook</a>&nbsp;
-                        </li>
-                    
-                        <li>
-                            | 
-                            <a href="/tags/SSL%E6%8A%93%E5%8C%85/">SSL抓包</a>&nbsp;
                         </li>
                     
                 </ul>
@@ -1409,85 +1477,6 @@ jnitrace
                 </div>
             </li>
         
-            <li class="home-article-item">
-
-                
-
-                
-
-                
-                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
-                    <h3 class="home-article-title">
-                        <a href="/2024/03/05/%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%AF%86%E7%A0%81-RSA/">
-                            非对称密码-RSA
-                        </a>
-                    </h3>
-
-                    <div class="home-article-content markdown-body">
-                        
-                            <p>本章内容主要为RSA密码的原理以及定位</p>
-<p>分组密码在应用和协议的加解密中比较常用，非对称加密RSA因为加密效率的原因更多的用在密钥的分发方面</p>
-<p>非对称密码中的RSA在当前互联网时代被广泛使用（网站、app、协议、桌面应用、服务器等等）。RSA加密算法是公钥密码体制中的一种，改算法基于数学理论而不是对称密码中的混淆和扩散。RSA密码算法当中加密和解密使用的是不同的密钥，因此被称为非对称密码。RSA是1977年由罗纳德·里维斯特、阿迪·萨莫尔和伦纳德·阿德曼一起提出的。RSA就是他们三人姓氏开头字母拼在一起的。</p>
-                        
-                    </div>
-
-                    <div class="home-article-meta-info-container">
-    <div class="home-article-meta-info">
-        <span><i class="fa-solid fa-calendars"></i>&nbsp;
-            <span class="home-article-date" data-date="Tue Mar 05 2024 18:01:10 GMT+0800">
-                
-                    2024-03-05
-                
-            </span>
-        </span>
-        
-            <span class="home-article-category">
-                <i class="fa-solid fa-folders"></i>&nbsp;
-            <ul>
-                
-                
-                    
-                        
-                        <li>
-                            <a href="/categories/Android%E9%80%86%E5%90%91/">Android逆向</a>&nbsp;
-                        </li>
-                    
-                    
-                
-                    
-                        
-                            <li>></li>
-                        
-                        <li>
-                            <a href="/categories/Android%E9%80%86%E5%90%91/%E5%8A%A0%E5%AF%86%E8%A7%A3%E5%AF%86/">加密解密</a>&nbsp;
-                        </li>
-                    
-                    
-                
-            </ul>
-        </span>
-        
-        
-            <span class="home-article-tag">
-                <i class="fa-solid fa-tags"></i>&nbsp;
-                <ul>
-                    
-                        <li>
-                            
-                            <a href="/tags/RSA/">RSA</a>&nbsp;
-                        </li>
-                    
-                </ul>
-            </span>
-        
-    </div>
-
-    <a href="/2024/03/05/%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%AF%86%E7%A0%81-RSA/">阅读全文<span class="seo-reader-text">非对称密码-RSA</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
-</div>
-
-                </div>
-            </li>
-        
     </ul>
 
     <div class="home-paginator px-7 py-5">
@@ -1522,7 +1511,7 @@ jnitrace
                 
                 <p class="post-count space-x-0.5">
                     <span>
-                        共 100 篇文章
+                        共 101 篇文章
                     </span>
                     
                 </p>
