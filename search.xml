@@ -19914,4 +19914,357 @@ Interceptor.attach(Module.findExportByName(null, 'syscall'), {
         <tag>Frida Hook</tag>
       </tags>
   </entry>
+  <entry>
+    <title>六层锁机</title>
+    <url>/2024/07/29/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA/</url>
+    <content><![CDATA[<p>六层锁机和一个注册机制绕过</p>
+<h3 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h3><blockquote>
+<p>Android 13.0</p>
+<p>frida 16.1.8</p>
+</blockquote>
+<h3 id="登陆"><a href="#登陆" class="headerlink" title="登陆"></a>登陆</h3><img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA/image-20240725114737781.png" class="" title="image-20240725114737781">
+
+<p>用jadx打开apk</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA/image-20240725115240692.png" class="" title="image-20240725115240692">
+
+<ul>
+<li><p>登陆页面的逻辑是把拿到的<strong>username</strong>放入<code>a</code>中，计算出来的结果需要相同</p>
+</li>
+<li><p><code>a</code>是<strong>HmacSHA256</strong>加密函数</p>
+</li>
+<li><p>密码是通过<code>a</code>传入<strong>username</strong>计算出来的。所以可以通过获取<code>a</code>的返回值来拿到</p>
+<blockquote>
+<p>有三种方式可以获取：</p>
+<ol>
+<li><p>提取出来算法，计算出返回值</p>
+<pre><code class="java">import javax.crypto.Mac;
+import javax.crypto.spec.SecretKeySpec;
+import java.nio.charset.StandardCharsets;
+
+public class PasswordGenerator {
+    public static void main(String[] args) {
+        String username = "xiaoeryu"; // 用户名
+
+        String password = generatePassword(username, username);
+        System.out.println("Generated Password: " + password);
+    }
+
+    private static String generatePassword(String str, String str2) {
+        try {
+            SecretKeySpec secretKeySpec = new SecretKeySpec(str2.getBytes(StandardCharsets.UTF_8), "HmacSHA256");
+            Mac mac = Mac.getInstance("HmacSHA256");
+            mac.init(secretKeySpec);
+            return bytesToHex(mac.doFinal(str.getBytes(StandardCharsets.UTF_8)));
+        } catch (Exception e) {
+            e.printStackTrace();
+            return "";
+        }
+    }
+
+    private static String bytesToHex(byte[] bytes) {
+        StringBuilder sb = new StringBuilder();
+        for (byte b : bytes) {
+            String hex = Integer.toHexString(0xff &amp; b);
+            if (hex.length() == 1)
+                sb.append('0');
+            sb.append(hex);
+        }
+        return sb.toString();
+    }
+}
+</code></pre>
+</li>
+<li><p>使用objection来hook <code>a</code>函数拿到返回值</p>
+<p><code>android hooking search classes Activity</code></p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA/image-20240725141631181.png" class="" title="image-20240725141631181">
+</li>
+<li><p>写frida hook脚本来获取返回值：hook起来比较简单就是一个静态函数</p>
+<pre><code class="js">Java.perform(function() {
+    var LoginActivity = Java.use('com.example.androiddemo.Activity.LoginActivity');
+
+    LoginActivity.a.overload('java.lang.String', 'java.lang.String').implementation = function(arg1, arg2) {
+        var result = this.a(arg1, arg2);
+        console.log('Arguments: ' + arg1 + ', ' + arg2);
+        console.log('Result: ' + result);
+        return result;
+    };
+});
+</code></pre>
+</li>
+</ol>
+</blockquote>
+</li>
+</ul>
+<h3 id="第一关"><a href="#第一关" class="headerlink" title="第一关"></a>第一关</h3><p>登录后的第一关</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA/image-20240725165613394.png" class="" title="image-20240725165613394">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA/image-20240725171315169-17218987967391.png" class="" title="image-20240725171315169">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA/image-20240726205832838.png" class="" title="image-20240726205832838">
+
+<ul>
+<li>这一关可以不需要关心算法细节，只需要hook <code>a</code>函数，让它返回<code>R4jSLLLLLLLLLLOrLE7/5B+Z6fsl65yj6BgC6YWz66gO6g2t65Pk6a+P65NK44NNROl0wNOLLLL=</code>即可</li>
+</ul>
+<p>hook <code>a</code>方法修改返回值：依旧是一个静态函数</p>
+<pre><code class="js">Java.perform(function () {
+    try {
+        var FridaActivity1 = Java.use("com.example.androiddemo.Activity.FridaActivity1");
+
+        // 确认类是否成功加载
+        if (FridaActivity1) {
+            console.log("Successfully loaded FridaActivity1 class.");
+        }
+
+        // Hook the method with byte array as the parameter
+        FridaActivity1.a.overload('[B').implementation = function (byteArray) {
+            console.log("Hooked a(byte[]) method in FridaActivity1. Returning pre-defined value.");
+            return "R4jSLLLLLLLLLLOrLE7/5B+Z6fsl65yj6BgC6YWz66gO6g2t65Pk6a+P65NK44NNROl0wNOLLLL=";
+        };
+    } catch (e) {
+        console.log("Exception: " + e.message);
+    }
+});
+</code></pre>
+<h3 id="第二关"><a href="#第二关" class="headerlink" title="第二关"></a>第二关</h3><img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA/image-20240725190223024.png" class="" title="image-20240725190223024">
+
+<ul>
+<li><p>第二关只要让两个变量都为<code>true</code>就可以了</p>
+<blockquote>
+<p>static_bool_var：是一个静态变量直接设置就可以</p>
+<p>bool_var：是一个实例变量，需要查找类下的所有实例变量然后再设置</p>
+</blockquote>
+</li>
+</ul>
+<pre><code class="js">Java.perform(function () {
+    function Activity2() {
+        var FridaActivity2 = Java.use("com.example.androiddemo.Activity.FridaActivity2");
+        // 直接设置静态变量
+        FridaActivity2.static_bool_var.value = true;
+        // 查找活动实例并设置实例变量
+        Java.choose("com.example.androiddemo.Activity.FridaActivity2", {
+            onMatch: function (ins) {
+                // 直接设置实例变量
+                ins.bool_var.value = true;
+                console.log("Instance found and bool_var set to true");
+            },
+            onComplete: function () {
+                console.log("Java.choose completed");
+            }
+        });
+    }
+    Activity2()
+});
+</code></pre>
+<h3 id="第三关"><a href="#第三关" class="headerlink" title="第三关"></a>第三关</h3><p>第三层锁机在第二层的基础上有一些改变，如下图</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA/image-20240725210524640.png" class="" title="image-20240725210524640">
+
+<ul>
+<li>这里跟之前两关差不多，区别在于有一个变量名和函数名相同</li>
+</ul>
+<pre><code class="js">Java.perform(function () {
+    function Activity3() {
+        var FridaActivity3 = Java.use("com.example.androiddemo.Activity.FridaActivity3");
+        var BooleanClass = Java.use("java.lang.Boolean");
+        // 直接设置静态变量
+        FridaActivity3.static_bool_var.value = true;
+        // 查找活动实例并设置实例变量
+        Java.choose("com.example.androiddemo.Activity.FridaActivity3", {
+            onMatch: function (ins) {
+                // 直接设置实例变量
+                ins.bool_var.value = true;
+                // 需要在重名的变量前加一个下划线
+                ins._same_name_bool_var.value = true;
+
+                console.log("Instance found and bool_var &amp; same_name_bool_var set to true");
+            },
+            onComplete: function () {
+                console.log("Java.choose completed");
+            }
+        });
+    }
+
+    Activity3()
+});
+</code></pre>
+<h3 id="第四关"><a href="#第四关" class="headerlink" title="第四关"></a>第四关</h3><img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA/image-20240725222606648.png" class="" title="image-20240725222606648">
+
+<ul>
+<li>这里的主要问题是要修改内部类中方法的返回值</li>
+</ul>
+<p>有两种方案可以解决</p>
+<blockquote>
+<p>第一种：依次进行hook</p>
+<p>第二种：通过反射拿到内部类的所有方法，然后hook并返回true</p>
+</blockquote>
+<pre><code class="js">Java.perform(function () {
+    // function forth() {
+    //     var InnerClasses = Java.use("com.example.androiddemo.Activity.FridaActivity4$InnerClasses");
+
+    //     // 将 check1 到 check6 方法的返回值修改为 true
+    //     InnerClasses.check1.implementation = function () {
+    //         console.log("check1 called");
+    //         return true;
+    //     };
+
+    //     InnerClasses.check2.implementation = function () {
+    //         console.log("check2 called");
+    //         return true;
+    //     };
+
+    //     InnerClasses.check3.implementation = function () {
+    //         console.log("check3 called");
+    //         return true;
+    //     };
+
+    //     InnerClasses.check4.implementation = function () {
+    //         console.log("check4 called");
+    //         return true;
+    //     };
+
+    //     InnerClasses.check5.implementation = function () {
+    //         console.log("check5 called");
+    //         return true;
+    //     };
+
+    //     InnerClasses.check6.implementation = function () {
+    //         console.log("check6 called");
+    //         return true;
+    //     };
+
+    //     console.log("All check methods modified to return true");
+    // }
+    function forth2() {
+        var class_name = "com.example.androiddemo.Activity.FridaActivity4$InnerClasses";
+        var InnerClass = Java.use(class_name);
+        var all_methods = InnerClass.class.getDeclaredMethods();
+        //console.log(all_methods);
+        for (var i = 0; i &lt; all_methods.length; i++) {
+            var method = all_methods[i];
+            console.log(method);
+            var substring = method.toString().substr(method.toString().indexOf(class_name) + class_name.length + 1);
+            //console.log(substring);
+            var finalMethodString = substring.substr(0, substring.indexOf("("));
+            console.log(finalMethodString);
+            InnerClass[finalMethodString].implementation = function () { return true };
+        }
+    }
+
+    // forth2()
+    forth2()
+});
+</code></pre>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA/image-20240726110826385.png" class="" title="image-20240726110826385">
+
+<h3 id="第五关"><a href="#第五关" class="headerlink" title="第五关"></a>第五关</h3><img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA/image-20240725225633237.png" class="" title="image-20240725225633237">
+
+<ul>
+<li>继续跟进<code>getDynamicDexCheck </code>函数中</li>
+</ul>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA/image-20240726113424556.png" class="" title="image-20240726113424556">
+
+<ul>
+<li>继续跟进<code>loaddex</code>函数中</li>
+</ul>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA/image-20240726113607782.png" class="" title="image-20240726113607782">
+
+<ul>
+<li>此处动态加载Dex是用<code>DexClassLoader</code>加载的</li>
+</ul>
+<pre><code class="js">Java.perform(function(){
+    function fifth(){
+        // var methods = Java.enumerateMethods("*!check")
+        // console.log(JSON.stringify(methods,null,2))
+        Java.enumerateClassLoaders({
+            onMatch: function (loader) {
+                try {
+                    if (loader.findClass("com.example.androiddemo.Dynamic.DynamicCheck")) {
+        
+                        Java.classFactory.loader = loader;
+        
+                    }
+                }
+                catch (error) {
+                    console.log(" continuing :" + error)
+                }
+            },
+            onComplete: function () {
+                console.log("EnumerateClassloader END")
+            }
+        })
+        Java.use("com.example.androiddemo.Dynamic.DynamicCheck").check.implementation = function(){
+            return true;
+        }
+    }
+    fifth()
+})
+</code></pre>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA/image-20240726165103754.png" class="" title="image-20240726165103754">
+
+
+
+<h3 id="第六关"><a href="#第六关" class="headerlink" title="第六关"></a>第六关</h3><img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA/image-20240725225841360.png" class="" title="image-20240725225841360">
+
+<p>这一关比较简单：直接hook这几个类中的<code>check</code>方法，修改返回值即可</p>
+<pre><code class="js">Java.perform(function () {
+    function sixth() {
+        var targetClasses = [
+            'com.example.androiddemo.Activity.Frida6.Frida6Class0',
+            'com.example.androiddemo.Activity.Frida6.Frida6Class1',
+            'com.example.androiddemo.Activity.Frida6.Frida6Class2'
+        ]
+        targetClasses.forEach(function (className) {
+            var targetClasses = Java.use(className)
+            targetClasses.check.implementation = function () {
+                console.log(className + "check called")
+                return true
+            }
+        })
+    }
+    sixth()
+})
+</code></pre>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA/image-20240726173418605.png" class="" title="image-20240726173418605">
+
+<hr>
+<h2 id="注册机绕过"><a href="#注册机绕过" class="headerlink" title="注册机绕过"></a>注册机绕过</h2><img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA/image-20240726175855698.png" class="" title="image-20240726175855698">
+
+<h6 id="该App程序使用了机器码验证，想办法绕过机器码验证，以便正常使用该App功能。绕过后，随意输入账号密码，将获得flag"><a href="#该App程序使用了机器码验证，想办法绕过机器码验证，以便正常使用该App功能。绕过后，随意输入账号密码，将获得flag" class="headerlink" title="该App程序使用了机器码验证，想办法绕过机器码验证，以便正常使用该App功能。绕过后，随意输入账号密码，将获得flag"></a>该App程序使用了机器码验证，想办法绕过机器码验证，以便正常使用该App功能。绕过后，随意输入账号密码，将获得flag</h6><p>用jadx打开apk在登陆页面定位到登陆按钮点击事件</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA/image-20240726183933825.png" class="" title="image-20240726183933825">
+
+<ul>
+<li>这里通过ID判断是否是登陆按钮，进入之后开始处理<code>mWaittimer</code>的逻辑</li>
+<li>创建一个新的<code>Timer</code>对象，并创建一个<code>MyWaitTimerTask</code>对象</li>
+</ul>
+<p>跟进去看一下</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA/image-20240726191107288.png" class="" title="image-20240726191107288">
+
+<ul>
+<li>第一块框出来的这块代码可以看到对URL和获取到的一些设备信息进行了校验</li>
+<li>框出来的第二块是校验返回的结果如果是<code>OK</code>，则设置<code>netcom.m_check</code>为1，发送一个消息，设置<code>what</code>为<code>2001</code>，表示成功</li>
+<li>所以，接下来可以考虑hook <code>CheckUrl</code>函数让其返回<code>OK</code></li>
+</ul>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA/image-20240726191726752.png" class="" title="image-20240726191726752">
+
+<p>这个hook起来比较简单，就是一个静态函数</p>
+<pre><code class="js">function main(){
+    Java.perform(function(){
+        var netcom = Java.use("com.netcom.netcom")
+        netcom["CheckUrl"].implementation = function(url){
+            return Java.use("java.lang.String").$new("OK")
+        }
+    })
+}
+setImmediate(main)
+</code></pre>
+<p>执行脚本后，输入或者不输入内容都会显示flag</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA/image-20240729104155952.png" class="" title="image-20240729104155952">
+]]></content>
+      <categories>
+        <category>Android逆向</category>
+      </categories>
+      <tags>
+        <tag>Frida Hook</tag>
+        <tag>CTF</tag>
+      </tags>
+  </entry>
 </search>
