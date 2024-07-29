@@ -44,7 +44,7 @@
 <meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/e030a98bf6ca43dcb5c961cdba97729e.png">
 <meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/a4b569d9c68c40a3b60698935c7a0eab.png">
 <meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/917422b659024a99bfeb5dac99f7de65.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/43.webp">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/43.webp">
 <meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/image-20240421090726368.png">
 <meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/image-20240130104814015.png">
 <meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/image-20240130104941332.png">
@@ -63,7 +63,7 @@
 <meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/image-20240420104501134.png">
 <meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/image-20240420134728981.png">
 <meta property="article:published_time" content="2023-10-04T03:09:02.000Z">
-<meta property="article:modified_time" content="2024-06-05T08:01:44.058Z">
+<meta property="article:modified_time" content="2024-07-27T14:28:20.607Z">
 <meta property="article:author" content="xiaoeryu">
 <meta property="article:tag" content="Android刷机">
 <meta property="article:tag" content="抓包环境">
@@ -442,7 +442,7 @@
 
         <div class="statistics flex justify-around my-2.5">
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">84</div>
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">85</div>
         <div class="label text-third-text-color text-sm">标签</div>
     </a>
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
@@ -450,7 +450,7 @@
         <div class="label text-third-text-color text-sm">分类</div>
     </a>
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">102</div>
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">106</div>
         <div class="label text-third-text-color text-sm">文章</div>
     </a>
 </div>
@@ -504,8 +504,8 @@
     
         <span class="article-date article-meta-item">
             <i class="fa-regular fa-wrench"></i>&nbsp;
-            <span class="desktop">2024-06-05 16:01:44</span>
-            <span class="mobile">2024-06-05 16:01:44</span>
+            <span class="desktop">2024-07-27 22:28:20</span>
+            <span class="mobile">2024-07-27 22:28:20</span>
             <span class="hover-info">更新</span>
         </span>
     
@@ -603,15 +603,10 @@
 <p>然后将其刷入boot分区中</p>
 <ul>
 <li><ol>
-<li><p>进入fastboot模式<code>adb reboot fastboot</code>，如果命令进入失败手动关机后按住<strong>开机键+音量减</strong>进入</p>
+<li><p>进入fastboot模式<code>adb reboot bootloader</code>，如果命令进入失败手动关机后按住<strong>开机键+音量减</strong>进入</p>
 </li>
 <li><p>输入命令刷入<code> fastboot flash boot .\magisk_patched-26100_TDHKz.img</code></p>
-<img lazyload="" src="/images/loading.svg" data-src="/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/54a900ad116444c59fccec41454b8a1b.png" class="" title="ec4eabed226dcda5335aec66312f6870.png">
-
-<ul>
-<li><code>adb reboot fastboot</code>如果命令不生效的话，可以手动进入或者用<code>adb reboot bootloader</code></li>
-</ul>
-</li>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/54a900ad116444c59fccec41454b8a1b.png" class="" title="ec4eabed226dcda5335aec66312f6870.png"></li>
 </ol>
 </li>
 </ul>
@@ -665,7 +660,8 @@
 <p>支持修改网络请求参数。</p>
 <p>支持网络请求的截获并动态修改。</p>
 <p>支持模拟慢速网络。</p>
-<h5 id="代理服务器的工作原理如下所示："><a href="#代理服务器的工作原理如下所示：" class="headerlink" title="代理服务器的工作原理如下所示："></a>代理服务器的工作原理如下所示：</h5><p><a target="_blank" rel="noopener" href="https://www.ddosi.org/wp-content/uploads/2022/11/43.webp"><img lazyload="" src="/images/loading.svg" data-src="/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/43.webp" alt="APP各种抓包教程 Hook | SSL Pinning |Frida"></a></p>
+<h5 id="代理服务器的工作原理如下所示："><a href="#代理服务器的工作原理如下所示：" class="headerlink" title="代理服务器的工作原理如下所示："></a>代理服务器的工作原理如下所示：</h5><img lazyload="" src="/images/loading.svg" data-src="/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/43.webp" class="" title="APP各种抓包教程 Hook | SSL Pinning |Frida">
+
 <p>客户端发起请求，请求通过 charles 转发给服务器，服务器返回响应，响应通过 charles 转发给客户端。</p>
 <p>charles 所起的作用就相当于信使，把信息从 A 传递给 B，并且把回信从 B 传递给 A，正因为他这个信使的工作，所以他对信息的内容了如指掌(不管是原信还是回信)，正因为如此，charles 也就可以篡改信息的内容，即篡改请求和响应。</p>
 <p>安装charles后去<a class="link" target="_blank" rel="noopener" href="https://www.zzzmode.com/mytools/charles/">注册码生成 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>网站生成一个账号密码</p>
@@ -758,7 +754,7 @@
         
             <li>
                 <strong>更新于
-                    :</strong> 2024-06-05 16:01:44
+                    :</strong> 2024-07-27 22:28:20
             </li>
         
         <li>
@@ -934,7 +930,7 @@
                 
                 <p class="post-count space-x-0.5">
                     <span>
-                        共 102 篇文章
+                        共 106 篇文章
                     </span>
                     
                 </p>

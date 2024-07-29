@@ -4500,15 +4500,10 @@ struct ArtMethod {
 <p>然后将其刷入boot分区中</p>
 <ul>
 <li><ol>
-<li><p>进入fastboot模式<code>adb reboot fastboot</code>，如果命令进入失败手动关机后按住<strong>开机键+音量减</strong>进入</p>
+<li><p>进入fastboot模式<code>adb reboot bootloader</code>，如果命令进入失败手动关机后按住<strong>开机键+音量减</strong>进入</p>
 </li>
 <li><p>输入命令刷入<code> fastboot flash boot .\magisk_patched-26100_TDHKz.img</code></p>
-<img lazyload="" src="/images/loading.svg" data-src="/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/54a900ad116444c59fccec41454b8a1b.png" class="" title="ec4eabed226dcda5335aec66312f6870.png">
-
-<ul>
-<li><code>adb reboot fastboot</code>如果命令不生效的话，可以手动进入或者用<code>adb reboot bootloader</code></li>
-</ul>
-</li>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/54a900ad116444c59fccec41454b8a1b.png" class="" title="ec4eabed226dcda5335aec66312f6870.png"></li>
 </ol>
 </li>
 </ul>
@@ -4562,7 +4557,8 @@ struct ArtMethod {
 <p>支持修改网络请求参数。</p>
 <p>支持网络请求的截获并动态修改。</p>
 <p>支持模拟慢速网络。</p>
-<h5 id="代理服务器的工作原理如下所示："><a href="#代理服务器的工作原理如下所示：" class="headerlink" title="代理服务器的工作原理如下所示："></a>代理服务器的工作原理如下所示：</h5><p><a href="https://www.ddosi.org/wp-content/uploads/2022/11/43.webp"><img lazyload="" src="/images/loading.svg" data-src="/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/43.webp" alt="APP各种抓包教程 Hook | SSL Pinning |Frida"></a></p>
+<h5 id="代理服务器的工作原理如下所示："><a href="#代理服务器的工作原理如下所示：" class="headerlink" title="代理服务器的工作原理如下所示："></a>代理服务器的工作原理如下所示：</h5><img lazyload="" src="/images/loading.svg" data-src="/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/43.webp" class="" title="APP各种抓包教程 Hook | SSL Pinning |Frida">
+
 <p>客户端发起请求，请求通过 charles 转发给服务器，服务器返回响应，响应通过 charles 转发给客户端。</p>
 <p>charles 所起的作用就相当于信使，把信息从 A 传递给 B，并且把回信从 B 传递给 A，正因为他这个信使的工作，所以他对信息的内容了如指掌(不管是原信还是回信)，正因为如此，charles 也就可以篡改信息的内容，即篡改请求和响应。</p>
 <p>安装charles后去<a class="link" href="https://www.zzzmode.com/mytools/charles/">注册码生成 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>网站生成一个账号密码</p>
@@ -5404,7 +5400,7 @@ ar值是调用CheckTokenMembership API的返回值，确认bot是否运行在管
       </tags>
   </entry>
   <entry>
-    <title>App抓包教程汇总</title>
+    <title>App抓包工具教程汇总</title>
     <url>/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/</url>
     <content><![CDATA[<h2 id="HTTPS抓包详解"><a href="#HTTPS抓包详解" class="headerlink" title="HTTPS抓包详解"></a>HTTPS抓包详解</h2><ul>
 <li>HTTP + SSL + 认证 + 完整性保护 = HTTPS</li>
@@ -5844,7 +5840,7 @@ setImmediate(main);
 </ul>
 </li>
 </ul>
-<h6 id="混淆证书的解绑定"><a href="#混淆证书的解绑定" class="headerlink" title="混淆证书的解绑定"></a>混淆证书的解绑定</h6><p>怎么对混淆的证书解绑定呢，首先对证书校验的原理考虑它打开文件的过程肯定是必须的（因为要打开证书文件进行校验）。所以可以考虑使用frida去hook所有打开文件的动作，这里使用<a class="link" href="https://github.com/r0ysue/r0tracer/blob/main/r0tracer.js">r0tracer <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>这个frida脚本是基于frida16的，那我们切换为frida16的环境</p>
+<h6 id="混淆证书的解绑定"><a href="#混淆证书的解绑定" class="headerlink" title="混淆证书的解绑定"></a>混淆证书的解绑定</h6><p>怎么对混淆的证书解绑定呢，首先从证书校验的原理考虑，它打开文件的过程肯定是必须的（因为要打开证书文件进行校验）。所以可以考虑使用frida去hook所有打开文件的动作，这里使用<a class="link" href="https://github.com/r0ysue/r0tracer/blob/main/r0tracer.js">r0tracer <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>（这个frida脚本是基于frida16的，那我们切换为frida16的环境）</p>
 <img lazyload="" src="/images/loading.svg" data-src="/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240526003526516.png" class="" title="image-20240526003526516">
 
 <p><strong>切换环境</strong></p>
@@ -9668,13 +9664,13 @@ XposedHelpers.findAndHookConstructor("com.xiaoeryu.xposedhook01.Student", loadPa
   <entry>
     <title>JNI层SSL通信抓包与溯源</title>
     <url>/2024/07/04/JNI%E5%B1%82SSL%E9%80%9A%E4%BF%A1%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%AF%E6%BA%90/</url>
-    <content><![CDATA[<p>在一些场景下对App与服务端交互的数据安全程度要求较高，可能会对通信进行更加安全的处理方式</p>
-<p>这里我们只讨论传输方式：</p>
+    <content><![CDATA[<p>在一些场景下对App与服务端交互的数据安全程度要求较高，可能会对通信进行加密传输</p>
 <ul>
-<li>例如使用<strong>HTTPS/TLS</strong>：使用HTTPS协议，在传输层使用TLS进行加密，确保数据在传输过程中不会被窃取或篡改。</li>
+<li>使用<strong>HTTPS/TLS</strong>：使用HTTPS协议，在传输层使用TLS进行加密，确保数据在传输过程中不会被窃取或篡改。</li>
 <li><strong>SSL Pinning</strong>：通过SSL Pinning确保客户端只信任特定的服务器证书，防止中间人攻击。</li>
 </ul>
-<p>在<strong>HTTPS/SSL</strong>通信的过程当中不止可以使用Java层的API完成与服务器的通信，也有可能在JNI层直接使用openssl和boringSSL（在JNI层当中去使用SSL通信与服务器建立一个安全的加密通道来完成数据的发送）</p>
+<p>在<strong>HTTPS/SSL</strong>通信的过程当中可以使用Java层的API完成与服务器的通信，也有可能在JNI层直接使用<strong>openssl/boringSSL</strong>（在JNI层当中去使用SSL通信与服务器建立一个安全的加密通道来完成数据的发送）。</p>
+<p>之前我们分析了在Java层的SSL，现在这篇文章来分析一下JNI层的SSL</p>
 <p>要完成对JNI层SSL通信的抓包和溯源，需要对<code>NativeCryptoClass.SSL_read</code>、还有<code>NativeCryptoClass.SSL_write</code>这两个Java层函数继续往下分析进入到<code>libc</code>当中的系统调用（这里以11.0的源码为例）</p>
 <h3 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h3><img lazyload="" src="/images/loading.svg" data-src="/2024/07/04/JNI%E5%B1%82SSL%E9%80%9A%E4%BF%A1%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%AF%E6%BA%90/image-20240703142204225.png" class="" title="image-20240703142204225">
 
@@ -9774,7 +9770,7 @@ XposedHelpers.findAndHookConstructor("com.xiaoeryu.xposedhook01.Student", loadPa
 <p>ssl3_write_pending、BIO_write、sock_write、write</p>
 </blockquote>
 <p>获取明文的数据就需要hook <code>do_ssl3_write</code>之前的函数</p>
-<p>这里我们以<code>SSL_write</code>为目标编写hook脚本获取SSL通信的明文数据</p>
+<p>这里我们以<code>SSL_write</code>为hook目标编写脚本获取SSL通信的明文数据</p>
 <pre><code class="js">function LogPrint(log) {
     var theDate = new Date();
     var time = theDate.toISOString().split('T')[1].replace('Z', '');
@@ -9794,9 +9790,9 @@ function printNativeStack(context, name) {
 }
 
 function hooklibssl() {
-    var libcmodule = Process.getModuleByName("libssl.so");
-    var SSL_read_addr = libcmodule.getExportByName("SSL_read");
-    var SSL_write_addr = libcmodule.getExportByName("SSL_write");
+    var libsslmodule = Process.getModuleByName("libssl.so");
+    var SSL_read_addr = libsslmodule.getExportByName("SSL_read");
+    var SSL_write_addr = libsslmodule.getExportByName("SSL_write");
     console.log(SSL_read_addr + "---" + SSL_write_addr);
     // SSL_write(SSL *ssl, const void *buf, int num)
     Interceptor.attach(SSL_read_addr, {
@@ -9812,7 +9808,7 @@ function hooklibssl() {
         onLeave(retval) {
             var size = retval.toInt32();
             if (size &gt; 0) {
-                console.log(Process.getCurrentThreadId() + "---libssl.so-&gt;SSL:" + hexdump(this.arg1, {
+                console.log(Process.getCurrentThreadId() + "---libssl.so-&gt;SSL_read:" + hexdump(this.arg1, {
                     length: size
                 }));
             }
@@ -18832,6 +18828,1090 @@ com.android.settings on (google: 10) [net] #
       </categories>
       <tags>
         <tag>RSA</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>简易闯关</title>
+    <url>/2024/07/29/%E7%AE%80%E6%98%93%E9%97%AF%E5%85%B3/</url>
+    <content><![CDATA[<p>打开App</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E7%AE%80%E6%98%93%E9%97%AF%E5%85%B3/image-20240724224049015.png" class="" title="image-20240724224049015">
+
+<ul>
+<li>显然是需要输入密码</li>
+</ul>
+<p>没有壳直接使用jadx打开分析</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E7%AE%80%E6%98%93%E9%97%AF%E5%85%B3/image-20240724214734459.png" class="" title="image-20240724214734459">
+
+<ul>
+<li>按钮点击的逻辑</li>
+</ul>
+<pre><code class="js">public class Check {
+    public boolean checkPassword(String str) {
+        char[] pass = str.toCharArray();
+        if (pass.length != 12) {  // 检查密码长度是否为12
+            return false;
+        }
+        for (int len = 0; len &lt; pass.length; len++) {
+            pass[len] = (char) (((255 - len) - 100) - pass[len]);  // 修改密码字符
+            if (pass[len] != '0' || len &gt;= 12) {  // 检查修改后的字符是否为'0'以及索引是否小于12
+                return false;
+            }
+        }
+        return true;  // 如果所有字符都通过了检查，则返回true
+    }
+}
+</code></pre>
+<blockquote>
+<p>反解这个算法，我们重点看内层的判断</p>
+<pre><code class="js">pass[len] = (char) (((255 - len) - 100) - pass[len]);
+if (pass[len] != '0' || len &gt;= 12) {
+ return false;
+}
+</code></pre>
+<p><code>pass[len]</code> 必须变成 <code>'0'</code> 才能继续循环下一次验证</p>
+<h6 id="逆向计算"><a href="#逆向计算" class="headerlink" title="逆向计算"></a>逆向计算</h6><p>令 <code>pass[len]</code> 最终等于 <code>'0'</code> (ASCII码值48):</p>
+<p><code>48 = (255 - len) - 100 - 原始字符值</code></p>
+<p>简化方程式得到字符串值：</p>
+<pre><code class="js">原始字符串 = （255 - len) - 100 - 48
+原始字符串 = 107 - len
+</code></pre>
+<p>那么就可以得到每个位置上的原始字符值<code>pass[0~11]</code>：</p>
+<pre><code class="js">len = 0, 原始字符值 = 107 - 0 = 107 (字符 'k')
+len = 1, 原始字符值 = 107 - 1 = 106 (字符 'j')
+len = 2, 原始字符值 = 107 - 2 = 105 (字符 'i')
+len = 3, 原始字符值 = 107 - 3 = 104 (字符 'h')
+len = 4, 原始字符值 = 107 - 4 = 103 (字符 'g')
+len = 5, 原始字符值 = 107 - 5 = 102 (字符 'f')
+len = 6, 原始字符值 = 107 - 6 = 101 (字符 'e')
+len = 7, 原始字符值 = 107 - 7 = 100 (字符 'd')
+len = 8, 原始字符值 = 107 - 8 = 99 (字符 'c')
+len = 9, 原始字符值 = 107 - 9 = 98 (字符 'b')
+len = 10, 原始字符值 = 107 - 10 = 97 (字符 'a')
+len = 11, 原始字符值 = 107 - 11 = 96 (字符 '`')
+</code></pre>
+<p>查ASCII码表比较麻烦，可以写个循环计算出结果：</p>
+<pre><code class="python">for i in range(12):
+ charValue = 255 - i - 100 - 48
+ print(chr(charValue), end='')
+</code></pre>
+<p>计算出的原始密码：</p>
+<pre><code class="js">kjihgfedcba`
+</code></pre>
+</blockquote>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E7%AE%80%E6%98%93%E9%97%AF%E5%85%B3/image-20240725082224357.png" class="" title="image-20240725082224357">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E7%AE%80%E6%98%93%E9%97%AF%E5%85%B3/image-20240725081841696.png" class="" title="image-20240725081841696">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E7%AE%80%E6%98%93%E9%97%AF%E5%85%B3/image-20240725084113408.png" class="" title="image-20240725084113408">
+
+<p>再看下<code>MainActivity2</code>的处理逻辑</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E7%AE%80%E6%98%93%E9%97%AF%E5%85%B3/image-20240725091142308.png" class="" title="image-20240725091142308">
+
+<ul>
+<li>点击按钮之后就发送了一个广播</li>
+</ul>
+<p>这里静态注册了广播接收器</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E7%AE%80%E6%98%93%E9%97%AF%E5%85%B3/image-20240725092159929.png" class="" title="image-20240725092159929">
+
+<p>打开接收广播的类看看</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E7%AE%80%E6%98%93%E9%97%AF%E5%85%B3/image-20240725093532061.png" class="" title="image-20240725093532061">
+
+<ul>
+<li>这里也没做什么，只是调用了<code>NextContent</code>类</li>
+</ul>
+<p><code>NextContent</code>类</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E7%AE%80%E6%98%93%E9%97%AF%E5%85%B3/image-20240725101607806.png" class="" title="image-20240725101607806">
+
+<ul>
+<li>获取应用程序数据库路径 <code>img.jpg</code> 文件的绝对路径。</li>
+<li>检查文件是否存在，存在则删除该文件。</li>
+<li>从应用程序的 assets 目录中打开 <code>timg_2.zip</code> 文件。</li>
+<li>将 <code>timg_2.zip</code> 文件的内容复制到 <code>img.jpg</code> 文件中。</li>
+<li>将 <code>img.jpg</code> 文件解码为位图，并将其设置为 <code>ImageView</code> 的图像。</li>
+<li>总的来说，这里就打开了一张图片</li>
+</ul>
+<p>那我们这里直接使用objection拉起这个<code>Activity</code>看看效果</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E7%AE%80%E6%98%93%E9%97%AF%E5%85%B3/image-20240725105504570.png" class="" title="image-20240725105504570">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E7%AE%80%E6%98%93%E9%97%AF%E5%85%B3/image-20240729101708815.png" class="" title="image-20240729101708815">
+]]></content>
+      <categories>
+        <category>Android逆向</category>
+      </categories>
+      <tags>
+        <tag>Frida Hook</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>妹子图防截屏破解</title>
+    <url>/2024/07/29/%E5%A6%B9%E5%AD%90%E5%9B%BE%E9%98%B2%E6%88%AA%E5%B1%8F%E7%A0%B4%E8%A7%A3/</url>
+    <content><![CDATA[<p>本章主要是一个简单的hook，破解防截屏机制</p>
+<h3 id="抓包"><a href="#抓包" class="headerlink" title="抓包"></a>抓包</h3><p>没啥反抓包措施，直接使用charle抓包就行</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%A6%B9%E5%AD%90%E5%9B%BE%E9%98%B2%E6%88%AA%E5%B1%8F%E7%A0%B4%E8%A7%A3/image-20240728103303669.png" class="" title="image-20240728103303669">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%A6%B9%E5%AD%90%E5%9B%BE%E9%98%B2%E6%88%AA%E5%B1%8F%E7%A0%B4%E8%A7%A3/image-20240728102750717.png" class="" title="image-20240728102750717">
+
+
+
+<hr>
+<h3 id="FRIDA破解防截屏"><a href="#FRIDA破解防截屏" class="headerlink" title="FRIDA破解防截屏"></a>FRIDA破解防截屏</h3><img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%A6%B9%E5%AD%90%E5%9B%BE%E9%98%B2%E6%88%AA%E5%B1%8F%E7%A0%B4%E8%A7%A3/image-20240728104415531.png" class="" title="image-20240728104415531">
+
+<ul>
+<li>妹纸图无法直接截屏</li>
+</ul>
+<p>查找一下Android中禁止截屏的实现方式</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%A6%B9%E5%AD%90%E5%9B%BE%E9%98%B2%E6%88%AA%E5%B1%8F%E7%A0%B4%E8%A7%A3/image-20240727211104991.png" class="" title="image-20240727211104991">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%A6%B9%E5%AD%90%E5%9B%BE%E9%98%B2%E6%88%AA%E5%B1%8F%E7%A0%B4%E8%A7%A3/image-20240727215259748.png" class="" title="image-20240727215259748">
+
+<p>使用objection搜索一下<code>addFlags</code>或者<code>setFlags</code></p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%A6%B9%E5%AD%90%E5%9B%BE%E9%98%B2%E6%88%AA%E5%B1%8F%E7%A0%B4%E8%A7%A3/image-20240727211820907.png" class="" title="image-20240727211820907">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%A6%B9%E5%AD%90%E5%9B%BE%E9%98%B2%E6%88%AA%E5%B1%8F%E7%A0%B4%E8%A7%A3/image-20240727212058515.png" class="" title="image-20240727212058515">
+
+<ul>
+<li>pixel 5的性能还不错能直接搜索到</li>
+</ul>
+<p>使用<a class="link" href="https://github.com/r0ysue/r0tracer">r0tracer <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>搜索一下<code>android.view.Window</code>类的调用记录</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%A6%B9%E5%AD%90%E5%9B%BE%E9%98%B2%E6%88%AA%E5%B1%8F%E7%A0%B4%E8%A7%A3/image-20240727214328019.png" class="" title="image-20240727214328019">
+
+<p><code>frida -U -f com.mmzztt.app -l r0tracer.js -o log.txt</code></p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%A6%B9%E5%AD%90%E5%9B%BE%E9%98%B2%E6%88%AA%E5%B1%8F%E7%A0%B4%E8%A7%A3/image-20240727222318578.png" class="" title="image-20240727222318578">
+
+<p>写frida脚本重写<code>setFlags</code>方法</p>
+<pre><code class="js">setImmediate(function(){
+    Java.perform(function(){
+        Java.use("android.view.Window").setFlags.implementation = function(x){
+            console.log("setFlags called")
+        }
+    })
+})
+</code></pre>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%A6%B9%E5%AD%90%E5%9B%BE%E9%98%B2%E6%88%AA%E5%B1%8F%E7%A0%B4%E8%A7%A3/image-20240727222415292.png" class="" title="image-20240727222415292">
+
+<p>现在再尝试截屏就可以成功了</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%A6%B9%E5%AD%90%E5%9B%BE%E9%98%B2%E6%88%AA%E5%B1%8F%E7%A0%B4%E8%A7%A3/image-20240728103834003.png" class="" title="image-20240728103834003">
+
+<h3 id="脱壳"><a href="#脱壳" class="headerlink" title="脱壳"></a>脱壳</h3><img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%A6%B9%E5%AD%90%E5%9B%BE%E9%98%B2%E6%88%AA%E5%B1%8F%E7%A0%B4%E8%A7%A3/image-20240728104911709.png" class="" title="image-20240728104911709">
+
+<p>另外这个app还加壳了，尝试使用<a class="link" href="https://github.com/hluwa/frida-dexdump">frida-dexdump <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>直接脱壳</p>
+<p>使用起来还是比较简单的</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%A6%B9%E5%AD%90%E5%9B%BE%E9%98%B2%E6%88%AA%E5%B1%8F%E7%A0%B4%E8%A7%A3/image-20240727221159301.png" class="" title="image-20240727221159301">
+
+<p><code>frida-dexdump -FU</code></p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%A6%B9%E5%AD%90%E5%9B%BE%E9%98%B2%E6%88%AA%E5%B1%8F%E7%A0%B4%E8%A7%A3/image-20240728105255322.png" class="" title="image-20240728105255322">
+
+<ul>
+<li>略微有些错误，大部分是没有问题的</li>
+</ul>
+<p>尝试搜索调用栈中的方法看能不能找到</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%A6%B9%E5%AD%90%E5%9B%BE%E9%98%B2%E6%88%AA%E5%B1%8F%E7%A0%B4%E8%A7%A3/image-20240728110508581.png" class="" title="image-20240728110508581">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%A6%B9%E5%AD%90%E5%9B%BE%E9%98%B2%E6%88%AA%E5%B1%8F%E7%A0%B4%E8%A7%A3/image-20240728110706589.png" class="" title="image-20240728110706589">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%A6%B9%E5%AD%90%E5%9B%BE%E9%98%B2%E6%88%AA%E5%B1%8F%E7%A0%B4%E8%A7%A3/image-20240728110803509.png" class="" title="image-20240728110803509">
+
+<ul>
+<li>都能搜索到，接下来对想要hook的目标函数，写脚本进行hook即可</li>
+</ul>
+]]></content>
+      <categories>
+        <category>Android逆向</category>
+      </categories>
+      <tags>
+        <tag>App抓包</tag>
+        <tag>Frida Hook</tag>
+        <tag>脱壳</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>协议枚举、爆破及算法模拟</title>
+    <url>/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/</url>
+    <content><![CDATA[<p>很多的加密算法是在so中编写的，并且加了混淆，死磕的话逆向难度是比较大的，在不必要的情况下可以尝试去主动调用算法实现目的：</p>
+<h4 id="测试环境："><a href="#测试环境：" class="headerlink" title="测试环境："></a>测试环境：</h4><blockquote>
+<p>测试用的demo</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/image-20240707223012625.png" class="" title="image-20240707223012625">
+</blockquote>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/image-20240707222451979.png" class="" title="image-20240707222451979">
+
+
+
+<p>这里使用我们前面写的脚本来抓包，因为协议都是TCP所以可以使用我们前面写的抓取javaTCP的代码，再加上libc</p>
+<p>上代码</p>
+<pre><code class="js">function LogPrint(log) {
+    var theDate = new Date();
+    var hour = theDate.getHours();
+    var minute = theDate.getMinutes();
+    var second = theDate.getSeconds();
+    var mSecond = theDate.getMilliseconds();
+
+    hour &lt; 10 ? hour = "0" + hour : hour;
+    minute &lt; 10 ? minute = "0" + minute : minute;
+    second &lt; 10 ? second = "0" + second : second;
+    mSecond &lt; 10 ? mSecond = "00" + mSecond : mSecond &lt; 100 ? mSecond = "0" + mSecond : mSecond;
+    var time = hour + ":" + minute + ":" + second + ":" + mSecond;
+    var threadid = Process.getCurrentThreadId();
+    console.log("[" + time + "]" + "-&gt;threadid:" + threadid + "--" + log);
+
+}
+
+function printJavaStack(name) {
+    Java.perform(function () {
+        var Exception = Java.use("java.lang.Exception");
+        var ins = Exception.$new("Exception");
+        var straces = ins.getStackTrace();
+        if (straces != undefined &amp;&amp; straces != null) {
+            var strace = straces.toString();
+            var replaceStr = strace.replace(/,/g, " \n ");
+            LogPrint("=============================" + name + " Java Stack strat=======================");
+            LogPrint(replaceStr);
+            LogPrint("=============================" + name + " Java Stack end======================= \n ");
+            Exception.$dispose();
+        }
+    });
+}
+function printNativeStack(context, name) {
+    var array = Thread.backtrace(context, Backtracer.ACCURATE);
+    var trace = array.map(DebugSymbol.fromAddress).join("\n");
+    LogPrint("=============================" + name + " Native Stack strat=======================");
+    LogPrint(trace);
+    LogPrint("=============================" + name + " Native Stack end======================= \n ");
+}
+
+function isprintable(value) {
+    if (value &gt;= 32 &amp;&amp; value &lt;= 126) {
+        return true;
+    }
+    return false;
+}
+
+function getsocketdetail(fd) {
+    var type = Socket.type(fd);
+    if (type !== null) {
+        var peer = Socket.peerAddress(fd);
+        var local = Socket.localAddress(fd);
+        // return `type:${type}, address:${JSON.stringify(peer)}, local:${JSON.stringify(local)}`;
+        return ("type: " + type + ", address: " + JSON.stringify(peer) + ", local: " + JSON.stringify(local));
+    }
+    return "unknown";
+}
+
+function hooktcp() {
+    Java.perform(function () {
+        var SocketClass = Java.use('java.net.Socket');
+        SocketClass.$init.overload('java.lang.String', 'int').implementation = function (arg0, arg1) {
+            console.log("[" + Process.getCurrentThreadId() + "]new Socket connection: " + arg0 + ",port: " + arg1);
+            printJavaStack('tcp connect...')
+            return this.$init(arg0, arg1);
+        }
+        var SocketInputStreamClass = Java.use('java.net.SocketInputStream');
+        //socketRead0
+        SocketInputStreamClass.socketRead0.implementation = function (arg0, arg1, arg2, arg3, arg4) {
+            var size = this.socketRead0(arg0, arg1, arg2, arg3, arg4);
+            //console.log("[" + Process.getCurrentThreadId() + "]socketRead0:size:" + size + ",content:" + JSON.stringify(arg1));
+            var bytearray = Java.array('byte', arg1);
+            var content = '';
+            for (var i = 0; i &lt; size; i++) {
+                if (isprintable(bytearray[i])) {
+                    content = content + String.fromCharCode(bytearray[i]);
+                }
+            }
+            var socketimpl = this.impl.value;
+            var address = socketimpl.address.value;
+            var port = socketimpl.port.value;
+
+            console.log("\naddress:" + address + ",port: " + port + "\n" + JSON.stringify(this.socket.value) + "\n[" + Process.getCurrentThreadId() + "]receive: " + content);
+            printJavaStack('socketRead0')
+            return size;
+        }
+        var SocketOutPutStreamClass = Java.use('java.net.SocketOutputStream');
+        SocketOutPutStreamClass.socketWrite0.implementation = function (arg0, arg1, arg2, arg3) {
+            var result = this.socketWrite0(arg0, arg1, arg2, arg3);
+            //console.log("[" + Process.getCurrentThreadId() + "]socketWrite0:len:" + arg3 + "--content:" + JSON.stringify(arg1));
+            var bytearray = Java.array('byte', arg1);
+            var content = '';
+            for (var i = 0; i &lt; arg3; i++) {
+
+                if (isprintable(bytearray[i])) {
+                    content = content + String.fromCharCode(bytearray[i]);
+                }
+            }
+            var socketimpl = this.impl.value;
+            var address = socketimpl.address.value;
+            var port = socketimpl.port.value;
+            console.log("send address:" + address + ",port: " + port + "[" + Process.getCurrentThreadId() + "]send: " + content);
+            console.log("\n" + JSON.stringify(this.socket.value) + "\n[" + Process.getCurrentThreadId() + "]send: " + content);
+            printJavaStack('socketWrite0')
+            return result;
+        }
+    })
+}
+
+function hooklibc() {
+    var libcmodule = Process.getModuleByName("libc.so");
+    var recvfrom_addr = libcmodule.getExportByName("recvfrom");
+    var sendto_addr = libcmodule.getExportByName("sendto");
+    // console.log(`${recvfrom_addr} --- ${sendto_addr}`);
+    console.log(recvfrom_addr + "---" + sendto_addr);
+
+    Interceptor.attach(recvfrom_addr, {
+        onEnter: function (args) {
+            this.arg0 = args[0];
+            this.arg1 = args[1];
+            this.arg2 = args[2];
+            this.arg3 = args[3];
+            this.arg4 = args[4];
+            this.arg5 = args[5];
+
+            LogPrint("go into libc.so-&gt;recvfrom");
+
+            var result = getsocketdetail(this.arg0.toInt32());
+            if (result.indexOf("udp") &gt; 0) {
+                handleUdp('recvfrom', this.arg4, this.arg5);
+            }
+
+            printNativeStack(this.context, "recvfrom");
+        },
+        onLeave: function (retval) {
+            var size = retval.toInt32();
+            if (size &gt; 0) {
+                var result = getsocketdetail(this.arg0.toInt32());
+                // console.log(`${result} --- libc.so-&gt;recvfrom: ${hexdump(this.arg1, { length: size })}`);
+                console.log(result + "--- libc.so-&gt;recvfrom: " + hexdump(this.arg1, { length: size }))
+            }
+            LogPrint("leave libc.so-&gt;recvfrom");
+        }
+    });
+
+    Interceptor.attach(sendto_addr, {
+        onEnter: function (args) {
+            this.arg0 = args[0];
+            this.arg1 = args[1];
+            this.arg2 = args[2];
+            this.arg3 = args[3];
+            this.arg4 = args[4];
+            this.arg5 = args[5];
+
+            LogPrint("go into libc.so-&gt;sendto");
+
+            var result = getsocketdetail(this.arg0.toInt32());
+            if (result.indexOf("udp") &gt; 0) {
+                handleUdp('sendto', this.arg4, this.arg5);
+            }
+
+            printNativeStack(this.context, "sendto");
+        },
+        onLeave: function (retval) {
+            var size = this.arg2.toInt32();
+            if (size &gt; 0) {
+                var result = getsocketdetail(this.arg0.toInt32());
+                // console.log(`${result} --- libc.so-&gt;sendto: ${hexdump(this.arg1, { length: size })}`);
+                console.log(result + "--- libc.so-&gt;sendto: " + hexdump(this.arg1, { length: size }))
+            }
+            LogPrint("leave libc.so-&gt;sendto");
+        }
+    });
+}
+
+function main() {
+    hooktcp();
+    hooklibc();
+}
+
+setImmediate(main)
+</code></pre>
+<p>抓包：目标App是我们前面说的测试用App</p>
+<p><code>frida -UF -l hooksocket.js --no-pause -o log.txt</code></p>
+<p>测试结果：</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/image-20240708222939875.png" class="" title="image-20240708222939875">
+
+<ul>
+<li>根据<code>hooklibc()</code>调用<code>printNativeStack()</code>打印的结果来看，App使用的都是Java层的函数，并没有直接调用libc或者更深层的函数。</li>
+<li>这样就不需要hook<code>libc</code>了，可以在脚本中删除这个函数了</li>
+</ul>
+<p>修改脚本后继续测试：输入账号密码，点击登陆</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/image-20240710114838578.png" class="" title="image-20240710114838578">
+
+<ul>
+<li><p>可以看到发送的数据，看起来像是base64加密的</p>
+</li>
+<li><p>以及发包函数<code>a.a.a.a$a</code>以及收包函数<code>a.a.a.a$c</code>，这里的调试信息也没有抹去，可以定位到它的地址在214行</p>
+</li>
+<li><p>以及<code>java.lang.Thread.run</code>的地址在764行</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/image-20240708225424262.png" class="" title="image-20240708225424262"></li>
+</ul>
+<h3 id="用GDA分析apk"><a href="#用GDA分析apk" class="headerlink" title="用GDA分析apk"></a>用GDA分析apk</h3><img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/image-20240708225912459.png" class="" title="image-20240708225912459">
+
+<ul>
+<li>有360的壳</li>
+</ul>
+<p>那就先脱壳，在协议分析中很多时候都要先脱壳才能分析：这里脱壳要使用<code>getDex</code>所以刷了7.1.2</p>
+<ul>
+<li>这里我们直接使用fart自动化脱壳工具进行脱壳就行了，360的壳直接去dump就可以了，因为它只是<strong>onCreate</strong>函数的一个vmp保护</li>
+</ul>
+<h4 id="编写脚本dump-dex"><a href="#编写脚本dump-dex" class="headerlink" title="编写脚本dump dex"></a>编写脚本dump dex</h4><pre><code class="js">// 只适用于存在getDex和getBytes api 的Android版本-&gt;7.1.2以下
+function dumpdex(){
+    // com.example.socket.MainActivity
+    // a.a.a.a$a    // 直接通过类名定位到需要的dex
+    Java.perform(function(){
+        var File = Java.use("java.io.File")
+        var FileOutputStream = Java.use("java.io.FileOutputStream")
+        // 首先，定位到类的class loader，通过它得到class对象
+        Java.enumerateClassLoadersSync().forEach(function(loader){
+            console.log(loader + "\n")
+            try {
+                var aclass = loader.loadClass("a.a.a.a$a")
+                console.log(aclass)
+                var dexobj = aclass.getDex()
+                console.log(dexobj)
+                var dexbytes = dexobj.getBytes()
+                var dexsavepath = "/data/data/com.example.socket/dump.dex"
+                var dexfile = File.$new(dexsavepath)
+                if(!dexfile.exists()){
+                    dexfile.createNewFile()
+                }
+                var fileoutputstream = FileOutputStream.$new(dexsavepath)
+                fileoutputstream.write(dexbytes)
+                fileoutputstream.flush()
+                fileoutputstream.close()
+                console.log("save dex success!")
+            } catch (err) {
+                
+            }
+        })
+    })
+}
+</code></pre>
+<ul>
+<li>在Android7以下，可以通过<code>getDex</code>和<code>getBytes</code>来获取目标dex并dump下来的方式进行脱壳</li>
+</ul>
+<p>dump成功</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/image-20240710093722998.png" class="" title="image-20240710093722998">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/image-20240710093737986.png" class="" title="image-20240710093737986">
+
+<ul>
+<li>用GDA分析的时候提示文件打开失败</li>
+<li>检查一下是不是文件头错误，用010Edit把文件头替换成正常的文件头</li>
+</ul>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/image-20240710093956219.png" class="" title="image-20240710093956219">
+
+<ul>
+<li>头没有了，八个字节全都是0</li>
+<li>替换个正常的头过来</li>
+</ul>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/image-20240710115018651.png" class="" title="image-20240710115018651">
+
+<ul>
+<li>脱壳后就可以看到<code>run</code>函数</li>
+</ul>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/image-20240710115836703.png" class="" title="image-20240710115836703">
+
+<ul>
+<li>合并两个参数</li>
+</ul>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/image-20240710133533095.png" class="" title="image-20240710133533095">
+
+<ul>
+<li><p>hook <code>HelloKitty.hello</code>获取参数和返回值</p>
+<pre><code class="js">function hookHelloKitty(){
+    // com.example.socket.MainActivity
+    // a.a.a.a$a    // 直接通过类名定位到需要的dex
+    Java.perform(function(){
+        var File = Java.use("java.io.File")
+        var FileOutputStream = Java.use("java.io.FileOutputStream")
+        // 首先，定位到类的class loader，通过它得到class对象
+        Java.enumerateClassLoadersSync().forEach(function(loader){
+            console.log(loader + "\n")
+            try {
+                var aclass = loader.loadClass("a.a.a.a$a")
+                Java.classFactory.loader = loader
+                var HelloKitty = Java.use("com.example.socket.HelloKitty")
+                // hello
+                HelloKitty.hello.implementation = function(arg0){
+                    console.log("HelloKitty.hello is called! arg0: " + arg0)
+                    var result = this.hello(arg0)
+                    console.log("HelloKitty.hello called over! result: " + result)
+                    return result
+                }
+            } catch (err) {
+                
+            }
+        })
+    })
+}
+</code></pre>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/image-20240713154548170.png" class="" title="image-20240713154548170">
+
+<ul>
+<li>通过hook直接打印出来了我们输入的账号密码</li>
+</ul>
+</li>
+</ul>
+<p>这些是hook <code>a.a.a.a$a</code>也就是<code>hello</code>得到的结果，是发送</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/image-20240710140059967.png" class="" title="image-20240710140059967">
+
+<ul>
+<li>这里的<code>.c</code>是接收相关的函数</li>
+</ul>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/image-20240710201205089.png" class="" title="image-20240710201205089">
+
+<p>查看<code>a.a(byte)</code></p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/image-20240710201443067.png" class="" title="image-20240710201443067">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/image-20240710201508180.png" class="" title="image-20240710201508180">
+
+<ul>
+<li><code>kitty</code>函数是一个native函数，暂时不管它</li>
+</ul>
+<p>那么我们这里继续hook <code>HelloKitty.kitty(str)</code>函数来拿到它的参数和返回值</p>
+<pre><code class="js">                // kitty
+                HelloKitty.kitty.implementation = function (arg0) {
+                    console.log("HelloKitty.kitty is called! arg0: " + arg0)
+                    var result = this.kitty(arg0)
+                    console.log("HelloKitty.kitty called over! result: " + result)
+                    return result
+                }
+</code></pre>
+<p>hook结果</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/image-20240710202241179.png" class="" title="image-20240710202241179">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/image-20240710202450565.png" class="" title="image-20240710202450565">
+
+<ul>
+<li><p>可以拿到传入的参数</p>
+</li>
+<li><p><code>kitty</code>函数执行完之后解密的字符串</p>
+</li>
+<li><p>还有点击登录响应之后返回的结果-&gt;提示密码错误</p>
+</li>
+</ul>
+<p>此时经过前面的hook我们基本可以知道：<code>hello()</code>是用来加密的，<code>kitty()</code>是用来解密的</p>
+<p>这两个都是native函数，而这个360的壳没有对so进行加密，用IDA可以分析这个so</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/image-20240710203135698.png" class="" title="image-20240710203135698">
+
+<ul>
+<li>ida里面可以直接搜索到这两个函数</li>
+</ul>
+<p>如果暴力破解的话</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/image-20240710204529936.png" class="" title="image-20240710204529936">
+
+<p>我们需要去模拟框起来的流程，模拟它的流程给服务端发送指定格式的数据，然后根据返回的结果判断是否破解成功</p>
+<pre><code class="js">function checkuser(username) {
+  //com.example.socket.MainActivity
+  //a.a.a.a$a
+  /*   String crypt = HelloKitty.hello(this.f1a);
+                      byte[] content = crypt.getBytes("utf-8");
+                      MessageDigest m = MessageDigest.getInstance("MD5");
+                      m.update(crypt.getBytes("UTF8"));
+                      m.digest()
+                      byte[] finalarray = a.a(content, m.digest());
+                      if (a.e != null) {
+                          a.e.write(finalarray);
+                      }
+
+*/
+  Java.perform(function () {
+    var File = Java.use('java.io.File');
+    var FileOutputStream = Java.use('java.io.FileOutputStream');
+    Java.enumerateClassLoadersSync().forEach(function (loader) {
+      console.log(loader + "\n");
+      try {
+        loader.loadClass("a.a.a.a$a")
+        Java.classFactory.loader = loader;
+        var HelloKitty = Java.use('com.example.socket.HelloKitty');
+
+        var crypt = HelloKitty.hello(username);
+        console.log("hello result:" + crypt);
+        /*byte[] content = "utf-8";
+    content = crypt.getBytes(content);*/
+
+        var StringClass = Java.use('java.lang.String');
+        console.log(StringClass)
+        var strobj = StringClass.$new(crypt);
+        console.log(strobj)
+        var cryptbytes = strobj.getBytes("utf-8");
+        console.log(JSON.stringify(cryptbytes));
+        /*  MessageDigest m = MessageDigest.getInstance("MD5");
+            m.update(crypt.getBytes("UTF8"));
+            m.digest()*/
+        var MessageDigest = Java.use('java.security.MessageDigest');
+        var m = MessageDigest.getInstance("MD5");
+        m.update(cryptbytes);
+        var md5hash = m.digest();
+        console.log("hash:" + JSON.stringify(md5hash));
+        //byte[] finalarray = a.a(content, m.digest());
+        //                         if (a.e != null) {
+        //                             a.e.write(finalarray);
+        //                         }
+
+        var aClass = Java.use('a.a.a.a');
+        console.log(aClass)
+        var sendbytes = aClass.a(cryptbytes, md5hash);
+        console.log("sendbytes:" + JSON.stringify(sendbytes));
+        var outputstream = aClass._e.value;
+        console.log(outputstream);
+        outputstream.write(sendbytes);
+        outputstream.flush();
+        console.log("send success");
+      } catch (e) {
+      }
+    })
+  })
+}
+function main() {
+  checkuser('{"msgtype":"login","loginname":"100","loginpwd":"qaz"}')
+}
+
+setImmediate(main);
+</code></pre>
+<ul>
+<li>只要循环去生成0~100的账号和三个字母的密码，循环就可以了</li>
+<li>这种暴力破解只需要不停的传递参数模拟调用就可以了，不涉及对它native层的加解密的分析</li>
+</ul>
+<p>未完待续。。。</p>
+]]></content>
+      <categories>
+        <category>Android逆向</category>
+      </categories>
+      <tags>
+        <tag>Frida Hook</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>自编译openssl库的抓包与溯源</title>
+    <url>/2024/07/29/%E8%87%AA%E7%BC%96%E8%AF%91openssl%E5%BA%93%E7%9A%84%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%AF%E6%BA%90/</url>
+    <content><![CDATA[<p>前面几章我们分析了在Java层和JNI层中使用HTTP/HTTPS发送数据和接收时，怎么去进行抓包与溯源</p>
+<p>有些App会不使用Android系统提供的SSL库，而使用开源的<strong>openssl</strong>自己编译一个本地库，用自己的这个库来完成SSL通信。这种情况下我们再对<code>SSL_read/SSL_write</code>进行hook就无法拿到发送和接收的数据了。</p>
+<p>甚至APP在有些场景下会直接写汇编使用系统调用号直接与内核交互来进行数据的接收和发送，这样会绕过了使用<code>sendto/recvfrom/read/write</code>这些函数，这样的操作会更加的隐蔽。</p>
+<p>接下来我们分别分析，在这些情况下如何抓包。</p>
+<p><strong>PS：本章中有些代码在Android11.0环境下没有生效，所以使用了8.0的环境，frida需要使用12.8.0有些在frida16上生效的代码在12.8上不生效。需要修改一下不再赘述</strong></p>
+<h2 id="使用私有SSL库通信"><a href="#使用私有SSL库通信" class="headerlink" title="使用私有SSL库通信"></a>使用私有SSL库通信</h2><p>使用C编写标准SSL通信的时候，有一个关键的一步-&gt;建立SSL通信之后需要去调用<code>SSL_get_fd</code>来完成当前的socketID和当前的SSL的绑定。所以利用这一点可以通过<code>SSL_get_fd</code>来获取当前SSL的socketID</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E8%87%AA%E7%BC%96%E8%AF%91openssl%E5%BA%93%E7%9A%84%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%AF%E6%BA%90/image-20240705110143920.png" class="" title="image-20240705110143920">
+
+<ul>
+<li>通过主动调用<code>SSL_get_fd</code>传入SSL，可以得到当前SSL通信过程当中的socketID</li>
+</ul>
+<p>用设备中拷贝出<strong>libssl.so</strong>用IDA查看（环境是Android11.0）</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E8%87%AA%E7%BC%96%E8%AF%91openssl%E5%BA%93%E7%9A%84%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%AF%E6%BA%90/image-20240705110651313.png" class="" title="image-20240705110651313">
+
+<ul>
+<li>可以看到<code>SSL_get_fd</code>是一个导出函数，32位和64位都有。可以使用frida直接调用</li>
+</ul>
+<h4 id="编写脚本"><a href="#编写脚本" class="headerlink" title="编写脚本"></a>编写脚本</h4><p>只需要对上一章的脚本稍微进行一些修改，从libssl.so中找到<code>SSL_get_fd</code>然后拿到返回值<strong>socketID</strong>，对<strong>socketID</strong>进行解析就能拿到IP和端口</p>
+<pre><code class="js">function LogPrint(log) {
+    // Get the current date and time
+    var theDate = new Date();
+    var hour = theDate.getHours();
+    var minute = theDate.getMinutes();
+    var second = theDate.getSeconds();
+    var mSecond = theDate.getMilliseconds();
+
+    // Format the time components to ensure two-digit display
+    hour = hour &lt; 10 ? "0" + hour : hour;
+    minute = minute &lt; 10 ? "0" + minute : minute;
+    second = second &lt; 10 ? "0" + second : second;
+    mSecond = mSecond &lt; 10 ? "00" + mSecond : mSecond &lt; 100 ? "0" + mSecond : mSecond;
+
+    // Construct the time string
+    var time = hour + ":" + minute + ":" + second + ":" + mSecond;
+    var threadid = Process.getCurrentThreadId();
+
+    // Log the message with the timestamp and thread ID
+    console.log("[" + time + "]" + "-&gt;threadid:" + threadid + "--" + log);
+}
+
+function printNativeStack(context, name) {
+    // Get the native backtrace from the provided context
+    var array = Thread.backtrace(context, Backtracer.ACCURATE);
+
+    // Check if the first symbol is related to 'libopenjdk.so!NET_Send'
+    var first = DebugSymbol.fromAddress(array[0]);
+    if (first.toString().indexOf('libopenjdk.so!NET_Send') &lt; 0) {
+        // Log the backtrace if it doesn't match
+        var trace = Thread.backtrace(context, Backtracer.ACCURATE).map(DebugSymbol.fromAddress).join("\n");
+        LogPrint("-----------start:" + name + "--------------");
+        LogPrint(trace);
+        LogPrint("-----------end:" + name + "--------------");
+    }
+}
+
+function printJavaStack(name) {
+    Java.perform(function () {
+        var Exception = Java.use("java.lang.Exception");
+        var ins = Exception.$new("Exception");
+        var straces = ins.getStackTrace();
+        if (straces != undefined &amp;&amp; straces != null) {
+            var strace = straces.toString();
+            var replaceStr = strace.replace(/,/g, " \n ");
+            LogPrint("=============================" + name + " Stack start=======================");
+            LogPrint(replaceStr);
+            LogPrint("=============================" + name + " Stack end======================= \n ");
+            Exception.$dispose();
+        }
+    });
+}
+
+function isprintable(value) {
+    return (value &gt;= 32 &amp;&amp; value &lt;= 126);
+}
+
+function getsocketdetail(fd) {
+    var result = "";
+    var type = Socket.type(fd);
+    if (type != null) {
+        result = result + "type:" + type;
+        var peer = Socket.peerAddress(fd);
+        var local = Socket.localAddress(fd);
+        console.log("Peer address: " + JSON.stringify(peer) + ", Local address: " + JSON.stringify(local));
+        result = result + ", address:" + JSON.stringify(peer) + ", local:" + JSON.stringify(local);
+    } else {
+        result = "unknown";
+    }
+    return result;
+}
+
+function hooklibssl() {
+    // SSL_write(SSL *ssl, const void *buf, int num)
+    // int SSL_get_fd(const SSL *ssl) { return SSL_get_rfd(ssl);
+    var libsslmodule = Process.getModuleByName("libssl.so");
+    var SSL_read_addr = libsslmodule.getExportByName("SSL_read");
+    var SSL_write_addr = libsslmodule.getExportByName("SSL_write");
+    var SSL_get_fd_addr = libsslmodule.getExportByName("SSL_get_rfd");
+    var SSL_get_fd = new NativeFunction(SSL_get_fd_addr, 'int', ['pointer']);
+
+
+    Interceptor.attach(SSL_read_addr, {
+        onEnter: function (args) {
+            this.ssl = args[0];
+            this.buf = args[1];
+            this.num = args[2];
+
+            LogPrint("go into libssl.so-&gt;SSL_read");
+            printNativeStack(this.context, Process.getCurrentThreadId() + "SSL_read");
+        },
+        onLeave: function (retval) {
+            var size = retval.toInt32();
+            if (size &gt; 0) {
+                console.log("SSL object: " + this.ssl);
+                var sockfd = SSL_get_fd(this.ssl);
+                console.log("SSL_get_fd returned: " + sockfd);
+                var socketdetail = getsocketdetail(sockfd);
+
+                console.log(Process.getCurrentThreadId() + socketdetail + "---libssl.so-&gt;SSL_read:" + hexdump(this.buf, {
+                    length: size
+                }));
+            }
+
+            LogPrint("leave libssl.so-&gt;SSL_read");
+        },
+    });
+
+    Interceptor.attach(SSL_write_addr, {
+        onEnter: function (args) {
+            this.arg0 = args[0];
+            this.arg1 = args[1];
+            this.arg2 = args[2];
+
+            LogPrint("go into libssl.so-&gt;SSL_write");
+            printNativeStack(this.context, Process.getCurrentThreadId() + "SSL_write");
+        },
+        onLeave: function (retval) {
+            var size = ptr(this.arg2).toInt32();
+            if (size &gt; 0) {
+                var sockfd = SSL_get_fd(this.arg0);
+                var socketdetail = getsocketdetail(sockfd);
+
+                console.log(Process.getCurrentThreadId() + socketdetail + "---libssl.so-&gt;SSL_write:" + hexdump(this.arg1, {
+                    length: size
+                }));
+            }
+
+            LogPrint("leave libssl.so-&gt;SSL_write");
+        },
+    });
+}
+
+function main() {
+    hooklibssl();
+}
+
+setImmediate(main);
+</code></pre>
+<ul>
+<li>有点奇怪，脚本在Android11.0的设备上执行，返回值出错了，换了8.0的设备执行ok</li>
+<li>不过Android8.0的64位没有<code>SSL_get_fd</code>这个函数换成<code>SSL_get_rfd</code>也可以</li>
+<li>暂时先换8.0的设备，回头再找问题在哪</li>
+</ul>
+<h5 id="执行结果"><a href="#执行结果" class="headerlink" title="执行结果"></a>执行结果</h5><p>用了滴答清单App的登陆功能进行测试</p>
+<h6 id="Android8-0"><a href="#Android8-0" class="headerlink" title="Android8.0"></a>Android8.0</h6><img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E8%87%AA%E7%BC%96%E8%AF%91openssl%E5%BA%93%E7%9A%84%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%AF%E6%BA%90/image-20240705173525169.png" class="" title="image-20240705173525169">
+
+<h6 id="Android11-0"><a href="#Android11-0" class="headerlink" title="Android11.0"></a>Android11.0</h6><pre><code>SSL object: 0x7b9ea45898
+SSL_get_fd returned: -1
+getsocketdetail called with fd: -1
+Socket type: null
+27813unknown--------libssl.so-&gt;SSL_read: 
+</code></pre>
+<ul>
+<li>返回值报错，返回了<code>-1</code></li>
+</ul>
+<h4 id="扩大搜索范围"><a href="#扩大搜索范围" class="headerlink" title="扩大搜索范围"></a>扩大搜索范围</h4><p>扩大搜索范围在所有加载的模块中匹配，即使没有<strong>libssl.so</strong>只要符号没有抹除掉就能找到目标函数</p>
+<pre><code class="js">function hookallssl() {
+    var libsslmodule = Process.getModuleByName("libssl.so");
+    var SSL_get_rfd_ptr = libsslmodule.getExportByName('SSL_get_rfd');
+    var SSL_get_rfd = new NativeFunction(SSL_get_rfd_ptr, 'int', ['pointer']);
+    Process.enumerateModules().forEach(function (module) {
+        module.enumerateExports().forEach(function (symbol) {
+            var name = symbol.name;
+            if (name == 'SSL_read') {
+                LogPrint(JSON.stringify(module) + JSON.stringify(symbol));
+            }
+            if (name == 'SSL_write') {
+                LogPrint(JSON.stringify(module) + JSON.stringify(symbol));
+                Interceptor.attach(symbol.address, {
+                    onEnter: function (args) {
+                        this.arg0 = args[0];
+                        this.arg1 = args[1];
+                        this.arg2 = args[2];
+                        LogPrint("go into " + Process.getCurrentThreadId() + "---" + JSON.stringify(module) + "---" + JSON.stringify(symbol));
+                        printNativeStack(this.context, Process.getCurrentThreadId() + "---" + JSON.stringify(module) + "---" + JSON.stringify(symbol));
+                        var size = ptr(this.arg2).toInt32();
+                        if (size &gt; 0) {
+                            var sockfd = SSL_get_rfd(this.arg0);
+                            var socketdetail = getsocketdetail(sockfd);
+                            console.log(socketdetail + "---" + Process.getCurrentThreadId() + "---" + JSON.stringify(module) + "---" + JSON.stringify(symbol) + hexdump(this.arg1, {
+                                length: size
+                            }));
+                        }
+                    }, onLeave(retval) {
+                        LogPrint("leave " + Process.getCurrentThreadId() + "---" + JSON.stringify(module) + "---" + JSON.stringify(symbol));
+                    }
+                });
+            }
+        })
+    })
+}
+</code></pre>
+<p>总结：本节主要目的在于如果App在进行HTTP/SSL进行加密通信的时候，如果使用的是自己编译的openssl库，可以选择hook第三方库中的<code>SSL_write/read</code>方法，另外通过调用 <code>SSL_get_rfd</code> 的主要目的是获取 SSL 连接的文件描述符，以便进一步获取网络连接的详细信息。这些信息可以帮助分析和调试网络通信，特别是当涉及加密通信时，通过文件描述符可以关联具体的网络连接，从而更好地理解和分析数据的传输过程。</p>
+<h3 id="无符号库"><a href="#无符号库" class="headerlink" title="无符号库"></a>无符号库</h3><p>前面分析了App没有使用系统SSL库，使用了自己编译的openssl库通信，应该如何抓包。如果符号还在的话较为简单，还是一样对他使用的SSL库进行遍历就拿到<code>SSL_write</code>等hook点就可以了。</p>
+<p>因为<strong>openssl/boringssl</strong>是开源的，大家都可以修改。虽然一般情况下开发人员不会进行大量的修改，经常是把符号抹除掉。</p>
+<h4 id="常用的三种方法"><a href="#常用的三种方法" class="headerlink" title="常用的三种方法"></a>常用的三种方法</h4><p>那如果符号被抹去了我们应该怎么抓包呢呢？</p>
+<blockquote>
+<p>在符号被抹除的情况下，一般来说还可以通过以下三种方法来找到拦截目标函数</p>
+<p><strong>使用基于地址的拦截</strong>：如果您知道目标函数的相对地址或偏移量，可以直接拦截该地址。</p>
+<blockquote>
+<p>假设我们知道了<code>ssl_write_offset = 0x123456</code>，那么只需要获取到当前模块的基址然后相加就可以了，不过这种方式随着编译方式的不同，或者库代码的改变等等都会改变偏移的位置。不确定性太大</p>
+<pre><code class="js">var baseAddress = Module.findBaseAddress('libssl.so');  // 获取 libssl.so 的基址
+var ssl_write_offset = 0x123456;  // 假设 SSL_write 的偏移量是 0x123456
+var ssl_write_address = baseAddress.add(ssl_write_offset);  // 计算 SSL_write 的绝对地址
+</code></pre>
+</blockquote>
+<p><strong>使用模式匹配</strong>：通过字节码模式匹配找到目标函数的位置。</p>
+<blockquote>
+<p>在模块中暴力匹配特定的字节码来定位目标函数，比通过偏移来寻找会更为可靠一些。下面以它为例编写代码</p>
+</blockquote>
+<p><strong>通过函数调用上下文或特征识别</strong>：分析目标函数的调用上下文或其他特征来识别并拦截。</p>
+<blockquote>
+<p>调用上下文或特征识别的方法主要通过分析目标函数在运行时的行为或周边环境来定位和拦截它。即使符号被抹除，这些方法仍然可以有效地识别目标函数。这些方法包括但不限于：</p>
+<ol>
+<li><strong>调用堆栈特征识别</strong>：分析函数调用的堆栈特征。</li>
+<li><strong>参数特征识别</strong>：通过函数调用时的参数特征来识别。</li>
+<li><strong>上下文特征识别</strong>：通过函数调用前后的上下文信息来识别。</li>
+</ol>
+</blockquote>
+</blockquote>
+<h4 id="字节匹配模式脚本："><a href="#字节匹配模式脚本：" class="headerlink" title="字节匹配模式脚本："></a>字节匹配模式脚本：</h4><pre><code class="js">function LogPrint(log) {
+    var theDate = new Date();
+    var hour = theDate.getHours();
+    var minute = theDate.getMinutes();
+    var second = theDate.getSeconds();
+    var mSecond = theDate.getMilliseconds();
+
+    hour &lt; 10 ? hour = "0" + hour : hour;
+    minute &lt; 10 ? minute = "0" + minute : minute;
+    second &lt; 10 ? second = "0" + second : second;
+    mSecond &lt; 10 ? mSecond = "00" + mSecond : mSecond &lt; 100 ? mSecond = "0" + mSecond : mSecond;
+    var time = hour + ":" + minute + ":" + second + ":" + mSecond;
+    var threadid = Process.getCurrentThreadId();
+    console.log("[" + time + "]" + "-&gt;threadid:" + threadid + "--" + log);
+}
+
+function printNativeStack(context, name) {
+    var trace = Thread.backtrace(context, Backtracer.FUZZY).map(DebugSymbol.fromAddress).join("\n");
+    LogPrint("-----------start:" + name + "--------------");
+    LogPrint(trace);
+    LogPrint("-----------end:" + name + "--------------");
+}
+
+function printJavaStack(name) {
+    Java.perform(function () {
+        var Exception = Java.use("java.lang.Exception");
+        var ins = Exception.$new("Exception");
+        var straces = ins.getStackTrace();
+        if (straces != undefined &amp;&amp; straces != null) {
+            var strace = straces.toString();
+            var replaceStr = strace.replace(/,/g, " \n ");
+            LogPrint("=============================" + name + " Stack strat=======================");
+            LogPrint(replaceStr);
+            LogPrint("=============================" + name + " Stack end======================= \n ");
+            Exception.$dispose();
+        }
+    });
+}
+
+function isprintable(value) {
+    return value &gt;= 32 &amp;&amp; value &lt;= 126;
+}
+
+function getsocketdetail(fd) {
+    var result = "";
+    var type = Socket.type(fd);
+    if (type != null) {
+        result = result + "type:" + type;
+        var peer = Socket.peerAddress(fd);
+        var local = Socket.localAddress(fd);
+        result = result + ",address:" + JSON.stringify(peer) + ",local:" + JSON.stringify(local);
+    } else {
+        result = "unknown";
+    }
+    return result;
+}
+
+function getip(ip_ptr) {
+    var result = ptr(ip_ptr).readU8() + "." + ptr(ip_ptr.add(1)).readU8() + "." + ptr(ip_ptr.add(2)).readU8() + "." + ptr(ip_ptr.add(3)).readU8();
+    return result;
+}
+
+function SSL_get_rfd(ssl) {
+    var SSL_get_rfd_ptr = Module.findExportByName("libssl.so", "SSL_get_rfd");
+    var SSL_get_rfd_func = new NativeFunction(SSL_get_rfd_ptr, 'int', ['pointer']);
+    return SSL_get_rfd_func(ssl);
+}
+
+function hookMatchbytecode() {
+    var baseAddress = Module.findBaseAddress('libssl.so');  // 获取 libssl.so 的基址
+    if (baseAddress === null) {
+        console.error('Could not find base address for libssl.so');
+        return;
+    }
+
+    // 获取 libssl.so 的所有可执行范围
+    var ranges = Process.enumerateRangesSync({
+        protection: 'r-x',
+        coalesce: true
+    }).filter(function (range) {
+        return range.file &amp;&amp; range.file.path.indexOf('libssl.so') !== -1;
+    });
+
+    // var sizeOfModule = ranges.reduce((total, range) =&gt; total + range.size, 0);
+    var sizeOfModule = 0;
+    ranges.forEach(function (range) {
+        sizeOfModule += range.size;
+    });
+
+
+    var pattern = '70 B5 82 B0 06 46 01 20';  // 替换为实际的字节码模式
+
+    Memory.scan(baseAddress, sizeOfModule, pattern, {
+        onMatch: function (address, size) {
+            var adjustedAddress = address.add(1);  // 调整地址
+            console.log('Found SSL_write at: ' + adjustedAddress);
+            Interceptor.attach(adjustedAddress, {
+                onEnter: function (args) {
+                    this.arg0 = args[0];
+                    this.arg1 = args[1];
+                    this.arg2 = args[2];
+                    LogPrint("SSL_write called");
+                    printNativeStack(this.context, "SSL_write");
+                    var size = ptr(this.arg2).toInt32();
+                    if (size &gt; 0) {
+                        var sockfd = SSL_get_rfd(this.arg0);
+                        var socketdetail = getsocketdetail(sockfd);
+                        console.log(socketdetail + " - SSL_write - " + hexdump(this.arg1, { length: size }));
+                    }
+                },
+                onLeave: function (retval) {
+                    LogPrint("SSL_write return");
+                }
+            });
+        },
+        onComplete: function () {
+            console.log('Scan complete');
+        }
+    });
+}
+
+function main() {
+    hookMatchbytecode();
+}
+
+setImmediate(main);
+</code></pre>
+<ul>
+<li><p>函数的字节码可以在IDA中提取</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E8%87%AA%E7%BC%96%E8%AF%91openssl%E5%BA%93%E7%9A%84%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%AF%E6%BA%90/image-20240706181440550.png" class="" title="image-20240706181440550">
+
+<ul>
+<li>需要注意32位和64位的字节码不同</li>
+<li>不同版本的源码，字节码可能也不同</li>
+<li>在不同环境下，字节码都可能有所不同，所以也不能通用。可以用作一种初筛的方式</li>
+</ul>
+</li>
+<li><p>在我们的示例代码中以<code>libssl.so</code>库为例，实际使用中自己编译的openssl库可能会是其它的名字，需要先确定是哪一个库再进行扫描，扫描全部的库当然也行，不过比较消耗资源。</p>
+</li>
+</ul>
+<p>测试结果：以腾讯新闻的App为例</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E8%87%AA%E7%BC%96%E8%AF%91openssl%E5%BA%93%E7%9A%84%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%AF%E6%BA%90/image-20240706220712317.png" class="" title="image-20240706220712317">
+
+<p><strong>总结：不论是使用偏移还是字节码匹配的模式随着环境的改变都不稳定，最好的方式还是打印出来无符号堆栈和标准的有符号的堆栈进行对比，然后尝试找到正确的hook函数，另外也可以尝试去目标so库中搜索关键字符串尝试定位</strong></p>
+<h2 id="直接使用系统调用"><a href="#直接使用系统调用" class="headerlink" title="直接使用系统调用"></a>直接使用系统调用</h2><p>在某些应用中，确实可能会使用汇编直接调用系统调用号来与内核交互，这样绕过了标准的库函数（如 <code>sendto</code>、<code>recvfrom</code>、<code>read</code> 和 <code>write</code>），使得传统的拦截方法失效。然而，Frida 仍然可以通过低层次的拦截来捕获这些操作，例如，通过拦截系统调用接口或使用更底层的内存拦截技术</p>
+<h3 id="拦截系统调用"><a href="#拦截系统调用" class="headerlink" title="拦截系统调用"></a>拦截系统调用</h3><p>一种方法是拦截系统调用的入口点。在 Linux 系统中，系统调用通过 <code>syscall</code> 指令执行，可以通过拦截这些指令来捕获所有的系统调用。</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E8%87%AA%E7%BC%96%E8%AF%91openssl%E5%BA%93%E7%9A%84%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%AF%E6%BA%90/image-20240706232355556.png" class="" title="image-20240706232355556">
+
+<p>以<code>write</code>为例</p>
+<pre><code class="js">const SYS_write = 4; // 在 ARM 上，write 的系统调用号是 4
+
+// 帮助函数：打印被拦截的系统调用信息
+function logSyscall(context, syscallNumber, args) {
+    console.log("Syscall intercepted:");
+    console.log("Syscall number:", syscallNumber);
+    console.log("Arguments:", args);
+    console.log("Context:", context);
+}
+
+// 帮助函数：处理被拦截的系统调用
+function handleSyscall(context, syscallNumber, args) {
+    if (syscallNumber === SYS_write) {
+        logSyscall(context, syscallNumber, args);
+
+        // 获取并打印写入的数据
+        var fd = args[0].toInt32();
+        var buffer = args[1];
+        var count = args[2].toInt32();
+        var data = buffer.readUtf8String(count);
+
+        console.log("File descriptor:", fd);
+        console.log("Data being written:", data);
+    }
+}
+
+Interceptor.attach(Module.findExportByName(null, 'syscall'), {
+    onEnter: function (args) {
+        var syscallNumber = args[0].toInt32();
+        handleSyscall(this.context, syscallNumber, args.slice(1));
+    }
+});
+</code></pre>
+<ul>
+<li>代码有问题，暂未修改</li>
+</ul>
+]]></content>
+      <categories>
+        <category>Android逆向</category>
+      </categories>
+      <tags>
+        <tag>App抓包</tag>
+        <tag>Frida Hook</tag>
       </tags>
   </entry>
 </search>

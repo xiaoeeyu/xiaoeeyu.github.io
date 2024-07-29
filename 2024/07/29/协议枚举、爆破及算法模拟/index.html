@@ -1,0 +1,1446 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    
+    <meta name="author" content="xiaoeryu">
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="https://xiaoeeyu.github.io/2024/07/29/协议枚举、爆破及算法模拟/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+        <meta name="description" content="很多的加密算法是在so中编写的，并且加了混淆，死磕的话逆向难度是比较大的，在不必要的情况下可以尝试去主动调用算法实现目的： 测试环境： 测试用的demo       这里使用我们前面写的脚本来抓包，因为协议都是TCP所以可以使用我们前面写的抓取javaTCP的代码，再加上libc 上代码 function LogPrint(log) {     var theDate &#x3D; new Date();">
+<meta property="og:type" content="article">
+<meta property="og:title" content="协议枚举、爆破及算法模拟">
+<meta property="og:url" content="https://xiaoeeyu.github.io/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/index.html">
+<meta property="og:site_name" content="xiaoeryu">
+<meta property="og:description" content="很多的加密算法是在so中编写的，并且加了混淆，死磕的话逆向难度是比较大的，在不必要的情况下可以尝试去主动调用算法实现目的： 测试环境： 测试用的demo       这里使用我们前面写的脚本来抓包，因为协议都是TCP所以可以使用我们前面写的抓取javaTCP的代码，再加上libc 上代码 function LogPrint(log) {     var theDate &#x3D; new Date();">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/image-20240707223012625.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/image-20240707222451979.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/image-20240708222939875.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/image-20240710114838578.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/image-20240708225424262.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/image-20240708225912459.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/image-20240710093722998.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/image-20240710093737986.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/image-20240710093956219.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/image-20240710115018651.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/image-20240710115836703.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/image-20240710133533095.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/image-20240713154548170.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/image-20240710140059967.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/image-20240710201205089.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/image-20240710201443067.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/image-20240710201508180.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/image-20240710202241179.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/image-20240710202450565.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/image-20240710203135698.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/image-20240710204529936.png">
+<meta property="article:published_time" content="2024-07-29T02:04:08.000Z">
+<meta property="article:modified_time" content="2024-07-29T02:11:36.468Z">
+<meta property="article:author" content="xiaoeryu">
+<meta property="article:tag" content="Frida Hook">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://xiaoeeyu.github.io/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/image-20240707223012625.png">
+    
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/rabete.jpg" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/rabete.jpg">
+    <meta name="theme-color" content="#A31F34">
+    <link rel="shortcut icon" href="/images/rabete.jpg">
+    <!--- Page Info-->
+    
+    <title>
+        
+            协议枚举、爆破及算法模拟 -
+        
+        xiaoeryu
+    </title>
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+
+    <!--- Inject Part-->
+    
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+        
+<link rel="stylesheet" href="/assets/build/styles.css">
+
+    
+
+    
+<link rel="stylesheet" href="/fonts/GeistMono/geist-mono.css">
+
+    
+<link rel="stylesheet" href="/fonts/Geist/geist.css">
+
+    <!--- Font Part-->
+    
+    
+    
+    
+
+    
+        
+<script src="/js/libs/anime.min.js"></script>
+
+    
+
+    <script id="hexo-configurations">
+    window.config = {"hostname":"xiaoeeyu.github.io","root":"/","language":"zh-CN","path":"search.xml"};
+    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true,"title_alignment":"left","headings_top_spacing":{"h1":"3.2rem","h2":"2.4rem","h3":"1.9rem","h4":"1.6rem","h5":"1.4rem","h6":"1.3rem"}},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":4,"number":false,"expand":true,"init_open":true},"copyright":{"enable":true,"default":"cc_by_nc_sa"},"lazyload":true,"recommendation":{"enable":false,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/ball-0101.jpg","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null,"default_mode":"light"},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"preloader":true,"open_graph":true,"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/wallhaven-jxl31y.png","dark":"/images/wallhaven-o5762l.png"},"title":"XIAOERYU","subtitle":{"text":["明心见性，拨云见日","Don't wait, to create"],"hitokoto":{"enable":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":true,"style":"default","links":{"github":"https://github.com/xiaoeeyu","instagram":null,"zhihu":null,"twitter":null,"email":"xiaoeryu@163.com"},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null,"lrc":null}]},"mermaid":{"enable":false,"version":"9.3.0"}},"version":"2.6.4","navbar":{"auto_hide":false,"color":{"left":"#f78736","right":"#367df7","transparency":35},"width":{"home":"1200px","pages":"1000px"},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Archives":{"path":"/archives","icon":"fa-regular fa-archive"}},"search":{"enable":true,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"blur"},"home":{"sidebar":{"enable":true,"position":"left","first_item":"menu","announcement":null,"show_on_mobile":true,"links":null},"article_date_format":"auto","categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":3}},"footerStart":"2022/8/17 11:45:14"};
+    window.lang_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"};
+    window.data = {"masonry":false};
+  </script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+<meta name="generator" content="Hexo 6.3.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+<!--        <span class="swup-progress-icon">-->
+<!--            <i class="fa-solid fa-circle-notch fa-spin"></i>-->
+<!--        </span>-->
+    
+</div>
+
+
+
+    <style>
+    :root {
+        --preloader-background-color: #fff;
+        --preloader-text-color: #000;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        :root {
+            --preloader-background-color: #202124;
+            --preloader-text-color: #fff;
+        }
+    }
+
+    @media (prefers-color-scheme: light) {
+        :root {
+            --preloader-background-color: #fff;
+            --preloader-text-color: #000;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .ml13 {
+            font-size: 2.6rem !important; /* Adjust this value as needed */
+        }
+    }
+
+    .preloader {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem; /* Tailwind 'gap-4' is 1rem */
+        align-items: center;
+        justify-content: center;
+        position: fixed;
+        padding: 12px;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh; /* 'h-screen' is 100% of the viewport height */
+        background-color: var(--preloader-background-color);
+        z-index: 1100; /* 'z-[1100]' sets the z-index */
+        transition: opacity 0.2s ease-in-out;
+    }
+
+    .ml13 {
+        font-size: 3.2rem;
+        /* text-transform: uppercase; */
+        color: var(--preloader-text-color);
+        letter-spacing: -1px;
+        font-weight: 500;
+        font-family: 'Chillax-Variable', sans-serif;
+        text-align: center;
+    }
+
+    .ml13 .word {
+        display: inline-flex;
+        flex-wrap: wrap;
+        white-space: nowrap;
+    }
+
+    .ml13 .letter {
+        display: inline-block;
+        line-height: 1em;
+    }
+</style>
+
+<div class="preloader">
+    <h2 class="ml13">
+        xiaoeryu
+    </h2>
+    <script>
+        var textWrapper = document.querySelector('.ml13');
+        // Split text into words
+        var words = textWrapper.textContent.trim().split(' ');
+
+        // Clear the existing content
+        textWrapper.innerHTML = '';
+
+        // Wrap each word and its letters in spans
+        words.forEach(function(word) {
+            var wordSpan = document.createElement('span');
+            wordSpan.classList.add('word');
+            wordSpan.innerHTML = word.replace(/\S/g, "<span class='letter'>$&</span>");
+            textWrapper.appendChild(wordSpan);
+            textWrapper.appendChild(document.createTextNode(' ')); // Add space between words
+        });
+
+        var animation = anime.timeline({loop: true})
+            .add({
+                targets: '.ml13 .letter',
+                translateY: [40,0],
+                translateZ: 0,
+                opacity: [0,1],
+                filter: ['blur(5px)', 'blur(0px)'], // Starting from blurred to unblurred
+                easing: "easeOutExpo",
+                duration: 1400,
+                delay: (el, i) => 300 + 30 * i,
+            }).add({
+                targets: '.ml13 .letter',
+                translateY: [0,-40],
+                opacity: [1,0],
+                filter: ['blur(0px)', 'blur(5px)'], // Ending from unblurred to blurred
+                easing: "easeInExpo",
+                duration: 1200,
+                delay: (el, i) => 100 + 30 * i,
+                complete: function() {
+                    hidePreloader(); // Call hidePreloader after the animation completes
+                }
+            });
+
+        let themeStatus = JSON.parse(localStorage.getItem('REDEFINE-THEME-STATUS'))?.isDark;
+
+        // If the theme status is not found in local storage, check the preferred color scheme
+        if (themeStatus === undefined || themeStatus === null) {
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                themeStatus = 'dark';
+            } else {
+                themeStatus = 'light';
+            }
+        }
+
+        // Now you can use the themeStatus variable in your code
+        if (themeStatus) {
+            document.documentElement.style.setProperty('--preloader-background-color', '#202124');
+            document.documentElement.style.setProperty('--preloader-text-color', '#fff');
+        } else {
+            document.documentElement.style.setProperty('--preloader-background-color', '#fff');
+            document.documentElement.style.setProperty('--preloader-text-color', '#000');
+        }
+
+        window.addEventListener('load', function () {
+            setTimeout(hidePreloader, 5000); // Call hidePreloader after 5000 milliseconds if not already called by animation
+        });
+
+        function hidePreloader() {
+            var preloader = document.querySelector('.preloader');
+            preloader.style.opacity = '0';
+            setTimeout(function () {
+                preloader.style.display = 'none';
+            }, 200);
+        }
+    </script>
+</div>
+
+<main class="page-container" id="swup">
+
+    
+
+    <div class="main-content-container">
+
+
+        <div class="main-content-header">
+            <header class="navbar-container px-6 md:px-12">
+
+    <div class="navbar-content ">
+        <div class="left">
+            
+                <a class="logo-image" href="/">
+                    <img src="/images/rabete.jpg">
+                </a>
+            
+            <a class="logo-title" href="/">
+                
+                xiaoeryu
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/"
+                                        >
+                                    <i class="fa-regular fa-house fa-fw"></i>
+                                    首页
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/archives"
+                                        >
+                                    <i class="fa-regular fa-archive fa-fw"></i>
+                                    归档
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                    
+                        <li class="navbar-item search search-popup-trigger">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fa-solid fa-magnifying-glass"></i>
+                    </div>
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile sheet -->
+    <div class="navbar-drawer h-screen w-full absolute top-0 left-0 bg-background-color flex flex-col justify-between">
+        <ul class="drawer-navbar-list flex flex-col px-4 justify-center items-start">
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/"
+                        >
+                            <span>
+                                首页
+                            </span>
+                            
+                                <i class="fa-regular fa-house fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/archives"
+                        >
+                            <span>
+                                归档
+                            </span>
+                            
+                                <i class="fa-regular fa-archive fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+
+            
+            
+        </ul>
+
+        <div class="statistics flex justify-around my-2.5">
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">85</div>
+        <div class="label text-third-text-color text-sm">标签</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">14</div>
+        <div class="label text-third-text-color text-sm">分类</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">106</div>
+        <div class="label text-third-text-color text-sm">文章</div>
+    </a>
+</div>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="main-content-body">
+
+            
+
+            <div class="main-content">
+
+                
+                    <div class="post-page-container flex relative justify-between box-border w-full h-full">
+    <div class="article-content-container">
+
+        <div class="article-title relative w-full">
+            
+                <div class="w-full flex items-center pt-6 justify-start">
+                    <h1 class="article-title-regular text-second-text-color tracking-tight text-4xl md:text-6xl font-semibold px-2 sm:px-6 md:px-8 py-3">协议枚举、爆破及算法模拟</h1>
+                </div>
+            
+            </div>
+
+        
+            <div class="article-header flex flex-row gap-2 items-center px-2 sm:px-6 md:px-8">
+                <div class="avatar w-[46px] h-[46px] flex-shrink-0 rounded-medium border border-border-color p-[1px]">
+                    <img src="/images/rabete.jpg">
+                </div>
+                <div class="info flex flex-col justify-between">
+                    <div class="author flex items-center">
+                        <span class="name text-default-text-color text-lg font-semibold">xiaoeryu</span>
+                        
+                            <span class="author-label ml-1.5 text-xs px-2 py-0.5 rounded-small text-third-text-color border border-shadow-color-1">Lv5</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2024-07-29 10:04:08</span>
+        <span class="mobile">2024-07-29 10:04:08</span>
+        <span class="hover-info">创建</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2024-07-29 10:11:36</span>
+            <span class="mobile">2024-07-29 10:11:36</span>
+            <span class="hover-info">更新</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/Android%E9%80%86%E5%90%91/">Android逆向</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/Frida-Hook/">Frida Hook</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fa-regular fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        
+
+
+        <div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
+            <p>很多的加密算法是在so中编写的，并且加了混淆，死磕的话逆向难度是比较大的，在不必要的情况下可以尝试去主动调用算法实现目的：</p>
+<h4 id="测试环境："><a href="#测试环境：" class="headerlink" title="测试环境："></a>测试环境：</h4><blockquote>
+<p>测试用的demo</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/image-20240707223012625.png" class="" title="image-20240707223012625">
+</blockquote>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/image-20240707222451979.png" class="" title="image-20240707222451979">
+
+
+
+<p>这里使用我们前面写的脚本来抓包，因为协议都是TCP所以可以使用我们前面写的抓取javaTCP的代码，再加上libc</p>
+<p>上代码</p>
+<pre><code class="js">function LogPrint(log) {
+    var theDate = new Date();
+    var hour = theDate.getHours();
+    var minute = theDate.getMinutes();
+    var second = theDate.getSeconds();
+    var mSecond = theDate.getMilliseconds();
+
+    hour &lt; 10 ? hour = "0" + hour : hour;
+    minute &lt; 10 ? minute = "0" + minute : minute;
+    second &lt; 10 ? second = "0" + second : second;
+    mSecond &lt; 10 ? mSecond = "00" + mSecond : mSecond &lt; 100 ? mSecond = "0" + mSecond : mSecond;
+    var time = hour + ":" + minute + ":" + second + ":" + mSecond;
+    var threadid = Process.getCurrentThreadId();
+    console.log("[" + time + "]" + "-&gt;threadid:" + threadid + "--" + log);
+
+}
+
+function printJavaStack(name) {
+    Java.perform(function () {
+        var Exception = Java.use("java.lang.Exception");
+        var ins = Exception.$new("Exception");
+        var straces = ins.getStackTrace();
+        if (straces != undefined &amp;&amp; straces != null) {
+            var strace = straces.toString();
+            var replaceStr = strace.replace(/,/g, " \n ");
+            LogPrint("=============================" + name + " Java Stack strat=======================");
+            LogPrint(replaceStr);
+            LogPrint("=============================" + name + " Java Stack end======================= \n ");
+            Exception.$dispose();
+        }
+    });
+}
+function printNativeStack(context, name) {
+    var array = Thread.backtrace(context, Backtracer.ACCURATE);
+    var trace = array.map(DebugSymbol.fromAddress).join("\n");
+    LogPrint("=============================" + name + " Native Stack strat=======================");
+    LogPrint(trace);
+    LogPrint("=============================" + name + " Native Stack end======================= \n ");
+}
+
+function isprintable(value) {
+    if (value &gt;= 32 &amp;&amp; value &lt;= 126) {
+        return true;
+    }
+    return false;
+}
+
+function getsocketdetail(fd) {
+    var type = Socket.type(fd);
+    if (type !== null) {
+        var peer = Socket.peerAddress(fd);
+        var local = Socket.localAddress(fd);
+        // return `type:${type}, address:${JSON.stringify(peer)}, local:${JSON.stringify(local)}`;
+        return ("type: " + type + ", address: " + JSON.stringify(peer) + ", local: " + JSON.stringify(local));
+    }
+    return "unknown";
+}
+
+function hooktcp() {
+    Java.perform(function () {
+        var SocketClass = Java.use('java.net.Socket');
+        SocketClass.$init.overload('java.lang.String', 'int').implementation = function (arg0, arg1) {
+            console.log("[" + Process.getCurrentThreadId() + "]new Socket connection: " + arg0 + ",port: " + arg1);
+            printJavaStack('tcp connect...')
+            return this.$init(arg0, arg1);
+        }
+        var SocketInputStreamClass = Java.use('java.net.SocketInputStream');
+        //socketRead0
+        SocketInputStreamClass.socketRead0.implementation = function (arg0, arg1, arg2, arg3, arg4) {
+            var size = this.socketRead0(arg0, arg1, arg2, arg3, arg4);
+            //console.log("[" + Process.getCurrentThreadId() + "]socketRead0:size:" + size + ",content:" + JSON.stringify(arg1));
+            var bytearray = Java.array('byte', arg1);
+            var content = '';
+            for (var i = 0; i &lt; size; i++) {
+                if (isprintable(bytearray[i])) {
+                    content = content + String.fromCharCode(bytearray[i]);
+                }
+            }
+            var socketimpl = this.impl.value;
+            var address = socketimpl.address.value;
+            var port = socketimpl.port.value;
+
+            console.log("\naddress:" + address + ",port: " + port + "\n" + JSON.stringify(this.socket.value) + "\n[" + Process.getCurrentThreadId() + "]receive: " + content);
+            printJavaStack('socketRead0')
+            return size;
+        }
+        var SocketOutPutStreamClass = Java.use('java.net.SocketOutputStream');
+        SocketOutPutStreamClass.socketWrite0.implementation = function (arg0, arg1, arg2, arg3) {
+            var result = this.socketWrite0(arg0, arg1, arg2, arg3);
+            //console.log("[" + Process.getCurrentThreadId() + "]socketWrite0:len:" + arg3 + "--content:" + JSON.stringify(arg1));
+            var bytearray = Java.array('byte', arg1);
+            var content = '';
+            for (var i = 0; i &lt; arg3; i++) {
+
+                if (isprintable(bytearray[i])) {
+                    content = content + String.fromCharCode(bytearray[i]);
+                }
+            }
+            var socketimpl = this.impl.value;
+            var address = socketimpl.address.value;
+            var port = socketimpl.port.value;
+            console.log("send address:" + address + ",port: " + port + "[" + Process.getCurrentThreadId() + "]send: " + content);
+            console.log("\n" + JSON.stringify(this.socket.value) + "\n[" + Process.getCurrentThreadId() + "]send: " + content);
+            printJavaStack('socketWrite0')
+            return result;
+        }
+    })
+}
+
+function hooklibc() {
+    var libcmodule = Process.getModuleByName("libc.so");
+    var recvfrom_addr = libcmodule.getExportByName("recvfrom");
+    var sendto_addr = libcmodule.getExportByName("sendto");
+    // console.log(`${recvfrom_addr} --- ${sendto_addr}`);
+    console.log(recvfrom_addr + "---" + sendto_addr);
+
+    Interceptor.attach(recvfrom_addr, {
+        onEnter: function (args) {
+            this.arg0 = args[0];
+            this.arg1 = args[1];
+            this.arg2 = args[2];
+            this.arg3 = args[3];
+            this.arg4 = args[4];
+            this.arg5 = args[5];
+
+            LogPrint("go into libc.so-&gt;recvfrom");
+
+            var result = getsocketdetail(this.arg0.toInt32());
+            if (result.indexOf("udp") &gt; 0) {
+                handleUdp('recvfrom', this.arg4, this.arg5);
+            }
+
+            printNativeStack(this.context, "recvfrom");
+        },
+        onLeave: function (retval) {
+            var size = retval.toInt32();
+            if (size &gt; 0) {
+                var result = getsocketdetail(this.arg0.toInt32());
+                // console.log(`${result} --- libc.so-&gt;recvfrom: ${hexdump(this.arg1, { length: size })}`);
+                console.log(result + "--- libc.so-&gt;recvfrom: " + hexdump(this.arg1, { length: size }))
+            }
+            LogPrint("leave libc.so-&gt;recvfrom");
+        }
+    });
+
+    Interceptor.attach(sendto_addr, {
+        onEnter: function (args) {
+            this.arg0 = args[0];
+            this.arg1 = args[1];
+            this.arg2 = args[2];
+            this.arg3 = args[3];
+            this.arg4 = args[4];
+            this.arg5 = args[5];
+
+            LogPrint("go into libc.so-&gt;sendto");
+
+            var result = getsocketdetail(this.arg0.toInt32());
+            if (result.indexOf("udp") &gt; 0) {
+                handleUdp('sendto', this.arg4, this.arg5);
+            }
+
+            printNativeStack(this.context, "sendto");
+        },
+        onLeave: function (retval) {
+            var size = this.arg2.toInt32();
+            if (size &gt; 0) {
+                var result = getsocketdetail(this.arg0.toInt32());
+                // console.log(`${result} --- libc.so-&gt;sendto: ${hexdump(this.arg1, { length: size })}`);
+                console.log(result + "--- libc.so-&gt;sendto: " + hexdump(this.arg1, { length: size }))
+            }
+            LogPrint("leave libc.so-&gt;sendto");
+        }
+    });
+}
+
+function main() {
+    hooktcp();
+    hooklibc();
+}
+
+setImmediate(main)
+</code></pre>
+<p>抓包：目标App是我们前面说的测试用App</p>
+<p><code>frida -UF -l hooksocket.js --no-pause -o log.txt</code></p>
+<p>测试结果：</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/image-20240708222939875.png" class="" title="image-20240708222939875">
+
+<ul>
+<li>根据<code>hooklibc()</code>调用<code>printNativeStack()</code>打印的结果来看，App使用的都是Java层的函数，并没有直接调用libc或者更深层的函数。</li>
+<li>这样就不需要hook<code>libc</code>了，可以在脚本中删除这个函数了</li>
+</ul>
+<p>修改脚本后继续测试：输入账号密码，点击登陆</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/image-20240710114838578.png" class="" title="image-20240710114838578">
+
+<ul>
+<li><p>可以看到发送的数据，看起来像是base64加密的</p>
+</li>
+<li><p>以及发包函数<code>a.a.a.a$a</code>以及收包函数<code>a.a.a.a$c</code>，这里的调试信息也没有抹去，可以定位到它的地址在214行</p>
+</li>
+<li><p>以及<code>java.lang.Thread.run</code>的地址在764行</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/image-20240708225424262.png" class="" title="image-20240708225424262"></li>
+</ul>
+<h3 id="用GDA分析apk"><a href="#用GDA分析apk" class="headerlink" title="用GDA分析apk"></a>用GDA分析apk</h3><img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/image-20240708225912459.png" class="" title="image-20240708225912459">
+
+<ul>
+<li>有360的壳</li>
+</ul>
+<p>那就先脱壳，在协议分析中很多时候都要先脱壳才能分析：这里脱壳要使用<code>getDex</code>所以刷了7.1.2</p>
+<ul>
+<li>这里我们直接使用fart自动化脱壳工具进行脱壳就行了，360的壳直接去dump就可以了，因为它只是<strong>onCreate</strong>函数的一个vmp保护</li>
+</ul>
+<h4 id="编写脚本dump-dex"><a href="#编写脚本dump-dex" class="headerlink" title="编写脚本dump dex"></a>编写脚本dump dex</h4><pre><code class="js">// 只适用于存在getDex和getBytes api 的Android版本-&gt;7.1.2以下
+function dumpdex(){
+    // com.example.socket.MainActivity
+    // a.a.a.a$a    // 直接通过类名定位到需要的dex
+    Java.perform(function(){
+        var File = Java.use("java.io.File")
+        var FileOutputStream = Java.use("java.io.FileOutputStream")
+        // 首先，定位到类的class loader，通过它得到class对象
+        Java.enumerateClassLoadersSync().forEach(function(loader){
+            console.log(loader + "\n")
+            try {
+                var aclass = loader.loadClass("a.a.a.a$a")
+                console.log(aclass)
+                var dexobj = aclass.getDex()
+                console.log(dexobj)
+                var dexbytes = dexobj.getBytes()
+                var dexsavepath = "/data/data/com.example.socket/dump.dex"
+                var dexfile = File.$new(dexsavepath)
+                if(!dexfile.exists()){
+                    dexfile.createNewFile()
+                }
+                var fileoutputstream = FileOutputStream.$new(dexsavepath)
+                fileoutputstream.write(dexbytes)
+                fileoutputstream.flush()
+                fileoutputstream.close()
+                console.log("save dex success!")
+            } catch (err) {
+                
+            }
+        })
+    })
+}
+</code></pre>
+<ul>
+<li>在Android7以下，可以通过<code>getDex</code>和<code>getBytes</code>来获取目标dex并dump下来的方式进行脱壳</li>
+</ul>
+<p>dump成功</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/image-20240710093722998.png" class="" title="image-20240710093722998">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/image-20240710093737986.png" class="" title="image-20240710093737986">
+
+<ul>
+<li>用GDA分析的时候提示文件打开失败</li>
+<li>检查一下是不是文件头错误，用010Edit把文件头替换成正常的文件头</li>
+</ul>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/image-20240710093956219.png" class="" title="image-20240710093956219">
+
+<ul>
+<li>头没有了，八个字节全都是0</li>
+<li>替换个正常的头过来</li>
+</ul>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/image-20240710115018651.png" class="" title="image-20240710115018651">
+
+<ul>
+<li>脱壳后就可以看到<code>run</code>函数</li>
+</ul>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/image-20240710115836703.png" class="" title="image-20240710115836703">
+
+<ul>
+<li>合并两个参数</li>
+</ul>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/image-20240710133533095.png" class="" title="image-20240710133533095">
+
+<ul>
+<li><p>hook <code>HelloKitty.hello</code>获取参数和返回值</p>
+<pre><code class="js">function hookHelloKitty(){
+    // com.example.socket.MainActivity
+    // a.a.a.a$a    // 直接通过类名定位到需要的dex
+    Java.perform(function(){
+        var File = Java.use("java.io.File")
+        var FileOutputStream = Java.use("java.io.FileOutputStream")
+        // 首先，定位到类的class loader，通过它得到class对象
+        Java.enumerateClassLoadersSync().forEach(function(loader){
+            console.log(loader + "\n")
+            try {
+                var aclass = loader.loadClass("a.a.a.a$a")
+                Java.classFactory.loader = loader
+                var HelloKitty = Java.use("com.example.socket.HelloKitty")
+                // hello
+                HelloKitty.hello.implementation = function(arg0){
+                    console.log("HelloKitty.hello is called! arg0: " + arg0)
+                    var result = this.hello(arg0)
+                    console.log("HelloKitty.hello called over! result: " + result)
+                    return result
+                }
+            } catch (err) {
+                
+            }
+        })
+    })
+}
+</code></pre>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/image-20240713154548170.png" class="" title="image-20240713154548170">
+
+<ul>
+<li>通过hook直接打印出来了我们输入的账号密码</li>
+</ul>
+</li>
+</ul>
+<p>这些是hook <code>a.a.a.a$a</code>也就是<code>hello</code>得到的结果，是发送</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/image-20240710140059967.png" class="" title="image-20240710140059967">
+
+<ul>
+<li>这里的<code>.c</code>是接收相关的函数</li>
+</ul>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/image-20240710201205089.png" class="" title="image-20240710201205089">
+
+<p>查看<code>a.a(byte)</code></p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/image-20240710201443067.png" class="" title="image-20240710201443067">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/image-20240710201508180.png" class="" title="image-20240710201508180">
+
+<ul>
+<li><code>kitty</code>函数是一个native函数，暂时不管它</li>
+</ul>
+<p>那么我们这里继续hook <code>HelloKitty.kitty(str)</code>函数来拿到它的参数和返回值</p>
+<pre><code class="js">                // kitty
+                HelloKitty.kitty.implementation = function (arg0) {
+                    console.log("HelloKitty.kitty is called! arg0: " + arg0)
+                    var result = this.kitty(arg0)
+                    console.log("HelloKitty.kitty called over! result: " + result)
+                    return result
+                }
+</code></pre>
+<p>hook结果</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/image-20240710202241179.png" class="" title="image-20240710202241179">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/image-20240710202450565.png" class="" title="image-20240710202450565">
+
+<ul>
+<li><p>可以拿到传入的参数</p>
+</li>
+<li><p><code>kitty</code>函数执行完之后解密的字符串</p>
+</li>
+<li><p>还有点击登录响应之后返回的结果-&gt;提示密码错误</p>
+</li>
+</ul>
+<p>此时经过前面的hook我们基本可以知道：<code>hello()</code>是用来加密的，<code>kitty()</code>是用来解密的</p>
+<p>这两个都是native函数，而这个360的壳没有对so进行加密，用IDA可以分析这个so</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/image-20240710203135698.png" class="" title="image-20240710203135698">
+
+<ul>
+<li>ida里面可以直接搜索到这两个函数</li>
+</ul>
+<p>如果暴力破解的话</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/image-20240710204529936.png" class="" title="image-20240710204529936">
+
+<p>我们需要去模拟框起来的流程，模拟它的流程给服务端发送指定格式的数据，然后根据返回的结果判断是否破解成功</p>
+<pre><code class="js">function checkuser(username) {
+  //com.example.socket.MainActivity
+  //a.a.a.a$a
+  /*   String crypt = HelloKitty.hello(this.f1a);
+                      byte[] content = crypt.getBytes("utf-8");
+                      MessageDigest m = MessageDigest.getInstance("MD5");
+                      m.update(crypt.getBytes("UTF8"));
+                      m.digest()
+                      byte[] finalarray = a.a(content, m.digest());
+                      if (a.e != null) {
+                          a.e.write(finalarray);
+                      }
+
+*/
+  Java.perform(function () {
+    var File = Java.use('java.io.File');
+    var FileOutputStream = Java.use('java.io.FileOutputStream');
+    Java.enumerateClassLoadersSync().forEach(function (loader) {
+      console.log(loader + "\n");
+      try {
+        loader.loadClass("a.a.a.a$a")
+        Java.classFactory.loader = loader;
+        var HelloKitty = Java.use('com.example.socket.HelloKitty');
+
+        var crypt = HelloKitty.hello(username);
+        console.log("hello result:" + crypt);
+        /*byte[] content = "utf-8";
+    content = crypt.getBytes(content);*/
+
+        var StringClass = Java.use('java.lang.String');
+        console.log(StringClass)
+        var strobj = StringClass.$new(crypt);
+        console.log(strobj)
+        var cryptbytes = strobj.getBytes("utf-8");
+        console.log(JSON.stringify(cryptbytes));
+        /*  MessageDigest m = MessageDigest.getInstance("MD5");
+            m.update(crypt.getBytes("UTF8"));
+            m.digest()*/
+        var MessageDigest = Java.use('java.security.MessageDigest');
+        var m = MessageDigest.getInstance("MD5");
+        m.update(cryptbytes);
+        var md5hash = m.digest();
+        console.log("hash:" + JSON.stringify(md5hash));
+        //byte[] finalarray = a.a(content, m.digest());
+        //                         if (a.e != null) {
+        //                             a.e.write(finalarray);
+        //                         }
+
+        var aClass = Java.use('a.a.a.a');
+        console.log(aClass)
+        var sendbytes = aClass.a(cryptbytes, md5hash);
+        console.log("sendbytes:" + JSON.stringify(sendbytes));
+        var outputstream = aClass._e.value;
+        console.log(outputstream);
+        outputstream.write(sendbytes);
+        outputstream.flush();
+        console.log("send success");
+      } catch (e) {
+      }
+    })
+  })
+}
+function main() {
+  checkuser('{"msgtype":"login","loginname":"100","loginpwd":"qaz"}')
+}
+
+setImmediate(main);
+</code></pre>
+<ul>
+<li>只要循环去生成0~100的账号和三个字母的密码，循环就可以了</li>
+<li>这种暴力破解只需要不停的传递参数模拟调用就可以了，不涉及对它native层的加解密的分析</li>
+</ul>
+<p>未完待续。。。</p>
+
+        </div>
+
+        
+            <div class="post-copyright-info w-full my-8 px-2 sm:px-6 md:px-8">
+                <div class="article-copyright-info-container">
+    <ul>
+        <li><strong>标题:</strong> 协议枚举、爆破及算法模拟</li>
+        <li><strong>作者:</strong> xiaoeryu</li>
+        <li><strong>创建于
+                :</strong> 2024-07-29 10:04:08</li>
+        
+            <li>
+                <strong>更新于
+                    :</strong> 2024-07-29 10:11:36
+            </li>
+        
+        <li>
+            <strong>链接:</strong> https://github.com/xiaoeryu/2024/07/29/协议枚举、爆破及算法模拟/
+        </li>
+        <li>
+            <strong>
+                版权声明:
+            </strong>
+            
+
+            
+                本文章采用 <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0">CC BY-NC-SA 4.0</a> 进行许可。
+            
+        </li>
+    </ul>
+</div>
+
+            </div>
+        
+
+        
+            <ul class="post-tags-box text-lg mt-1.5 flex-wrap justify-center flex md:hidden">
+                
+                    <li class="tag-item mx-0.5">
+                        <a href="/tags/Frida-Hook/">#Frida Hook</a>&nbsp;
+                    </li>
+                
+            </ul>
+        
+
+        
+
+        
+            <div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
+                
+                    <div class="article-prev border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+                        <a class="prev"
+                        rel="prev"
+                        href="/2024/07/29/%E7%AE%80%E6%98%93%E9%97%AF%E5%85%B3/"
+                        >
+                            <span class="left arrow-icon flex justify-center items-center">
+                                <i class="fa-solid fa-chevron-left"></i>
+                            </span>
+                            <span class="title flex justify-center items-center">
+                                <span class="post-nav-title-item">简易闯关</span>
+                                <span class="post-nav-item">上一篇</span>
+                            </span>
+                        </a>
+                    </div>
+                
+                
+                    <div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+                        <a class="next"
+                        rel="next"
+                        href="/2024/07/29/%E8%87%AA%E7%BC%96%E8%AF%91openssl%E5%BA%93%E7%9A%84%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%AF%E6%BA%90/"
+                        >
+                            <span class="title flex justify-center items-center">
+                                <span class="post-nav-title-item">自编译openssl库的抓包与溯源</span>
+                                <span class="post-nav-item">下一篇</span>
+                            </span>
+                            <span class="right arrow-icon flex justify-center items-center">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+
+        
+            <div class="comment-container px-2 sm:px-6 md:px-8 pb-8">
+                <div class="comments-container mt-10 w-full ">
+    <div id="comment-anchor" class="w-full h-2.5"></div>
+    <div class="comment-area-title w-full my-1.5 md:my-2.5 text-xl md:text-3xl font-bold">
+        评论
+    </div>
+    
+
+        
+            
+    <div id="gitalk-container"></div>
+    <script data-swup-reload-script
+            src="//cdn.staticfile.org/gitalk/1.8.0/gitalk.min.js"></script>
+    <script data-swup-reload-script>
+
+        function loadGitalk() {
+            let __gitalk__pathname = decodeURI(location.pathname);
+            const __gitalk__pathnameLength = __gitalk__pathname.length;
+            const __gitalk__pathnameMaxLength = 50;
+            if (__gitalk__pathnameLength > __gitalk__pathnameMaxLength) {
+                __gitalk__pathname = __gitalk__pathname.substring(0, __gitalk__pathnameMaxLength - 3) + '...';
+            }
+
+            try {
+                Gitalk && new Gitalk({
+                    clientID: '13d9974f24854a639570',
+                    clientSecret: '0c6c11ab3852d24a608e0f95a79829a649afac4b',
+                    repo: 'blog_gitalk',
+                    owner: 'xiaoeeyu',
+                    admin: ['xiaoeeyu'],
+                    id: __gitalk__pathname,
+                    language: 'zh-CN',
+                    proxy: 'https://github.com/login/oauth/access_token'
+                }).render('gitalk-container');
+
+            } catch (e) {
+                window.Gitalk = null;
+            }
+        }
+
+        if ('true') {
+            const loadGitalkTimeout = setTimeout(() => {
+                loadGitalk();
+                clearTimeout(loadGitalkTimeout);
+            }, 1000);
+        } else {
+            window.addEventListener('DOMContentLoaded', loadGitalk);
+        }
+    </script>
+
+
+
+        
+    
+</div>
+
+            </div>
+        
+    </div>
+
+    
+        <div class="toc-content-container">
+            <div class="post-toc-wrap">
+    <div class="post-toc">
+        <div class="toc-title">此页目录</div>
+        <div class="page-title">协议枚举、爆破及算法模拟</div>
+        <ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E6%B5%8B%E8%AF%95%E7%8E%AF%E5%A2%83%EF%BC%9A"><span class="nav-text">测试环境：</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%94%A8GDA%E5%88%86%E6%9E%90apk"><span class="nav-text">用GDA分析apk</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E7%BC%96%E5%86%99%E8%84%9A%E6%9C%ACdump-dex"><span class="nav-text">编写脚本dump dex</span></a></li></ol>
+
+    </div>
+</div>
+        </div>
+    
+</div>
+
+
+
+                
+
+            </div>
+
+            
+
+        </div>
+
+        <div class="main-content-footer">
+            <footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
+    <div class="info-container py-3 text-center">
+        
+        <div class="text-center">
+            &copy;
+            
+              <span>2022</span>
+              -
+            
+            2024&nbsp;&nbsp;<i class="fa-solid fa-heart fa-beat" style="--fa-animation-duration: 0.5s; color: #f54545"></i>&nbsp;&nbsp;<a href="/">xiaoeryu</a>
+            
+                
+                <p class="post-count space-x-0.5">
+                    <span>
+                        共 106 篇文章
+                    </span>
+                    
+                </p>
+            
+        </div>
+        
+            <script data-swup-reload-script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            <div class="relative text-center lg:absolute lg:right-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-right">
+                
+                    <span id="busuanzi_container_site_uv" class="lg:!block">
+                        <span class="text-sm">访问人数</span>
+                        <span id="busuanzi_value_site_uv"></span>
+                    </span>
+                
+                
+                    <span id="busuanzi_container_site_pv" class="lg:!block">
+                        <span class="text-sm">总访问量</span>
+                        <span id="busuanzi_value_site_pv"></span>
+                    </span>
+                
+            </div>
+        
+        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
+            <span class="lg:block text-sm">由 <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a> 驱动</span>
+            <span class="text-sm lg:block">主题&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.6.4</a></span>
+        </div>
+        
+        
+            <div>
+                博客已运行 <span class="odometer" id="runtime_days" ></span> 天 <span class="odometer" id="runtime_hours"></span> 小时 <span class="odometer" id="runtime_minutes"></span> 分钟 <span class="odometer" id="runtime_seconds"></span> 秒
+            </div>
+        
+        
+            <script data-swup-reload-script>
+                try {
+                    function odometer_init() {
+                    const elements = document.querySelectorAll('.odometer');
+                    elements.forEach(el => {
+                        new Odometer({
+                            el,
+                            format: '( ddd).dd',
+                            duration: 200
+                        });
+                    });
+                    }
+                    odometer_init();
+                } catch (error) {}
+            </script>
+        
+        
+        
+    </div>  
+</footer>
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="article-tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="right-bottom-tools page-aside-toggle">
+                <i class="fa-regular fa-outdent"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+            <li class="go-comment">
+                <i class="fa-regular fa-comments"></i>
+            </li>
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-side-tools-container">
+        <div class="side-tools-container">
+    <ul class="hidden-tools-list">
+        <li class="right-bottom-tools tool-font-adjust-plus flex justify-center items-center">
+            <i class="fa-regular fa-magnifying-glass-plus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-font-adjust-minus flex justify-center items-center">
+            <i class="fa-regular fa-magnifying-glass-minus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
+            <i class="fa-regular fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+
+        <li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
+            <i class="fa-regular fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="visible-tools-list">
+        <li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
+            <i class="fa-regular fa-cog fa-spin"></i>
+        </li>
+        
+            <li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
+                <i class="arrow-up fas fa-arrow-up"></i>
+                <span class="percent"></span>
+            </li>
+        
+        
+    </ul>
+</div>
+
+    </div>
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fa-solid fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜索..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="popup-btn-close">
+                <i class="fa-solid fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fa-solid fa-spinner fa-spin-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+</main>
+
+
+    
+<script src="/js/libs/Swup.min.js"></script>
+
+<script src="/js/libs/SwupSlideTheme.min.js"></script>
+
+<script src="/js/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="/js/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="/js/libs/SwupScrollPlugin.min.js"></script>
+
+<script src="/js/libs/SwupPreloadPlugin.min.js"></script>
+
+<script>
+    const swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+            new SwupPreloadPlugin(),
+        ],
+        containers: ["#swup"],
+    });
+</script>
+
+
+
+
+
+
+
+<script src="/js/tools/imageViewer.js" type="module"></script>
+
+<script src="/js/utils.js" type="module"></script>
+
+<script src="/js/main.js" type="module"></script>
+
+<script src="/js/layouts/navbarShrink.js" type="module"></script>
+
+<script src="/js/tools/scrollTopBottom.js" type="module"></script>
+
+<script src="/js/tools/lightDarkSwitch.js" type="module"></script>
+
+<script src="/js/layouts/categoryList.js" type="module"></script>
+
+
+
+    
+<script src="/js/tools/localSearch.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/tools/codeBlock.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/layouts/lazyload.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/tools/runtime.js"></script>
+
+    
+<script src="/js/libs/odometer.min.js"></script>
+
+    
+<link rel="stylesheet" href="/assets/odometer-theme-minimal.css">
+
+
+
+
+  
+<script src="/js/libs/Typed.min.js"></script>
+
+  
+<script src="/js/plugins/typed.js" type="module"></script>
+
+
+
+
+
+
+
+
+
+<div class="post-scripts" data-swup-reload-script>
+    
+        
+<script src="/js/tools/tocToggle.js" type="module"></script>
+
+<script src="/js/layouts/toc.js" type="module"></script>
+
+<script src="/js/plugins/tabs.js" type="module"></script>
+
+    
+</div>
+
+
+</body>
+</html>
