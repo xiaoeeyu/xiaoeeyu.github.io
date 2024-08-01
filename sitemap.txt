@@ -1,10 +1,11 @@
+https://xiaoeeyu.github.io/2024/08/01/%E6%9F%90%E6%98%93%E6%96%B0%E9%97%BB%E9%80%86%E5%90%91/
+https://xiaoeeyu.github.io/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/
 https://xiaoeeyu.github.io/2024/07/29/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA/
 https://xiaoeeyu.github.io/2024/07/29/%E5%A6%B9%E5%AD%90%E5%9B%BE%E9%98%B2%E6%88%AA%E5%B1%8F%E7%A0%B4%E8%A7%A3/
 https://xiaoeeyu.github.io/2024/07/29/%E7%AE%80%E6%98%93%E9%97%AF%E5%85%B3/
 https://xiaoeeyu.github.io/2024/07/29/%E5%8D%8F%E8%AE%AE%E6%9E%9A%E4%B8%BE%E3%80%81%E7%88%86%E7%A0%B4%E5%8F%8A%E7%AE%97%E6%B3%95%E6%A8%A1%E6%8B%9F/
 https://xiaoeeyu.github.io/2024/07/29/%E8%87%AA%E7%BC%96%E8%AF%91openssl%E5%BA%93%E7%9A%84%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%AF%E6%BA%90/
 https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/
-https://xiaoeeyu.github.io/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/
 https://xiaoeeyu.github.io/2024/07/04/JNI%E5%B1%82SSL%E9%80%9A%E4%BF%A1%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%AF%E6%BA%90/
 https://xiaoeeyu.github.io/2024/07/04/JNI%E5%B1%82Socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%AF%E6%BA%90/
 https://xiaoeeyu.github.io/2024/06/06/Java%E5%B1%82SSL%E9%80%9A%E4%BF%A1%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%AF%E6%BA%90/
@@ -196,6 +197,9 @@ https://xiaoeeyu.github.io/tags/frida-Hook/
 https://xiaoeeyu.github.io/tags/%E8%B5%84%E6%9C%AC%E4%B8%BB%E4%B9%89/
 https://xiaoeeyu.github.io/tags/%E5%93%B2%E5%AD%A6/
 https://xiaoeeyu.github.io/tags/%E8%84%B1%E5%A3%B3/
+https://xiaoeeyu.github.io/tags/%E6%8A%93%E5%8C%85%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/
+https://xiaoeeyu.github.io/tags/App%E9%80%86%E5%90%91/
+https://xiaoeeyu.github.io/tags/%E7%88%AC%E8%99%AB/
 https://xiaoeeyu.github.io/categories/Win%E9%80%86%E5%90%91/
 https://xiaoeeyu.github.io/categories/X86%E6%B1%87%E7%BC%96%EF%BC%9A%E5%AE%9E%E6%A8%A1%E5%BC%8F%E5%88%B0%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F/
 https://xiaoeeyu.github.io/categories/ARM%E6%B1%87%E7%BC%96/

@@ -1,0 +1,1527 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    
+    <meta name="author" content="xiaoeryu">
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="https://xiaoeeyu.github.io/2024/08/01/某易新闻逆向/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+        <meta name="description" content="环境 App版本：108.1（1807）豌豆荚下载 设备：Pixel XL 抓包工具：Charles + Postern 反汇编工具：jadx-gui 1.5.0、IDA Pro 7.7 hook：frida 12.8.0  抓包  HeaderAdd-To-Queue-Millis	1716155605001 data4-Sent-Millis	1716155605002 Cache-Contr">
+<meta property="og:type" content="article">
+<meta property="og:title" content="某易新闻逆向">
+<meta property="og:url" content="https://xiaoeeyu.github.io/2024/08/01/%E6%9F%90%E6%98%93%E6%96%B0%E9%97%BB%E9%80%86%E5%90%91/index.html">
+<meta property="og:site_name" content="xiaoeryu">
+<meta property="og:description" content="环境 App版本：108.1（1807）豌豆荚下载 设备：Pixel XL 抓包工具：Charles + Postern 反汇编工具：jadx-gui 1.5.0、IDA Pro 7.7 hook：frida 12.8.0  抓包  HeaderAdd-To-Queue-Millis	1716155605001 data4-Sent-Millis	1716155605002 Cache-Contr">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/08/01/%E6%9F%90%E6%98%93%E6%96%B0%E9%97%BB%E9%80%86%E5%90%91/image-20240729215153417.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/08/01/%E6%9F%90%E6%98%93%E6%96%B0%E9%97%BB%E9%80%86%E5%90%91/image-20240729220622084.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/08/01/%E6%9F%90%E6%98%93%E6%96%B0%E9%97%BB%E9%80%86%E5%90%91/image-20240729223016070.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/08/01/%E6%9F%90%E6%98%93%E6%96%B0%E9%97%BB%E9%80%86%E5%90%91/image-20240729231229342.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/08/01/%E6%9F%90%E6%98%93%E6%96%B0%E9%97%BB%E9%80%86%E5%90%91/image-20240730162342692.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/08/01/%E6%9F%90%E6%98%93%E6%96%B0%E9%97%BB%E9%80%86%E5%90%91/image-20240730110756519.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/08/01/%E6%9F%90%E6%98%93%E6%96%B0%E9%97%BB%E9%80%86%E5%90%91/image-20240730111105368.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/08/01/%E6%9F%90%E6%98%93%E6%96%B0%E9%97%BB%E9%80%86%E5%90%91/image-20240730163214144.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/08/01/%E6%9F%90%E6%98%93%E6%96%B0%E9%97%BB%E9%80%86%E5%90%91/image-20240730163419940.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/08/01/%E6%9F%90%E6%98%93%E6%96%B0%E9%97%BB%E9%80%86%E5%90%91/image-20240730163627733.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/08/01/%E6%9F%90%E6%98%93%E6%96%B0%E9%97%BB%E9%80%86%E5%90%91/image-20240730182957828.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/08/01/%E6%9F%90%E6%98%93%E6%96%B0%E9%97%BB%E9%80%86%E5%90%91/image-20240731115022085.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/08/01/%E6%9F%90%E6%98%93%E6%96%B0%E9%97%BB%E9%80%86%E5%90%91/image-20240731120000205.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/08/01/%E6%9F%90%E6%98%93%E6%96%B0%E9%97%BB%E9%80%86%E5%90%91/image-20240731120157628.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/08/01/%E6%9F%90%E6%98%93%E6%96%B0%E9%97%BB%E9%80%86%E5%90%91/image-20240730203130771.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/08/01/%E6%9F%90%E6%98%93%E6%96%B0%E9%97%BB%E9%80%86%E5%90%91/image-20240730204522769.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/08/01/%E6%9F%90%E6%98%93%E6%96%B0%E9%97%BB%E9%80%86%E5%90%91/image-20240730204931081.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/08/01/%E6%9F%90%E6%98%93%E6%96%B0%E9%97%BB%E9%80%86%E5%90%91/image-20240730205050783.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/08/01/%E6%9F%90%E6%98%93%E6%96%B0%E9%97%BB%E9%80%86%E5%90%91/image-20240731195501940.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/08/01/%E6%9F%90%E6%98%93%E6%96%B0%E9%97%BB%E9%80%86%E5%90%91/image-20240731204400611.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/08/01/%E6%9F%90%E6%98%93%E6%96%B0%E9%97%BB%E9%80%86%E5%90%91/image-20240731205136884.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/08/01/%E6%9F%90%E6%98%93%E6%96%B0%E9%97%BB%E9%80%86%E5%90%91/image-20240731210201783.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/08/01/%E6%9F%90%E6%98%93%E6%96%B0%E9%97%BB%E9%80%86%E5%90%91/image-20240731211620243.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/08/01/%E6%9F%90%E6%98%93%E6%96%B0%E9%97%BB%E9%80%86%E5%90%91/image-20240731212624387.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/08/01/%E6%9F%90%E6%98%93%E6%96%B0%E9%97%BB%E9%80%86%E5%90%91/image-20240731220339289.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/08/01/%E6%9F%90%E6%98%93%E6%96%B0%E9%97%BB%E9%80%86%E5%90%91/image-20240731220744553.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/08/01/%E6%9F%90%E6%98%93%E6%96%B0%E9%97%BB%E9%80%86%E5%90%91/image-20240731223022010.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/08/01/%E6%9F%90%E6%98%93%E6%96%B0%E9%97%BB%E9%80%86%E5%90%91/image-20240731232857856.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/08/01/%E6%9F%90%E6%98%93%E6%96%B0%E9%97%BB%E9%80%86%E5%90%91/image-20240801105629859.png">
+<meta property="article:published_time" content="2024-08-01T02:55:05.000Z">
+<meta property="article:modified_time" content="2024-08-01T03:05:57.938Z">
+<meta property="article:author" content="xiaoeryu">
+<meta property="article:tag" content="App逆向">
+<meta property="article:tag" content="爬虫">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://xiaoeeyu.github.io/2024/08/01/%E6%9F%90%E6%98%93%E6%96%B0%E9%97%BB%E9%80%86%E5%90%91/image-20240729215153417.png">
+    
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/rabete.jpg" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/rabete.jpg">
+    <meta name="theme-color" content="#A31F34">
+    <link rel="shortcut icon" href="/images/rabete.jpg">
+    <!--- Page Info-->
+    
+    <title>
+        
+            某易新闻逆向 -
+        
+        xiaoeryu
+    </title>
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+
+    <!--- Inject Part-->
+    
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+        
+<link rel="stylesheet" href="/assets/build/styles.css">
+
+    
+
+    
+<link rel="stylesheet" href="/fonts/GeistMono/geist-mono.css">
+
+    
+<link rel="stylesheet" href="/fonts/Geist/geist.css">
+
+    <!--- Font Part-->
+    
+    
+    
+    
+
+    
+        
+<script src="/js/libs/anime.min.js"></script>
+
+    
+
+    <script id="hexo-configurations">
+    window.config = {"hostname":"xiaoeeyu.github.io","root":"/","language":"zh-CN","path":"search.xml"};
+    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true,"title_alignment":"left","headings_top_spacing":{"h1":"3.2rem","h2":"2.4rem","h3":"1.9rem","h4":"1.6rem","h5":"1.4rem","h6":"1.3rem"}},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":4,"number":false,"expand":true,"init_open":true},"copyright":{"enable":true,"default":"cc_by_nc_sa"},"lazyload":true,"recommendation":{"enable":false,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/ball-0101.jpg","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null,"default_mode":"light"},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"preloader":true,"open_graph":true,"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/wallhaven-jxl31y.png","dark":"/images/wallhaven-o5762l.png"},"title":"XIAOERYU","subtitle":{"text":["明心见性，拨云见日","Don't wait, to create"],"hitokoto":{"enable":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":true,"style":"default","links":{"github":"https://github.com/xiaoeeyu","instagram":null,"zhihu":null,"twitter":null,"email":"xiaoeryu@163.com"},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null,"lrc":null}]},"mermaid":{"enable":false,"version":"9.3.0"}},"version":"2.6.4","navbar":{"auto_hide":false,"color":{"left":"#f78736","right":"#367df7","transparency":35},"width":{"home":"1200px","pages":"1000px"},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Archives":{"path":"/archives","icon":"fa-regular fa-archive"}},"search":{"enable":true,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"blur"},"home":{"sidebar":{"enable":true,"position":"left","first_item":"menu","announcement":null,"show_on_mobile":true,"links":null},"article_date_format":"auto","categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":3}},"footerStart":"2022/8/17 11:45:14"};
+    window.lang_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"};
+    window.data = {"masonry":false};
+  </script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+<meta name="generator" content="Hexo 6.3.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+<!--        <span class="swup-progress-icon">-->
+<!--            <i class="fa-solid fa-circle-notch fa-spin"></i>-->
+<!--        </span>-->
+    
+</div>
+
+
+
+    <style>
+    :root {
+        --preloader-background-color: #fff;
+        --preloader-text-color: #000;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        :root {
+            --preloader-background-color: #202124;
+            --preloader-text-color: #fff;
+        }
+    }
+
+    @media (prefers-color-scheme: light) {
+        :root {
+            --preloader-background-color: #fff;
+            --preloader-text-color: #000;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .ml13 {
+            font-size: 2.6rem !important; /* Adjust this value as needed */
+        }
+    }
+
+    .preloader {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem; /* Tailwind 'gap-4' is 1rem */
+        align-items: center;
+        justify-content: center;
+        position: fixed;
+        padding: 12px;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh; /* 'h-screen' is 100% of the viewport height */
+        background-color: var(--preloader-background-color);
+        z-index: 1100; /* 'z-[1100]' sets the z-index */
+        transition: opacity 0.2s ease-in-out;
+    }
+
+    .ml13 {
+        font-size: 3.2rem;
+        /* text-transform: uppercase; */
+        color: var(--preloader-text-color);
+        letter-spacing: -1px;
+        font-weight: 500;
+        font-family: 'Chillax-Variable', sans-serif;
+        text-align: center;
+    }
+
+    .ml13 .word {
+        display: inline-flex;
+        flex-wrap: wrap;
+        white-space: nowrap;
+    }
+
+    .ml13 .letter {
+        display: inline-block;
+        line-height: 1em;
+    }
+</style>
+
+<div class="preloader">
+    <h2 class="ml13">
+        xiaoeryu
+    </h2>
+    <script>
+        var textWrapper = document.querySelector('.ml13');
+        // Split text into words
+        var words = textWrapper.textContent.trim().split(' ');
+
+        // Clear the existing content
+        textWrapper.innerHTML = '';
+
+        // Wrap each word and its letters in spans
+        words.forEach(function(word) {
+            var wordSpan = document.createElement('span');
+            wordSpan.classList.add('word');
+            wordSpan.innerHTML = word.replace(/\S/g, "<span class='letter'>$&</span>");
+            textWrapper.appendChild(wordSpan);
+            textWrapper.appendChild(document.createTextNode(' ')); // Add space between words
+        });
+
+        var animation = anime.timeline({loop: true})
+            .add({
+                targets: '.ml13 .letter',
+                translateY: [40,0],
+                translateZ: 0,
+                opacity: [0,1],
+                filter: ['blur(5px)', 'blur(0px)'], // Starting from blurred to unblurred
+                easing: "easeOutExpo",
+                duration: 1400,
+                delay: (el, i) => 300 + 30 * i,
+            }).add({
+                targets: '.ml13 .letter',
+                translateY: [0,-40],
+                opacity: [1,0],
+                filter: ['blur(0px)', 'blur(5px)'], // Ending from unblurred to blurred
+                easing: "easeInExpo",
+                duration: 1200,
+                delay: (el, i) => 100 + 30 * i,
+                complete: function() {
+                    hidePreloader(); // Call hidePreloader after the animation completes
+                }
+            });
+
+        let themeStatus = JSON.parse(localStorage.getItem('REDEFINE-THEME-STATUS'))?.isDark;
+
+        // If the theme status is not found in local storage, check the preferred color scheme
+        if (themeStatus === undefined || themeStatus === null) {
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                themeStatus = 'dark';
+            } else {
+                themeStatus = 'light';
+            }
+        }
+
+        // Now you can use the themeStatus variable in your code
+        if (themeStatus) {
+            document.documentElement.style.setProperty('--preloader-background-color', '#202124');
+            document.documentElement.style.setProperty('--preloader-text-color', '#fff');
+        } else {
+            document.documentElement.style.setProperty('--preloader-background-color', '#fff');
+            document.documentElement.style.setProperty('--preloader-text-color', '#000');
+        }
+
+        window.addEventListener('load', function () {
+            setTimeout(hidePreloader, 5000); // Call hidePreloader after 5000 milliseconds if not already called by animation
+        });
+
+        function hidePreloader() {
+            var preloader = document.querySelector('.preloader');
+            preloader.style.opacity = '0';
+            setTimeout(function () {
+                preloader.style.display = 'none';
+            }, 200);
+        }
+    </script>
+</div>
+
+<main class="page-container" id="swup">
+
+    
+
+    <div class="main-content-container">
+
+
+        <div class="main-content-header">
+            <header class="navbar-container px-6 md:px-12">
+
+    <div class="navbar-content ">
+        <div class="left">
+            
+                <a class="logo-image" href="/">
+                    <img src="/images/rabete.jpg">
+                </a>
+            
+            <a class="logo-title" href="/">
+                
+                xiaoeryu
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/"
+                                        >
+                                    <i class="fa-regular fa-house fa-fw"></i>
+                                    首页
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/archives"
+                                        >
+                                    <i class="fa-regular fa-archive fa-fw"></i>
+                                    归档
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                    
+                        <li class="navbar-item search search-popup-trigger">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fa-solid fa-magnifying-glass"></i>
+                    </div>
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile sheet -->
+    <div class="navbar-drawer h-screen w-full absolute top-0 left-0 bg-background-color flex flex-col justify-between">
+        <ul class="drawer-navbar-list flex flex-col px-4 justify-center items-start">
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/"
+                        >
+                            <span>
+                                首页
+                            </span>
+                            
+                                <i class="fa-regular fa-house fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/archives"
+                        >
+                            <span>
+                                归档
+                            </span>
+                            
+                                <i class="fa-regular fa-archive fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+
+            
+            
+        </ul>
+
+        <div class="statistics flex justify-around my-2.5">
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">88</div>
+        <div class="label text-third-text-color text-sm">标签</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">14</div>
+        <div class="label text-third-text-color text-sm">分类</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">108</div>
+        <div class="label text-third-text-color text-sm">文章</div>
+    </a>
+</div>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="main-content-body">
+
+            
+
+            <div class="main-content">
+
+                
+                    <div class="post-page-container flex relative justify-between box-border w-full h-full">
+    <div class="article-content-container">
+
+        <div class="article-title relative w-full">
+            
+                <div class="w-full flex items-center pt-6 justify-start">
+                    <h1 class="article-title-regular text-second-text-color tracking-tight text-4xl md:text-6xl font-semibold px-2 sm:px-6 md:px-8 py-3">某易新闻逆向</h1>
+                </div>
+            
+            </div>
+
+        
+            <div class="article-header flex flex-row gap-2 items-center px-2 sm:px-6 md:px-8">
+                <div class="avatar w-[46px] h-[46px] flex-shrink-0 rounded-medium border border-border-color p-[1px]">
+                    <img src="/images/rabete.jpg">
+                </div>
+                <div class="info flex flex-col justify-between">
+                    <div class="author flex items-center">
+                        <span class="name text-default-text-color text-lg font-semibold">xiaoeryu</span>
+                        
+                            <span class="author-label ml-1.5 text-xs px-2 py-0.5 rounded-small text-third-text-color border border-shadow-color-1">Lv5</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2024-08-01 10:55:05</span>
+        <span class="mobile">2024-08-01 10:55:05</span>
+        <span class="hover-info">创建</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2024-08-01 11:05:57</span>
+            <span class="mobile">2024-08-01 11:05:57</span>
+            <span class="hover-info">更新</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/Android%E9%80%86%E5%90%91/">Android逆向</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/App%E9%80%86%E5%90%91/">App逆向</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E7%88%AC%E8%99%AB/">爬虫</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fa-regular fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        
+
+
+        <div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
+            <h3 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h3><blockquote>
+<p>App版本：108.1（1807）豌豆荚下载</p>
+<p>设备：Pixel XL</p>
+<p>抓包工具：Charles + Postern</p>
+<p>反汇编工具：jadx-gui 1.5.0、IDA Pro 7.7</p>
+<p>hook：frida 12.8.0</p>
+</blockquote>
+<h3 id="抓包"><a href="#抓包" class="headerlink" title="抓包"></a>抓包</h3><img lazyload="" src="/images/loading.svg" data-src="/2024/08/01/%E6%9F%90%E6%98%93%E6%96%B0%E9%97%BB%E9%80%86%E5%90%91/image-20240729215153417.png" class="" title="image-20240729215153417">
+
+<h6 id="Header"><a href="#Header" class="headerlink" title="Header"></a>Header</h6><pre><code class="url">Add-To-Queue-Millis	1716155605001
+data4-Sent-Millis	1716155605002
+Cache-Control	no-cache
+User-Agent	NewsApp/108.1 Android/8.1.0 (Android/msm8996)
+X-NR-Trace-Id	1716155605008_36948439_ZDBkNDQ3NjFhYjZjN2ZiNl9fQW5kcm9pZF9tc204OTk2
+X-NR-ISE	0
+X-XR-Original-Host	gw.m.163.com
+User-C	5pCc57Si
+User-RC	UjgzLZ+E4Lemnj+sMro9qwqQ3xlDp4PUECu18073DbE2Sp1cMm3KWoG4EVq0Iff0
+User-D	IMi3SNGXpwgZp82uZ0+RgpAF6y/2KeNwsdMOCNyDzAlKc35nEIdpbwHZVg+KaduA
+User-VD	xsTHQE9xf3vYWy8XeWECeuLJx3sxZ0eDNrxxIJT5gl6bR7URJ6L1Q7A4TGIYxCEc
+User-appid	TItcOwjV9bndQ91C5VadYg==
+User-sid	RCeQjCDjXXK9Yh6VD8kD5xMguO+V0brlBu6A5b4whQE=
+User-LC	67NqtW9W02z/qXjaEOOHag==
+User-N	yEWDFuJGE3Gmj2a0IPdYcA==
+X-NR-TS	1716155605026
+X-NR-SIGN	f4655b581e7701ef1416dcc22dd94bd9
+X-NR-Net-Lib	okhttp
+Accept-Encoding	br,gzip
+Host	gw.m.163.com
+Connection	Keep-Alive
+</code></pre>
+<h6 id="params"><a href="#params" class="headerlink" title="params"></a>params</h6><p>url解码后</p>
+<pre><code class="url">GET /nc/api/v1/search/flow/comp?
+start=Kg==&amp;
+limit=20&amp;
+q=5Lul6Imy5YiX5pS/5bqc6YOo6Zeo5Y+R5biW56ew5ZOI5bC85Lqa6KKr5bmy5o6J&amp;
+deviceId=IMi3SNGXpwgZp82uZ0+RgpAF6y/2KeNwsdMOCNyDzAlKc35nEIdpbwHZVg+KaduA&amp;
+version=newsclient.108.1.android&amp;channel=c2VhcmNo&amp;canal=UVFfbmV3c195dW55aW5nNA==&amp;
+dtype=0&amp;tabname=zonghe&amp;
+position=5Lit6Ze06aG154Ot5qac&amp;
+ts=1716104794&amp;
+sign=nZwy0Lv5hnVYZmQrZWwseXcZ28nunsOjaYWlAW/IxwF48ErR02zJ6/KXOnxX046I&amp;
+spever=FALSE HTTP/1.1
+</code></pre>
+<h3 id="逆向分析"><a href="#逆向分析" class="headerlink" title="逆向分析"></a>逆向分析</h3><p>分析抓包抓到的参数，看哪些是固定的哪些是变动的</p>
+<h4 id="Header-1"><a href="#Header-1" class="headerlink" title="Header"></a>Header</h4><p>多次抓包对比参数，看哪些参数是固定的，哪些参数需要逆向获取。用jadx分析app完成反编译后逐个分析</p>
+<ol>
+<li><h6 id="Host（固定值）："><a href="#Host（固定值）：" class="headerlink" title="Host（固定值）："></a>Host（固定值）：</h6><p><code>gw.m.163.com</code></p>
+</li>
+<li><h6 id="add-to-queue-millis（整数型13位时间戳）："><a href="#add-to-queue-millis（整数型13位时间戳）：" class="headerlink" title="add-to-queue-millis（整数型13位时间戳）："></a>add-to-queue-millis（整数型13位时间戳）：</h6><p><code>int(time.time() * 1000)</code></p>
+</li>
+<li><h6 id="data4-sent-millis-整数型13位时间戳-："><a href="#data4-sent-millis-整数型13位时间戳-：" class="headerlink" title="data4-sent-millis(整数型13位时间戳)："></a>data4-sent-millis(整数型13位时间戳)：</h6><p><code>int(time.time() * 1000)</code></p>
+</li>
+<li><h6 id="cache-control（固定值）："><a href="#cache-control（固定值）：" class="headerlink" title="cache-control（固定值）："></a>cache-control（固定值）：</h6><p><code>no-cache</code></p>
+</li>
+<li><h6 id="user-agent（随意给一个就好）："><a href="#user-agent（随意给一个就好）：" class="headerlink" title="user-agent（随意给一个就好）："></a>user-agent（随意给一个就好）：</h6><p><code>NewsApp/108.1 Android/8.1.0 (Android/msm8996)</code></p>
+</li>
+<li><h6 id="x-nr-trace-id："><a href="#x-nr-trace-id：" class="headerlink" title="x-nr-trace-id："></a>x-nr-trace-id：</h6><p><code>整数型13位时间戳 + “_” + ??? + “_” + ZDBkNDQ3NjFhYjZjN2ZiNl9fQW5kcm9pZF9tc204OTk2</code></p>
+<p>分析其中的未知参数：<code>???</code></p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/08/01/%E6%9F%90%E6%98%93%E6%96%B0%E9%97%BB%E9%80%86%E5%90%91/image-20240729220622084.png" class="" title="image-20240729220622084">
+
+<ul>
+<li>共计找到了37个，着重查看其中<code>Request</code>相关的</li>
+</ul>
+<p><code>GalaxyResponse.a</code>函数</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/08/01/%E6%9F%90%E6%98%93%E6%96%B0%E9%97%BB%E9%80%86%E5%90%91/image-20240729223016070.png" class="" title="image-20240729223016070">
+
+<ul>
+<li>x-nr-trace-id的值来自于<code>this.f12885b</code></li>
+</ul>
+<pre><code class="js">@Override // com.netease.galaxy.net.IRequest
+public GalaxyResponse a() throws Throwable {
+    OkHttpClient a2;
+    method.header("X-NR-Trace-Id", this.f12885b);
+
+......
+
+public GalaxyRequest(RequestData requestData) {
+    this.f12885b = "";
+    this.f12885b = c(String.valueOf(hashCode()));	// "???"是一个hashCode
+}
+</code></pre>
+<p>跟进<code>c(String str)</code>函数中</p>
+<pre><code class="js">    private String c(String str) {
+        return System.currentTimeMillis() + "_" + str + "_" + Galaxy.N(Galaxy.M());
+    }
+</code></pre>
+<ul>
+<li>定位到了<code>this.f12885b</code>的来源，写frida脚本获取<code>str</code>的值</li>
+</ul>
+<p>hook <code>c</code>函数</p>
+<pre><code class="js">Java.perform(function(){
+    var GalaxyRequest = Java.use("com.netease.galaxy.net.GalaxyRequest")
+    GalaxyRequest["c"].implementation = function(str){
+        console.log('c is called' + ',' + 'str: ' + str)
+        var ret = this.c(str)
+        console.log('c ret value is: ' + ret)
+        return ret
+    }
+})
+</code></pre>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/08/01/%E6%9F%90%E6%98%93%E6%96%B0%E9%97%BB%E9%80%86%E5%90%91/image-20240729231229342.png" class="" title="image-20240729231229342">
+
+<p>根据返回值可以发现：“ZDBkNDQ3NjFhYjZjN2ZiNl9fQW5kcm9pZF9tc204OTk2”，字符串一直是固定的，那么总结可得</p>
+<p><code>整数型13位时间戳 + “_” + “hashCode()” + “_” + ZDBkNDQ3NjFhYjZjN2ZiNl9fQW5kcm9pZF9tc204OTk2</code></p>
+</li>
+<li><h6 id="X-NR-ISE（固定值）："><a href="#X-NR-ISE（固定值）：" class="headerlink" title="X-NR-ISE（固定值）："></a>X-NR-ISE（固定值）：</h6><p><code>0</code></p>
+</li>
+<li><p>X-XR-Original-Host（固定值）：</p>
+<p><code>gw.m.163.com</code></p>
+</li>
+<li><p>User系列参数</p>
+</li>
+</ol>
+<blockquote>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/08/01/%E6%9F%90%E6%98%93%E6%96%B0%E9%97%BB%E9%80%86%E5%90%91/image-20240730162342692.png" class="" title="image-20240730162342692">
+
+<ul>
+<li><p>抓包对比了过后发现<code>user-c</code>的值是会变的</p>
+<ol>
+<li><p>在jadx中查找<code>user-c</code></p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/08/01/%E6%9F%90%E6%98%93%E6%96%B0%E9%97%BB%E9%80%86%E5%90%91/image-20240730110756519.png" class="" title="image-20240730110756519">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2024/08/01/%E6%9F%90%E6%98%93%E6%96%B0%E9%97%BB%E9%80%86%E5%90%91/image-20240730111105368.png" class="" title="image-20240730111105368">
+
+<p><code>User-C</code>的值来自于，对<code>StringUtil.e(o2, "UTF-8")</code>返回的字符串进行URL编码，使用UTF-8字符集，hook<code>StringUtil.e()</code>查看编码前的值</p>
+<pre><code class="js">Java.perform(function(){
+    var StringUtil = Java.use("com.netease.newsreader.support.utils.string.StringUtil")
+    StringUtil["e"].implementation = function(str, str2){
+        console.log('e is called, ' + 'str: ' + str + 'str2: ' + str2 + "\n")
+        var ret = this.e(str, str2)
+        console.log('e ret value is: ' + ret + "\n")
+        return ret
+    }
+})
+</code></pre>
+<p>执行脚本</p>
+<pre><code class="js">┌──(root㉿r0env)-[~/Documents/FridaHook]
+└─# frida -U -f com.netease.newsreader.activity -l wangyiNews.js 
+     ____
+    / _  |   Frida 12.8.0 - A world-class dynamic instrumentation toolkit
+   | (_| |
+    &gt; _  |   Commands:
+   /_/ |_|       help      -&gt; Displays the help system
+   . . . .       object?   -&gt; Display information about 'object'
+   . . . .       exit/quit -&gt; Exit
+   . . . .
+   . . . .   More info at https://www.frida.re/docs/home/
+Spawned `com.netease.newsreader.activity`. Use %resume to let the main thread start executing!    
+[Google msm8996::com.netease.newsreader.activity]-&gt; %resume 
+[Google msm8996::com.netease.newsreader.activity]-&gt; e is called, str: com.netease.newsreader.common.serverconfig.ServerConfigData$Porxystr2: utf-8
+
+e ret value is: Y29tLm5ldGVhc2UubmV3c3JlYWRlci5jb21tb24uc2VydmVyY29uZmlnLlNlcnZlckNvbmZpZ0RhdGEkUG9yeHk=
+e is called, str: 头条str2: UTF-8
+e ret value is: 5aS05p2h                                                     
+e is called, str: com.netease.newsreader.common.serverconfig.ServerConfigData$Porxystr2: utf-8
+
+e ret value is: Y29tLm5ldGVhc2UubmV3c3JlYWRlci5jb21tb24uc2VydmVyY29uZmlnLlNlcnZlckNvbmZpZ0RhdGEkUG9yeHk=
+
+e is called, str: *str2: utf-8
+
+e ret value is: Kg==
+
+e is called, str: 巴黎奥运天天惹韩国人生气str2: utf-8
+
+e ret value is: 5be06buO5aWl6L+Q5aSp5aSp5oO56Z+p5Zu95Lq655Sf5rCU
+
+e is called, str: searchstr2: utf-8
+
+e ret value is: c2VhcmNo
+
+。。。。。。
+</code></pre>
+<p>访问不同的栏目<code>User-C</code>的值会有变动：</p>
+<blockquote>
+<p>6KeG6aKR		// base64 -&gt; 视频				</p>
+<p>6ZmE6L%2BR		// base64 -&gt; 附近</p>
+<p>5aS05p2h		// base64 -&gt; 头条</p>
+<p>5aWl6L%2BQ		// base64 -&gt; 奥运</p>
+<p>c2VhcmNo		// base64 -&gt; search</p>
+<p>等等。。。</p>
+</blockquote>
+</li>
+</ol>
+</li>
+</ul>
+<ol>
+<li><p>继续分析<code>User-U</code>、<code>User-D</code>、<code>User-N</code>。。。等参数，跟进<code>getEncryptedParams()</code>方法</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/08/01/%E6%9F%90%E6%98%93%E6%96%B0%E9%97%BB%E9%80%86%E5%90%91/image-20240730163214144.png" class="" title="image-20240730163214144">
+
+<p>调用<code>getEncryptedParamsInner(str, i2)</code>方法，跟进查看</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/08/01/%E6%9F%90%E6%98%93%E6%96%B0%E9%97%BB%E9%80%86%E5%90%91/image-20240730163419940.png" class="" title="image-20240730163419940">
+
+<p>调用<code>callEncrypt</code>方法，跟进查看</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/08/01/%E6%9F%90%E6%98%93%E6%96%B0%E9%97%BB%E9%80%86%E5%90%91/image-20240730163627733.png" class="" title="image-20240730163627733">
+
+<p>调用<code>encrypt</code>方法，跟进查看</p>
+<p><code>private static native synchronized byte[] encrypt(Context context, String str, int i2);</code></p>
+<p>接下来到了so层，查看此处加载的so文件名</p>
+<pre><code class="js">    static {
+        try {
+            System.loadLibrary("random");
+        } catch (Error unused) {
+        }
+    }
+</code></pre>
+<p>用IDA打开librandom.so文件，查看<code>Java_com_netease_nr_biz_pc_sync_Encrypt_encrypt</code>方法的实现，在分析之前先hook确认下查找的点没错：</p>
+<pre><code class="js">Java.perform(function () {
+    var ByteString = Java.use("com.android.okhttp.okio.ByteString")
+    var Encrypt = Java.use("com.netease.nr.biz.pc.sync.Encrypt")
+    Encrypt["encrypt"].implementation = function (context, str, i2) {
+        console.log('encrypt is called' + ', ' + 'context: ' + context + ', ' + 'str: ' + ', ' + 'i2: ' + i2)
+        var ret = this.encrypt(context, str, i2)
+        console.log('encrypt ret value is ' + JSON.stringify(ret))
+        console.log('\n\ncallEncrypt ret str_hex: ' + ByteString.of(ret).hex())
+        return ret
+    }
+})
+</code></pre>
+<p>执行脚本：</p>
+<pre><code class="js">┌──(root㉿r0env)-[~/Documents/FridaHook]
+└─# frida -U -f com.netease.newsreader.activity -l wangyiNews.js
+     ____
+    / _  |   Frida 12.8.0 - A world-class dynamic instrumentation toolkit
+   | (_| |
+    &gt; _  |   Commands:
+   /_/ |_|       help      -&gt; Displays the help system
+   . . . .       object?   -&gt; Display information about 'object'
+   . . . .       exit/quit -&gt; Exit
+   . . . .
+   . . . .   More info at https://www.frida.re/docs/home/
+Spawned `com.netease.newsreader.activity`. Use %resume to let the main thread start executing!
+[Google msm8996::com.netease.newsreader.activity]-&gt; %resume  
+encrypt is called, context: com.netease.nr.base.activity.BaseApplication@99736ce, str: , i2: 0
+encrypt ret value is [104,3,-109,49,-115,-1,47,52,-120,18,25,-25,-39,33,-33,-59,-84,-106,-115,-88,-1,-57,71,43,-74,-46,-92,66,68,-3,46,-98,120,-16,74,-47,-45,108,-55,-21,-14,-105,58,124,87,-45,-114,-120]
+
+callEncrypt ret str_hex: 680393318dff2f34881219e7d921dfc5ac968da8ffc7472bb6d2a44244fd2e9e78f04ad1d36cc9ebf2973a7c57d38e88
+encrypt is called, context: com.netease.nr.base.activity.BaseApplication@99736ce, str: , i2: 0
+encrypt ret value is [-78,7,-46,-63,-97,29,-40,76,-94,-112,101,-75,74,72,80,-10]
+
+callEncrypt ret str_hex: b207d2c19f1dd84ca29065b54a4850f6
+encrypt is called, context: com.netease.nr.base.activity.BaseApplication@99736ce, str: , i2: 0
+encrypt ret value is [-116,34,61,0,-117,27,-24,43,-68,-32,54,-58,-34,31,64,10,-19,76,-96,93,97,79,120,-55,-29,-104,18,-76,-13,-52,-40,14,120,-16,74,-47,-45,108,-55,-21,-14,-105,58,124,87,-45,-114,-120]
+
+callEncrypt ret str_hex: 8c223d008b1be82bbce036c6de1f400aed4ca05d614f78c9e39812b4f3ccd80e78f04ad1d36cc9ebf2973a7c57d38e88
+</code></pre>
+<p>确认没找错点，跟进so中进行分析（环境：ida64_7.7）</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/08/01/%E6%9F%90%E6%98%93%E6%96%B0%E9%97%BB%E9%80%86%E5%90%91/image-20240730182957828.png" class="" title="image-20240730182957828">
+
+<ul>
+<li>分析后加密函数在<code>doEn</code>中</li>
+</ul>
+<pre><code class="c++">__int64 __fastcall doEn(__int64 a1, __int64 a2, __int64 a3, __int64 a4, __int64 a5)
+{
+  __int64 v8; // x22
+  __int64 v9; // x23
+  __int64 v10; // x22
+  __int64 v11; // x24
+  __int64 v12; // x20
+  char *v13; // x0
+  char *v14; // x21
+  __int64 v15; // x22
+  __int64 v16; // x21
+  __int64 v17; // x0
+  __int64 v18; // x21
+  char *v19; // x22
+  __int64 v20; // x23
+  char *v21; // x0
+  char *v22; // x22
+  __int64 v23; // x24
+  __int64 v24; // x22
+  __int64 v25; // x0
+  __int64 v26; // x23
+  __int64 v27; // x0
+  __int64 v28; // x2
+
+  v8 = (*(__int64 (__fastcall **)(__int64, const char *))(*(_QWORD *)a1 + 48LL))(a1, "java/lang/String");
+  v9 = (*(__int64 (__fastcall **)(__int64, const char *))(*(_QWORD *)a1 + 1336LL))(a1, "utf-8");
+  v10 = (*(__int64 (__fastcall **)(__int64, __int64, const char *, const char *))(*(_QWORD *)a1 + 264LL))(
+          a1,
+          v8,
+          "getBytes",
+          "(Ljava/lang/String;)[B");
+  v11 = (*(__int64 (__fastcall **)(__int64, __int64, __int64, __int64))(*(_QWORD *)a1 + 272LL))(a1, a5, v10, v9);
+  v12 = (*(__int64 (__fastcall **)(__int64, __int64, __int64, __int64))(*(_QWORD *)a1 + 272LL))(a1, a4, v10, v9);
+  v13 = (char *)malloc(0x15u);
+  strcpy(v13, "AES/ECB/PKCS7Padding");
+  v14 = v13;
+  v15 = (*(__int64 (__fastcall **)(__int64, const char *))(*(_QWORD *)a1 + 1336LL))(a1, "D@V");
+  free(v14);
+  v16 = (*(__int64 (__fastcall **)(__int64, const char *))(*(_QWORD *)a1 + 48LL))(a1, "javax/crypto/spec/SecretKeySpec");
+  v17 = (*(__int64 (__fastcall **)(__int64, __int64, const char *, const char *))(*(_QWORD *)a1 + 264LL))(
+          a1,
+          v16,
+          "&lt;init&gt;",
+          "([BLjava/lang/String;)V");
+  v18 = (*(__int64 (__fastcall **)(__int64, __int64, __int64, __int64, __int64))(*(_QWORD *)a1 + 224LL))(
+          a1,
+          v16,
+          v17,
+          v11,
+          v15);
+  v19 = (char *)malloc(0x15u);
+  strcpy(v19, "AES/ECB/PKCS7Padding");
+  v20 = (*(__int64 (__fastcall **)(__int64, char *))(*(_QWORD *)a1 + 1336LL))(a1, v19);
+  free(v19);
+  v21 = (char *)malloc(3u);
+  strcpy(v21, "BC");
+  v22 = v21;
+  v23 = (*(__int64 (__fastcall **)(__int64, char *))(*(_QWORD *)a1 + 1336LL))(a1, v21);
+  free(v22);
+  v24 = (*(__int64 (__fastcall **)(__int64, const char *))(*(_QWORD *)a1 + 48LL))(a1, "javax/crypto/Cipher");
+  v25 = (*(__int64 (__fastcall **)(__int64, __int64, const char *, const char *))(*(_QWORD *)a1 + 904LL))(
+          a1,
+          v24,
+          "getInstance",
+          "(Ljava/lang/String;Ljava/lang/String;)Ljavax/crypto/Cipher;");
+  v26 = (*(__int64 (__fastcall **)(__int64, __int64, __int64, __int64, __int64))(*(_QWORD *)a1 + 912LL))(
+          a1,
+          v24,
+          v25,
+          v20,
+          v23);
+  v27 = (*(__int64 (__fastcall **)(__int64, __int64, const char *, const char *))(*(_QWORD *)a1 + 264LL))(
+          a1,
+          v24,
+          "init",
+          "(ILjava/security/Key;)V");
+  (*(void (__fastcall **)(__int64, __int64, __int64, __int64, __int64))(*(_QWORD *)a1 + 488LL))(a1, v26, v27, 1LL, v18);
+  v28 = (*(__int64 (__fastcall **)(__int64, __int64, const char *, const char *))(*(_QWORD *)a1 + 264LL))(
+          a1,
+          v24,
+          "doFinal",
+          "([B)[B");
+  return (*(__int64 (__fastcall **)(__int64, __int64, __int64, __int64))(*(_QWORD *)a1 + 272LL))(a1, v26, v28, v12);
+}
+</code></pre>
+<ul>
+<li>这个函数的主要功能是使用 AES 加密算法对输入的数据进行加密。它使用 ECB 模式和 PKCS7Padding 填充方式，并且使用 Bouncy Castle 安全提供者来创建和初始化 <code>Cipher</code> 对象。最终返回加密后的字节数组</li>
+</ul>
+<p>使用自吐脚本进行hook：</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/08/01/%E6%9F%90%E6%98%93%E6%96%B0%E9%97%BB%E9%80%86%E5%90%91/image-20240731115022085.png" class="" title="image-20240731115022085">
+
+<p>现在可以知道，整个加密流程为：</p>
+<p>str -&gt; AES/ECB/PKCS7Padding -&gt;base64</p>
+<p>例如：</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/08/01/%E6%9F%90%E6%98%93%E6%96%B0%E9%97%BB%E9%80%86%E5%90%91/image-20240731120000205.png" class="" title="image-20240731120000205">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2024/08/01/%E6%9F%90%E6%98%93%E6%96%B0%E9%97%BB%E9%80%86%E5%90%91/image-20240731120157628.png" class="" title="image-20240731120157628">
+
+<ul>
+<li>使用CyberChef解密成功</li>
+</ul>
+<p>对照抓包及hook到的参数，可以确定user-rc、user-d、user-vd、user-appid、user-lc、user-n参数的生成都是如此，其原始值大多为某一个值经过base64编码后在经过url编码得到的：</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/08/01/%E6%9F%90%E6%98%93%E6%96%B0%E9%97%BB%E9%80%86%E5%90%91/image-20240730203130771.png" class="" title="image-20240730203130771">
+
+<pre><code class="js">user-rc: UjgzLZ+E4Lemnj+sMro9qwqQ3xlDp4PUECu18073DbE2Sp1cMm3KWoG4EVq0Iff0
+user-d: IMi3SNGXpwgZp82uZ0+RgpAF6y/2KeNwsdMOCNyDzAlKc35nEIdpbwHZVg+KaduA
+user-vd: xsTHQE9xf3vYWy8XeWECeuLJx3sxZ0eDNrxxIJT5gl6bR7URJ6L1Q7A4TGIYxCEc
+user-appid: TItcOwjV9bndQ91C5VadYg==
+user-lc: 67NqtW9W02z/qXjaEOOHag==
+user-n: yEWDFuJGE3Gmj2a0IPdYcA==
+</code></pre>
+</li>
+<li><p>user-sid</p>
+<p>在jadx中查找并跟踪</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/08/01/%E6%9F%90%E6%98%93%E6%96%B0%E9%97%BB%E9%80%86%E5%90%91/image-20240730204522769.png" class="" title="image-20240730204522769">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2024/08/01/%E6%9F%90%E6%98%93%E6%96%B0%E9%97%BB%E9%80%86%E5%90%91/image-20240730204931081.png" class="" title="image-20240730204931081">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2024/08/01/%E6%9F%90%E6%98%93%E6%96%B0%E9%97%BB%E9%80%86%E5%90%91/image-20240730205050783.png" class="" title="image-20240730205050783">
+
+<ul>
+<li>获取一个实现了<code>IGalaxyApi</code>接口的对象，并调用<code>getSessionId()</code>方法来获取当前会话的ID，然后将该ID作为字符串返回。对其进行hook：</li>
+</ul>
+<pre><code class="js">Java.perform(function () {
+    var NRGalaxy = Java.use('com.netease.newsreader.newarch.galaxy.NRGalaxy');
+    NRGalaxy.G.implementation = function () {
+        var originalResult = this.G();
+        console.log('G()方法返回值: ' + originalResult);
+        return originalResult;
+    };
+
+    // 为了触发 hook，我们需要获取 NRGalaxy 的实例
+    var instance = NRGalaxy.F();
+    instance.G(); // 调用 G() 方法
+});
+</code></pre>
+<p>执行脚本：</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/08/01/%E6%9F%90%E6%98%93%E6%96%B0%E9%97%BB%E9%80%86%E5%90%91/image-20240731195501940.png" class="" title="image-20240731195501940">
+
+<p>加密返回值，将其与<strong>user-sid</strong>对比</p>
+<blockquote>
+<p>User-sid	qlNtWweNuThGiTKXJrZSnzEzjaqi2osTzDRV6IYJhvU=</p>
+</blockquote>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/08/01/%E6%9F%90%E6%98%93%E6%96%B0%E9%97%BB%E9%80%86%E5%90%91/image-20240731204400611.png" class="" title="image-20240731204400611">
+
+<ul>
+<li><p>构成：字符串 + 时间戳</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/08/01/%E6%9F%90%E6%98%93%E6%96%B0%E9%97%BB%E9%80%86%E5%90%91/image-20240731205136884.png" class="" title="image-20240731205136884">
+
+<ul>
+<li>每次重启App后字符串和时间戳会改变，字符串应该是随机生成的，时间戳为App启动的时间戳</li>
+</ul>
+</li>
+</ul>
+</li>
+</ol>
+</blockquote>
+<ol start="10">
+<li><h6 id="X-NR-TS（整数型13位时间戳）：："><a href="#X-NR-TS（整数型13位时间戳）：：" class="headerlink" title="X-NR-TS（整数型13位时间戳）：："></a>X-NR-TS（整数型13位时间戳）：：</h6><p><code>int(time.time() * 1000)</code></p>
+</li>
+<li><h6 id="X-NR-SIGN："><a href="#X-NR-SIGN：" class="headerlink" title="X-NR-SIGN："></a>X-NR-SIGN：</h6><p>在jadx中跟踪定位</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/08/01/%E6%9F%90%E6%98%93%E6%96%B0%E9%97%BB%E9%80%86%E5%90%91/image-20240731210201783.png" class="" title="image-20240731210201783">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2024/08/01/%E6%9F%90%E6%98%93%E6%96%B0%E9%97%BB%E9%80%86%E5%90%91/image-20240731211620243.png" class="" title="image-20240731211620243">
+
+<blockquote>
+<p> <code>String n2 = StringUtils.n(((Object) queryString) + HttpUtils.f29796s + ts);</code></p>
+<p>将 queryString、HttpUtils.f29796s、ts 进行拼接</p>
+<ul>
+<li><p>HttpUtils.f29796s是一个静态变量：gNlVGcSKf5</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/08/01/%E6%9F%90%E6%98%93%E6%96%B0%E9%97%BB%E9%80%86%E5%90%91/image-20240731212624387.png" class="" title="image-20240731212624387"></li>
+</ul>
+<p>拼接后使用<code>StringUtils.n()</code>对拼接后的字符串进行MD5摘要计算</p>
+<pre><code class="js">    public static String n(String str) {
+        if (TextUtils.isEmpty(str)) {
+            return str;
+        }
+        try {
+            return a(MessageDigest.getInstance("MD5").digest(g(str, Charset.forName("UTF-8"))), false);
+        } catch (NoSuchAlgorithmException e2) {
+            throw new AssertionError(e2);
+        }
+    }
+</code></pre>
+<p>对这个方法进行hook</p>
+<pre><code class="js">Java.perform(function(){
+    var StringUtils = Java.use("com.netease.newsreader.framework.util.string.StringUtils")
+    StringUtils.n.implementation = function(str){
+        console.log("n is called str -&gt; " + str + "\n")
+        var ret = this.n(str)
+        console.log("n ret value is -&gt; " + ret + "\n")
+        return ret
+    }
+})
+</code></pre>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/08/01/%E6%9F%90%E6%98%93%E6%96%B0%E9%97%BB%E9%80%86%E5%90%91/image-20240731220339289.png" class="" title="image-20240731220339289">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2024/08/01/%E6%9F%90%E6%98%93%E6%96%B0%E9%97%BB%E9%80%86%E5%90%91/image-20240731220744553.png" class="" title="image-20240731220744553">
+
+<ul>
+<li>对比后无误</li>
+</ul>
+</blockquote>
+</li>
+<li><h6 id="X-NR-Net-Lib（固定值）："><a href="#X-NR-Net-Lib（固定值）：" class="headerlink" title="X-NR-Net-Lib（固定值）："></a>X-NR-Net-Lib（固定值）：</h6><p><code>okhttp</code></p>
+</li>
+<li><h6 id="Accept-Encoding（固定值）："><a href="#Accept-Encoding（固定值）：" class="headerlink" title="Accept-Encoding	（固定值）："></a>Accept-Encoding	（固定值）：</h6><p><code>br,gzip</code></p>
+</li>
+</ol>
+<h4 id="params-1"><a href="#params-1" class="headerlink" title="params"></a>params</h4><p>搜索关键字定位</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/08/01/%E6%9F%90%E6%98%93%E6%96%B0%E9%97%BB%E9%80%86%E5%90%91/image-20240731223022010.png" class="" title="image-20240731223022010">
+
+<ul>
+<li>可以看到相关参数都是在这里生成的</li>
+</ul>
+<p>对数据包进行对比分析后</p>
+<pre><code class="js">start=Kg==&amp;		// 固定值
+limit=20&amp;		// 固定值
+q=5Lul6Imy5YiX5pS/5bqc6YOo6Zeo5Y+R5biW56ew5ZOI5bC85Lqa6KKr5bmy5o6J&amp;		// 搜索词的base64编码
+deviceId=IMi3SNGXpwgZp82uZ0+RgpAF6y/2KeNwsdMOCNyDzAlKc35nEIdpbwHZVg+KaduA&amp;
+version=newsclient.108.1.android&amp;	// 固定值
+channel=c2VhcmNo&amp;	// 栏目的base64编码
+canal=UVFfbmV3c195dW55aW5nNA==&amp;		// 固定值：QQ_news_yunying4的base64编码
+dtype=0&amp;	// 固定值
+tabname=zonghe&amp;		// 固定值
+position=5Lit6Ze06aG154Ot5qac&amp;		// 搜索内容的base64编码
+ts=1716104794&amp;		// 时间戳
+sign=nZwy0Lv5hnVYZmQrZWwseXcZ28nunsOjaYWlAW/IxwF48ErR02zJ6/KXOnxX046I&amp;		// 未知
+spever=FALSE HTTP/1.1		// 固定值
+</code></pre>
+<ol>
+<li><h6 id="sign"><a href="#sign" class="headerlink" title="sign"></a>sign</h6></li>
+</ol>
+<p>根据上一张截图可以知道sign的值来自于str7</p>
+<pre><code class="js">截取代码片段
+String str7 = s2 + String.valueOf(currentTimeMillis);
+if (!TextUtils.isEmpty(str7)) {
+    str7 = StringUtil.c(Encrypt.getEncryptedParams(StringUtils.n(str7)));
+arrayList.add(new FormPair("sign", str7));
+</code></pre>
+<ul>
+<li><p><code>StringUtils.n(str7)</code>上面分析过是一个计算MD5摘要方法：先对<code>str7</code>进行了MD5操作</p>
+</li>
+<li><p><code>Encrypt.getEncryptedParams()</code>上面也分析过最终是调用了so中的<strong>AES/ECB/PKCS7Padding</strong>加密</p>
+</li>
+<li><p><code>StringUtil.c()</code>是对输入字符串进行URLEncoder处理然后返回</p>
+<pre><code class="js">    public static String c(String str) {
+        if (TextUtils.isEmpty(str)) {
+            return "";
+        }
+        try {
+            return URLEncoder.encode(str, "UTF-8");
+        } catch (Exception unused) {
+            return "";
+        }
+    }
+</code></pre>
+<h6 id="验证："><a href="#验证：" class="headerlink" title="验证："></a>验证：</h6><p>先对<code>StringUtil.n()</code>进行hook拿到<code>str7</code>的MD5摘要值</p>
+<p>再把MD5进行AES加密并转为Base64编码</p>
+<p>然后hook <code>StringUtil.c()</code>跟它的参数进行比较</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/08/01/%E6%9F%90%E6%98%93%E6%96%B0%E9%97%BB%E9%80%86%E5%90%91/image-20240731232857856.png" class="" title="image-20240731232857856">
+
+<ul>
+<li>结果相同</li>
+</ul>
+</li>
+</ul>
+<p>所有参数分析完毕</p>
+<h3 id="模拟请求"><a href="#模拟请求" class="headerlink" title="模拟请求"></a>模拟请求</h3><p>上述将所有相关参数都分析完毕，接下来写代码对会变动的参数进行还原后重新组包进行模拟请求</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/08/01/%E6%9F%90%E6%98%93%E6%96%B0%E9%97%BB%E9%80%86%E5%90%91/image-20240801105629859.png" class="" title="image-20240801105629859">
+
+        </div>
+
+        
+            <div class="post-copyright-info w-full my-8 px-2 sm:px-6 md:px-8">
+                <div class="article-copyright-info-container">
+    <ul>
+        <li><strong>标题:</strong> 某易新闻逆向</li>
+        <li><strong>作者:</strong> xiaoeryu</li>
+        <li><strong>创建于
+                :</strong> 2024-08-01 10:55:05</li>
+        
+            <li>
+                <strong>更新于
+                    :</strong> 2024-08-01 11:05:57
+            </li>
+        
+        <li>
+            <strong>链接:</strong> https://github.com/xiaoeryu/2024/08/01/某易新闻逆向/
+        </li>
+        <li>
+            <strong>
+                版权声明:
+            </strong>
+            
+
+            
+                本文章采用 <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0">CC BY-NC-SA 4.0</a> 进行许可。
+            
+        </li>
+    </ul>
+</div>
+
+            </div>
+        
+
+        
+            <ul class="post-tags-box text-lg mt-1.5 flex-wrap justify-center flex md:hidden">
+                
+                    <li class="tag-item mx-0.5">
+                        <a href="/tags/App%E9%80%86%E5%90%91/">#App逆向</a>&nbsp;
+                    </li>
+                
+                    <li class="tag-item mx-0.5">
+                        <a href="/tags/%E7%88%AC%E8%99%AB/">#爬虫</a>&nbsp;
+                    </li>
+                
+            </ul>
+        
+
+        
+
+        
+            <div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
+                
+                
+                    <div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+                        <a class="next"
+                        rel="next"
+                        href="/2024/07/29/%E5%85%AD%E5%B1%82%E9%94%81%E6%9C%BA/"
+                        >
+                            <span class="title flex justify-center items-center">
+                                <span class="post-nav-title-item">六层锁机</span>
+                                <span class="post-nav-item">下一篇</span>
+                            </span>
+                            <span class="right arrow-icon flex justify-center items-center">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+
+        
+            <div class="comment-container px-2 sm:px-6 md:px-8 pb-8">
+                <div class="comments-container mt-10 w-full ">
+    <div id="comment-anchor" class="w-full h-2.5"></div>
+    <div class="comment-area-title w-full my-1.5 md:my-2.5 text-xl md:text-3xl font-bold">
+        评论
+    </div>
+    
+
+        
+            
+    <div id="gitalk-container"></div>
+    <script data-swup-reload-script
+            src="//cdn.staticfile.org/gitalk/1.8.0/gitalk.min.js"></script>
+    <script data-swup-reload-script>
+
+        function loadGitalk() {
+            let __gitalk__pathname = decodeURI(location.pathname);
+            const __gitalk__pathnameLength = __gitalk__pathname.length;
+            const __gitalk__pathnameMaxLength = 50;
+            if (__gitalk__pathnameLength > __gitalk__pathnameMaxLength) {
+                __gitalk__pathname = __gitalk__pathname.substring(0, __gitalk__pathnameMaxLength - 3) + '...';
+            }
+
+            try {
+                Gitalk && new Gitalk({
+                    clientID: '13d9974f24854a639570',
+                    clientSecret: '0c6c11ab3852d24a608e0f95a79829a649afac4b',
+                    repo: 'blog_gitalk',
+                    owner: 'xiaoeeyu',
+                    admin: ['xiaoeeyu'],
+                    id: __gitalk__pathname,
+                    language: 'zh-CN',
+                    proxy: 'https://github.com/login/oauth/access_token'
+                }).render('gitalk-container');
+
+            } catch (e) {
+                window.Gitalk = null;
+            }
+        }
+
+        if ('true') {
+            const loadGitalkTimeout = setTimeout(() => {
+                loadGitalk();
+                clearTimeout(loadGitalkTimeout);
+            }, 1000);
+        } else {
+            window.addEventListener('DOMContentLoaded', loadGitalk);
+        }
+    </script>
+
+
+
+        
+    
+</div>
+
+            </div>
+        
+    </div>
+
+    
+        <div class="toc-content-container">
+            <div class="post-toc-wrap">
+    <div class="post-toc">
+        <div class="toc-title">此页目录</div>
+        <div class="page-title">某易新闻逆向</div>
+        <ol class="nav"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E7%8E%AF%E5%A2%83"><span class="nav-text">环境</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%8A%93%E5%8C%85"><span class="nav-text">抓包</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E9%80%86%E5%90%91%E5%88%86%E6%9E%90"><span class="nav-text">逆向分析</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#Header-1"><span class="nav-text">Header</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#params-1"><span class="nav-text">params</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%A8%A1%E6%8B%9F%E8%AF%B7%E6%B1%82"><span class="nav-text">模拟请求</span></a></li></ol>
+
+    </div>
+</div>
+        </div>
+    
+</div>
+
+
+
+                
+
+            </div>
+
+            
+
+        </div>
+
+        <div class="main-content-footer">
+            <footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
+    <div class="info-container py-3 text-center">
+        
+        <div class="text-center">
+            &copy;
+            
+              <span>2022</span>
+              -
+            
+            2024&nbsp;&nbsp;<i class="fa-solid fa-heart fa-beat" style="--fa-animation-duration: 0.5s; color: #f54545"></i>&nbsp;&nbsp;<a href="/">xiaoeryu</a>
+            
+                
+                <p class="post-count space-x-0.5">
+                    <span>
+                        共 108 篇文章
+                    </span>
+                    
+                </p>
+            
+        </div>
+        
+            <script data-swup-reload-script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            <div class="relative text-center lg:absolute lg:right-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-right">
+                
+                    <span id="busuanzi_container_site_uv" class="lg:!block">
+                        <span class="text-sm">访问人数</span>
+                        <span id="busuanzi_value_site_uv"></span>
+                    </span>
+                
+                
+                    <span id="busuanzi_container_site_pv" class="lg:!block">
+                        <span class="text-sm">总访问量</span>
+                        <span id="busuanzi_value_site_pv"></span>
+                    </span>
+                
+            </div>
+        
+        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
+            <span class="lg:block text-sm">由 <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a> 驱动</span>
+            <span class="text-sm lg:block">主题&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.6.4</a></span>
+        </div>
+        
+        
+            <div>
+                博客已运行 <span class="odometer" id="runtime_days" ></span> 天 <span class="odometer" id="runtime_hours"></span> 小时 <span class="odometer" id="runtime_minutes"></span> 分钟 <span class="odometer" id="runtime_seconds"></span> 秒
+            </div>
+        
+        
+            <script data-swup-reload-script>
+                try {
+                    function odometer_init() {
+                    const elements = document.querySelectorAll('.odometer');
+                    elements.forEach(el => {
+                        new Odometer({
+                            el,
+                            format: '( ddd).dd',
+                            duration: 200
+                        });
+                    });
+                    }
+                    odometer_init();
+                } catch (error) {}
+            </script>
+        
+        
+        
+    </div>  
+</footer>
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="article-tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="right-bottom-tools page-aside-toggle">
+                <i class="fa-regular fa-outdent"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+            <li class="go-comment">
+                <i class="fa-regular fa-comments"></i>
+            </li>
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-side-tools-container">
+        <div class="side-tools-container">
+    <ul class="hidden-tools-list">
+        <li class="right-bottom-tools tool-font-adjust-plus flex justify-center items-center">
+            <i class="fa-regular fa-magnifying-glass-plus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-font-adjust-minus flex justify-center items-center">
+            <i class="fa-regular fa-magnifying-glass-minus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
+            <i class="fa-regular fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+
+        <li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
+            <i class="fa-regular fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="visible-tools-list">
+        <li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
+            <i class="fa-regular fa-cog fa-spin"></i>
+        </li>
+        
+            <li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
+                <i class="arrow-up fas fa-arrow-up"></i>
+                <span class="percent"></span>
+            </li>
+        
+        
+    </ul>
+</div>
+
+    </div>
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fa-solid fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜索..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="popup-btn-close">
+                <i class="fa-solid fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fa-solid fa-spinner fa-spin-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+</main>
+
+
+    
+<script src="/js/libs/Swup.min.js"></script>
+
+<script src="/js/libs/SwupSlideTheme.min.js"></script>
+
+<script src="/js/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="/js/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="/js/libs/SwupScrollPlugin.min.js"></script>
+
+<script src="/js/libs/SwupPreloadPlugin.min.js"></script>
+
+<script>
+    const swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+            new SwupPreloadPlugin(),
+        ],
+        containers: ["#swup"],
+    });
+</script>
+
+
+
+
+
+
+
+<script src="/js/tools/imageViewer.js" type="module"></script>
+
+<script src="/js/utils.js" type="module"></script>
+
+<script src="/js/main.js" type="module"></script>
+
+<script src="/js/layouts/navbarShrink.js" type="module"></script>
+
+<script src="/js/tools/scrollTopBottom.js" type="module"></script>
+
+<script src="/js/tools/lightDarkSwitch.js" type="module"></script>
+
+<script src="/js/layouts/categoryList.js" type="module"></script>
+
+
+
+    
+<script src="/js/tools/localSearch.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/tools/codeBlock.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/layouts/lazyload.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/tools/runtime.js"></script>
+
+    
+<script src="/js/libs/odometer.min.js"></script>
+
+    
+<link rel="stylesheet" href="/assets/odometer-theme-minimal.css">
+
+
+
+
+  
+<script src="/js/libs/Typed.min.js"></script>
+
+  
+<script src="/js/plugins/typed.js" type="module"></script>
+
+
+
+
+
+
+
+
+
+<div class="post-scripts" data-swup-reload-script>
+    
+        
+<script src="/js/tools/tocToggle.js" type="module"></script>
+
+<script src="/js/layouts/toc.js" type="module"></script>
+
+<script src="/js/plugins/tabs.js" type="module"></script>
+
+    
+</div>
+
+
+</body>
+</html>
