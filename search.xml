@@ -20271,7 +20271,7 @@ setImmediate(main)
   <entry>
     <title>某易新闻逆向</title>
     <url>/2024/08/01/%E6%9F%90%E6%98%93%E6%96%B0%E9%97%BB%E9%80%86%E5%90%91/</url>
-    <content><![CDATA[<h3 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h3><blockquote>
+    <content><![CDATA[<h6 id="本文中所有内容仅供研究与学习使用，请勿用于任何商业用途和非法用途，否则后果自负！"><a href="#本文中所有内容仅供研究与学习使用，请勿用于任何商业用途和非法用途，否则后果自负！" class="headerlink" title="本文中所有内容仅供研究与学习使用，请勿用于任何商业用途和非法用途，否则后果自负！"></a>本文中所有内容仅供研究与学习使用，请勿用于任何商业用途和非法用途，否则后果自负！</h6><h3 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h3><blockquote>
 <p>App版本：108.1（1807）豌豆荚下载</p>
 <p>设备：Pixel XL</p>
 <p>抓包工具：Charles + Postern</p>
@@ -20422,26 +20422,26 @@ public GalaxyRequest(RequestData requestData) {
 Spawned `com.netease.newsreader.activity`. Use %resume to let the main thread start executing!    
 [Google msm8996::com.netease.newsreader.activity]-&gt; %resume 
 [Google msm8996::com.netease.newsreader.activity]-&gt; e is called, str: com.netease.newsreader.common.serverconfig.ServerConfigData$Porxystr2: utf-8
-
+                    
 e ret value is: Y29tLm5ldGVhc2UubmV3c3JlYWRlci5jb21tb24uc2VydmVyY29uZmlnLlNlcnZlckNvbmZpZ0RhdGEkUG9yeHk=
 e is called, str: 头条str2: UTF-8
 e ret value is: 5aS05p2h                                                     
 e is called, str: com.netease.newsreader.common.serverconfig.ServerConfigData$Porxystr2: utf-8
-
+                    
 e ret value is: Y29tLm5ldGVhc2UubmV3c3JlYWRlci5jb21tb24uc2VydmVyY29uZmlnLlNlcnZlckNvbmZpZ0RhdGEkUG9yeHk=
-
+                    
 e is called, str: *str2: utf-8
-
+                    
 e ret value is: Kg==
-
+                    
 e is called, str: 巴黎奥运天天惹韩国人生气str2: utf-8
-
+                    
 e ret value is: 5be06buO5aWl6L+Q5aSp5aSp5oO56Z+p5Zu95Lq655Sf5rCU
-
+                    
 e is called, str: searchstr2: utf-8
-
+                    
 e ret value is: c2VhcmNo
-
+                    
 。。。。。。
 </code></pre>
 <p>访问不同的栏目<code>User-C</code>的值会有变动：</p>
@@ -20653,7 +20653,7 @@ user-n: yEWDFuJGE3Gmj2a0IPdYcA==
         console.log('G()方法返回值: ' + originalResult);
         return originalResult;
     };
-
+          
     // 为了触发 hook，我们需要获取 NRGalaxy 的实例
     var instance = NRGalaxy.F();
     instance.G(); // 调用 G() 方法
@@ -20792,6 +20792,7 @@ arrayList.add(new FormPair("sign", str7));
 </ul>
 <p>所有参数分析完毕</p>
 <h3 id="模拟请求"><a href="#模拟请求" class="headerlink" title="模拟请求"></a>模拟请求</h3><p>上述将所有相关参数都分析完毕，接下来写代码对会变动的参数进行还原后重新组包进行模拟请求</p>
+<p>请求头中只使用gzip解码，以免处理不了br编码</p>
 <img lazyload="" src="/images/loading.svg" data-src="/2024/08/01/%E6%9F%90%E6%98%93%E6%96%B0%E9%97%BB%E9%80%86%E5%90%91/image-20240801105629859.png" class="" title="image-20240801105629859">
 ]]></content>
       <categories>
