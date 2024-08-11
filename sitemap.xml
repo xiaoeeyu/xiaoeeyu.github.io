@@ -1662,21 +1662,14 @@
   </url>
   
   <url>
-    <loc>https://xiaoeeyu.github.io/tags/App%E5%8F%8D%E8%B0%83%E8%AF%95/</loc>
-    <lastmod>2024-08-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
-    <loc>https://xiaoeeyu.github.io/tags/Frida%E6%A3%80%E6%B5%8B/</loc>
-    <lastmod>2024-08-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.2</priority>
-  </url>
-  
-  <url>
     <loc>https://xiaoeeyu.github.io/tags/AOSP%E6%BA%90%E7%A0%81%E7%BC%96%E8%AF%91/</loc>
+    <lastmod>2024-08-11</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://xiaoeeyu.github.io/tags/Frida%E5%8F%8D%E8%B0%83%E8%AF%95/</loc>
     <lastmod>2024-08-11</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>

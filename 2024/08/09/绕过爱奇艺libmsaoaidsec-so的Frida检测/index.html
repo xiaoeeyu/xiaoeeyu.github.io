@@ -45,10 +45,10 @@
 <meta property="og:image" content="https://xiaoeeyu.github.io/2024/08/09/%E7%BB%95%E8%BF%87%E7%88%B1%E5%A5%87%E8%89%BAlibmsaoaidsec-so%E7%9A%84Frida%E6%A3%80%E6%B5%8B/image-20240811214529666.png">
 <meta property="og:image" content="https://xiaoeeyu.github.io/2024/08/09/%E7%BB%95%E8%BF%87%E7%88%B1%E5%A5%87%E8%89%BAlibmsaoaidsec-so%E7%9A%84Frida%E6%A3%80%E6%B5%8B/image-20240811215233683.png">
 <meta property="article:published_time" content="2024-08-09T03:29:58.000Z">
-<meta property="article:modified_time" content="2024-08-11T15:08:55.000Z">
+<meta property="article:modified_time" content="2024-08-11T15:42:36.213Z">
 <meta property="article:author" content="xiaoeryu">
-<meta property="article:tag" content="App反调试">
-<meta property="article:tag" content="Frida检测">
+<meta property="article:tag" content="App逆向">
+<meta property="article:tag" content="Frida反调试">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:image" content="https://xiaoeeyu.github.io/2024/08/09/%E7%BB%95%E8%BF%87%E7%88%B1%E5%A5%87%E8%89%BAlibmsaoaidsec-so%E7%9A%84Frida%E6%A3%80%E6%B5%8B/image-20240807181833519.png">
     
@@ -424,7 +424,7 @@
 
         <div class="statistics flex justify-around my-2.5">
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">91</div>
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">90</div>
         <div class="label text-third-text-color text-sm">标签</div>
     </a>
     <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
@@ -486,8 +486,8 @@
     
         <span class="article-date article-meta-item">
             <i class="fa-regular fa-wrench"></i>&nbsp;
-            <span class="desktop">2024-08-11 23:08:55</span>
-            <span class="mobile">2024-08-11 23:08:55</span>
+            <span class="desktop">2024-08-11 23:42:36</span>
+            <span class="mobile">2024-08-11 23:42:36</span>
             <span class="hover-info">更新</span>
         </span>
     
@@ -515,11 +515,11 @@
             <ul>
                 
                     <li>
-                        <a href="/tags/App%E5%8F%8D%E8%B0%83%E8%AF%95/">App反调试</a>&nbsp;
+                        <a href="/tags/App%E9%80%86%E5%90%91/">App逆向</a>&nbsp;
                     </li>
                 
                     <li>
-                        | <a href="/tags/Frida%E6%A3%80%E6%B5%8B/">Frida检测</a>&nbsp;
+                        | <a href="/tags/Frida%E5%8F%8D%E8%B0%83%E8%AF%95/">Frida反调试</a>&nbsp;
                     </li>
                 
             </ul>
@@ -761,17 +761,23 @@ setImmediate(hook_dlopen)
 </code></pre>
 <ul>
 <li><p>执行：<code>frida -U -f com.qiyi.video -l tmp01.js</code></p>
-<img lazyload="" src="/images/loading.svg" data-src="/2024/08/09/%E7%BB%95%E8%BF%87%E7%88%B1%E5%A5%87%E8%89%BAlibmsaoaidsec-so%E7%9A%84Frida%E6%A3%80%E6%B5%8B/image-20240811173455755.png" class="" title="image-20240811173455755"></li>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/08/09/%E7%BB%95%E8%BF%87%E7%88%B1%E5%A5%87%E8%89%BAlibmsaoaidsec-so%E7%9A%84Frida%E6%A3%80%E6%B5%8B/image-20240811173455755.png" class="" title="image-20240811173455755">
+
+<center>图9</center></li>
 </ul>
 <p>趁着进程暂停在<code>Func_sleep(10)</code>立即去执行：</p>
 <p><code>strace -e trace=process -i -f -p 20014</code></p>
 <img lazyload="" src="/images/loading.svg" data-src="/2024/08/09/%E7%BB%95%E8%BF%87%E7%88%B1%E5%A5%87%E8%89%BAlibmsaoaidsec-so%E7%9A%84Frida%E6%A3%80%E6%B5%8B/image-20240811180103387.png" class="" title="image-20240811180103387">
+
+<center>图10</center>
 
 <ul>
 <li>查看标记出来这一行，显示<code>20060</code>线程是在地址<code>0x00000071bb65b008</code>处调用<code>exit_group</code>退出的</li>
 </ul>
 <p>通过<code>proc/pid/maps libc</code>查看<code>libc.so</code>的地址范围</p>
 <img lazyload="" src="/images/loading.svg" data-src="/2024/08/09/%E7%BB%95%E8%BF%87%E7%88%B1%E5%A5%87%E8%89%BAlibmsaoaidsec-so%E7%9A%84Frida%E6%A3%80%E6%B5%8B/image-20240811181118140.png" class="" title="image-20240811181118140">
+
+<center>图11</center>
 
 <ul>
 <li>在一般情况下，<code>exit_group</code>的调用是通过<code>libc.so</code>提供的接口函数调用的，而这里调用<code>exit_group</code>的地址范围不在<code>libc</code>中，说明<code>exit_group</code>没有通过标准库来调用。那么大概率是使用了动态分配的内存区域或者自定义加载的库</li>
@@ -780,6 +786,8 @@ setImmediate(hook_dlopen)
 <p>接下来使用与刚才相同的方法让进程<code>sleep</code>，使用<code>strace</code>来监控与内存相关的系统调用</p>
 <p><code>strace -e trace=process,memory -i -f -p pid </code></p>
 <img lazyload="" src="/images/loading.svg" data-src="/2024/08/09/%E7%BB%95%E8%BF%87%E7%88%B1%E5%A5%87%E8%89%BAlibmsaoaidsec-so%E7%9A%84Frida%E6%A3%80%E6%B5%8B/image-20240811212738608.png" class="" title="image-20240811212738608">
+
+<center>图12</center>
 
 <ul>
 <li>根据这两行可以看出来<code>exit_group</code>的地址来自于<code>mmap</code>申请的28字节空间</li>
@@ -805,19 +813,27 @@ setImmediate(hook_dlopen)
 </code></pre>
 <img lazyload="" src="/images/loading.svg" data-src="/2024/08/09/%E7%BB%95%E8%BF%87%E7%88%B1%E5%A5%87%E8%89%BAlibmsaoaidsec-so%E7%9A%84Frida%E6%A3%80%E6%B5%8B/image-20240811213558416.png" class="" title="image-20240811213558416">
 
+<center>图13</center>
+
 <ul>
 <li>成功的打印出了调用栈</li>
 </ul>
 <h3 id="03：在IDA中定位检测函数"><a href="#03：在IDA中定位检测函数" class="headerlink" title="03：在IDA中定位检测函数"></a>03：在IDA中定位检测函数</h3><p>用IDA打开<code>libmsaoaidsec.so</code>并跳转到栈回溯位置</p>
 <img lazyload="" src="/images/loading.svg" data-src="/2024/08/09/%E7%BB%95%E8%BF%87%E7%88%B1%E5%A5%87%E8%89%BAlibmsaoaidsec-so%E7%9A%84Frida%E6%A3%80%E6%B5%8B/image-20240811214336838.png" class="" title="image-20240811214336838">
 
+<center>图14</center>
+
 <img lazyload="" src="/images/loading.svg" data-src="/2024/08/09/%E7%BB%95%E8%BF%87%E7%88%B1%E5%A5%87%E8%89%BAlibmsaoaidsec-so%E7%9A%84Frida%E6%A3%80%E6%B5%8B/image-20240811214529666.png" class="" title="image-20240811214529666">
+
+<center>图15</center>
 
 <ul>
 <li>F5之后粗略看一下代码，确实跟我们之前监控内存调用的执行流程相同</li>
 </ul>
 <p>那我们就根据交叉引用继续往上回溯找到整个检测逻辑的位置</p>
 <img lazyload="" src="/images/loading.svg" data-src="/2024/08/09/%E7%BB%95%E8%BF%87%E7%88%B1%E5%A5%87%E8%89%BAlibmsaoaidsec-so%E7%9A%84Frida%E6%A3%80%E6%B5%8B/image-20240811215233683.png" class="" title="image-20240811215233683">
+
+<center>图16</center>
 
 <ul>
 <li>最后定位到了<code>sub_1B924</code>这个函数是整个检测逻辑所在</li>
@@ -905,7 +921,7 @@ Java.perform(function () {
         
             <li>
                 <strong>更新于
-                    :</strong> 2024-08-11 23:08:55
+                    :</strong> 2024-08-11 23:42:36
             </li>
         
         <li>
@@ -931,11 +947,11 @@ Java.perform(function () {
             <ul class="post-tags-box text-lg mt-1.5 flex-wrap justify-center flex md:hidden">
                 
                     <li class="tag-item mx-0.5">
-                        <a href="/tags/App%E5%8F%8D%E8%B0%83%E8%AF%95/">#App反调试</a>&nbsp;
+                        <a href="/tags/App%E9%80%86%E5%90%91/">#App逆向</a>&nbsp;
                     </li>
                 
                     <li class="tag-item mx-0.5">
-                        <a href="/tags/Frida%E6%A3%80%E6%B5%8B/">#Frida检测</a>&nbsp;
+                        <a href="/tags/Frida%E5%8F%8D%E8%B0%83%E8%AF%95/">#Frida反调试</a>&nbsp;
                     </li>
                 
             </ul>
