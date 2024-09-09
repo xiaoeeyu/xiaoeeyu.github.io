@@ -4500,7 +4500,7 @@ struct ArtMethod {
 <p>然后将其刷入boot分区中</p>
 <ul>
 <li><ol>
-<li><p>进入fastboot模式<code>adb reboot bootloader</code>，如果命令进入失败手动关机后按住<strong>开机键+音量减</strong>进入</p>
+<li><p>进入fastboot模式：使用<code>adb reboot bootloader</code>或者<code>adb reboot fastboot</code>（根据pixel型号选择，有些比较老的型号直接进入bootloader就行了）如果命令进入失败手动关机后按住<strong>开机键+音量减</strong>进入</p>
 </li>
 <li><p>输入命令刷入<code> fastboot flash boot .\magisk_patched-26100_TDHKz.img</code></p>
 <img lazyload="" src="/images/loading.svg" data-src="/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/54a900ad116444c59fccec41454b8a1b.png" class="" title="ec4eabed226dcda5335aec66312f6870.png"></li>
@@ -4577,6 +4577,10 @@ struct ArtMethod {
 </ul>
 <img lazyload="" src="/images/loading.svg" data-src="/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/image-20240130105156510.png" class="" title="image-20240130105156510">
 
+<ul>
+<li><p>Android11是在<strong>安全 -&gt; 加密与凭据 -&gt; 安装证书</strong></p>
+<img lazyload="" src="/images/loading.svg" data-src="/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/image-20240824001058526.png" class="" title="image-20240824001058526"></li>
+</ul>
 <p>这里已经安装过了，不再重复安装。下载好点进去找到下载的证书直接安装就行，比较简单不再详述</p>
 <p>安装后AlwaysTrustUserCerts模块会将我们已经安装的用户证书拷贝到根目录</p>
 <img lazyload="" src="/images/loading.svg" data-src="/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/image-20240203173559472.png" class="" title="image-20240203173559472">
@@ -8672,7 +8676,9 @@ setImmediate(main)
 <p>安装Frida的源码包，可以方便写Frida的时候随时查看函数实现</p>
 <p><code>npm install --save @types/frida-gum</code></p>
 <h3 id="基础hook"><a href="#基础hook" class="headerlink" title="基础hook"></a>基础hook</h3><p>包括Java层和native层的基础hook</p>
-<h4 id="Java层的静态函数"><a href="#Java层的静态函数" class="headerlink" title="Java层的静态函数"></a>Java层的静态函数</h4><img lazyload="" src="/images/loading.svg" data-src="Frida基础hook汇总/image-20240319205221270.png" alt="image-20240319205221270" style="zoom: 33%;">
+<h4 id="Java层的静态函数"><a href="#Java层的静态函数" class="headerlink" title="Java层的静态函数"></a>Java层的静态函数</h4><img lazyload="" src="/images/loading.svg" data-src="/2024/03/24/Frida%E5%9F%BA%E7%A1%80hook%E6%B1%87%E6%80%BB/image-20240813223700885.png" class="" title="image-20240813223700885">
+
+
 
 <p>hook和主动调用的代码</p>
 <pre><code class="js">Java.use("com.xiaoeryu.demoso1.MainActivity").stringFromJNI.implementation = function(){
@@ -8682,7 +8688,7 @@ setImmediate(main)
         }
         console.log("invoke stringFromJNI: " + Java.use('com.xiaoeryu.demoso1.MainActivity').stringFromJNI);
 </code></pre>
-<h4 id="Java层非静态函数"><a href="#Java层非静态函数" class="headerlink" title="Java层非静态函数"></a>Java层非静态函数</h4><img lazyload="" src="/images/loading.svg" data-src="Frida基础hook汇总/image-20240319213153309.png" alt="image-20240319213153309" style="zoom: 50%;">
+<h4 id="Java层非静态函数"><a href="#Java层非静态函数" class="headerlink" title="Java层非静态函数"></a>Java层非静态函数</h4><img lazyload="" src="/images/loading.svg" data-src="/2024/03/24/Frida%E5%9F%BA%E7%A1%80hook%E6%B1%87%E6%80%BB/image-20240813223719102.png" class="" title="image-20240813223719102">
 
 <p>hook和主动调用代码：这个函数没写返回值，我们就只打印一个log</p>
 <pre><code class="js">        Java.use('com.xiaoeryu.demoso1.MainActivity').init.implementation = function(){
@@ -8696,7 +8702,7 @@ setImmediate(main)
             },onComplete:function(){console.log('Search complete!')}
         })
 </code></pre>
-<h4 id="静态注册函数的native层hook"><a href="#静态注册函数的native层hook" class="headerlink" title="静态注册函数的native层hook"></a>静态注册函数的native层hook</h4><img lazyload="" src="/images/loading.svg" data-src="Frida基础hook汇总/image-20240319221014380.png" alt="image-20240319221014380" style="zoom: 50%;">
+<h4 id="静态注册函数的native层hook"><a href="#静态注册函数的native层hook" class="headerlink" title="静态注册函数的native层hook"></a>静态注册函数的native层hook</h4><img lazyload="" src="/images/loading.svg" data-src="/2024/03/24/Frida%E5%9F%BA%E7%A1%80hook%E6%B1%87%E6%80%BB/image-20240813223727397.png" class="" title="image-20240813223727397">
 
 <ul>
 <li><p>对于第三方App通过查找它的导出函数可以获取获取完整函数名<em>（如果不是调用RegisterNatives进行的动态注册的话）</em>。用ida或者objection中的<code>memory list exports 库名.so</code>都可以</p>
@@ -8740,13 +8746,13 @@ setImmediate(main)
 <p>符号hook == 偏移hook</p>
 <p>枚举并保存结果</p>
 <h4 id="替换native层的参数和返回值"><a href="#替换native层的参数和返回值" class="headerlink" title="替换native层的参数和返回值"></a>替换native层的参数和返回值</h4><p>这里还是以前面hook的目标app中的目标函数为例</p>
-<img lazyload="" src="/images/loading.svg" data-src="Frida基础hook汇总/image-20240320180558522.png" alt="image-20240320180558522" style="zoom:50%;">
+<img lazyload="" src="/images/loading.svg" data-src="/2024/03/24/Frida%E5%9F%BA%E7%A1%80hook%E6%B1%87%E6%80%BB/image-20240813223758918.png" class="" title="image-20240813223758918">
 
 <ul>
 <li>这个native函数的类型是jstring，它的返回值类型是使用Java提供的方法创建一个字符串来返回，所以我们要改变返回值同样也需要使用相同的类型来替换</li>
 </ul>
 <p>这里查看<a class="link" href="https://github.com/frida/frida-java-bridge/blob/main/lib/env.js">Frida的源码 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>提供的方法</p>
-<img lazyload="" src="/images/loading.svg" data-src="Frida基础hook汇总/image-20240320181128555.png" alt="image-20240320181128555" style="zoom:50%;">
+<img lazyload="" src="/images/loading.svg" data-src="/2024/03/24/Frida%E5%9F%BA%E7%A1%80hook%E6%B1%87%E6%80%BB/image-20240813223807354.png" class="" title="image-20240813223807354">
 
 <p>测试代码</p>
 <img lazyload="" src="/images/loading.svg" data-src="/2024/03/24/Frida%E5%9F%BA%E7%A1%80hook%E6%B1%87%E6%80%BB/image-20240320183427207.png" class="" title="image-20240320183427207">
@@ -8797,7 +8803,7 @@ setImmediate(main)
 <img lazyload="" src="/images/loading.svg" data-src="/2024/03/24/Frida%E5%9F%BA%E7%A1%80hook%E6%B1%87%E6%80%BB/image-20240320220303783.png" class="" title="image-20240320220303783"></li>
 </ul>
 <h4 id="调用栈"><a href="#调用栈" class="headerlink" title="调用栈"></a>调用栈</h4><p>获取调用栈需要用到Frida提供的*backtrace()*方法</p>
-<img lazyload="" src="/images/loading.svg" data-src="Frida基础hook汇总/image-20240321113245401.png" alt="image-20240321113245401" style="zoom:50%;">
+<img lazyload="" src="/images/loading.svg" data-src="/2024/03/24/Frida%E5%9F%BA%E7%A1%80hook%E6%B1%87%E6%80%BB/image-20240813223827216.png" class="" title="image-20240813223827216">
 
 <p>使用提供的方法可以在onEnter的时候打印出来</p>
 <img lazyload="" src="/images/loading.svg" data-src="/2024/03/24/Frida%E5%9F%BA%E7%A1%80hook%E6%B1%87%E6%80%BB/image-20240321174439161.png" class="" title="image-20240321174439161">
@@ -21391,12 +21397,432 @@ fastboot flash userdata userdata.img
 </li>
 </ol>
 <h6 id="PS：没有vendor-img的话刷出来无法开机"><a href="#PS：没有vendor-img的话刷出来无法开机" class="headerlink" title="PS：没有vendor.img的话刷出来无法开机"></a>PS：没有vendor.img的话刷出来无法开机</h6><h6 id="参考文章："><a href="#参考文章：" class="headerlink" title="参考文章："></a>参考文章：</h6><p><a class="link" href="https://www.cnblogs.com/bujiangjiu/p/17716052.html">使用Google Pixel5手机调试AOSP(代码下载、编译、刷机、调试)详细攻略 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<hr>
+<h3 id="相关话题："><a href="#相关话题：" class="headerlink" title="相关话题："></a>相关话题：</h3><ol>
+<li><p>自己编译的安卓源码要装谷歌框架，需要刷gapp，而opengapp又比较老了，此时有一些新的选择：</p>
+<p><a class="link" href="https://nikgapps.com/">nikgapps <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<p><a class="link" href="https://mindthegapps.com/">mindthegapps <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+</li>
+</ol>
 ]]></content>
       <categories>
         <category>Android逆向</category>
       </categories>
       <tags>
         <tag>AOSP源码编译</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>某麦App抢票接口参数分析</title>
+    <url>/2024/09/09/%E6%9F%90%E9%BA%A6App%E6%8A%A2%E7%A5%A8%E6%8E%A5%E5%8F%A3%E5%8F%82%E6%95%B0%E5%88%86%E6%9E%90/</url>
+    <content><![CDATA[<p>本文中所有内容仅供研究与学习使用，禁止用于任何商业用途和非法用途，否则后果自负！！！</p>
+<h1 id="0x00-环境"><a href="#0x00-环境" class="headerlink" title="0x00 环境"></a>0x00 环境</h1><p>平台：Android</p>
+<p>App版本：8.9.5</p>
+<p>工具：</p>
+<blockquote>
+<p>抓包：Postern + charles</p>
+<p>动态静态分析：jadx、frida</p>
+</blockquote>
+<p>分析的目标很简单，就是绕过手动操作，通过call api生成订单</p>
+<h1 id="0x01-信息搜集"><a href="#0x01-信息搜集" class="headerlink" title="0x01 信息搜集"></a>0x01 信息搜集</h1><h4 id="查壳"><a href="#查壳" class="headerlink" title="查壳"></a>查壳</h4><p>分析apk之前我们先进行查壳</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/09/09/%E6%9F%90%E9%BA%A6App%E6%8A%A2%E7%A5%A8%E6%8E%A5%E5%8F%A3%E5%8F%82%E6%95%B0%E5%88%86%E6%9E%90/image-20240909200004341.png" class="" title="image-20240909200004341">
+
+<ul>
+<li>GDA检测出来加了几维的壳，那就先脱壳</li>
+</ul>
+<h4 id="脱壳"><a href="#脱壳" class="headerlink" title="脱壳"></a>脱壳</h4><p>使用<a class="link" href="https://github.com/hluwa/frida-dexdump">frida-dexdump <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>脱壳</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/09/09/%E6%9F%90%E9%BA%A6App%E6%8A%A2%E7%A5%A8%E6%8E%A5%E5%8F%A3%E5%8F%82%E6%95%B0%E5%88%86%E6%9E%90/image-20240909200109062.png" class="" title="image-20240909200109062">
+
+<ul>
+<li>脱壳比较顺利也没有报错</li>
+</ul>
+<p>脱壳后可以看到非常多的dex，这里我们可以通过关键词定位的方式来定位我们要分析的目标dex。</p>
+<p>例如：</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/09/09/%E6%9F%90%E9%BA%A6App%E6%8A%A2%E7%A5%A8%E6%8E%A5%E5%8F%A3%E5%8F%82%E6%95%B0%E5%88%86%E6%9E%90/image-20240909200446873.png" class="" title="image-20240909200446873">
+
+<p>经过后面分析之后发现，我们这里把多个dex文件打包起来进行分析其实会更方便点，虽然可能会有些错误不过影响不大。网上有很多现成的工具直接使用就行。</p>
+<h4 id="抓包"><a href="#抓包" class="headerlink" title="抓包"></a>抓包</h4><p>抓包操作这里不是重点，之前的文章中也介绍过了不再详述</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/09/09/%E6%9F%90%E9%BA%A6App%E6%8A%A2%E7%A5%A8%E6%8E%A5%E5%8F%A3%E5%8F%82%E6%95%B0%E5%88%86%E6%9E%90/image-20240909201052437.png" class="" title="image-20240909201052437">
+
+<ul>
+<li>总之通过抓包，我们抓到了购买的时候发送的数据包</li>
+<li>这里我们进行了多次抓包，对数据包进行对比。分析出来哪些是变化值哪些是固定值</li>
+</ul>
+<h6 id="这里标记出来的是一些变化的值"><a href="#这里标记出来的是一些变化的值" class="headerlink" title="这里标记出来的是一些变化的值"></a>这里标记出来的是一些变化的值</h6><img lazyload="" src="/images/loading.svg" data-src="/2024/09/09/%E6%9F%90%E9%BA%A6App%E6%8A%A2%E7%A5%A8%E6%8E%A5%E5%8F%A3%E5%8F%82%E6%95%B0%E5%88%86%E6%9E%90/image-20240909201405268.png" class="" title="image-20240909201405268">
+
+<ul>
+<li>那么接下来我们主要从这里入手开始分析</li>
+</ul>
+<h1 id="0x02-开始分析"><a href="#0x02-开始分析" class="headerlink" title="0x02 开始分析"></a>0x02 开始分析</h1><h4 id="定位变化值"><a href="#定位变化值" class="headerlink" title="定位变化值"></a>定位变化值</h4><ol>
+<li><p>x-sign：这个参数是一个sign签名</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/09/09/%E6%9F%90%E9%BA%A6App%E6%8A%A2%E7%A5%A8%E6%8E%A5%E5%8F%A3%E5%8F%82%E6%95%B0%E5%88%86%E6%9E%90/image-20240909201551952.png" class="" title="image-20240909201551952"></li>
+</ol>
+<ul>
+<li>找到了7个相关位置，简单看一下发现获取到<code>x-sign</code>之后又对值进行了Hash。这与我们抓包观察到的数据也是一致的</li>
+</ul>
+<p>跟进去<code>get</code>看一下函数调用</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/09/09/%E6%9F%90%E9%BA%A6App%E6%8A%A2%E7%A5%A8%E6%8E%A5%E5%8F%A3%E5%8F%82%E6%95%B0%E5%88%86%E6%9E%90/image-20240825223556046.png" class="" title="image-20240825223556046">
+
+<ul>
+<li><p>在这里我们可以看到这里是一个参数构建函数，最后参数都放进了<code>hashMap</code>中</p>
+</li>
+<li><p>那么我们是不是可以直接hook这个函数通过它的返回值拿到值呢</p>
+<p>jadx有一个快速生成脚本的一个功能：</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/09/09/%E6%9F%90%E9%BA%A6App%E6%8A%A2%E7%A5%A8%E6%8E%A5%E5%8F%A3%E5%8F%82%E6%95%B0%E5%88%86%E6%9E%90/image-20240825223956071.png" class="" title="image-20240825223956071"></li>
+</ul>
+<h5 id="写脚本尝试："><a href="#写脚本尝试：" class="headerlink" title="写脚本尝试："></a>写脚本尝试：</h5><pre><code class="js">Java.perform(function () {
+    let OpenProtocolParamBuilderImpl = Java.use("mtopsdk.mtop.protocol.builder.impl.OpenProtocolParamBuilderImpl");
+    OpenProtocolParamBuilderImpl["buildParams"].implementation = function (mtopContext) {
+        console.log('buildParams is called' + ', ' + 'mtopContext: ' + mtopContext);
+        let ret = this.buildParams(mtopContext);
+        console.log('buildParams ret value is ' + ret);
+        return ret;
+    };
+});
+</code></pre>
+<h5 id="执行脚本："><a href="#执行脚本：" class="headerlink" title="执行脚本："></a>执行脚本：</h5><p>因为这个App有壳所以这里建议使用attach的方式执行脚本</p>
+<p><code>frida -UF -l hook_buildParams.js</code></p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/09/09/%E6%9F%90%E9%BA%A6App%E6%8A%A2%E7%A5%A8%E6%8E%A5%E5%8F%A3%E5%8F%82%E6%95%B0%E5%88%86%E6%9E%90/image-20240825224405606.png" class="" title="image-20240825224405606">
+
+<ul>
+<li>不过比较遗憾，这个函数没有触发。也就是说这个函数没有执行</li>
+<li>有很多可能，这里我们也不确定那就继续搜索<code>x-sign</code>换个地方试试</li>
+</ul>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/09/09/%E6%9F%90%E9%BA%A6App%E6%8A%A2%E7%A5%A8%E6%8E%A5%E5%8F%A3%E5%8F%82%E6%95%B0%E5%88%86%E6%9E%90/image-20240825225846188.png" class="" title="image-20240825225846188">
+
+<ul>
+<li>这个<code>getUnifiedSign</code>也很熟悉，刚才我们hook的<code>buildParams</code>里面就有使用这个函数<code>unifiedSign.get("x-sign")</code></li>
+</ul>
+<h5 id="Hook-getUnifiedSign："><a href="#Hook-getUnifiedSign：" class="headerlink" title="Hook getUnifiedSign："></a>Hook <code>getUnifiedSign</code>：</h5><pre><code class="js">Java.perform(function () {
+    let InnerSignImpl = Java.use("mtopsdk.security.InnerSignImpl");
+    InnerSignImpl["getUnifiedSign"].implementation = function (hashMap, hashMap2, str, str2, z, str3) {
+        console.log('getUnifiedSign is called' + ', ' + 'hashMap: ' + hashMap + ', ' + 'hashMap2: ' + hashMap2 + ', ' + 'str: ' + str + ', ' + 'str2: ' + str2 + ', ' + 'z: ' + z + ', ' + 'str3: ' + str3);
+        let ret = this.getUnifiedSign(hashMap, hashMap2, str, str2, z, str3);
+        console.log('getUnifiedSign ret value is ' + ret);
+        return ret;
+    };
+});
+</code></pre>
+<h5 id="执行脚本：-1"><a href="#执行脚本：-1" class="headerlink" title="执行脚本："></a>执行脚本：</h5><img lazyload="" src="/images/loading.svg" data-src="/2024/09/09/%E6%9F%90%E9%BA%A6App%E6%8A%A2%E7%A5%A8%E6%8E%A5%E5%8F%A3%E5%8F%82%E6%95%B0%E5%88%86%E6%9E%90/image-20240825230223772.png" class="" title="image-20240825230223772">
+
+<p><code>hashMap: {data={"targetId":"815654333941","operateType":"0","targetType":"7","comboChannel":"1"}, deviceId=Aq7GTyJEy6mKSsdz5-dOn6yhwGimHQ0kUHRlpYQVSLmB, sid=18a85b191457dea730dbda9e34df95fe, uid=2218498098205, x-features=27, appKey=23781390, api=mtop.damai.wireless.tpp.follow.relation.update, mtopBusiness=true, utdid=ZslABvF89NgDAH/0FqQ8kh7h, extdata=openappkey=DEFAULT_AUTH, ttid=10005894@damai_android_8.9.5, t=1724598045, v=1.0}, hashMap2: {pageId=, pageName=}, str: 23781390, str2: null, z: false, str3: r_105</code></p>
+<ul>
+<li>检查了一下这里获取到的值都是固定值，我们需要的变化值并不在这里</li>
+<li>那怎么办呢，既然执行到这个函数了，那么我们就再分析一下跟它同一个类中的兄弟函数是干嘛的</li>
+<li>看了一下类中的函数还是挺多的，那我们trace一下这个类。触发一下这个类中所有函数的返回值先看看</li>
+</ul>
+<p>这里使用<code>r0trace.js</code>脚本：肉丝大佬写的这个脚本trace的结果还是比较全面的</p>
+<p><strong>在执行trace脚本的同时可以开启抓包，直接在trace的结果中搜索抓包抓到的数据</strong></p>
+<h5 id="r0trace使用"><a href="#r0trace使用" class="headerlink" title="r0trace使用"></a>r0trace使用</h5><img lazyload="" src="/images/loading.svg" data-src="/2024/09/09/%E6%9F%90%E9%BA%A6App%E6%8A%A2%E7%A5%A8%E6%8E%A5%E5%8F%A3%E5%8F%82%E6%95%B0%E5%88%86%E6%9E%90/image-20240825231936803.png" class="" title="image-20240825231936803">
+
+<ul>
+<li>我们这里直接选择hook目标类：把结果保存下来方便查看</li>
+</ul>
+<p><code>frida -UF -l r0tracer.js -o damai.log</code></p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/09/09/%E6%9F%90%E9%BA%A6App%E6%8A%A2%E7%A5%A8%E6%8E%A5%E5%8F%A3%E5%8F%82%E6%95%B0%E5%88%86%E6%9E%90/image-20240825233528939.png" class="" title="image-20240825233528939">
+
+<ul>
+<li>这里我们直接搜索到了<code>x-sign</code></li>
+<li>另外，这里的调用栈中调用了一个<code>InnerProtocolParamBuilderImpl.buildParams</code>跟我们刚才hook的不是同一个类中的，再尝试hook一下</li>
+</ul>
+<h5 id="Hook-InnerProtocolParamBuilderImpl-buildParams"><a href="#Hook-InnerProtocolParamBuilderImpl-buildParams" class="headerlink" title="Hook InnerProtocolParamBuilderImpl.buildParams:"></a>Hook <code>InnerProtocolParamBuilderImpl.buildParams</code>:</h5><pre><code class="js">Java.perform(function () {
+    let OpenProtocolParamBuilderImpl = Java.use("mtopsdk.mtop.protocol.builder.impl.InnerProtocolParamBuilderImpl");
+    OpenProtocolParamBuilderImpl["buildParams"].implementation = function (mtopContext) {
+        console.log(`OpenProtocolParamBuilderImpl.buildParams is called: mtopContext=${mtopContext}`);
+        let result = this["buildParams"](mtopContext);
+        console.log(`OpenProtocolParamBuilderImpl.buildParams result=${JSON.stringify(result)}`);
+        return result;
+    };
+});
+</code></pre>
+<ul>
+<li><p>只需要把刚才hook <code>buildParams</code>的类名换掉就ok</p>
+</li>
+<li><p>这个函数我们在jadx中查看的时候不显示函数内容</p>
+<blockquote>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/09/09/%E6%9F%90%E9%BA%A6App%E6%8A%A2%E7%A5%A8%E6%8E%A5%E5%8F%A3%E5%8F%82%E6%95%B0%E5%88%86%E6%9E%90/image-20240826171759460.png" class="" title="image-20240826171759460">
+
+<p>按照绿字提示修改jadx设置，或者使用GDA打开都可以看到参数内容</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/09/09/%E6%9F%90%E9%BA%A6App%E6%8A%A2%E7%A5%A8%E6%8E%A5%E5%8F%A3%E5%8F%82%E6%95%B0%E5%88%86%E6%9E%90/image-20240826172807353.png" class="" title="image-20240826172807353">
+
+<p>点击保存会自动重新反编译</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/09/09/%E6%9F%90%E9%BA%A6App%E6%8A%A2%E7%A5%A8%E6%8E%A5%E5%8F%A3%E5%8F%82%E6%95%B0%E5%88%86%E6%9E%90/image-20240826173307206.png" class="" title="image-20240826173307206"></blockquote>
+</li>
+</ul>
+<h5 id="执行脚本"><a href="#执行脚本" class="headerlink" title="执行脚本"></a>执行脚本</h5><img lazyload="" src="/images/loading.svg" data-src="/2024/09/09/%E6%9F%90%E9%BA%A6App%E6%8A%A2%E7%A5%A8%E6%8E%A5%E5%8F%A3%E5%8F%82%E6%95%B0%E5%88%86%E6%9E%90/image-20240825234324047.png" class="" title="image-20240825234324047">
+
+<ul>
+<li>这里结果是一个<code>HashMap</code>，那么我们需要修改一下脚本把<code>hashMap</code>转成字符串</li>
+</ul>
+<h5 id="修改hook脚本：打印hashMap"><a href="#修改hook脚本：打印hashMap" class="headerlink" title="修改hook脚本：打印hashMap"></a>修改hook脚本：打印hashMap</h5><pre><code class="js">Java.perform(function () {
+    function HashMap2Str(params_hm) {
+        var HashMap = Java.use('java.util.HashMap');
+        var args_map = Java.cast(params_hm, HashMap);
+        return args_map.toString();
+    };
+
+    let OpenProtocolParamBuilderImpl = Java.use("mtopsdk.mtop.protocol.builder.impl.InnerProtocolParamBuilderImpl");
+    OpenProtocolParamBuilderImpl["buildParams"].implementation = function (mtopContext) {
+        console.log(`OpenProtocolParamBuilderImpl.buildParams is called: mtopContext=${mtopContext}`);
+        let result = this["buildParams"](mtopContext);
+        console.log(`OpenProtocolParamBuilderImpl.buildParams result=${JSON.stringify(result)} =&gt; ${HashMap2Str(result)}`);
+        return result;
+    };
+});
+</code></pre>
+<h5 id="执行脚本：-2"><a href="#执行脚本：-2" class="headerlink" title="执行脚本："></a>执行脚本：</h5><img lazyload="" src="/images/loading.svg" data-src="/2024/09/09/%E6%9F%90%E9%BA%A6App%E6%8A%A2%E7%A5%A8%E6%8E%A5%E5%8F%A3%E5%8F%82%E6%95%B0%E5%88%86%E6%9E%90/image-20240825234651186.png" class="" title="image-20240825234651186">
+
+<pre><code class="bash">{nq=WIFI, data={"targetId":"815654333941","operateType":"0","targetType":"7","comboChannel":"1"}, 
+pv=6.2, 
+sign=ab25b00090358208d69d564e0a26ab820e3bdf18cda74fff74, deviceId=Aq7GTyJEy6mKSsdz5-dOn6yhwGimHQ0kUHRlpYQVSLmB, sid=18a85b191457dea730dbda9e34df95fe, 
+uid=2218498098205, x-features=27, x-app-conf-v=0, 
+x-mini-wua=awwQ4Pe34jLFY0Qh9zi5DMECd/E2Ae/G39Cfwbbk8p4bkS73Gu0Dv8ws09qDpKTZUJ+LDdyFTDWqFh0GDfVb8HqhinnALN50oxZl7+WM9PsrRRMmi5ZEaHZEhZiqEmzA3LuByo+DqQmjO5047Rz4hn2AlpqppWG4DGEW0Zn1RCwCsAHr6SVuKAoojIMUQdPQpJxE=, 
+appKey=23781390, api=mtop.damai.wireless.tpp.follow.relation.update, umt=ILYBZK5LPM7yPQKRhw+L8hTria6wCx7V, f-refer=mtop, utdid=ZslABvF89NgDAH/0FqQ8kh7h, netType=WIFI, x-app-ver=8.9.5, 
+x-c-traceid=ZslABvF89NgDAH/0FqQ8kh7h1724600765619003819818, ttid=10005894@damai_android_8.9.5, t=1724600765, v=1.0, x-falco-id=null, 
+user-agent=MTOPSDK/3.1.1.7 
+(Android;11;Google;Pixel 5)}
+</code></pre>
+<ul>
+<li>这次返回结果中就有我们需要的变化值了：<code>sign</code>, <code>x-mini-wua</code>, <code>x-c-traceid</code>等加密参数都在</li>
+</ul>
+<h5 id="小结："><a href="#小结：" class="headerlink" title="小结："></a>小结：</h5><p>第一次我们hook的是<code>OpenProtocolParamBuilderImpl.buildParams</code>，但是这个函数没有触发。根据函数命名可知这是一个<strong>开放协议生成器实现</strong></p>
+<p>第二次我们hook了<code>getUnifiedSign</code>，从它的参数<code>hashMap</code>中获取了一些协议头的固定值。然后trace它所在的类在调用栈中找到了<code>InnerProtocolParamBuilderImpl.buildParams</code> <strong>内部协议参数生成器实现</strong>，通过对其再次进行hook获取到了所有的加密参数</p>
+<h2 id="trace分析"><a href="#trace分析" class="headerlink" title="trace分析"></a>trace分析</h2><p>通过之前的分析我们可以通过hook</p>
+<p><code>public Map&lt;String, String&gt; buildParams(MtopContext mtopContext)</code> </p>
+<p>这个函数通过返回值拿到动态生成的参数。但是，主动调用<code>buildParams</code>的话，需要传入它的参数<code>mtopContext</code></p>
+<h4 id="参数分析-mtopContext"><a href="#参数分析-mtopContext" class="headerlink" title="参数分析 - mtopContext"></a>参数分析 - mtopContext</h4><p>在jadx中双击参数跟进去查看一下参数的原型</p>
+<pre><code class="js">public class MtopContext {
+    public ApiID apiId;
+    public String baseUrl;
+    public MtopBuilder mtopBuilder;
+    public Mtop mtopInstance;
+    public MtopListener mtopListener;
+    public MtopRequest mtopRequest;
+    public MtopResponse mtopResponse;
+    public Request networkRequest;
+    public Response networkResponse;
+    public MtopNetworkProp property = new MtopNetworkProp();
+    public Map&lt;String, String&gt; protocolParams;
+    public Map&lt;String, String&gt; queryParams;
+    public int requestTotalLength;
+    public ResponseSource responseSource;
+    public String seqNo;
+
+    @NonNull
+    public MtopStatistics stats;
+
+    public String getNetRequestHeadersLog() {
+        if (this.networkRequest == null) {
+            return "";
+        }
+        return ", headerFields=" + this.networkRequest.headers;
+    }
+}
+</code></pre>
+<p><strong>所以现在的问题变为如何能够构建出来<code>MtopContext</code>，然后主动调用<code>buildParams</code>函数生成各类加密参数</strong></p>
+<p>PS：使用r0trace脚本hook的时候，手机上点击购买会提示抢购人数过多被拦截。但是使用frida-trace去hook的时候则不会，购买流程可以正常执行。猜测有frida检测，所以接下来使用frida-trace跟踪。</p>
+<h4 id="跟踪-mtopsdk"><a href="#跟踪-mtopsdk" class="headerlink" title="跟踪 mtopsdk"></a>跟踪 mtopsdk</h4><p>我们在jadx中跟踪的过程中发现，流程中基本都是用的<code>mtopsdk</code>中的函数。经过调查发现<code>mtopsdk</code>是淘系apk通用的，在网上可以找到一些资料，如果有专有云客户账号权限的话可以直接去阿里云查看<a class="link" href="https://help.aliyun.com/apsara/agile/v_3_5_0_20210228/emas/development-guide/android.html">接入文档 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<p>请求构建和发送部分如下：</p>
+<pre><code class="java">// 3. 请求构建
+// 3.1生成MtopRequest实例
+MtopRequest request = new MtopRequest();
+// 3.2 生成MtopBuilder实例
+MtopBuilder builder = instance.build(MtopRequest request, String ttid);
+// 4. 请求发送
+// 4.2 异步调用
+ApiID apiId = builder.addListener(new MyListener).asyncRequest();
+</code></pre>
+<h4 id="trace-mtopsdk"><a href="#trace-mtopsdk" class="headerlink" title="trace mtopsdk"></a>trace <code>mtopsdk</code></h4><p>跟踪所有对<code>mtopsdk</code>中函数的调用，将其保存在文件中方便分析</p>
+<p><code>frida-trace -U -j "*mtopsdk*!*" 大麦 | tee trace_mtopsdk01.log</code></p>
+<p>在手机上进行一些购票之类的操作（操作一遍手动购票的流程，然后分析trace到的结果）</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/09/09/%E6%9F%90%E9%BA%A6App%E6%8A%A2%E7%A5%A8%E6%8E%A5%E5%8F%A3%E5%8F%82%E6%95%B0%E5%88%86%E6%9E%90/image-20240906105659052.png" class="" title="image-20240906105659052">
+
+<p>输出的结果比较多，用编辑器打开查看里面跟请求相关的点：<code>MtopRequest</code>，我们着重找跟订单(trade.order)相关的，其它的<code>geteway</code>、<code>getdetail</code>之类的暂时先不关注</p>
+<h4 id="mtop-damai-trade-order-build"><a href="#mtop-damai-trade-order-build" class="headerlink" title="mtop.damai.trade.order.build"></a>mtop.damai.trade.order.build</h4><pre><code class="js">// MtopRequest初始化
+/* TID 0x5018 */
+ 20210 ms  MtopRequest.$init()
+ 20211 ms  MtopRequest.setApiName("mtop.damai.trade.order.build")
+ 20211 ms  MtopRequest.setVersion("1.0")
+ 20211 ms  MtopRequest.setNeedSession(true)
+ 20211 ms  MtopRequest.setNeedEcode(true)
+ 20211 ms  MtopRequest.setData("{\"buyNow\":\"true\",\"buyParam\":\"820154603312_1_5694585682054\",\"exParams\":\"{\\\"UMPCHANNEL_DM\\\":\\\"10001\\\",\\\"UMPCHANNEL_TPP\\\":\\\"50053\\\",\\\"atomSplit\\\":\\\"1\\\",\\\"channel\\\":\\\"damai_app\\\",\\\"coVersion\\\":\\\"2.0\\\",\\\"coupon\\\":\\\"true\\\",\\\"seatInfo\\\":\\\"\\\",\\\"signKey\\\":\\\"clh+ZnVUUQhqTF98TFtuenBbemp3XVoLYkZOfU5KY315WH5neFtaCHA7IxMqMBMEBjUcCgA5PGs=\\\",\\\"subChannel\\\":\\\"\\\",\\\"umpChannel\\\":\\\"10001\\\",\\\"websiteLanguage\\\":\\\"zh_CN_#Hans\\\"}\"}")
+
+// MtopBuilder初始化
+20212 ms  MtopBuilder.$init("&lt;instance: mtopsdk.mtop.intf.Mtop&gt;", "&lt;instance: mtopsdk.mtop.domain.MtopRequest&gt;", null)
+
+// MtopBuilder发送异步请求
+20220 ms  MtopBuilder.asyncRequest()
+
+// 参数构建
+/* TID 0x5391 */
+ 20290 ms     |    |    |    | InnerProtocolParamBuilderImpl.buildParams("&lt;instance: mtopsdk.framework.domain.MtopContext&gt;")
+// 返回值
+ 20315 ms     |    |    |    |    |    | &lt;= "&lt;instance: java.util.Map, $className: java.util.HashMap&gt;"
+</code></pre>
+<ul>
+<li>我们在前面已经分析到了<code>InnerProtocolParamBuilderImpl.buildParams</code>的返回值完全覆盖了我们需要的各类加密参数</li>
+</ul>
+<h4 id="业务模块与mtopsdk的交互过程"><a href="#业务模块与mtopsdk的交互过程" class="headerlink" title="业务模块与mtopsdk的交互过程"></a>业务模块与mtopsdk的交互过程</h4><p>在源码中定位到了<code>com.taobao.tao.remotebusiness.MtopBussiness</code>这个关键类</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/09/09/%E6%9F%90%E9%BA%A6App%E6%8A%A2%E7%A5%A8%E6%8E%A5%E5%8F%A3%E5%8F%82%E6%95%B0%E5%88%86%E6%9E%90/image-20240906161459038.png" class="" title="image-20240906161459038">
+
+<ul>
+<li>这个类是<code>mtopsdk</code>中<code>MtopBuilder</code>的子类，阅读这个类中的源码可以发现其主要负责管理业务代码和<code>mtopsdk</code>的交互</li>
+</ul>
+<p>继续通过trace跟踪<code>MtopBussiness</code>类</p>
+<p><code>frida-trace -U -j "*!*buyNow*" -j "com.taobao.tao.remotebusiness.MtopBusiness!*" -j "*MtopContext!*" -j "*mtopsdk.mtop.intf.MtopBuilder!*" 大麦</code></p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/09/09/%E6%9F%90%E9%BA%A6App%E6%8A%A2%E7%A5%A8%E6%8E%A5%E5%8F%A3%E5%8F%82%E6%95%B0%E5%88%86%E6%9E%90/image-20240905234858209.png" class="" title="image-20240905234858209">
+
+<p>现在业务代码和<code>mtopsdk</code>的交互就很清晰了，绿色部分是业务代码的函数，黄色部分是<code>mtopsdk</code>的函数</p>
+<h3 id="主动调用接口获取参数"><a href="#主动调用接口获取参数" class="headerlink" title="主动调用接口获取参数"></a>主动调用接口获取参数</h3><h4 id="构建自定义的MtopRequest"><a href="#构建自定义的MtopRequest" class="headerlink" title="构建自定义的MtopRequest"></a>构建自定义的<code>MtopRequest</code></h4><p>通过以上的trace分析，已经知道了具体执行的操作。那么接下来我们就可以编写frida代码，直接调用类对象构建自定义的<code>MtopRequest</code>类</p>
+<pre><code class="js">Java.perform(function () {
+    const MtopRequest = Java.use("mtopsdk.mtop.domain.MtopRequest")
+    let myMtopRequest = MtopRequest.$new()
+    myMtopRequest.setApiName("mtop.damai.trade.order.build")
+    myMtopRequest.setData("{\"buyNow\":\"true\",\"buyParam\":\"793545597100_1_5585824998963\",\"exParams\":\"{\\\"UMPCHANNEL_DM\\\":\\\"10001\\\",\\\"UMPCHANNEL_TPP\\\":\\\"50053\\\",\\\"atomSplit\\\":\\\"1\\\",\\\"channel\\\":\\\"damai_app\\\",\\\"coVersion\\\":\\\"2.0\\\",\\\"coupon\\\":\\\"true\\\",\\\"seatInfo\\\":\\\"[{\\\\\\\"seatId\\\\\\\":\\\\\\\"2376864283\\\\\\\",\\\\\\\"standId\\\\\\\":\\\\\\\"19734679\\\\\\\"}]\\\",\\\"signKey\\\":\\\"clh+ZnVUUQhqTF98TFthcXNfe2t0VF4JY0ROfU5KY3xzU31reFhdCXA7IxMqMBMEBjUcCgA5PGs=\\\",\\\"umpChannel\\\":\\\"10001\\\",\\\"websiteLanguage\\\":\\\"zh_CN_#Hans\\\"}\"}")
+    myMtopRequest.setNeedEcode(true)
+    myMtopRequest.setNeedSession(true)
+    myMtopRequest.setVersion("1.0")
+    console.log(`${myMtopRequest}`)
+})
+</code></pre>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/09/09/%E6%9F%90%E9%BA%A6App%E6%8A%A2%E7%A5%A8%E6%8E%A5%E5%8F%A3%E5%8F%82%E6%95%B0%E5%88%86%E6%9E%90/image-20240906170647836.png" class="" title="image-20240906170647836">
+
+<ul>
+<li>成功构建了自己的<code>MtopRequest</code>实例</li>
+</ul>
+<p>继续完善，添加<code>MtopBussiness</code>的构建过程和输出</p>
+<pre><code class="js">Java.perform(function () {
+    const MtopRequest = Java.use("mtopsdk.mtop.domain.MtopRequest")
+    let myMtopRequest = MtopRequest.$new()
+    myMtopRequest.setApiName("mtop.damai.trade.order.build")
+    myMtopRequest.setVersion("1.0")
+    myMtopRequest.setNeedSession(true)
+    myMtopRequest.setNeedEcode(true)
+    myMtopRequest.setData("{\"buyNow\":\"true\",\"buyParam\":\"793545597100_1_5585824998963\",\"exParams\":\"{\\\"UMPCHANNEL_DM\\\":\\\"10001\\\",\\\"UMPCHANNEL_TPP\\\":\\\"50053\\\",\\\"atomSplit\\\":\\\"1\\\",\\\"channel\\\":\\\"damai_app\\\",\\\"coVersion\\\":\\\"2.0\\\",\\\"coupon\\\":\\\"true\\\",\\\"seatInfo\\\":\\\"[{\\\\\\\"seatId\\\\\\\":\\\\\\\"2376864283\\\\\\\",\\\\\\\"standId\\\\\\\":\\\\\\\"19734679\\\\\\\"}]\\\",\\\"signKey\\\":\\\"clh+ZnVUUQhqTF98TFthcXNfe2t0VF4JY0ROfU5KY3xzU31reFhdCXA7IxMqMBMEBjUcCgA5PGs=\\\",\\\"umpChannel\\\":\\\"10001\\\",\\\"websiteLanguage\\\":\\\"zh_CN_#Hans\\\"}\"}")
+
+    console.log(`${myMtopRequest}`)
+
+    function HashMap2Str(params_hm) {
+        var HashMap = Java.use('java.util.HashMap');
+        var args_map = Java.cast(params_hm, HashMap);
+        return args_map.toString();
+    };
+
+    // 引入Java中的类
+    const MtopBusiness = Java.use("com.taobao.tao.remotebusiness.MtopBusiness")
+    const MtopBuilder = Java.use("mtopsdk.mtop.intf.MtopBuilder")
+    const MethodEnum = Java.use("mtopsdk.mtop.domain.MethodEnum")
+    const MtopListenerProxyFactory = Java.use("com.taobao.tao.remotebusiness.listener.MtopListenerProxyFactory")
+    const System = Java.use("java.lang.System")
+    const ApiID = Java.use("mtopsdk.mtop.common.ApiID")
+    const MtopStatistics = Java.use("mtopsdk.mtop.util.MtopStatistics")
+    const InnerProtocolParamBuilderImpl = Java.use("mtopsdk.mtop.protocol.builder.impl.InnerProtocolParamBuilderImpl")
+
+    // Create MtopBusiness
+    /*
+        @Deprecated
+    public static MtopBusiness build(MtopRequest mtopRequest) {
+        return build(Mtop.instance(null), mtopRequest, (String) null);
+    }
+    */
+    let myMtopBusiness = MtopBusiness.build(myMtopRequest)
+    myMtopBusiness.useWua()
+    myMtopBusiness.reqMethod(MethodEnum.POST.value)  // mark
+    myMtopBusiness.setCustomDomain("mtop.damai.cn")
+    myMtopBusiness.setBizId(24)
+    myMtopBusiness.setErrorNotifyAfterCache(true)
+    // MtopBusiness.addListener("&lt;instance: mtopsdk.mtop.common.MtopListener, $className: com.taobao.android.ultron.datamodel.imp.DMRequester$Response&gt;")
+    myMtopBusiness.startRequest()
+
+    let createListenerProxy = myMtopBusiness.$super.createListenerProxy(myMtopBusiness.$super.listener.value)
+    let createMtopContext = myMtopBusiness.createMtopContext(createListenerProxy)
+    let myMtopStatistics = MtopStatistics.$new(null,null)   // 创建一个空的统计类
+    createMtopContext.stats.value = myMtopStatistics
+    myMtopBusiness.$super.mtopContext.value = createMtopContext
+    createMtopContext.apiId.value = ApiID.$new(null, createMtopContext)
+
+
+    let myMtopContext = createMtopContext
+    myMtopContext.mtopRequest.value = myMtopRequest
+    let myInnerProtocolParamBuilderImpl = InnerProtocolParamBuilderImpl.$new()
+    let res = myInnerProtocolParamBuilderImpl.buildParams(myMtopContext)
+
+    console.log(`myInnerProtocolParamBuilderImpl.buildParams ==&gt; ${HashMap2Str(res)}`)
+})
+</code></pre>
+<ul>
+<li><p>这段代码较为复杂，回头解释一下吧</p>
+<blockquote>
+<p>Create MtopBusiness：按照上图中标绿色的部分创建</p>
+</blockquote>
+</li>
+</ul>
+<p>执行结果</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/09/09/%E6%9F%90%E9%BA%A6App%E6%8A%A2%E7%A5%A8%E6%8E%A5%E5%8F%A3%E5%8F%82%E6%95%B0%E5%88%86%E6%9E%90/image-20240906222425425.png" class="" title="image-20240906222425425">
+
+<p>总的来说这段代码我们做了几件事情，最终成功的拿到了需要的加密参数和动态参数</p>
+<blockquote>
+<ol>
+<li>构建自己的MtopRequest实例</li>
+<li>将实例转为MtopContext，之后作为buildParams()的参数使用</li>
+<li>调用buildParams()并打印了一下结果</li>
+</ol>
+</blockquote>
+<h2 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h2><p>突然发现上图中的<code>x-c-traceid=null</code>，在网上的帖子中找到了生成这个值的一段代码，不过不对。</p>
+<blockquote>
+<p>回头再分析这个值吧，这个值其实是一个组合值</p>
+<p><code>utdid + 时间戳 + 一个七位数的值（不确定是不是随机值） + 127115（在我的测试设备上是这个数字不确定换设备是否会改变）</code></p>
+<p>原因：</p>
+<ol>
+<li><p>发现爬虫的协议中不发送这个值也不会报下图这种错误</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/09/09/%E6%9F%90%E9%BA%A6App%E6%8A%A2%E7%A5%A8%E6%8E%A5%E5%8F%A3%E5%8F%82%E6%95%B0%E5%88%86%E6%9E%90/image-20240909203153827.png" class="" title="image-20240909203153827"></li>
+</ol>
+</blockquote>
+<pre><code class="js">function getExtraInfo(mtopContext, res) {
+    // Import Java class
+    const ActivityThread = Java.use("android.app.ActivityThread")
+    const SecurityGuardManager = Java.use("com.alibaba.wireless.security.open.SecurityGuardManager")
+    const IFCComponent = Java.use("com.alibaba.wireless.security.open.middletier.fc.IFCComponent")
+
+    // Get context
+    const application = ActivityThread.currentApplication()
+    const context = application.getApplicationContext()
+
+    // Get x-bx-version
+    let iFCComponent = SecurityGuardManager.getInstance(context, "").getInterface(IFCComponent.class)
+    iFCComponent = Java.cast(iFCComponent, IFCComponent)
+    if (iFCComponent !== null) {
+        res.put('x-bx-version', iFCComponent.getFCPluginVersion().toString())
+    }
+
+    // Get x-client-traceid
+    const mtopInstance = mtopContext.mtopInstance.value
+    const mtopStatistics = mtopContext.stats.value
+    const mtopConfig = mtopInstance.getMtopConfig()
+    res.put('x-client-traceid', `${res.get('utdid').toString()}${res.get('t').toString()}${(mtopStatistics.intSeqNo.value % 1000).toString().padStart(4, '0')}`)
+}
+</code></pre>
+<p>执行脚本：<code>frida -UF -l .\getMtopContext.js</code></p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/09/09/%E6%9F%90%E9%BA%A6App%E6%8A%A2%E7%A5%A8%E6%8E%A5%E5%8F%A3%E5%8F%82%E6%95%B0%E5%88%86%E6%9E%90/image-20240907162800894.png" class="" title="image-20240907162800894">
+
+<p>接下来还有几个问题：</p>
+<ol>
+<li><p>我们需要把<code>order.create</code>也构建了，因为通过分析和查找资料。我们发现<code>order.create</code>才是最终的购买动作</p>
+</li>
+<li><p>需要写爬虫把包拼出来，让请求通过服务器的校验。简单尝试了一下构建的包还是有点问题</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/09/09/%E6%9F%90%E9%BA%A6App%E6%8A%A2%E7%A5%A8%E6%8E%A5%E5%8F%A3%E5%8F%82%E6%95%B0%E5%88%86%E6%9E%90/image-20240909203908797.png" class="" title="image-20240909203908797">
+</li>
+<li><p>再之后，可以正常返回之后还需要过滑块验证码</p>
+</li>
+</ol>
+<p>暂时先这样，后续再补充</p>
+]]></content>
+      <categories>
+        <category>Android逆向</category>
+      </categories>
+      <tags>
+        <tag>App逆向</tag>
+        <tag>协议分析</tag>
       </tags>
   </entry>
 </search>
