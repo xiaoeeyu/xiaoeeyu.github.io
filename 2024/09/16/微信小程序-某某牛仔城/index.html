@@ -1,0 +1,1418 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="keywords" content="Hexo Theme Redefine">
+    
+    <meta name="author" content="xiaoeryu">
+    <!-- preconnect -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+    
+    <!--- Seo Part-->
+    
+    <link rel="canonical" href="https://xiaoeeyu.github.io/2024/09/16/微信小程序-某某牛仔城/"/>
+    <meta name="robots" content="index,follow">
+    <meta name="googlebot" content="index,follow">
+    <meta name="revisit-after" content="1 days">
+    
+        <meta name="description" content="本文中所有内容仅供研究与学习使用，禁止用于任何商业用途和非法用途，否则后果自负！！！ 本章来分析一个微信小程序的协议，这个小程序的协议本身比较简单。主要是来学习一下分析微信小程序的流程 0x00 环境设备：pixel 5 Android11.0 抓包：Charles + Postern 发包工具：postman、APIfox 0x01 抓包环境配置好了，那么先来抓个包吧    随便选一个领取，这里">
+<meta property="og:type" content="article">
+<meta property="og:title" content="微信小程序-某某牛仔城">
+<meta property="og:url" content="https://xiaoeeyu.github.io/2024/09/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E6%9F%90%E6%9F%90%E7%89%9B%E4%BB%94%E5%9F%8E/index.html">
+<meta property="og:site_name" content="xiaoeryu">
+<meta property="og:description" content="本文中所有内容仅供研究与学习使用，禁止用于任何商业用途和非法用途，否则后果自负！！！ 本章来分析一个微信小程序的协议，这个小程序的协议本身比较简单。主要是来学习一下分析微信小程序的流程 0x00 环境设备：pixel 5 Android11.0 抓包：Charles + Postern 发包工具：postman、APIfox 0x01 抓包环境配置好了，那么先来抓个包吧    随便选一个领取，这里">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/09/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E6%9F%90%E6%9F%90%E7%89%9B%E4%BB%94%E5%9F%8E/image-20240916231010273.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/09/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E6%9F%90%E6%9F%90%E7%89%9B%E4%BB%94%E5%9F%8E/image-20240916222552201.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/09/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E6%9F%90%E6%9F%90%E7%89%9B%E4%BB%94%E5%9F%8E/image-20240916223613382.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/09/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E6%9F%90%E6%9F%90%E7%89%9B%E4%BB%94%E5%9F%8E/image-20240916223739140.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/09/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E6%9F%90%E6%9F%90%E7%89%9B%E4%BB%94%E5%9F%8E/image-20240916223915227.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/09/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E6%9F%90%E6%9F%90%E7%89%9B%E4%BB%94%E5%9F%8E/image-20240916224019832.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/09/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E6%9F%90%E6%9F%90%E7%89%9B%E4%BB%94%E5%9F%8E/image-20240916224026472.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/09/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E6%9F%90%E6%9F%90%E7%89%9B%E4%BB%94%E5%9F%8E/image-20240916224313617.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/09/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E6%9F%90%E6%9F%90%E7%89%9B%E4%BB%94%E5%9F%8E/image-20240916224654806.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/09/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E6%9F%90%E6%9F%90%E7%89%9B%E4%BB%94%E5%9F%8E/image-20240916224759444.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/09/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E6%9F%90%E6%9F%90%E7%89%9B%E4%BB%94%E5%9F%8E/image-20240916224903780.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/09/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E6%9F%90%E6%9F%90%E7%89%9B%E4%BB%94%E5%9F%8E/image-20240916230028577.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/09/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E6%9F%90%E6%9F%90%E7%89%9B%E4%BB%94%E5%9F%8E/image-20240916231157553.png">
+<meta property="og:image" content="f:/Typora/wx%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E7%96%AF%E7%8B%82%E7%89%9B%E4%BB%94%E5%9F%8E/image-20240916215209121.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/09/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E6%9F%90%E6%9F%90%E7%89%9B%E4%BB%94%E5%9F%8E/image-20240916231346415.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/09/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E6%9F%90%E6%9F%90%E7%89%9B%E4%BB%94%E5%9F%8E/image-20240916231520566.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/09/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E6%9F%90%E6%9F%90%E7%89%9B%E4%BB%94%E5%9F%8E/image-20240916231821536.png">
+<meta property="article:published_time" content="2024-09-16T14:14:02.000Z">
+<meta property="article:modified_time" content="2024-09-16T15:29:00.642Z">
+<meta property="article:author" content="xiaoeryu">
+<meta property="article:tag" content="协议分析">
+<meta property="article:tag" content="微信小程序逆向">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://xiaoeeyu.github.io/2024/09/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E6%9F%90%E6%9F%90%E7%89%9B%E4%BB%94%E5%9F%8E/image-20240916231010273.png">
+    
+    
+    <!--- Icon Part-->
+    <link rel="icon" type="image/png" href="/images/rabete.jpg" sizes="192x192">
+    <link rel="apple-touch-icon" sizes="180x180" href="/images/rabete.jpg">
+    <meta name="theme-color" content="#A31F34">
+    <link rel="shortcut icon" href="/images/rabete.jpg">
+    <!--- Page Info-->
+    
+    <title>
+        
+            微信小程序-某某牛仔城 -
+        
+        xiaoeryu
+    </title>
+
+    
+<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
+
+
+    <!--- Inject Part-->
+    
+
+    
+<link rel="stylesheet" href="/css/style.css">
+
+
+    
+        
+<link rel="stylesheet" href="/assets/build/styles.css">
+
+    
+
+    
+<link rel="stylesheet" href="/fonts/GeistMono/geist-mono.css">
+
+    
+<link rel="stylesheet" href="/fonts/Geist/geist.css">
+
+    <!--- Font Part-->
+    
+    
+    
+    
+
+    
+        
+<script src="/js/libs/anime.min.js"></script>
+
+    
+
+    <script id="hexo-configurations">
+    window.config = {"hostname":"xiaoeeyu.github.io","root":"/","language":"zh-CN","path":"search.xml"};
+    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true,"title_alignment":"left","headings_top_spacing":{"h1":"3.2rem","h2":"2.4rem","h3":"1.9rem","h4":"1.6rem","h5":"1.4rem","h6":"1.3rem"}},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":4,"number":false,"expand":true,"init_open":true},"copyright":{"enable":true,"default":"cc_by_nc_sa"},"lazyload":true,"recommendation":{"enable":false,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/ball-0101.jpg","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null,"default_mode":"light"},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"preloader":true,"open_graph":true,"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/wallhaven-jxl31y.png","dark":"/images/wallhaven-o5762l.png"},"title":"XIAOERYU","subtitle":{"text":["明心见性，拨云见日","Don't wait, to create"],"hitokoto":{"enable":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":true,"style":"default","links":{"github":"https://github.com/xiaoeeyu","instagram":null,"zhihu":null,"twitter":null,"email":"xiaoeryu@163.com"},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null,"lrc":null}]},"mermaid":{"enable":false,"version":"9.3.0"}},"version":"2.6.4","navbar":{"auto_hide":false,"color":{"left":"#f78736","right":"#367df7","transparency":35},"width":{"home":"1200px","pages":"1000px"},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Archives":{"path":"/archives","icon":"fa-regular fa-archive"}},"search":{"enable":true,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"blur"},"home":{"sidebar":{"enable":true,"position":"left","first_item":"menu","announcement":null,"show_on_mobile":true,"links":null},"article_date_format":"auto","categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":3}},"footerStart":"2022/8/17 11:45:14"};
+    window.lang_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"};
+    window.data = {"masonry":false};
+  </script>
+    
+    <!--- Fontawesome Part-->
+    
+<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/brands.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/solid.min.css">
+
+    
+<link rel="stylesheet" href="/fontawesome/regular.min.css">
+
+    
+    
+    
+    
+<meta name="generator" content="Hexo 6.3.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head>
+
+
+<body>
+<div class="progress-bar-container">
+    
+
+    
+        <span class="pjax-progress-bar"></span>
+<!--        <span class="swup-progress-icon">-->
+<!--            <i class="fa-solid fa-circle-notch fa-spin"></i>-->
+<!--        </span>-->
+    
+</div>
+
+
+
+    <style>
+    :root {
+        --preloader-background-color: #fff;
+        --preloader-text-color: #000;
+    }
+
+    @media (prefers-color-scheme: dark) {
+        :root {
+            --preloader-background-color: #202124;
+            --preloader-text-color: #fff;
+        }
+    }
+
+    @media (prefers-color-scheme: light) {
+        :root {
+            --preloader-background-color: #fff;
+            --preloader-text-color: #000;
+        }
+    }
+
+    @media (max-width: 600px) {
+        .ml13 {
+            font-size: 2.6rem !important; /* Adjust this value as needed */
+        }
+    }
+
+    .preloader {
+        display: flex;
+        flex-direction: column;
+        gap: 1rem; /* Tailwind 'gap-4' is 1rem */
+        align-items: center;
+        justify-content: center;
+        position: fixed;
+        padding: 12px;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        width: 100vw;
+        height: 100vh; /* 'h-screen' is 100% of the viewport height */
+        background-color: var(--preloader-background-color);
+        z-index: 1100; /* 'z-[1100]' sets the z-index */
+        transition: opacity 0.2s ease-in-out;
+    }
+
+    .ml13 {
+        font-size: 3.2rem;
+        /* text-transform: uppercase; */
+        color: var(--preloader-text-color);
+        letter-spacing: -1px;
+        font-weight: 500;
+        font-family: 'Chillax-Variable', sans-serif;
+        text-align: center;
+    }
+
+    .ml13 .word {
+        display: inline-flex;
+        flex-wrap: wrap;
+        white-space: nowrap;
+    }
+
+    .ml13 .letter {
+        display: inline-block;
+        line-height: 1em;
+    }
+</style>
+
+<div class="preloader">
+    <h2 class="ml13">
+        xiaoeryu
+    </h2>
+    <script>
+        var textWrapper = document.querySelector('.ml13');
+        // Split text into words
+        var words = textWrapper.textContent.trim().split(' ');
+
+        // Clear the existing content
+        textWrapper.innerHTML = '';
+
+        // Wrap each word and its letters in spans
+        words.forEach(function(word) {
+            var wordSpan = document.createElement('span');
+            wordSpan.classList.add('word');
+            wordSpan.innerHTML = word.replace(/\S/g, "<span class='letter'>$&</span>");
+            textWrapper.appendChild(wordSpan);
+            textWrapper.appendChild(document.createTextNode(' ')); // Add space between words
+        });
+
+        var animation = anime.timeline({loop: true})
+            .add({
+                targets: '.ml13 .letter',
+                translateY: [40,0],
+                translateZ: 0,
+                opacity: [0,1],
+                filter: ['blur(5px)', 'blur(0px)'], // Starting from blurred to unblurred
+                easing: "easeOutExpo",
+                duration: 1400,
+                delay: (el, i) => 300 + 30 * i,
+            }).add({
+                targets: '.ml13 .letter',
+                translateY: [0,-40],
+                opacity: [1,0],
+                filter: ['blur(0px)', 'blur(5px)'], // Ending from unblurred to blurred
+                easing: "easeInExpo",
+                duration: 1200,
+                delay: (el, i) => 100 + 30 * i,
+                complete: function() {
+                    hidePreloader(); // Call hidePreloader after the animation completes
+                }
+            });
+
+        let themeStatus = JSON.parse(localStorage.getItem('REDEFINE-THEME-STATUS'))?.isDark;
+
+        // If the theme status is not found in local storage, check the preferred color scheme
+        if (themeStatus === undefined || themeStatus === null) {
+            if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                themeStatus = 'dark';
+            } else {
+                themeStatus = 'light';
+            }
+        }
+
+        // Now you can use the themeStatus variable in your code
+        if (themeStatus) {
+            document.documentElement.style.setProperty('--preloader-background-color', '#202124');
+            document.documentElement.style.setProperty('--preloader-text-color', '#fff');
+        } else {
+            document.documentElement.style.setProperty('--preloader-background-color', '#fff');
+            document.documentElement.style.setProperty('--preloader-text-color', '#000');
+        }
+
+        window.addEventListener('load', function () {
+            setTimeout(hidePreloader, 5000); // Call hidePreloader after 5000 milliseconds if not already called by animation
+        });
+
+        function hidePreloader() {
+            var preloader = document.querySelector('.preloader');
+            preloader.style.opacity = '0';
+            setTimeout(function () {
+                preloader.style.display = 'none';
+            }, 200);
+        }
+    </script>
+</div>
+
+<main class="page-container" id="swup">
+
+    
+
+    <div class="main-content-container">
+
+
+        <div class="main-content-header">
+            <header class="navbar-container px-6 md:px-12">
+
+    <div class="navbar-content ">
+        <div class="left">
+            
+                <a class="logo-image" href="/">
+                    <img src="/images/rabete.jpg">
+                </a>
+            
+            <a class="logo-title" href="/">
+                
+                xiaoeryu
+                
+            </a>
+        </div>
+
+        <div class="right">
+            <!-- PC -->
+            <div class="desktop">
+                <ul class="navbar-list">
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/"
+                                        >
+                                    <i class="fa-regular fa-house fa-fw"></i>
+                                    首页
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                        
+                            
+
+                            <li class="navbar-item">
+                                <!-- Menu -->
+                                <a class=""
+                                   href="/archives"
+                                        >
+                                    <i class="fa-regular fa-archive fa-fw"></i>
+                                    归档
+                                    
+                                </a>
+
+                                <!-- Submenu -->
+                                
+                            </li>
+                    
+                    
+                        <li class="navbar-item search search-popup-trigger">
+                            <i class="fa-solid fa-magnifying-glass"></i>
+                        </li>
+                    
+                </ul>
+            </div>
+            <!-- Mobile -->
+            <div class="mobile">
+                
+                    <div class="icon-item search search-popup-trigger"><i class="fa-solid fa-magnifying-glass"></i>
+                    </div>
+                
+                <div class="icon-item navbar-bar">
+                    <div class="navbar-bar-middle"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Mobile sheet -->
+    <div class="navbar-drawer h-screen w-full absolute top-0 left-0 bg-background-color flex flex-col justify-between">
+        <ul class="drawer-navbar-list flex flex-col px-4 justify-center items-start">
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/"
+                        >
+                            <span>
+                                首页
+                            </span>
+                            
+                                <i class="fa-regular fa-house fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+                
+                    
+
+                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
+                        
+                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
+                           href="/archives"
+                        >
+                            <span>
+                                归档
+                            </span>
+                            
+                                <i class="fa-regular fa-archive fa-sm fa-fw"></i>
+                            
+                        </a>
+                        
+
+                        
+                    </li>
+            
+
+            
+            
+        </ul>
+
+        <div class="statistics flex justify-around my-2.5">
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">92</div>
+        <div class="label text-third-text-color text-sm">标签</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">14</div>
+        <div class="label text-third-text-color text-sm">分类</div>
+    </a>
+    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
+        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">112</div>
+        <div class="label text-third-text-color text-sm">文章</div>
+    </a>
+</div>
+    </div>
+
+    <div class="window-mask"></div>
+
+</header>
+
+
+        </div>
+
+        <div class="main-content-body">
+
+            
+
+            <div class="main-content">
+
+                
+                    <div class="post-page-container flex relative justify-between box-border w-full h-full">
+    <div class="article-content-container">
+
+        <div class="article-title relative w-full">
+            
+                <div class="w-full flex items-center pt-6 justify-start">
+                    <h1 class="article-title-regular text-second-text-color tracking-tight text-4xl md:text-6xl font-semibold px-2 sm:px-6 md:px-8 py-3">微信小程序-某某牛仔城</h1>
+                </div>
+            
+            </div>
+
+        
+            <div class="article-header flex flex-row gap-2 items-center px-2 sm:px-6 md:px-8">
+                <div class="avatar w-[46px] h-[46px] flex-shrink-0 rounded-medium border border-border-color p-[1px]">
+                    <img src="/images/rabete.jpg">
+                </div>
+                <div class="info flex flex-col justify-between">
+                    <div class="author flex items-center">
+                        <span class="name text-default-text-color text-lg font-semibold">xiaoeryu</span>
+                        
+                            <span class="author-label ml-1.5 text-xs px-2 py-0.5 rounded-small text-third-text-color border border-shadow-color-1">Lv5</span>
+                        
+                    </div>
+                    <div class="meta-info">
+                        <div class="article-meta-info">
+    <span class="article-date article-meta-item">
+        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
+        <span class="desktop">2024-09-16 22:14:02</span>
+        <span class="mobile">2024-09-16 22:14:02</span>
+        <span class="hover-info">创建</span>
+    </span>
+    
+        <span class="article-date article-meta-item">
+            <i class="fa-regular fa-wrench"></i>&nbsp;
+            <span class="desktop">2024-09-16 23:29</span>
+            <span class="mobile">2024-09-16 23:29</span>
+            <span class="hover-info">更新</span>
+        </span>
+    
+
+    
+        <span class="article-categories article-meta-item">
+            <i class="fa-regular fa-folders"></i>&nbsp;
+            <ul>
+                
+                
+                    
+                        
+                        <li>
+                            <a href="/categories/Android%E9%80%86%E5%90%91/">Android逆向</a>&nbsp;
+                        </li>
+                    
+                    
+                
+            </ul>
+        </span>
+    
+    
+        <span class="article-tags article-meta-item">
+            <i class="fa-regular fa-tags"></i>&nbsp;
+            <ul>
+                
+                    <li>
+                        <a href="/tags/%E5%8D%8F%E8%AE%AE%E5%88%86%E6%9E%90/">协议分析</a>&nbsp;
+                    </li>
+                
+                    <li>
+                        | <a href="/tags/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E9%80%86%E5%90%91/">微信小程序逆向</a>&nbsp;
+                    </li>
+                
+            </ul>
+        </span>
+    
+
+    
+    
+    
+    
+        <span class="article-pv article-meta-item">
+            <i class="fa-regular fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
+        </span>
+    
+</div>
+
+                    </div>
+                </div>
+            </div>
+        
+
+        
+
+
+        <div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
+            <p>本文中所有内容仅供研究与学习使用，禁止用于任何商业用途和非法用途，否则后果自负！！！</p>
+<p>本章来分析一个微信小程序的协议，这个小程序的协议本身比较简单。主要是来学习一下分析微信小程序的流程</p>
+<h1 id="0x00-环境"><a href="#0x00-环境" class="headerlink" title="0x00 环境"></a>0x00 环境</h1><p>设备：pixel 5 Android11.0</p>
+<p>抓包：Charles + Postern</p>
+<p>发包工具：postman、APIfox</p>
+<h1 id="0x01-抓包"><a href="#0x01-抓包" class="headerlink" title="0x01 抓包"></a>0x01 抓包</h1><p>环境配置好了，那么先来抓个包吧</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/09/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E6%9F%90%E6%9F%90%E7%89%9B%E4%BB%94%E5%9F%8E/image-20240916231010273.png" class="" title="image-20240916231010273">
+
+<ul>
+<li><p>随便选一个领取，这里我们以预览充值中心为例</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/09/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E6%9F%90%E6%9F%90%E7%89%9B%E4%BB%94%E5%9F%8E/image-20240916222552201.png" class="" title="image-20240916222552201">
+
+<ul>
+<li><p>抓到的包比较多，找不到多翻翻</p>
+</li>
+<li><p>分析这个协议</p>
+<blockquote>
+<p>member_no：会员编号</p>
+<p>type：操作目标的类型，例如这里33是“每日预览充值中心”</p>
+<p>store_no：字面翻译是商店编号，这里我们抓了几次包都没变过。暂时当它是个固定值</p>
+<p>sign：签名是本篇文章要分析的一个重点，看起来像是一个md5值</p>
+<p>time：时间戳</p>
+</blockquote>
+<ul>
+<li>经过分析，看起来只有这个<code>sign</code>需要我们进行分析，其它的都可以直接获取或者是固定值</li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<h1 id="0x02-分析小程序源码"><a href="#0x02-分析小程序源码" class="headerlink" title="0x02 分析小程序源码"></a>0x02 分析小程序源码</h1><h3 id="定位"><a href="#定位" class="headerlink" title="定位"></a>定位</h3><p>首先定位小程序的包</p>
+<p>因为路径下小程序文件夹太多了，先清理一下</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/09/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E6%9F%90%E6%9F%90%E7%89%9B%E4%BB%94%E5%9F%8E/image-20240916223613382.png" class="" title="image-20240916223613382">
+
+<p>然后重新打开一遍小程序，用everything搜索<code>.wxapkg</code>定位时间最近那个</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/09/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E6%9F%90%E6%9F%90%E7%89%9B%E4%BB%94%E5%9F%8E/image-20240916223739140.png" class="" title="image-20240916223739140">
+
+<h3 id="解包"><a href="#解包" class="headerlink" title="解包"></a>解包</h3><p>小程序的解包工具有很多，在github上都可以找到。这里我们使用这个带界面的看起来比较清楚</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/09/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E6%9F%90%E6%9F%90%E7%89%9B%E4%BB%94%E5%9F%8E/image-20240916223915227.png" class="" title="image-20240916223915227">
+
+<p>解密成功后拖入<a class="link" target="_blank" rel="noopener" href="https://github.com/ezshine/wxapkg-convertor">wxapkgconvertor.exe <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>，反编译</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/09/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E6%9F%90%E6%9F%90%E7%89%9B%E4%BB%94%E5%9F%8E/image-20240916224019832.png" class="" title="image-20240916224019832">
+
+<img lazyload="" src="/images/loading.svg" data-src="/2024/09/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E6%9F%90%E6%9F%90%E7%89%9B%E4%BB%94%E5%9F%8E/image-20240916224026472.png" class="" title="image-20240916224026472">
+
+<ul>
+<li>反编译成功之后用IDE打开，这里我们使用<strong>微信开发者工具</strong>打开</li>
+<li>PS：里面有一个<code>app-service.js</code>文件特别大，建议复制下来在网上找工具格式化一下。本机直接格式化容易卡死</li>
+</ul>
+<h2 id="源码分析"><a href="#源码分析" class="headerlink" title="源码分析"></a>源码分析</h2><p>根据前面对抓包协议的分析，我们只需要分析<code>sign</code>怎么获取的就好了。那就直接搜索<code>sign</code></p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/09/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E6%9F%90%E6%9F%90%E7%89%9B%E4%BB%94%E5%9F%8E/image-20240916224313617.png" class="" title="image-20240916224313617">
+
+<ul>
+<li>运气比较好，第三个直接定位到了获取签名的函数</li>
+<li>其中<code>var u = a.default.hexMD5(n + t + w + m + v + p);</code>把一系列值组合然后进行了DM5计算，这就是我们要找的<code>sign</code></li>
+</ul>
+<h3 id="计算sign"><a href="#计算sign" class="headerlink" title="计算sign"></a>计算sign</h3><p>把代码抠出来，自己重新计算一下获取sign<img lazyload="" src="/images/loading.svg" data-src="/2024/09/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E6%9F%90%E6%9F%90%E7%89%9B%E4%BB%94%E5%9F%8E/image-20240916224654806.png" class="" title="image-20240916224654806"></p>
+<ul>
+<li>这里用到了一个<code>hexMD5</code>的外部方法，搜索一下把这个方法也抠出来</li>
+</ul>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/09/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E6%9F%90%E6%9F%90%E7%89%9B%E4%BB%94%E5%9F%8E/image-20240916224759444.png" class="" title="image-20240916224759444">
+
+<ul>
+<li>这里又用到了一个<code>o</code>方法，也找到抠出来</li>
+</ul>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/09/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E6%9F%90%E6%9F%90%E7%89%9B%E4%BB%94%E5%9F%8E/image-20240916224903780.png" class="" title="image-20240916224903780">
+
+<ul>
+<li>这里一堆互相调用的都抠出来</li>
+</ul>
+<pre><code class="js">function getxSign() {
+    var d = "511MrfpKD^",
+    h = "GKXW58GHG",
+    p = "#iki0Dhr",
+    g = "ASF74XSR^",
+    v = "@UnOaJYS",
+    m = "KIoa7YXIaN",
+    y = "648DCGFG^",
+    w = "511MrfpK^";
+    var e = arguments.length &gt; 0 &amp;&amp; void 0 !== arguments[0] ? arguments[0] : {},
+        t = arguments.length &gt; 1 ? arguments[1] : void 0,
+        r = e.query || {},
+        n = "";
+    console.log("getSign.times===&gt;"), console.log(t), console.log("getSign.data===&gt;"), console.log(r);
+    for (var o = Object.keys(r).sort(), i = {}, s = 0; s &lt; o.length; s++) i[o[s]] = r[o[s]];
+    for (var l in console.log("data排序后===&gt;"), console.log(i), i) n += l + i[l];
+    var u = a.default.hexMD5(n + t + w + m + v + p);
+    return console.log("getSign.sign===&gt;"), console.log(u), u
+}
+
+function hexMD5(e) {
+    return function(e) {
+        for (var t = "0123456789abcdef", r = "", n = 0; n &lt; 4 * e.length; n++) r += t.charAt(e[n &gt;&gt; 2] &gt;&gt; n % 4 * 8 + 4 &amp; 15) + t.charAt(e[n &gt;&gt; 2] &gt;&gt; n % 4 * 8 &amp; 15);
+        return r
+    }(function(e) {
+        for (var t = 1732584193, n = -271733879, l = -1732584194, u = 271733878, c = 0; c &lt; e.length; c += 16) {
+            var f = t,
+                d = n,
+                h = l,
+                p = u;
+            t = o(t, n, l, u, e[c + 0], 7, -680876936), u = o(u, t, n, l, e[c + 1], 12, -389564586), l = o(l, u, t, n, e[c + 2], 17, 606105819), n = o(n, l, u, t, e[c + 3], 22, -1044525330), t = o(t, n, l, u, e[c + 4], 7, -176418897), u = o(u, t, n, l, e[c + 5], 12, 1200080426), l = o(l, u, t, n, e[c + 6], 17, -1473231341), n = o(n, l, u, t, e[c + 7], 22, -45705983), t = o(t, n, l, u, e[c + 8], 7, 1770035416), u = o(u, t, n, l, e[c + 9], 12, -1958414417), l = o(l, u, t, n, e[c + 10], 17, -42063), n = o(n, l, u, t, e[c + 11], 22, -1990404162), t = o(t, n, l, u, e[c + 12], 7, 1804603682), u = o(u, t, n, l, e[c + 13], 12, -40341101), l = o(l, u, t, n, e[c + 14], 17, -1502002290), t = i(t, n = o(n, l, u, t, e[c + 15], 22, 1236535329), l, u, e[c + 1], 5, -165796510), u = i(u, t, n, l, e[c + 6], 9, -1069501632), l = i(l, u, t, n, e[c + 11], 14, 643717713), n = i(n, l, u, t, e[c + 0], 20, -373897302), t = i(t, n, l, u, e[c + 5], 5, -701558691), u = i(u, t, n, l, e[c + 10], 9, 38016083), l = i(l, u, t, n, e[c + 15], 14, -660478335), n = i(n, l, u, t, e[c + 4], 20, -405537848), t = i(t, n, l, u, e[c + 9], 5, 568446438), u = i(u, t, n, l, e[c + 14], 9, -1019803690), l = i(l, u, t, n, e[c + 3], 14, -187363961), n = i(n, l, u, t, e[c + 8], 20, 1163531501), t = i(t, n, l, u, e[c + 13], 5, -1444681467), u = i(u, t, n, l, e[c + 2], 9, -51403784), l = i(l, u, t, n, e[c + 7], 14, 1735328473), t = a(t, n = i(n, l, u, t, e[c + 12], 20, -1926607734), l, u, e[c + 5], 4, -378558), u = a(u, t, n, l, e[c + 8], 11, -2022574463), l = a(l, u, t, n, e[c + 11], 16, 1839030562), n = a(n, l, u, t, e[c + 14], 23, -35309556), t = a(t, n, l, u, e[c + 1], 4, -1530992060), u = a(u, t, n, l, e[c + 4], 11, 1272893353), l = a(l, u, t, n, e[c + 7], 16, -155497632), n = a(n, l, u, t, e[c + 10], 23, -1094730640), t = a(t, n, l, u, e[c + 13], 4, 681279174), u = a(u, t, n, l, e[c + 0], 11, -358537222), l = a(l, u, t, n, e[c + 3], 16, -722521979), n = a(n, l, u, t, e[c + 6], 23, 76029189), t = a(t, n, l, u, e[c + 9], 4, -640364487), u = a(u, t, n, l, e[c + 12], 11, -421815835), l = a(l, u, t, n, e[c + 15], 16, 530742520), t = s(t, n = a(n, l, u, t, e[c + 2], 23, -995338651), l, u, e[c + 0], 6, -198630844), u = s(u, t, n, l, e[c + 7], 10, 1126891415), l = s(l, u, t, n, e[c + 14], 15, -1416354905), n = s(n, l, u, t, e[c + 5], 21, -57434055), t = s(t, n, l, u, e[c + 12], 6, 1700485571), u = s(u, t, n, l, e[c + 3], 10, -1894986606), l = s(l, u, t, n, e[c + 10], 15, -1051523), n = s(n, l, u, t, e[c + 1], 21, -2054922799), t = s(t, n, l, u, e[c + 8], 6, 1873313359), u = s(u, t, n, l, e[c + 15], 10, -30611744), l = s(l, u, t, n, e[c + 6], 15, -1560198380), n = s(n, l, u, t, e[c + 13], 21, 1309151649), t = s(t, n, l, u, e[c + 4], 6, -145523070), u = s(u, t, n, l, e[c + 11], 10, -1120210379), l = s(l, u, t, n, e[c + 2], 15, 718787259), n = s(n, l, u, t, e[c + 9], 21, -343485551), t = r(t, f), n = r(n, d), l = r(l, h), u = r(u, p)
+        }
+        return [t, n, l, u]
+    }(function(e) {
+        for (var t = 1 + (e.length + 8 &gt;&gt; 6), r = new Array(16 * t), n = 0; n &lt; 16 * t; n++) r[n] = 0;
+        for (n = 0; n &lt; e.length; n++) r[n &gt;&gt; 2] |= (255 &amp; e.charCodeAt(n)) &lt;&lt; n % 4 * 8;
+        return r[n &gt;&gt; 2] |= 128 &lt;&lt; n % 4 * 8, r[16 * t - 2] = 8 * e.length, r
+    }(e)))
+
+    function r(e, t) {
+        var r = (65535 &amp; e) + (65535 &amp; t);
+        return (e &gt;&gt; 16) + (t &gt;&gt; 16) + (r &gt;&gt; 16) &lt;&lt; 16 | 65535 &amp; r
+    }
+
+    function n(e, t, n, o, i, a) {
+        return r(function (e, t) {
+            return e &lt;&lt; t | e &gt;&gt;&gt; 32 - t
+        }(r(r(t, e), r(o, a)), i), n)
+    }
+
+    function o(e, t, r, o, i, a, s) {
+        return n(t &amp; r | ~t &amp; o, e, t, i, a, s)
+    }
+
+    function i(e, t, r, o, i, a, s) {
+        return n(t &amp; o | r &amp; ~o, e, t, i, a, s)
+    }
+
+    function a(e, t, r, o, i, a, s) {
+        return n(t ^ r ^ o, e, t, i, a, s)
+    }
+
+    function s(e, t, r, o, i, a, s) {
+        return n(r ^ (t | ~o), e, t, i, a, s)
+    }
+}
+</code></pre>
+<ul>
+<li>最终我们抠出来的代码，反编译的代码比较混乱不好看懂。我们找人工智能工具重写一下<code>getxSign</code>函数，计算MD5那个函数就算了没必要重写。</li>
+</ul>
+<pre><code class="js">function getxSign(data = {}, timestamp) {
+    // 定义常量
+    const d = "511MrfpKD^",
+          h = "GKXW58GHG",
+          p = "#iki0Dhr",
+          g = "ASF74XSR^",
+          v = "@UnOaJYS",
+          m = "KIoa7YXIaN",
+          y = "648DCGFG^",
+          w = "511MrfpK^";
+    
+    // 提取查询参数并初始化拼接字符串
+    const query = data.query || {};
+    let concatenatedString = "";
+
+    // 打印输入的时间戳和数据
+    console.log("getSign.times===&gt;", timestamp);
+    console.log("getSign.data===&gt;", query);
+
+    // 将对象键按字母顺序排序
+    const sortedKeys = Object.keys(query).sort();
+    const sortedData = {};
+
+    // 根据排序后的键重新构建对象
+    sortedKeys.forEach(key =&gt; {
+        sortedData[key] = query[key];
+    });
+
+    // 打印排序后的数据
+    console.log("data排序后===&gt;", sortedData);
+
+    // 构建签名字符串
+    for (const key in sortedData) {
+        concatenatedString += key + sortedData[key];
+    }
+
+    // 使用 MD5 计算签名
+    const signature = hexMD5(concatenatedString + timestamp + w + m + v + p);
+    
+    // 打印签名结果并返回
+    console.log("getSign.sign===&gt;", signature);
+    return signature;
+}
+</code></pre>
+<ul>
+<li>现在看起来就比较清楚了</li>
+</ul>
+<p>接下来我们尝试调用一下，跟抓包的协议比较一下计算的签名是否相同</p>
+<ul>
+<li><p>这里不知道应该怎么传递参数，问一下chatGPT</p>
+<blockquote>
+<p><code>getxSign()</code> 函数需要两个参数：</p>
+<ol>
+<li><p><strong>第一个参数</strong> <code>e</code> 是一个对象，通常包含 <code>query</code> 属性，<code>query</code> 是一个键值对对象。这个对象中的键值对会被用于生成签名（<code>sign</code>）。</p>
+<ul>
+<li>**<code>e.query</code>**：包含要签名的数据，它的键会被按字母排序，然后与它的值拼接在一起。</li>
+</ul>
+<p>例如：</p>
+<pre><code class="javascript">const e = {
+    query: {
+        foo: "value1",
+        bar: "value2"
+    }
+};
+</code></pre>
+</li>
+<li><p><strong>第二个参数</strong> <code>t</code> 是一个时间戳或某种密钥值，它将在签名的生成中用到。这个值会拼接在 <code>query</code> 的数据之后，用于生成最终的 MD5 哈希。</p>
+<p>例如：</p>
+<pre><code class="javascript">const t = "20240916"; // 假设这个是某个时间戳或密钥
+</code></pre>
+</li>
+</ol>
+<h3 id="调用示例"><a href="#调用示例" class="headerlink" title="调用示例"></a>调用示例</h3><pre><code class="javascript">const e = {
+    query: {
+        foo: "value1",
+        bar: "value2"
+    }
+};
+
+const t = "20240916"; // 假设这是时间戳或密钥
+
+const sign = getxSign(e, t);
+console.log("Generated Sign:", sign);
+</code></pre>
+<p>在这个例子中，<code>getxSign</code> 会对 <code>query</code> 对象中的键（<code>bar</code>, <code>foo</code>）按字母顺序排序，并与对应的值拼接成字符串，再加上时间戳 <code>t</code> 和其他固定值，生成最终的 MD5 哈希签名。</p>
+</blockquote>
+</li>
+</ul>
+<p>添加调用代码</p>
+<pre><code class="js">const e = {
+    query: {
+        member_no: 973470,
+        type: 33,
+        store_no: 12
+    }
+};
+// console.log(getxSign(e, t))
+var sign = getxSign(e, "20240916222353")	// 时间戳传递协议中的时间戳
+</code></pre>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/09/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E6%9F%90%E6%9F%90%E7%89%9B%E4%BB%94%E5%9F%8E/image-20240916230028577.png" class="" title="image-20240916230028577">
+
+<ul>
+<li>跟抓包的<code>sign</code>对比一下，确定两个sign相同</li>
+<li>这里计算的结果相同，说明我们正确的获取到了<code>sign</code></li>
+</ul>
+<h2 id="发包确认"><a href="#发包确认" class="headerlink" title="发包确认"></a>发包确认</h2><p>接下来构建一下完整的协议，看看是否能获取服务器的返回结果</p>
+<p>发包工具这里尝试了两种常用的工具，postman、APIfox。postman更轻量一些，APIfox的功能更强大更全面一些。用哪个都可以</p>
+<p>另外还尝试了使用Python直接发包</p>
+<h4 id="postman"><a href="#postman" class="headerlink" title="postman"></a>postman</h4><p>请求成功</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/09/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E6%9F%90%E6%9F%90%E7%89%9B%E4%BB%94%E5%9F%8E/image-20240916231157553.png" class="" title="image-20240916231157553">
+
+<ul>
+<li><p>这里主要有几个地方需要我们设置</p>
+<blockquote>
+<ol>
+<li><p>改为<code>POST</code></p>
+</li>
+<li><p>在Charles中把URL拷贝过来</p>
+</li>
+<li><p>因为我们在代码中把最终的<code>body</code>保存为了Postman中的<code>query</code>变量，所以要在<strong>Body</strong>选项中设置一下</p>
+<p><img lazyload="" src="/images/loading.svg" data-src="F:/Typora/wx小程序-疯狂牛仔城/image-20240916215209121.png" alt="image-20240916215209121"></p>
+</li>
+<li><p>填入我们的代码</p>
+<pre><code class="js">function hexMD5(e) {
+    return function (e) {
+        for (var t = "0123456789abcdef", r = "", n = 0; n &lt; 4 * e.length; n++) r += t.charAt(e[n &gt;&gt; 2] &gt;&gt; n % 4 * 8 + 4 &amp; 15) + t.charAt(e[n &gt;&gt; 2] &gt;&gt; n % 4 * 8 &amp; 15);
+        return r
+    }(function (e) {
+        for (var t = 1732584193, n = -271733879, l = -1732584194, u = 271733878, c = 0; c &lt; e.length; c += 16) {
+            var f = t,
+                d = n,
+                h = l,
+                p = u;
+            t = o(t, n, l, u, e[c + 0], 7, -680876936), u = o(u, t, n, l, e[c + 1], 12, -389564586), l = o(l, u, t, n, e[c + 2], 17, 606105819), n = o(n, l, u, t, e[c + 3], 22, -1044525330), t = o(t, n, l, u, e[c + 4], 7, -176418897), u = o(u, t, n, l, e[c + 5], 12, 1200080426), l = o(l, u, t, n, e[c + 6], 17, -1473231341), n = o(n, l, u, t, e[c + 7], 22, -45705983), t = o(t, n, l, u, e[c + 8], 7, 1770035416), u = o(u, t, n, l, e[c + 9], 12, -1958414417), l = o(l, u, t, n, e[c + 10], 17, -42063), n = o(n, l, u, t, e[c + 11], 22, -1990404162), t = o(t, n, l, u, e[c + 12], 7, 1804603682), u = o(u, t, n, l, e[c + 13], 12, -40341101), l = o(l, u, t, n, e[c + 14], 17, -1502002290), t = i(t, n = o(n, l, u, t, e[c + 15], 22, 1236535329), l, u, e[c + 1], 5, -165796510), u = i(u, t, n, l, e[c + 6], 9, -1069501632), l = i(l, u, t, n, e[c + 11], 14, 643717713), n = i(n, l, u, t, e[c + 0], 20, -373897302), t = i(t, n, l, u, e[c + 5], 5, -701558691), u = i(u, t, n, l, e[c + 10], 9, 38016083), l = i(l, u, t, n, e[c + 15], 14, -660478335), n = i(n, l, u, t, e[c + 4], 20, -405537848), t = i(t, n, l, u, e[c + 9], 5, 568446438), u = i(u, t, n, l, e[c + 14], 9, -1019803690), l = i(l, u, t, n, e[c + 3], 14, -187363961), n = i(n, l, u, t, e[c + 8], 20, 1163531501), t = i(t, n, l, u, e[c + 13], 5, -1444681467), u = i(u, t, n, l, e[c + 2], 9, -51403784), l = i(l, u, t, n, e[c + 7], 14, 1735328473), t = a(t, n = i(n, l, u, t, e[c + 12], 20, -1926607734), l, u, e[c + 5], 4, -378558), u = a(u, t, n, l, e[c + 8], 11, -2022574463), l = a(l, u, t, n, e[c + 11], 16, 1839030562), n = a(n, l, u, t, e[c + 14], 23, -35309556), t = a(t, n, l, u, e[c + 1], 4, -1530992060), u = a(u, t, n, l, e[c + 4], 11, 1272893353), l = a(l, u, t, n, e[c + 7], 16, -155497632), n = a(n, l, u, t, e[c + 10], 23, -1094730640), t = a(t, n, l, u, e[c + 13], 4, 681279174), u = a(u, t, n, l, e[c + 0], 11, -358537222), l = a(l, u, t, n, e[c + 3], 16, -722521979), n = a(n, l, u, t, e[c + 6], 23, 76029189), t = a(t, n, l, u, e[c + 9], 4, -640364487), u = a(u, t, n, l, e[c + 12], 11, -421815835), l = a(l, u, t, n, e[c + 15], 16, 530742520), t = s(t, n = a(n, l, u, t, e[c + 2], 23, -995338651), l, u, e[c + 0], 6, -198630844), u = s(u, t, n, l, e[c + 7], 10, 1126891415), l = s(l, u, t, n, e[c + 14], 15, -1416354905), n = s(n, l, u, t, e[c + 5], 21, -57434055), t = s(t, n, l, u, e[c + 12], 6, 1700485571), u = s(u, t, n, l, e[c + 3], 10, -1894986606), l = s(l, u, t, n, e[c + 10], 15, -1051523), n = s(n, l, u, t, e[c + 1], 21, -2054922799), t = s(t, n, l, u, e[c + 8], 6, 1873313359), u = s(u, t, n, l, e[c + 15], 10, -30611744), l = s(l, u, t, n, e[c + 6], 15, -1560198380), n = s(n, l, u, t, e[c + 13], 21, 1309151649), t = s(t, n, l, u, e[c + 4], 6, -145523070), u = s(u, t, n, l, e[c + 11], 10, -1120210379), l = s(l, u, t, n, e[c + 2], 15, 718787259), n = s(n, l, u, t, e[c + 9], 21, -343485551), t = r(t, f), n = r(n, d), l = r(l, h), u = r(u, p)
+        }
+        return [t, n, l, u]
+    }(function (e) {
+        for (var t = 1 + (e.length + 8 &gt;&gt; 6), r = new Array(16 * t), n = 0; n &lt; 16 * t; n++) r[n] = 0;
+        for (n = 0; n &lt; e.length; n++) r[n &gt;&gt; 2] |= (255 &amp; e.charCodeAt(n)) &lt;&lt; n % 4 * 8;
+        return r[n &gt;&gt; 2] |= 128 &lt;&lt; n % 4 * 8, r[16 * t - 2] = 8 * e.length, r
+    }(e)))
+
+    function r(e, t) {
+        var r = (65535 &amp; e) + (65535 &amp; t);
+        return (e &gt;&gt; 16) + (t &gt;&gt; 16) + (r &gt;&gt; 16) &lt;&lt; 16 | 65535 &amp; r
+    }
+
+    function n(e, t, n, o, i, a) {
+        return r(function (e, t) {
+            return e &lt;&lt; t | e &gt;&gt;&gt; 32 - t
+        }(r(r(t, e), r(o, a)), i), n)
+    }
+
+    function o(e, t, r, o, i, a, s) {
+        return n(t &amp; r | ~t &amp; o, e, t, i, a, s)
+    }
+
+    function i(e, t, r, o, i, a, s) {
+        return n(t &amp; o | r &amp; ~o, e, t, i, a, s)
+    }
+
+    function a(e, t, r, o, i, a, s) {
+        return n(t ^ r ^ o, e, t, i, a, s)
+    }
+
+    function s(e, t, r, o, i, a, s) {
+        return n(r ^ (t | ~o), e, t, i, a, s)
+    }
+}
+
+// 获取时间戳
+function getCurrentTimestamp() {
+    var date = new Date();
+    var year = date.getFullYear();
+    var month = ('0' + (date.getMonth() + 1)).slice(-2);
+    var day = ('0' + date.getDate()).slice(-2);
+    var hours = ('0' + date.getHours()).slice(-2);
+    var minutes = ('0' + date.getMinutes()).slice(-2);
+    var seconds = ('0' + date.getSeconds()).slice(-2);
+    return year + month + day + hours + minutes + seconds;
+}
+
+function getxSign(e = {}, t) {
+    const w = "511MrfpK^",
+          m = "KIoa7YXIaN",
+          v = "@UnOaJYS",
+          p = "#iki0Dhr";
+
+    const r = e.query || {};
+    let n = "";
+
+    console.log("getSign.times ===&gt;", t, "getSign.data ===&gt;", r);
+
+    // 对 query 对象的键按字母排序后拼接
+    const sortedKeys = Object.keys(r).sort();
+    sortedKeys.forEach(key =&gt; {
+        n += key + r[key];
+    });
+
+    console.log("data 排序后 ===&gt;", n);
+
+    // 计算 MD5 签名
+    const sign = hexMD5(n + t + w + m + v + p);
+    console.log("getSign.sign ===&gt;", sign);
+
+    return sign;
+}
+
+var t = getCurrentTimestamp();
+var body = {
+    "member_no": 973470,
+    "type": 33,
+    "store_no": 12
+};
+
+var sign = getxSign({
+    query: {
+        "member_no": 973470,
+        "type": 33,
+        "store_no": 12
+    }
+}, t)
+
+body.sign = sign;
+body.time = t;
+
+console.log("final body ==&gt; ",body)
+
+// 将 body 设置为 Postman 变量
+pm.variables.set("query", JSON.stringify(body));
+</code></pre>
+<ul>
+<li>这是最终的完整代码</li>
+</ul>
+</li>
+</ol>
+</blockquote>
+</li>
+</ul>
+<h4 id="APIfox"><a href="#APIfox" class="headerlink" title="APIfox"></a>APIfox</h4><p>跟postman用起来差不多一样， 只是有些设置的位置改变了点</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/09/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E6%9F%90%E6%9F%90%E7%89%9B%E4%BB%94%E5%9F%8E/image-20240916231346415.png" class="" title="image-20240916231346415">
+
+<p>代码还是一模一样的，填入前置操作中就可以</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/09/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E6%9F%90%E6%9F%90%E7%89%9B%E4%BB%94%E5%9F%8E/image-20240916231520566.png" class="" title="image-20240916231520566">
+
+
+
+<h4 id="Python"><a href="#Python" class="headerlink" title="Python"></a>Python</h4><p>使用Python脚本直接发包</p>
+<pre><code class="python">import hashlib
+import requests
+import json
+from datetime import datetime
+
+# 常量定义
+CONSTANTS = {
+    'd': "511MrfpKD^",
+    'h': "GKXW58GHG",
+    'p': "#iki0Dhr",
+    'g': "ASF74XSR^",
+    'v': "@UnOaJYS",
+    'm': "KIoa7YXIaN",
+    'y': "648DCGFG^",
+    'w': "511MrfpK^"
+}
+
+# 获取当前时间戳
+def get_current_timestamp():
+    now = datetime.now()
+    return now.strftime('%Y%m%d%H%M%S')
+
+# 计算签名的函数，使用 MD5
+def getxSign(params, timestamp):
+    query = params.get("query", {})
+    sorted_keys = sorted(query.keys())
+    
+    concatenated_string = "".join([key + str(query[key]) for key in sorted_keys])
+    concatenated_string += timestamp + CONSTANTS['w'] + CONSTANTS['m'] + CONSTANTS['v'] + CONSTANTS['p']
+    
+    # 生成 MD5 签名
+    sign = hashlib.md5(concatenated_string.encode('utf-8')).hexdigest()
+    return sign
+
+# 发送请求的函数
+def send_request():
+    # 请求体中的参数
+    body = {
+        "member_no": 973470,
+        "type": 33,
+        "store_no": 12
+    }
+
+    # 获取当前时间戳
+    time = get_current_timestamp()
+
+    # 生成签名
+    sign = getxSign({
+        "query": body
+    }, time)
+
+    # 将签名和时间戳加入到请求体
+    body['sign'] = sign
+    body['time'] = time
+
+    # 打印请求体，查看是否正确
+    print("Final body: ", body)
+
+    # 发送 POST 请求
+    url = "https://mpg.avillage.com.cn/api/grow/doGrow"  # 替换为实际的API URL
+    headers = {
+        "Content-Type": "application/json"
+    }
+
+    # 发起 HTTP 请求
+    response = requests.post(url, headers=headers, data=json.dumps(body))
+
+    # 输出响应
+    print("Response Status Code: ", response.status_code)
+    print("Response JSON: ", response.json())
+
+# 执行请求
+send_request()
+</code></pre>
+<p>执行结果：</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/09/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E6%9F%90%E6%9F%90%E7%89%9B%E4%BB%94%E5%9F%8E/image-20240916231821536.png" class="" title="image-20240916231821536">
+
+
+        </div>
+
+        
+            <div class="post-copyright-info w-full my-8 px-2 sm:px-6 md:px-8">
+                <div class="article-copyright-info-container">
+    <ul>
+        <li><strong>标题:</strong> 微信小程序-某某牛仔城</li>
+        <li><strong>作者:</strong> xiaoeryu</li>
+        <li><strong>创建于
+                :</strong> 2024-09-16 22:14:02</li>
+        
+            <li>
+                <strong>更新于
+                    :</strong> 2024-09-16 23:29:00
+            </li>
+        
+        <li>
+            <strong>链接:</strong> https://github.com/xiaoeryu/2024/09/16/微信小程序-某某牛仔城/
+        </li>
+        <li>
+            <strong>
+                版权声明:
+            </strong>
+            
+
+            
+                本文章采用 <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0">CC BY-NC-SA 4.0</a> 进行许可。
+            
+        </li>
+    </ul>
+</div>
+
+            </div>
+        
+
+        
+            <ul class="post-tags-box text-lg mt-1.5 flex-wrap justify-center flex md:hidden">
+                
+                    <li class="tag-item mx-0.5">
+                        <a href="/tags/%E5%8D%8F%E8%AE%AE%E5%88%86%E6%9E%90/">#协议分析</a>&nbsp;
+                    </li>
+                
+                    <li class="tag-item mx-0.5">
+                        <a href="/tags/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F%E9%80%86%E5%90%91/">#微信小程序逆向</a>&nbsp;
+                    </li>
+                
+            </ul>
+        
+
+        
+
+        
+            <div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
+                
+                
+                    <div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
+                        <a class="next"
+                        rel="next"
+                        href="/2024/09/09/%E6%9F%90%E9%BA%A6App%E6%8A%A2%E7%A5%A8%E6%8E%A5%E5%8F%A3%E5%8F%82%E6%95%B0%E5%88%86%E6%9E%90/"
+                        >
+                            <span class="title flex justify-center items-center">
+                                <span class="post-nav-title-item">某麦App抢票接口参数分析</span>
+                                <span class="post-nav-item">下一篇</span>
+                            </span>
+                            <span class="right arrow-icon flex justify-center items-center">
+                                <i class="fa-solid fa-chevron-right"></i>
+                            </span>
+                        </a>
+                    </div>
+                
+            </div>
+        
+
+
+        
+            <div class="comment-container px-2 sm:px-6 md:px-8 pb-8">
+                <div class="comments-container mt-10 w-full ">
+    <div id="comment-anchor" class="w-full h-2.5"></div>
+    <div class="comment-area-title w-full my-1.5 md:my-2.5 text-xl md:text-3xl font-bold">
+        评论
+    </div>
+    
+
+        
+            
+
+
+        
+    
+</div>
+
+            </div>
+        
+    </div>
+
+    
+        <div class="toc-content-container">
+            <div class="post-toc-wrap">
+    <div class="post-toc">
+        <div class="toc-title">此页目录</div>
+        <div class="page-title">微信小程序-某某牛仔城</div>
+        <ol class="nav"><li class="nav-item nav-level-1"><a class="nav-link" href="#0x00-%E7%8E%AF%E5%A2%83"><span class="nav-text">0x00 环境</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x01-%E6%8A%93%E5%8C%85"><span class="nav-text">0x01 抓包</span></a></li><li class="nav-item nav-level-1"><a class="nav-link" href="#0x02-%E5%88%86%E6%9E%90%E5%B0%8F%E7%A8%8B%E5%BA%8F%E6%BA%90%E7%A0%81"><span class="nav-text">0x02 分析小程序源码</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%9A%E4%BD%8D"><span class="nav-text">定位</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%A7%A3%E5%8C%85"><span class="nav-text">解包</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90"><span class="nav-text">源码分析</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%AE%A1%E7%AE%97sign"><span class="nav-text">计算sign</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E8%B0%83%E7%94%A8%E7%A4%BA%E4%BE%8B"><span class="nav-text">调用示例</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%8F%91%E5%8C%85%E7%A1%AE%E8%AE%A4"><span class="nav-text">发包确认</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#postman"><span class="nav-text">postman</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#APIfox"><span class="nav-text">APIfox</span></a></li><li class="nav-item nav-level-4"><a class="nav-link" href="#Python"><span class="nav-text">Python</span></a></li></ol></li></ol></li></ol></li></ol>
+
+    </div>
+</div>
+        </div>
+    
+</div>
+
+
+
+                
+
+            </div>
+
+            
+
+        </div>
+
+        <div class="main-content-footer">
+            <footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
+    <div class="info-container py-3 text-center">
+        
+        <div class="text-center">
+            &copy;
+            
+              <span>2022</span>
+              -
+            
+            2024&nbsp;&nbsp;<i class="fa-solid fa-heart fa-beat" style="--fa-animation-duration: 0.5s; color: #f54545"></i>&nbsp;&nbsp;<a href="/">xiaoeryu</a>
+            
+                
+                <p class="post-count space-x-0.5">
+                    <span>
+                        共 112 篇文章
+                    </span>
+                    
+                </p>
+            
+        </div>
+        
+            <script data-swup-reload-script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+            <div class="relative text-center lg:absolute lg:right-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-right">
+                
+                    <span id="busuanzi_container_site_uv" class="lg:!block">
+                        <span class="text-sm">访问人数</span>
+                        <span id="busuanzi_value_site_uv"></span>
+                    </span>
+                
+                
+                    <span id="busuanzi_container_site_pv" class="lg:!block">
+                        <span class="text-sm">总访问量</span>
+                        <span id="busuanzi_value_site_pv"></span>
+                    </span>
+                
+            </div>
+        
+        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
+            <span class="lg:block text-sm">由 <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a> 驱动</span>
+            <span class="text-sm lg:block">主题&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.6.4</a></span>
+        </div>
+        
+        
+            <div>
+                博客已运行 <span class="odometer" id="runtime_days" ></span> 天 <span class="odometer" id="runtime_hours"></span> 小时 <span class="odometer" id="runtime_minutes"></span> 分钟 <span class="odometer" id="runtime_seconds"></span> 秒
+            </div>
+        
+        
+            <script data-swup-reload-script>
+                try {
+                    function odometer_init() {
+                    const elements = document.querySelectorAll('.odometer');
+                    elements.forEach(el => {
+                        new Odometer({
+                            el,
+                            format: '( ddd).dd',
+                            duration: 200
+                        });
+                    });
+                    }
+                    odometer_init();
+                } catch (error) {}
+            </script>
+        
+        
+        
+    </div>  
+</footer>
+        </div>
+    </div>
+
+    
+        <div class="post-tools">
+            <div class="post-tools-container">
+    <ul class="article-tools-list">
+        <!-- TOC aside toggle -->
+        
+            <li class="right-bottom-tools page-aside-toggle">
+                <i class="fa-regular fa-outdent"></i>
+            </li>
+        
+
+        <!-- go comment -->
+        
+            <li class="go-comment">
+                <i class="fa-regular fa-comments"></i>
+            </li>
+        
+    </ul>
+</div>
+
+        </div>
+    
+
+    <div class="right-side-tools-container">
+        <div class="side-tools-container">
+    <ul class="hidden-tools-list">
+        <li class="right-bottom-tools tool-font-adjust-plus flex justify-center items-center">
+            <i class="fa-regular fa-magnifying-glass-plus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-font-adjust-minus flex justify-center items-center">
+            <i class="fa-regular fa-magnifying-glass-minus"></i>
+        </li>
+
+        <li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
+            <i class="fa-regular fa-moon"></i>
+        </li>
+
+        <!-- rss -->
+        
+
+        
+
+        <li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
+            <i class="fa-regular fa-arrow-down"></i>
+        </li>
+    </ul>
+
+    <ul class="visible-tools-list">
+        <li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
+            <i class="fa-regular fa-cog fa-spin"></i>
+        </li>
+        
+            <li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
+                <i class="arrow-up fas fa-arrow-up"></i>
+                <span class="percent"></span>
+            </li>
+        
+        
+    </ul>
+</div>
+
+    </div>
+
+    <div class="image-viewer-container">
+    <img src="">
+</div>
+
+
+    
+        <div class="search-pop-overlay">
+    <div class="popup search-popup">
+        <div class="search-header">
+          <span class="search-input-field-pre">
+            <i class="fa-solid fa-keyboard"></i>
+          </span>
+            <div class="search-input-container">
+                <input autocomplete="off"
+                       autocorrect="off"
+                       autocapitalize="off"
+                       placeholder="搜索..."
+                       spellcheck="false"
+                       type="search"
+                       class="search-input"
+                >
+            </div>
+            <span class="popup-btn-close">
+                <i class="fa-solid fa-times"></i>
+            </span>
+        </div>
+        <div id="search-result">
+            <div id="no-result">
+                <i class="fa-solid fa-spinner fa-spin-pulse fa-5x fa-fw"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+    
+
+</main>
+
+
+    
+<script src="/js/libs/Swup.min.js"></script>
+
+<script src="/js/libs/SwupSlideTheme.min.js"></script>
+
+<script src="/js/libs/SwupScriptsPlugin.min.js"></script>
+
+<script src="/js/libs/SwupProgressPlugin.min.js"></script>
+
+<script src="/js/libs/SwupScrollPlugin.min.js"></script>
+
+<script src="/js/libs/SwupPreloadPlugin.min.js"></script>
+
+<script>
+    const swup = new Swup({
+        plugins: [
+            new SwupScriptsPlugin({
+                optin: true,
+            }),
+            new SwupProgressPlugin(),
+            new SwupScrollPlugin({
+                offset: 80,
+            }),
+            new SwupSlideTheme({
+                mainElement: ".main-content-body",
+            }),
+            new SwupPreloadPlugin(),
+        ],
+        containers: ["#swup"],
+    });
+</script>
+
+
+
+
+
+
+
+<script src="/js/tools/imageViewer.js" type="module"></script>
+
+<script src="/js/utils.js" type="module"></script>
+
+<script src="/js/main.js" type="module"></script>
+
+<script src="/js/layouts/navbarShrink.js" type="module"></script>
+
+<script src="/js/tools/scrollTopBottom.js" type="module"></script>
+
+<script src="/js/tools/lightDarkSwitch.js" type="module"></script>
+
+<script src="/js/layouts/categoryList.js" type="module"></script>
+
+
+
+    
+<script src="/js/tools/localSearch.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/tools/codeBlock.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/layouts/lazyload.js" type="module"></script>
+
+
+
+
+    
+<script src="/js/tools/runtime.js"></script>
+
+    
+<script src="/js/libs/odometer.min.js"></script>
+
+    
+<link rel="stylesheet" href="/assets/odometer-theme-minimal.css">
+
+
+
+
+  
+<script src="/js/libs/Typed.min.js"></script>
+
+  
+<script src="/js/plugins/typed.js" type="module"></script>
+
+
+
+
+
+
+
+
+
+<div class="post-scripts" data-swup-reload-script>
+    
+        
+<script src="/js/tools/tocToggle.js" type="module"></script>
+
+<script src="/js/layouts/toc.js" type="module"></script>
+
+<script src="/js/plugins/tabs.js" type="module"></script>
+
+    
+</div>
+
+
+</body>
+</html>
