@@ -43,7 +43,7 @@
 <meta property="og:image" content="https://xiaoeeyu.github.io/2024/09/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E6%9F%90%E6%9F%90%E7%89%9B%E4%BB%94%E5%9F%8E/image-20240916231520566.png">
 <meta property="og:image" content="https://xiaoeeyu.github.io/2024/09/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E6%9F%90%E6%9F%90%E7%89%9B%E4%BB%94%E5%9F%8E/image-20240916231821536.png">
 <meta property="article:published_time" content="2024-09-16T14:14:02.000Z">
-<meta property="article:modified_time" content="2024-09-16T15:29:00.642Z">
+<meta property="article:modified_time" content="2024-09-18T02:13:52.644Z">
 <meta property="article:author" content="xiaoeryu">
 <meta property="article:tag" content="协议分析">
 <meta property="article:tag" content="微信小程序逆向">
@@ -484,8 +484,8 @@
     
         <span class="article-date article-meta-item">
             <i class="fa-regular fa-wrench"></i>&nbsp;
-            <span class="desktop">2024-09-16 23:29</span>
-            <span class="mobile">2024-09-16 23:29</span>
+            <span class="desktop">2024-09-18 10:13:52</span>
+            <span class="mobile">2024-09-18 10:13:52</span>
             <span class="hover-info">更新</span>
         </span>
     
@@ -574,7 +574,10 @@
 </li>
 </ul>
 <h1 id="0x02-分析小程序源码"><a href="#0x02-分析小程序源码" class="headerlink" title="0x02 分析小程序源码"></a>0x02 分析小程序源码</h1><h3 id="定位"><a href="#定位" class="headerlink" title="定位"></a>定位</h3><p>首先定位小程序的包</p>
-<p>因为路径下小程序文件夹太多了，先清理一下</p>
+<p>因为路径下小程序文件夹太多了，先清理一下。打开文件管理文件夹，进入<strong>Applet</strong>就能看到小程序的文件夹</p>
+<ul>
+<li>PS：有些小程序如果使用电脑打不开，可以去手机路径中pull下来。现在新版微信的小程序路径是<code>/data/data/com.tencent.mm/MicroMsg/appbrand/pkg</code></li>
+</ul>
 <img lazyload="" src="/images/loading.svg" data-src="/2024/09/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E6%9F%90%E6%9F%90%E7%89%9B%E4%BB%94%E5%9F%8E/image-20240916223613382.png" class="" title="image-20240916223613382">
 
 <p>然后重新打开一遍小程序，用everything搜索<code>.wxapkg</code>定位时间最近那个</p>
@@ -596,7 +599,7 @@
 <img lazyload="" src="/images/loading.svg" data-src="/2024/09/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E6%9F%90%E6%9F%90%E7%89%9B%E4%BB%94%E5%9F%8E/image-20240916224313617.png" class="" title="image-20240916224313617">
 
 <ul>
-<li>运气比较好，第三个直接定位到了获取签名的函数</li>
+<li>运气比较好，搜索的第三个结果直接定位到了获取签名的函数</li>
 <li>其中<code>var u = a.default.hexMD5(n + t + w + m + v + p);</code>把一系列值组合然后进行了DM5计算，这就是我们要找的<code>sign</code></li>
 </ul>
 <h3 id="计算sign"><a href="#计算sign" class="headerlink" title="计算sign"></a>计算sign</h3><p>把代码抠出来，自己重新计算一下获取sign<img lazyload="" src="/images/loading.svg" data-src="/2024/09/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E6%9F%90%E6%9F%90%E7%89%9B%E4%BB%94%E5%9F%8E/image-20240916224654806.png" class="" title="image-20240916224654806"></p>
@@ -824,35 +827,35 @@ var sign = getxSign(e, "20240916222353")	// 时间戳传递协议中的时间戳
         for (n = 0; n &lt; e.length; n++) r[n &gt;&gt; 2] |= (255 &amp; e.charCodeAt(n)) &lt;&lt; n % 4 * 8;
         return r[n &gt;&gt; 2] |= 128 &lt;&lt; n % 4 * 8, r[16 * t - 2] = 8 * e.length, r
     }(e)))
-
+   
     function r(e, t) {
         var r = (65535 &amp; e) + (65535 &amp; t);
         return (e &gt;&gt; 16) + (t &gt;&gt; 16) + (r &gt;&gt; 16) &lt;&lt; 16 | 65535 &amp; r
     }
-
+   
     function n(e, t, n, o, i, a) {
         return r(function (e, t) {
             return e &lt;&lt; t | e &gt;&gt;&gt; 32 - t
         }(r(r(t, e), r(o, a)), i), n)
     }
-
+   
     function o(e, t, r, o, i, a, s) {
         return n(t &amp; r | ~t &amp; o, e, t, i, a, s)
     }
-
+   
     function i(e, t, r, o, i, a, s) {
         return n(t &amp; o | r &amp; ~o, e, t, i, a, s)
     }
-
+   
     function a(e, t, r, o, i, a, s) {
         return n(t ^ r ^ o, e, t, i, a, s)
     }
-
+   
     function s(e, t, r, o, i, a, s) {
         return n(r ^ (t | ~o), e, t, i, a, s)
     }
 }
-
+   
 // 获取时间戳
 function getCurrentTimestamp() {
     var date = new Date();
@@ -864,40 +867,40 @@ function getCurrentTimestamp() {
     var seconds = ('0' + date.getSeconds()).slice(-2);
     return year + month + day + hours + minutes + seconds;
 }
-
+   
 function getxSign(e = {}, t) {
     const w = "511MrfpK^",
           m = "KIoa7YXIaN",
           v = "@UnOaJYS",
           p = "#iki0Dhr";
-
+   
     const r = e.query || {};
     let n = "";
-
+   
     console.log("getSign.times ===&gt;", t, "getSign.data ===&gt;", r);
-
+   
     // 对 query 对象的键按字母排序后拼接
     const sortedKeys = Object.keys(r).sort();
     sortedKeys.forEach(key =&gt; {
         n += key + r[key];
     });
-
+   
     console.log("data 排序后 ===&gt;", n);
-
+   
     // 计算 MD5 签名
     const sign = hexMD5(n + t + w + m + v + p);
     console.log("getSign.sign ===&gt;", sign);
-
+   
     return sign;
 }
-
+   
 var t = getCurrentTimestamp();
 var body = {
     "member_no": 973470,
     "type": 33,
     "store_no": 12
 };
-
+   
 var sign = getxSign({
     query: {
         "member_no": 973470,
@@ -905,12 +908,12 @@ var sign = getxSign({
         "store_no": 12
     }
 }, t)
-
+   
 body.sign = sign;
 body.time = t;
-
+   
 console.log("final body ==&gt; ",body)
-
+   
 // 将 body 设置为 Postman 变量
 pm.variables.set("query", JSON.stringify(body));
 </code></pre>
@@ -1022,7 +1025,7 @@ send_request()
         
             <li>
                 <strong>更新于
-                    :</strong> 2024-09-16 23:29:00
+                    :</strong> 2024-09-18 10:13:52
             </li>
         
         <li>
@@ -1138,7 +1141,7 @@ send_request()
               <span>2022</span>
               -
             
-            2024&nbsp;&nbsp;<i class="fa-solid fa-heart fa-beat" style="--fa-animation-duration: 0.5s; color: #f54545"></i>&nbsp;&nbsp;<a href="/">xiaoeryu</a>
+            2025&nbsp;&nbsp;<i class="fa-solid fa-heart fa-beat" style="--fa-animation-duration: 0.5s; color: #f54545"></i>&nbsp;&nbsp;<a href="/">xiaoeryu</a>
             
                 
                 <p class="post-count space-x-0.5">

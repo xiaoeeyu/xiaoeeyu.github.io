@@ -48,11 +48,10 @@
 <meta property="og:image" content="https://xiaoeeyu.github.io/2024/09/09/%E6%9F%90%E9%BA%A6App%E6%8A%A2%E7%A5%A8%E6%8E%A5%E5%8F%A3%E5%8F%82%E6%95%B0%E5%88%86%E6%9E%90/image-20240905234858209.png">
 <meta property="og:image" content="https://xiaoeeyu.github.io/2024/09/09/%E6%9F%90%E9%BA%A6App%E6%8A%A2%E7%A5%A8%E6%8E%A5%E5%8F%A3%E5%8F%82%E6%95%B0%E5%88%86%E6%9E%90/image-20240906170647836.png">
 <meta property="og:image" content="https://xiaoeeyu.github.io/2024/09/09/%E6%9F%90%E9%BA%A6App%E6%8A%A2%E7%A5%A8%E6%8E%A5%E5%8F%A3%E5%8F%82%E6%95%B0%E5%88%86%E6%9E%90/image-20240906222425425.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2024/09/09/%E6%9F%90%E9%BA%A6App%E6%8A%A2%E7%A5%A8%E6%8E%A5%E5%8F%A3%E5%8F%82%E6%95%B0%E5%88%86%E6%9E%90/image-20240909203153827.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2024/09/09/%E6%9F%90%E9%BA%A6App%E6%8A%A2%E7%A5%A8%E6%8E%A5%E5%8F%A3%E5%8F%82%E6%95%B0%E5%88%86%E6%9E%90/image-20240907162800894.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2024/09/09/%E6%9F%90%E9%BA%A6App%E6%8A%A2%E7%A5%A8%E6%8E%A5%E5%8F%A3%E5%8F%82%E6%95%B0%E5%88%86%E6%9E%90/image-20240909203908797.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/09/09/%E6%9F%90%E9%BA%A6App%E6%8A%A2%E7%A5%A8%E6%8E%A5%E5%8F%A3%E5%8F%82%E6%95%B0%E5%88%86%E6%9E%90/image-20250210152916087.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/2024/09/09/%E6%9F%90%E9%BA%A6App%E6%8A%A2%E7%A5%A8%E6%8E%A5%E5%8F%A3%E5%8F%82%E6%95%B0%E5%88%86%E6%9E%90/image-20250210153051779.png">
 <meta property="article:published_time" content="2024-09-09T11:51:19.000Z">
-<meta property="article:modified_time" content="2024-09-09T12:42:12.876Z">
+<meta property="article:modified_time" content="2025-02-10T07:31:33.076Z">
 <meta property="article:author" content="xiaoeryu">
 <meta property="article:tag" content="App逆向">
 <meta property="article:tag" content="协议分析">
@@ -493,8 +492,8 @@
     
         <span class="article-date article-meta-item">
             <i class="fa-regular fa-wrench"></i>&nbsp;
-            <span class="desktop">2024-09-09 20:42:12</span>
-            <span class="mobile">2024-09-09 20:42:12</span>
+            <span class="desktop">2025-02-10 15:31:33</span>
+            <span class="mobile">2025-02-10 15:31:33</span>
             <span class="hover-info">更新</span>
         </span>
     
@@ -905,49 +904,15 @@ ApiID apiId = builder.addListener(new MyListener).asyncRequest();
 <li>调用buildParams()并打印了一下结果</li>
 </ol>
 </blockquote>
-<h2 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h2><p>突然发现上图中的<code>x-c-traceid=null</code>，在网上的帖子中找到了生成这个值的一段代码，不过不对。</p>
-<blockquote>
-<p>回头再分析这个值吧，这个值其实是一个组合值</p>
-<p><code>utdid + 时间戳 + 一个七位数的值（不确定是不是随机值） + 127115（在我的测试设备上是这个数字不确定换设备是否会改变）</code></p>
-<p>原因：</p>
-<ol>
-<li><p>发现爬虫的协议中不发送这个值也不会报下图这种错误</p>
-<img lazyload="" src="/images/loading.svg" data-src="/2024/09/09/%E6%9F%90%E9%BA%A6App%E6%8A%A2%E7%A5%A8%E6%8E%A5%E5%8F%A3%E5%8F%82%E6%95%B0%E5%88%86%E6%9E%90/image-20240909203153827.png" class="" title="image-20240909203153827"></li>
-</ol>
-</blockquote>
-<pre><code class="js">function getExtraInfo(mtopContext, res) {
-    // Import Java class
-    const ActivityThread = Java.use("android.app.ActivityThread")
-    const SecurityGuardManager = Java.use("com.alibaba.wireless.security.open.SecurityGuardManager")
-    const IFCComponent = Java.use("com.alibaba.wireless.security.open.middletier.fc.IFCComponent")
-
-    // Get context
-    const application = ActivityThread.currentApplication()
-    const context = application.getApplicationContext()
-
-    // Get x-bx-version
-    let iFCComponent = SecurityGuardManager.getInstance(context, "").getInterface(IFCComponent.class)
-    iFCComponent = Java.cast(iFCComponent, IFCComponent)
-    if (iFCComponent !== null) {
-        res.put('x-bx-version', iFCComponent.getFCPluginVersion().toString())
-    }
-
-    // Get x-client-traceid
-    const mtopInstance = mtopContext.mtopInstance.value
-    const mtopStatistics = mtopContext.stats.value
-    const mtopConfig = mtopInstance.getMtopConfig()
-    res.put('x-client-traceid', `${res.get('utdid').toString()}${res.get('t').toString()}${(mtopStatistics.intSeqNo.value % 1000).toString().padStart(4, '0')}`)
-}
-</code></pre>
-<p>执行脚本：<code>frida -UF -l .\getMtopContext.js</code></p>
-<img lazyload="" src="/images/loading.svg" data-src="/2024/09/09/%E6%9F%90%E9%BA%A6App%E6%8A%A2%E7%A5%A8%E6%8E%A5%E5%8F%A3%E5%8F%82%E6%95%B0%E5%88%86%E6%9E%90/image-20240907162800894.png" class="" title="image-20240907162800894">
+<h2 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h2><p>现在通过之前的分析，可以成功的调用构建订单<code>order.build</code>的接口</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/09/09/%E6%9F%90%E9%BA%A6App%E6%8A%A2%E7%A5%A8%E6%8E%A5%E5%8F%A3%E5%8F%82%E6%95%B0%E5%88%86%E6%9E%90/image-20250210152916087.png" class="" title="image-20250210152916087">
 
 <p>接下来还有几个问题：</p>
 <ol>
-<li><p>我们需要把<code>order.create</code>也构建了，因为通过分析和查找资料。我们发现<code>order.create</code>才是最终的购买动作</p>
+<li><p>我们需要把<code>order.create</code>也构建了。<code>order.create</code>才是最终的购买动作</p>
 </li>
-<li><p>需要写爬虫把包拼出来，让请求通过服务器的校验。简单尝试了一下构建的包还是有点问题</p>
-<img lazyload="" src="/images/loading.svg" data-src="/2024/09/09/%E6%9F%90%E9%BA%A6App%E6%8A%A2%E7%A5%A8%E6%8E%A5%E5%8F%A3%E5%8F%82%E6%95%B0%E5%88%86%E6%9E%90/image-20240909203908797.png" class="" title="image-20240909203908797">
+<li><p><code>order.create</code>的包还是有点问题</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/09/09/%E6%9F%90%E9%BA%A6App%E6%8A%A2%E7%A5%A8%E6%8E%A5%E5%8F%A3%E5%8F%82%E6%95%B0%E5%88%86%E6%9E%90/image-20250210153051779.png" class="" title="image-20250210153051779">
 </li>
 <li><p>再之后，可以正常返回之后还需要过滑块验证码</p>
 </li>
@@ -967,7 +932,7 @@ ApiID apiId = builder.addListener(new MyListener).asyncRequest();
         
             <li>
                 <strong>更新于
-                    :</strong> 2024-09-09 20:42:12
+                    :</strong> 2025-02-10 15:31:33
             </li>
         
         <li>
@@ -1098,7 +1063,7 @@ ApiID apiId = builder.addListener(new MyListener).asyncRequest();
               <span>2022</span>
               -
             
-            2024&nbsp;&nbsp;<i class="fa-solid fa-heart fa-beat" style="--fa-animation-duration: 0.5s; color: #f54545"></i>&nbsp;&nbsp;<a href="/">xiaoeryu</a>
+            2025&nbsp;&nbsp;<i class="fa-solid fa-heart fa-beat" style="--fa-animation-duration: 0.5s; color: #f54545"></i>&nbsp;&nbsp;<a href="/">xiaoeryu</a>
             
                 
                 <p class="post-count space-x-0.5">

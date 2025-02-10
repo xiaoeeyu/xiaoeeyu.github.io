@@ -21768,49 +21768,15 @@ ApiID apiId = builder.addListener(new MyListener).asyncRequest();
 <li>调用buildParams()并打印了一下结果</li>
 </ol>
 </blockquote>
-<h2 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h2><p>突然发现上图中的<code>x-c-traceid=null</code>，在网上的帖子中找到了生成这个值的一段代码，不过不对。</p>
-<blockquote>
-<p>回头再分析这个值吧，这个值其实是一个组合值</p>
-<p><code>utdid + 时间戳 + 一个七位数的值（不确定是不是随机值） + 127115（在我的测试设备上是这个数字不确定换设备是否会改变）</code></p>
-<p>原因：</p>
-<ol>
-<li><p>发现爬虫的协议中不发送这个值也不会报下图这种错误</p>
-<img lazyload="" src="/images/loading.svg" data-src="/2024/09/09/%E6%9F%90%E9%BA%A6App%E6%8A%A2%E7%A5%A8%E6%8E%A5%E5%8F%A3%E5%8F%82%E6%95%B0%E5%88%86%E6%9E%90/image-20240909203153827.png" class="" title="image-20240909203153827"></li>
-</ol>
-</blockquote>
-<pre><code class="js">function getExtraInfo(mtopContext, res) {
-    // Import Java class
-    const ActivityThread = Java.use("android.app.ActivityThread")
-    const SecurityGuardManager = Java.use("com.alibaba.wireless.security.open.SecurityGuardManager")
-    const IFCComponent = Java.use("com.alibaba.wireless.security.open.middletier.fc.IFCComponent")
-
-    // Get context
-    const application = ActivityThread.currentApplication()
-    const context = application.getApplicationContext()
-
-    // Get x-bx-version
-    let iFCComponent = SecurityGuardManager.getInstance(context, "").getInterface(IFCComponent.class)
-    iFCComponent = Java.cast(iFCComponent, IFCComponent)
-    if (iFCComponent !== null) {
-        res.put('x-bx-version', iFCComponent.getFCPluginVersion().toString())
-    }
-
-    // Get x-client-traceid
-    const mtopInstance = mtopContext.mtopInstance.value
-    const mtopStatistics = mtopContext.stats.value
-    const mtopConfig = mtopInstance.getMtopConfig()
-    res.put('x-client-traceid', `${res.get('utdid').toString()}${res.get('t').toString()}${(mtopStatistics.intSeqNo.value % 1000).toString().padStart(4, '0')}`)
-}
-</code></pre>
-<p>执行脚本：<code>frida -UF -l .\getMtopContext.js</code></p>
-<img lazyload="" src="/images/loading.svg" data-src="/2024/09/09/%E6%9F%90%E9%BA%A6App%E6%8A%A2%E7%A5%A8%E6%8E%A5%E5%8F%A3%E5%8F%82%E6%95%B0%E5%88%86%E6%9E%90/image-20240907162800894.png" class="" title="image-20240907162800894">
+<h2 id="补充"><a href="#补充" class="headerlink" title="补充"></a>补充</h2><p>现在通过之前的分析，可以成功的调用构建订单<code>order.build</code>的接口</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/09/09/%E6%9F%90%E9%BA%A6App%E6%8A%A2%E7%A5%A8%E6%8E%A5%E5%8F%A3%E5%8F%82%E6%95%B0%E5%88%86%E6%9E%90/image-20250210152916087.png" class="" title="image-20250210152916087">
 
 <p>接下来还有几个问题：</p>
 <ol>
-<li><p>我们需要把<code>order.create</code>也构建了，因为通过分析和查找资料。我们发现<code>order.create</code>才是最终的购买动作</p>
+<li><p>我们需要把<code>order.create</code>也构建了。<code>order.create</code>才是最终的购买动作</p>
 </li>
-<li><p>需要写爬虫把包拼出来，让请求通过服务器的校验。简单尝试了一下构建的包还是有点问题</p>
-<img lazyload="" src="/images/loading.svg" data-src="/2024/09/09/%E6%9F%90%E9%BA%A6App%E6%8A%A2%E7%A5%A8%E6%8E%A5%E5%8F%A3%E5%8F%82%E6%95%B0%E5%88%86%E6%9E%90/image-20240909203908797.png" class="" title="image-20240909203908797">
+<li><p><code>order.create</code>的包还是有点问题</p>
+<img lazyload="" src="/images/loading.svg" data-src="/2024/09/09/%E6%9F%90%E9%BA%A6App%E6%8A%A2%E7%A5%A8%E6%8E%A5%E5%8F%A3%E5%8F%82%E6%95%B0%E5%88%86%E6%9E%90/image-20250210153051779.png" class="" title="image-20250210153051779">
 </li>
 <li><p>再之后，可以正常返回之后还需要过滑块验证码</p>
 </li>
@@ -21859,7 +21825,10 @@ ApiID apiId = builder.addListener(new MyListener).asyncRequest();
 </li>
 </ul>
 <h1 id="0x02-分析小程序源码"><a href="#0x02-分析小程序源码" class="headerlink" title="0x02 分析小程序源码"></a>0x02 分析小程序源码</h1><h3 id="定位"><a href="#定位" class="headerlink" title="定位"></a>定位</h3><p>首先定位小程序的包</p>
-<p>因为路径下小程序文件夹太多了，先清理一下</p>
+<p>因为路径下小程序文件夹太多了，先清理一下。打开文件管理文件夹，进入<strong>Applet</strong>就能看到小程序的文件夹</p>
+<ul>
+<li>PS：有些小程序如果使用电脑打不开，可以去手机路径中pull下来。现在新版微信的小程序路径是<code>/data/data/com.tencent.mm/MicroMsg/appbrand/pkg</code></li>
+</ul>
 <img lazyload="" src="/images/loading.svg" data-src="/2024/09/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E6%9F%90%E6%9F%90%E7%89%9B%E4%BB%94%E5%9F%8E/image-20240916223613382.png" class="" title="image-20240916223613382">
 
 <p>然后重新打开一遍小程序，用everything搜索<code>.wxapkg</code>定位时间最近那个</p>
@@ -21881,7 +21850,7 @@ ApiID apiId = builder.addListener(new MyListener).asyncRequest();
 <img lazyload="" src="/images/loading.svg" data-src="/2024/09/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E6%9F%90%E6%9F%90%E7%89%9B%E4%BB%94%E5%9F%8E/image-20240916224313617.png" class="" title="image-20240916224313617">
 
 <ul>
-<li>运气比较好，第三个直接定位到了获取签名的函数</li>
+<li>运气比较好，搜索的第三个结果直接定位到了获取签名的函数</li>
 <li>其中<code>var u = a.default.hexMD5(n + t + w + m + v + p);</code>把一系列值组合然后进行了DM5计算，这就是我们要找的<code>sign</code></li>
 </ul>
 <h3 id="计算sign"><a href="#计算sign" class="headerlink" title="计算sign"></a>计算sign</h3><p>把代码抠出来，自己重新计算一下获取sign<img lazyload="" src="/images/loading.svg" data-src="/2024/09/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E6%9F%90%E6%9F%90%E7%89%9B%E4%BB%94%E5%9F%8E/image-20240916224654806.png" class="" title="image-20240916224654806"></p>
@@ -22109,35 +22078,35 @@ var sign = getxSign(e, "20240916222353")	// 时间戳传递协议中的时间戳
         for (n = 0; n &lt; e.length; n++) r[n &gt;&gt; 2] |= (255 &amp; e.charCodeAt(n)) &lt;&lt; n % 4 * 8;
         return r[n &gt;&gt; 2] |= 128 &lt;&lt; n % 4 * 8, r[16 * t - 2] = 8 * e.length, r
     }(e)))
-
+   
     function r(e, t) {
         var r = (65535 &amp; e) + (65535 &amp; t);
         return (e &gt;&gt; 16) + (t &gt;&gt; 16) + (r &gt;&gt; 16) &lt;&lt; 16 | 65535 &amp; r
     }
-
+   
     function n(e, t, n, o, i, a) {
         return r(function (e, t) {
             return e &lt;&lt; t | e &gt;&gt;&gt; 32 - t
         }(r(r(t, e), r(o, a)), i), n)
     }
-
+   
     function o(e, t, r, o, i, a, s) {
         return n(t &amp; r | ~t &amp; o, e, t, i, a, s)
     }
-
+   
     function i(e, t, r, o, i, a, s) {
         return n(t &amp; o | r &amp; ~o, e, t, i, a, s)
     }
-
+   
     function a(e, t, r, o, i, a, s) {
         return n(t ^ r ^ o, e, t, i, a, s)
     }
-
+   
     function s(e, t, r, o, i, a, s) {
         return n(r ^ (t | ~o), e, t, i, a, s)
     }
 }
-
+   
 // 获取时间戳
 function getCurrentTimestamp() {
     var date = new Date();
@@ -22149,40 +22118,40 @@ function getCurrentTimestamp() {
     var seconds = ('0' + date.getSeconds()).slice(-2);
     return year + month + day + hours + minutes + seconds;
 }
-
+   
 function getxSign(e = {}, t) {
     const w = "511MrfpK^",
           m = "KIoa7YXIaN",
           v = "@UnOaJYS",
           p = "#iki0Dhr";
-
+   
     const r = e.query || {};
     let n = "";
-
+   
     console.log("getSign.times ===&gt;", t, "getSign.data ===&gt;", r);
-
+   
     // 对 query 对象的键按字母排序后拼接
     const sortedKeys = Object.keys(r).sort();
     sortedKeys.forEach(key =&gt; {
         n += key + r[key];
     });
-
+   
     console.log("data 排序后 ===&gt;", n);
-
+   
     // 计算 MD5 签名
     const sign = hexMD5(n + t + w + m + v + p);
     console.log("getSign.sign ===&gt;", sign);
-
+   
     return sign;
 }
-
+   
 var t = getCurrentTimestamp();
 var body = {
     "member_no": 973470,
     "type": 33,
     "store_no": 12
 };
-
+   
 var sign = getxSign({
     query: {
         "member_no": 973470,
@@ -22190,12 +22159,12 @@ var sign = getxSign({
         "store_no": 12
     }
 }, t)
-
+   
 body.sign = sign;
 body.time = t;
-
+   
 console.log("final body ==&gt; ",body)
-
+   
 // 将 body 设置为 Postman 变量
 pm.variables.set("query", JSON.stringify(body));
 </code></pre>
