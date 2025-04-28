@@ -21,12 +21,12 @@
     
     
         
-        <meta name="description" content="Xposed插件开发之对so中函数的处理对so中函数的hook跟对java层函数的hook不同，Xposed无法完成对so层函数的hook。需要使用其它的框架编写so层的hook代码，然后通过xposed进行主动调用的方式来完成hook。 这里我们先以32位为例，使用inlineHook框架 ，不过这个框架只能hook 32位的app 先来创建一个包含有so库的native C++项目，作为目标a">
+        <meta name="description" content="Xposed插件开发之对so中函数的处理对so中函数的hook跟对java层函数的hook不同，Xposed无法完成对so层函数的hook。需要使用其它的框架编写so层的hook代码，然后通过xposed进行主动调用的方式来完成hook。 这里我们先以32位为例，使用inlineHook框架，不过这个框架只能hook 32位的app 先来创建一个包含有so库的native C++项目，作为目标ap">
 <meta property="og:type" content="article">
 <meta property="og:title" content="so函数Hook（上）">
 <meta property="og:url" content="https://xiaoeeyu.github.io/2023/12/25/so%E5%87%BD%E6%95%B0Hook%EF%BC%88%E4%B8%8A%EF%BC%89/index.html">
 <meta property="og:site_name" content="xiaoeryu">
-<meta property="og:description" content="Xposed插件开发之对so中函数的处理对so中函数的hook跟对java层函数的hook不同，Xposed无法完成对so层函数的hook。需要使用其它的框架编写so层的hook代码，然后通过xposed进行主动调用的方式来完成hook。 这里我们先以32位为例，使用inlineHook框架 ，不过这个框架只能hook 32位的app 先来创建一个包含有so库的native C++项目，作为目标a">
+<meta property="og:description" content="Xposed插件开发之对so中函数的处理对so中函数的hook跟对java层函数的hook不同，Xposed无法完成对so层函数的hook。需要使用其它的框架编写so层的hook代码，然后通过xposed进行主动调用的方式来完成hook。 这里我们先以32位为例，使用inlineHook框架，不过这个框架只能hook 32位的app 先来创建一个包含有so库的native C++项目，作为目标ap">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://xiaoeeyu.github.io/2023/12/25/so%E5%87%BD%E6%95%B0Hook%EF%BC%88%E4%B8%8A%EF%BC%89/image-20231222230559368.png">
 <meta property="og:image" content="https://xiaoeeyu.github.io/2023/12/25/so%E5%87%BD%E6%95%B0Hook%EF%BC%88%E4%B8%8A%EF%BC%89/image-20231222233205744.png">
@@ -390,7 +390,7 @@
 
 		<div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
 			<h3 id="Xposed插件开发之对so中函数的处理"><a href="#Xposed插件开发之对so中函数的处理" class="headerlink" title="Xposed插件开发之对so中函数的处理"></a>Xposed插件开发之对so中函数的处理</h3><p>对so中函数的hook跟对java层函数的hook不同，Xposed无法完成对so层函数的hook。需要使用其它的框架编写so层的hook代码，然后通过xposed进行主动调用的方式来完成hook。</p>
-<p>这里我们先以32位为例，使用<a class="link" target="_blank" rel="noopener" href="https://github.com/ele7enxxh/Android-Inline-Hook">inlineHook框架 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>，不过这个框架只能hook 32位的app</p>
+<p>这里我们先以32位为例，使用<a class="link" target="_blank" rel="noopener" href="https://github.com/ele7enxxh/Android-Inline-Hook">inlineHook框架<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>，不过这个框架只能hook 32位的app</p>
 <p>先来创建一个包含有so库的native C++项目，作为目标app</p>
 <img lazyload="" src="/images/loading.svg" data-src="/2023/12/25/so%E5%87%BD%E6%95%B0Hook%EF%BC%88%E4%B8%8A%EF%BC%89/image-20231222230559368.png" class="" title="image-20231222230559368">
 

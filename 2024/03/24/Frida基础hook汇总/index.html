@@ -473,7 +473,7 @@
 <ul>
 <li>这个native函数的类型是jstring，它的返回值类型是使用Java提供的方法创建一个字符串来返回，所以我们要改变返回值同样也需要使用相同的类型来替换</li>
 </ul>
-<p>这里查看<a class="link" target="_blank" rel="noopener" href="https://github.com/frida/frida-java-bridge/blob/main/lib/env.js">Frida的源码 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>提供的方法</p>
+<p>这里查看<a class="link" target="_blank" rel="noopener" href="https://github.com/frida/frida-java-bridge/blob/main/lib/env.js">Frida的源码<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>提供的方法</p>
 <img lazyload="" src="/images/loading.svg" data-src="/2024/03/24/Frida%E5%9F%BA%E7%A1%80hook%E6%B1%87%E6%80%BB/image-20240813223807354.png" class="" title="image-20240813223807354">
 
 <p>测试代码</p>
@@ -491,7 +491,7 @@
 <img lazyload="" src="/images/loading.svg" data-src="/2024/03/24/Frida%E5%9F%BA%E7%A1%80hook%E6%B1%87%E6%80%BB/image-20240320202658138.png" class="" title="image-20240320202658138">
 
 <ul>
-<li>通过函数名来找到它的地址，函数名要使用它在内存中的名字，这里的名字跟原本函数名字不同是因为它做了demangler处理，可以在<a class="link" target="_blank" rel="noopener" href="http://demangler.com/">解码网站 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>对它进行解码处理</li>
+<li>通过函数名来找到它的地址，函数名要使用它在内存中的名字，这里的名字跟原本函数名字不同是因为它做了demangler处理，可以在<a class="link" target="_blank" rel="noopener" href="http://demangler.com/">解码网站<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>对它进行解码处理</li>
 </ul>
 <pre><code class="js">function hookAndInvoke_add(){
     // 获取函数地址
@@ -570,7 +570,7 @@
 <img lazyload="" src="/images/loading.svg" data-src="/2024/03/24/Frida%E5%9F%BA%E7%A1%80hook%E6%B1%87%E6%80%BB/image-20240321203617680.png" class="" title="image-20240321203617680">
 
 <h3 id="hook内容的补充"><a href="#hook内容的补充" class="headerlink" title="hook内容的补充"></a>hook内容的补充</h3><p>前面进行的所有hook或者主动调用、替换，都是找到目标函数的地址然后对这个函数进行操作。所以本质上都是对这个函数的地址进行hook（虽然使用ida也能找到目标函数的地址和基址，不过如果是动态加载的话它的地址是会变的。所以还是使用调用Frida提供的API获取地址比较方便）。</p>
-<h4 id="Frida提供的其它API"><a href="#Frida提供的其它API" class="headerlink" title="Frida提供的其它API"></a>Frida提供的其它API</h4><p>详细信息可以看Frida提供的<a class="link" target="_blank" rel="noopener" href="https://frida.re/docs/javascript-api/#nativepointer">文档 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>，提供了很多的方法来获取更多的信息</p>
+<h4 id="Frida提供的其它API"><a href="#Frida提供的其它API" class="headerlink" title="Frida提供的其它API"></a>Frida提供的其它API</h4><p>详细信息可以看Frida提供的<a class="link" target="_blank" rel="noopener" href="https://frida.re/docs/javascript-api/#nativepointer">文档<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>，提供了很多的方法来获取更多的信息</p>
 <h5 id="Process"><a href="#Process" class="headerlink" title="Process"></a>Process</h5><blockquote>
 <img lazyload="" src="/images/loading.svg" data-src="/2024/03/24/Frida%E5%9F%BA%E7%A1%80hook%E6%B1%87%E6%80%BB/image-20240321211322713.png" class="" title="image-20240321211322713">
 
@@ -580,7 +580,7 @@
 <img lazyload="" src="/images/loading.svg" data-src="/2024/03/24/Frida%E5%9F%BA%E7%A1%80hook%E6%B1%87%E6%80%BB/image-20240321212229466.png" class="" title="image-20240321212229466">
 </blockquote>
 <h5 id="Module"><a href="#Module" class="headerlink" title="Module"></a>Module</h5><blockquote>
-<p>枚举模块的信息，具体都能枚举什么东 西可以在Frida的<a class="link" target="_blank" rel="noopener" href="https://frida.re/docs/javascript-api/#nativepointer">文档 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>中查看</p>
+<p>枚举模块的信息，具体都能枚举什么东 西可以在Frida的<a class="link" target="_blank" rel="noopener" href="https://frida.re/docs/javascript-api/#nativepointer">文档<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>中查看</p>
 <pre><code class="js">// 第一种方式
 function module(){
  var nativelib_addr = Process.findModuleByAddress(Module.findBaseAddress("libutils.so"));
@@ -605,9 +605,9 @@ function test(){
 <li>第二种更直接一点，直接用模块名枚举就行了</li>
 </ul>
 </blockquote>
-<p>等等更多的不再列举，都可以通过Frida的<a class="link" target="_blank" rel="noopener" href="https://frida.re/docs/javascript-api/#nativepointer">文档 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>查看使用方法</p>
-<h6 id="附件："><a href="#附件：" class="headerlink" title="附件："></a>附件：</h6><p><a class="link" target="_blank" rel="noopener" href="https://github.com/xiaoeeyu/demoso1">demo源码 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
-<p><a class="link" target="_blank" rel="noopener" href="https://github.com/xiaoeeyu/FridaHook-/blob/main/fridaHook_01.js">Frida Hook脚本 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<p>等等更多的不再列举，都可以通过Frida的<a class="link" target="_blank" rel="noopener" href="https://frida.re/docs/javascript-api/#nativepointer">文档<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>查看使用方法</p>
+<h6 id="附件："><a href="#附件：" class="headerlink" title="附件："></a>附件：</h6><p><a class="link" target="_blank" rel="noopener" href="https://github.com/xiaoeeyu/demoso1">demo源码<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></p>
+<p><a class="link" target="_blank" rel="noopener" href="https://github.com/xiaoeeyu/FridaHook-/blob/main/fridaHook_01.js">Frida Hook脚本<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></p>
 
 		</div>
 

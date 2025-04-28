@@ -416,7 +416,7 @@
 <ul>
 <li><p>因为这个so库中有两个<em>GetStringUTFChars</em>，需要把<em>CheckJNI</em>给筛选掉。最后得到的结果是：**_ZN3art3JNI17GetStringUTFCharsEP7_JNIEnvP8_jstringPh**</p>
 </li>
-<li><p>对这个结果进行<a class="link" target="_blank" rel="noopener" href="http://demangler.com/">demangler <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>可以看到获取到完整的函数名：<em><em>art::JNI::GetStringUTFChars(_JNIEnv</em>, _jstring</em>, unsigned char*)**</p>
+<li><p>对这个结果进行<a class="link" target="_blank" rel="noopener" href="http://demangler.com/">demangler<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>可以看到获取到完整的函数名：<em><em>art::JNI::GetStringUTFChars(_JNIEnv</em>, _jstring</em>, unsigned char*)**</p>
 </li>
 <li><p>使用attach对它进行hook就可以获取到所有调用这个函数的参数和返回值了</p>
 </li>
@@ -562,8 +562,8 @@
 <ul>
 <li>可以解析出来的内容包括：类名、注册前的函数名、sig、注册函数在内存中的信息、所在模块的信息、 RegisterNative()的返回地址和所在库名以及在库中的偏移、最后还获取了一下注册函数所在的偏移（其实已经知道了函数地址和库的基址已经可以直接算出来了）</li>
 </ul>
-<h6 id="附件"><a href="#附件" class="headerlink" title="附件"></a>附件</h6><p>使用的被hook demo还是上一章中使用的<a class="link" target="_blank" rel="noopener" href="https://github.com/xiaoeeyu/demoso1">demo <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
-<p>本章完整的<a class="link" target="_blank" rel="noopener" href="https://github.com/xiaoeeyu/JNI-hook/blob/main/JNI_hook.js">hook脚本 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<h6 id="附件"><a href="#附件" class="headerlink" title="附件"></a>附件</h6><p>使用的被hook demo还是上一章中使用的<a class="link" target="_blank" rel="noopener" href="https://github.com/xiaoeeyu/demoso1">demo<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></p>
+<p>本章完整的<a class="link" target="_blank" rel="noopener" href="https://github.com/xiaoeeyu/JNI-hook/blob/main/JNI_hook.js">hook脚本<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></p>
 
 		</div>
 

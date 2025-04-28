@@ -415,16 +415,16 @@
 <span id="more"></span>
 
 <h1 id="Dalvik下的函数抽取"><a href="#Dalvik下的函数抽取" class="headerlink" title="Dalvik下的函数抽取"></a>Dalvik下的函数抽取</h1><p>关于Dalvik下函数抽取壳的实现可以去看看《Android应用安全防护和逆向分析》的作者-姜维写的两篇文章和书中都有介绍</p>
-<p><a class="link" target="_blank" rel="noopener" href="http://www.520monkey.com/archives/1118">Android中实现「类方法指令抽取方式」加固方案原理解析 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<p><a class="link" target="_blank" rel="noopener" href="http://www.520monkey.com/archives/1118">Android中实现「类方法指令抽取方式」加固方案原理解析<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></p>
 <ul>
 <li>这篇文章对dex的结构做了一个简单的介绍，怎么去定位函数指令的地址。最后实现了一个函数抽取壳的demo</li>
 </ul>
-<p><a class="link" target="_blank" rel="noopener" href="http://www.520monkey.com/archives/1115">Android免Root权限通过Hook系统函数修改程序运行时内存指令逻辑 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<p><a class="link" target="_blank" rel="noopener" href="http://www.520monkey.com/archives/1115">Android免Root权限通过Hook系统函数修改程序运行时内存指令逻辑<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></p>
 <ul>
 <li>这篇文章是前一篇文章的一个基础</li>
 </ul>
 <p><strong>这两篇文章介绍了在Dalvik下的函数抽取壳的原理和代码实现，实现函数抽取壳脱壳重要的一点是我们恢复这个函数的时机一定要早于这个函数被调用的时机，如果我们恢复的时机晚于被调用的时机的话那这个app的逻辑就被破坏掉了，APP自然就会崩溃。我们要保证当一个函数被调用，它的指令流必须是已经被修复了，这个就需要我们去分析源码来找到这个合适的时机点</strong></p>
-<p>这里先看一下<a class="link" target="_blank" rel="noopener" href="http://www.520monkey.com/archives/1118">Android中实现「类方法指令抽取方式」加固方案原理解析 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>这篇文章当中的时机点是怎么找的</p>
+<p>这里先看一下<a class="link" target="_blank" rel="noopener" href="http://www.520monkey.com/archives/1118">Android中实现「类方法指令抽取方式」加固方案原理解析<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>这篇文章当中的时机点是怎么找的</p>
 <img lazyload="" src="/images/loading.svg" data-src="/2023/09/22/ART%E4%B8%8B%E6%8A%BD%E5%8F%96%E5%A3%B3%E5%AE%9E%E7%8E%B0/image-20230922234409887.png" class="" title="image-20230922234409887">
 
 <ul>
@@ -518,7 +518,7 @@
 <li>上面这些流程就是最终用来调用dex2oat的流程，打断这个流程即可终止对dex2oat二进制程序的调用</li>
 </ul>
 <h3 id="HOOK-execve"><a href="#HOOK-execve" class="headerlink" title="HOOK execve()"></a>HOOK execve()</h3><p><strong>接下来通过HOOK libc库中的execve()来打断对dex2oat的调用</strong></p>
-<p>github上有类似的项目不过好多年没有更新了，对有些art版本可能已经不适用了<a class="link" target="_blank" rel="noopener" href="https://github.com/asLody/TurboDex/tree/master">链接 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<p>github上有类似的项目不过好多年没有更新了，对有些art版本可能已经不适用了<a class="link" target="_blank" rel="noopener" href="https://github.com/asLody/TurboDex/tree/master">链接<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></p>
 <p>hook代码：</p>
 <pre><code class="C++">void hooklibc() {
     LOGD("go into hooklibc");
@@ -552,7 +552,7 @@
 <ul>
 <li>这样就可以停止它dex2oat的流程，接下来要找到一个时机点去还原被抽空的函数</li>
 </ul>
-<p><a class="link" target="_blank" rel="noopener" href="https://bbs.kanxue.com/thread-254028.htm">参考寒冰的这篇文章 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<p><a class="link" target="_blank" rel="noopener" href="https://bbs.kanxue.com/thread-254028.htm">参考寒冰的这篇文章<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></p>
 <img lazyload="" src="/images/loading.svg" data-src="/2023/09/22/ART%E4%B8%8B%E6%8A%BD%E5%8F%96%E5%A3%B3%E5%AE%9E%E7%8E%B0/image-20230921170635600.png" class="" title="image-20230921170635600">
 
 <p><strong>这里手动修改dex抽取一个函数试一下，看一下函数抽取的流程</strong></p>

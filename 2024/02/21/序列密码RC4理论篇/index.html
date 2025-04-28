@@ -412,7 +412,7 @@
 </ul>
 <p>因为是对称加密，RC4的加密和解密过程是一样的</p>
 <h3 id="实现RC4算法"><a href="#实现RC4算法" class="headerlink" title="实现RC4算法"></a>实现RC4算法</h3><p>手动写一遍RC4的算法，看一下它的加密和解密流程</p>
-<p><a class="link" target="_blank" rel="noopener" href="https://github.com/xiaoeeyu/RC4">代码地址 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<p><a class="link" target="_blank" rel="noopener" href="https://github.com/xiaoeeyu/RC4">代码地址<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></p>
 <p>总结：经过了初始化算法（KSA）和伪随机子密码生成算法（PRGA）两个部分后，可以知道，任意一个给定的key（长度为1-256）都会得到一个特定的字节流序列，可以看成是对明文进行异或的子密钥序列。因此，对于长度足够长的RC4的密钥，其对抗暴力破解便已足够，因此，加密强度也已经相当强！</p>
 <p>在KSA阶段，需要有长度为256的状态向量即S盒的参与，并会有两轮256大小的循环，对状态向量S盒进行扰乱</p>
 <p>在PRGA阶段，会有循环次数为加密内容字节数的循环体，每一次循环中都会有状态向量即S盒的参与，并会重新扰乱S盒生成新的状态向量</p>

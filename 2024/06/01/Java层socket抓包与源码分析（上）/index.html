@@ -434,17 +434,17 @@
 <hr>
 <h2 id="创建demo来作为分析案例"><a href="#创建demo来作为分析案例" class="headerlink" title="创建demo来作为分析案例"></a>创建demo来作为分析案例</h2><p>这里写一个简单的客户端和服务端的收发数据的demo</p>
 <blockquote>
-<p>服务端：<a class="link" target="_blank" rel="noopener" href="https://github.com/xiaoeeyu/TcpServer-Demo">python接收器 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<p>服务端：<a class="link" target="_blank" rel="noopener" href="https://github.com/xiaoeeyu/TcpServer-Demo">python接收器<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></p>
 <img lazyload="" src="/images/loading.svg" data-src="/2024/06/01/Java%E5%B1%82socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%8A%EF%BC%89/image-20240531123232991.png" class="" title="image-20240531123232991">
 
-<p>客户端：<a class="link" target="_blank" rel="noopener" href="https://github.com/xiaoeeyu/okhttp2.6">App Demo <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<p>客户端：<a class="link" target="_blank" rel="noopener" href="https://github.com/xiaoeeyu/okhttp2.6">App Demo<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></p>
 <img lazyload="" src="/images/loading.svg" data-src="/2024/06/01/Java%E5%B1%82socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%8A%EF%BC%89/image-20240531123256577.png" class="" title="image-20240531123256577">
 </blockquote>
 <p>要使用的工具安装</p>
 <blockquote>
 <p>安装tcpdump：等下用来抓包测试通信是否畅通</p>
 <ul>
-<li>下载<a class="link" target="_blank" rel="noopener" href="https://www.androidtcpdump.com/download/4.99.4.1.10.4/tcpdump">tcpdump包 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>，将其拷贝到手机<code>adb push tcpdump /data/local/tmp/</code></li>
+<li>下载<a class="link" target="_blank" rel="noopener" href="https://www.androidtcpdump.com/download/4.99.4.1.10.4/tcpdump">tcpdump包<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>，将其拷贝到手机<code>adb push tcpdump /data/local/tmp/</code></li>
 <li>设置执行权限<code>chmod 755 tcpdump</code></li>
 <li>添加到环境变量<code>export PATH=$PATH:/data/local/tmp</code></li>
 </ul>
@@ -531,7 +531,7 @@ tcpdump -i any -s 0 -w /sdcard/01.pcap
 <p>接收数据：java.net.SocketInputStream.read(byte[])</p>
 <p>发送数据：java.net.SocketOutputStream.write(byte[])</p>
 </blockquote>
-<h2 id="Android源码分析"><a href="#Android源码分析" class="headerlink" title="Android源码分析"></a>Android<a class="link" target="_blank" rel="noopener" href="http://androidxref.com/8.1.0_r33/">源码 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>分析</h2><p>接下来分析Android源码，获取我们方才分析拿到的方法，在框架背后的实现</p>
+<h2 id="Android源码分析"><a href="#Android源码分析" class="headerlink" title="Android源码分析"></a>Android<a class="link" target="_blank" rel="noopener" href="http://androidxref.com/8.1.0_r33/">源码<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>分析</h2><p>接下来分析Android源码，获取我们方才分析拿到的方法，在框架背后的实现</p>
 <p>暂时我们的源码分析先到java层结束为止，不进入native层分析。后面如果碰到不使用Java层的API，直接调用libc中的API进行通信的再继续往下分析，当然还有更进一步的跳过libc中的API，直接使用系统调用的情况，如果遇到再进行单独分析</p>
 <h5 id="接收数据：java-net-SocketInputStream-read-byte"><a href="#接收数据：java-net-SocketInputStream-read-byte" class="headerlink" title="接收数据：java.net.SocketInputStream.read(byte[])"></a>接收数据：java.net.SocketInputStream.read(byte[])</h5><img lazyload="" src="/images/loading.svg" data-src="/2024/06/01/Java%E5%B1%82socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%8A%EF%BC%89/image-20240531233558633.png" class="" title="image-20240531233558633">
 
@@ -760,7 +760,7 @@ function printJavaStack(name) {
 <ul>
 <li>都可以成功拿到ip和端口</li>
 </ul>
-<h6 id="附件："><a href="#附件：" class="headerlink" title="附件："></a>附件：</h6><p>本章写的<a class="link" target="_blank" rel="noopener" href="https://github.com/xiaoeeyu/hookTcp-demo">frida-socket抓包脚本 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<h6 id="附件："><a href="#附件：" class="headerlink" title="附件："></a>附件：</h6><p>本章写的<a class="link" target="_blank" rel="noopener" href="https://github.com/xiaoeeyu/hookTcp-demo">frida-socket抓包脚本<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></p>
 
 		</div>
 
@@ -876,7 +876,7 @@ function printJavaStack(name) {
 	<div class="post-toc">
 		<div class="toc-title">目录</div>
 		<div class="page-title">Java层socket抓包与源码分析（上）</div>
-		<ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98"><span class="nav-text">问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%AE%E6%A0%87"><span class="nav-text">目标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%86%E5%90%91%E5%88%86%E6%9E%90%E6%80%9D%E6%83%B3"><span class="nav-text">逆向分析思想</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BAdemo%E6%9D%A5%E4%BD%9C%E4%B8%BA%E5%88%86%E6%9E%90%E6%A1%88%E4%BE%8B"><span class="nav-text">创建demo来作为分析案例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90"><span class="nav-text">代码分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Android%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90"><span class="nav-text">Android源码 分析</span></a></li></ol>
+		<ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%97%AE%E9%A2%98"><span class="nav-text">问题</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E7%9B%AE%E6%A0%87"><span class="nav-text">目标</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%80%86%E5%90%91%E5%88%86%E6%9E%90%E6%80%9D%E6%83%B3"><span class="nav-text">逆向分析思想</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%9B%E5%BB%BAdemo%E6%9D%A5%E4%BD%9C%E4%B8%BA%E5%88%86%E6%9E%90%E6%A1%88%E4%BE%8B"><span class="nav-text">创建demo来作为分析案例</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E4%BB%A3%E7%A0%81%E5%88%86%E6%9E%90"><span class="nav-text">代码分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Android%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90"><span class="nav-text">Android源码分析</span></a></li></ol>
 
 	</div>
 </div>

@@ -21,12 +21,12 @@
     
     
         
-        <meta name="description" content="创建demo作为分析案例本章将创建一个简单的udp通信demo，来进行分析并编写Frida Hook脚本  服务端：Python接收器    客户端：App Demo    代码分析跟上篇一样对接收和发送数据的流程进行hook来获取hook点 调试分析在receive()和send()处下断点进行调试    以调试模式运行之后会首先断在receive()处  这里继续F7步入    记录下来最后的">
+        <meta name="description" content="创建demo作为分析案例本章将创建一个简单的udp通信demo，来进行分析并编写Frida Hook脚本  服务端：Python接收器   客户端：App Demo   代码分析跟上篇一样对接收和发送数据的流程进行hook来获取hook点 调试分析在receive()和send()处下断点进行调试    以调试模式运行之后会首先断在receive()处  这里继续F7步入    记录下来最后的调用">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Java层socket抓包与源码分析（下）">
 <meta property="og:url" content="https://xiaoeeyu.github.io/2024/06/02/Java%E5%B1%82socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%8B%EF%BC%89/index.html">
 <meta property="og:site_name" content="xiaoeryu">
-<meta property="og:description" content="创建demo作为分析案例本章将创建一个简单的udp通信demo，来进行分析并编写Frida Hook脚本  服务端：Python接收器    客户端：App Demo    代码分析跟上篇一样对接收和发送数据的流程进行hook来获取hook点 调试分析在receive()和send()处下断点进行调试    以调试模式运行之后会首先断在receive()处  这里继续F7步入    记录下来最后的">
+<meta property="og:description" content="创建demo作为分析案例本章将创建一个简单的udp通信demo，来进行分析并编写Frida Hook脚本  服务端：Python接收器   客户端：App Demo   代码分析跟上篇一样对接收和发送数据的流程进行hook来获取hook点 调试分析在receive()和send()处下断点进行调试    以调试模式运行之后会首先断在receive()处  这里继续F7步入    记录下来最后的调用">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://xiaoeeyu.github.io/2024/06/02/Java%E5%B1%82socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%8B%EF%BC%89/image-20240602224429057.png">
 <meta property="og:image" content="https://xiaoeeyu.github.io/2024/06/02/Java%E5%B1%82socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%8B%EF%BC%89/image-20240603003631819.png">
@@ -390,10 +390,10 @@
 		<div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
 			<h2 id="创建demo作为分析案例"><a href="#创建demo作为分析案例" class="headerlink" title="创建demo作为分析案例"></a>创建demo作为分析案例</h2><p>本章将创建一个简单的udp通信demo，来进行分析并编写Frida Hook脚本</p>
 <blockquote>
-<p>服务端：<a class="link" target="_blank" rel="noopener" href="https://github.com/xiaoeeyu/UdpServer-Demo">Python接收器 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<p>服务端：<a class="link" target="_blank" rel="noopener" href="https://github.com/xiaoeeyu/UdpServer-Demo">Python接收器<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></p>
 <img lazyload="" src="/images/loading.svg" data-src="/2024/06/02/Java%E5%B1%82socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%8B%EF%BC%89/image-20240602224429057.png" class="" title="image-20240602224429057">
 
-<p>客户端：<a class="link" target="_blank" rel="noopener" href="https://github.com/xiaoeeyu/okhttp2.6">App Demo <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<p>客户端：<a class="link" target="_blank" rel="noopener" href="https://github.com/xiaoeeyu/okhttp2.6">App Demo<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></p>
 <img lazyload="" src="/images/loading.svg" data-src="/2024/06/02/Java%E5%B1%82socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90%EF%BC%88%E4%B8%8B%EF%BC%89/image-20240603003631819.png" class="" title="image-20240603003631819">
 </blockquote>
 <h2 id="代码分析"><a href="#代码分析" class="headerlink" title="代码分析"></a>代码分析</h2><p>跟上篇一样对接收和发送数据的流程进行hook来获取hook点</p>
@@ -550,7 +550,7 @@
 
 
 
-<h6 id="附件："><a href="#附件：" class="headerlink" title="附件："></a>附件：</h6><p><a class="link" target="_blank" rel="noopener" href="https://github.com/xiaoeeyu/hookUdp-demo">完整的Frida Hook代码 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<h6 id="附件："><a href="#附件：" class="headerlink" title="附件："></a>附件：</h6><p><a class="link" target="_blank" rel="noopener" href="https://github.com/xiaoeeyu/hookUdp-demo">完整的Frida Hook代码<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></p>
 
 		</div>
 

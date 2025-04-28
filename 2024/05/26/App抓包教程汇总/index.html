@@ -586,7 +586,7 @@ NetworkCapabilities.hasTransport.implementation = function () {
 <li>成功通过校验抓到了数据包</li>
 </ul>
 <h5 id="方式二"><a href="#方式二" class="headerlink" title="方式二"></a>方式二</h5><p>手动分析找到证书的位置并将其保存成证书文件</p>
-<h6 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h6><p>参考<a class="link" target="_blank" rel="noopener" href="https://blog.csdn.net/u013424496/article/details/51161647">这篇文章 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>可知我们可以通过系统中的<code>keyStrore.load</code>拿到证书的名字和密码</p>
+<h6 id="原理"><a href="#原理" class="headerlink" title="原理"></a>原理</h6><p>参考<a class="link" target="_blank" rel="noopener" href="https://blog.csdn.net/u013424496/article/details/51161647">这篇文章<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>可知我们可以通过系统中的<code>keyStrore.load</code>拿到证书的名字和密码</p>
 <img lazyload="" src="/images/loading.svg" data-src="/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240518165901310.png" class="" title="image-20240518165901310">
 
 <ul>
@@ -613,7 +613,7 @@ NetworkCapabilities.hasTransport.implementation = function () {
 
 <ul>
 <li><p><strong>getKeyStore</strong>是一个native函数，那就需要去native中去分析了</p>
-<p>分析so之前先定位要分析的函数在哪个so文件中缩小分析范围，可以使用<a class="link" target="_blank" rel="noopener" href="https://github.com/Simp1er/MobileSec/blob/master/hook_RegisterNative.js">脚本 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>来辅助进行定位（不管静态注册还是动态注册，最终都要走RegisterNative，那此时就可以枚举符号找到符号的地址，通过此地址再结合Frida ModuleMap api可以反推出so的名称）</p>
+<p>分析so之前先定位要分析的函数在哪个so文件中缩小分析范围，可以使用<a class="link" target="_blank" rel="noopener" href="https://github.com/Simp1er/MobileSec/blob/master/hook_RegisterNative.js">脚本<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>来辅助进行定位（不管静态注册还是动态注册，最终都要走RegisterNative，那此时就可以枚举符号找到符号的地址，通过此地址再结合Frida ModuleMap api可以反推出so的名称）</p>
 <blockquote>
 <p><strong>脚本报错：</strong></p>
 <img lazyload="" src="/images/loading.svg" data-src="/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240520014812300.png" class="" title="image-20240520014812300">
@@ -768,7 +768,7 @@ setImmediate(main);
 <li>示例代码中也介绍了它的实现通过提前配置好的域名，在进行握手的过程中验证<strong>客户端/服务器</strong>的证书与预定证书指纹是否相匹配，如果这时候请求的证书是charles的那么校验肯定是失败了的</li>
 </ul>
 <blockquote>
-<p>去<a class="link" target="_blank" rel="noopener" href="https://github.com/square/okhttp/blob/54238b4c713080c3fd32fb1a070fb5d6814c9a09/okhttp/src/main/kotlin/okhttp3/CertificatePinner.kt#L149">github <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>看一下它的校验函数</p>
+<p>去<a class="link" target="_blank" rel="noopener" href="https://github.com/square/okhttp/blob/54238b4c713080c3fd32fb1a070fb5d6814c9a09/okhttp/src/main/kotlin/okhttp3/CertificatePinner.kt#L149">github<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>看一下它的校验函数</p>
 <pre><code class="kotlin">fun check(
     hostname: String,
     peerCertificates: List&lt;Certificate&gt;,
@@ -834,13 +834,13 @@ setImmediate(main);
 <li>通过校验确保了只有预定义的证书才能通过验证</li>
 </ul>
 </blockquote>
-<h5 id="标准SSL-Pinning的解绑定"><a href="#标准SSL-Pinning的解绑定" class="headerlink" title="标准SSL Pinning的解绑定"></a>标准SSL Pinning的解绑定</h5><p>比较常用的就是<a class="link" target="_blank" rel="noopener" href="https://github.com/sensepost/objection/blob/master/agent/src/android/pinning.ts">objection <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<h5 id="标准SSL-Pinning的解绑定"><a href="#标准SSL-Pinning的解绑定" class="headerlink" title="标准SSL Pinning的解绑定"></a>标准SSL Pinning的解绑定</h5><p>比较常用的就是<a class="link" target="_blank" rel="noopener" href="https://github.com/sensepost/objection/blob/master/agent/src/android/pinning.ts">objection<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></p>
 <img lazyload="" src="/images/loading.svg" data-src="/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240526000243895.png" class="" title="image-20240526000243895">
 
 <ul>
 <li>objection中hook的就是用于校验的<strong>check</strong>函数</li>
 </ul>
-<h6 id="解绑定"><a href="#解绑定" class="headerlink" title="解绑定"></a>解绑定</h6><p>有一些对各种种类的证书绑定比较全面的<a class="link" target="_blank" rel="noopener" href="https://github.com/WooyunDota/DroidSSLUnpinning/blob/master/ObjectionUnpinningPlus/hooks.js">脚本 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>，拷贝下来试一下</p>
+<h6 id="解绑定"><a href="#解绑定" class="headerlink" title="解绑定"></a>解绑定</h6><p>有一些对各种种类的证书绑定比较全面的<a class="link" target="_blank" rel="noopener" href="https://github.com/WooyunDota/DroidSSLUnpinning/blob/master/ObjectionUnpinningPlus/hooks.js">脚本<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>，拷贝下来试一下</p>
 <p>这里用spwn模式运行frida脚本，因为这里hook的okhttp的时机是在创建的时候，所以如果错过了这个点就不生效了</p>
 <p><code>frida -U -f cn.ticktick.task -l StandardSSLpinningBypass.js --no-pause</code></p>
 <img lazyload="" src="/images/loading.svg" data-src="/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240526002331197.png" class="" title="image-20240526002331197">
@@ -855,7 +855,7 @@ setImmediate(main);
 </ul>
 </li>
 </ul>
-<h6 id="混淆证书的解绑定"><a href="#混淆证书的解绑定" class="headerlink" title="混淆证书的解绑定"></a>混淆证书的解绑定</h6><p>怎么对混淆的证书解绑定呢，首先从证书校验的原理考虑，它打开文件的过程肯定是必须的（因为要打开证书文件进行校验）。所以可以考虑使用frida去hook所有打开文件的动作，这里使用<a class="link" target="_blank" rel="noopener" href="https://github.com/r0ysue/r0tracer/blob/main/r0tracer.js">r0tracer <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>（这个frida脚本是基于frida16的，那我们切换为frida16的环境）</p>
+<h6 id="混淆证书的解绑定"><a href="#混淆证书的解绑定" class="headerlink" title="混淆证书的解绑定"></a>混淆证书的解绑定</h6><p>怎么对混淆的证书解绑定呢，首先从证书校验的原理考虑，它打开文件的过程肯定是必须的（因为要打开证书文件进行校验）。所以可以考虑使用frida去hook所有打开文件的动作，这里使用<a class="link" target="_blank" rel="noopener" href="https://github.com/r0ysue/r0tracer/blob/main/r0tracer.js">r0tracer<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>（这个frida脚本是基于frida16的，那我们切换为frida16的环境）</p>
 <img lazyload="" src="/images/loading.svg" data-src="/2024/05/26/App%E6%8A%93%E5%8C%85%E6%95%99%E7%A8%8B%E6%B1%87%E6%80%BB/image-20240526003526516.png" class="" title="image-20240526003526516">
 
 <p><strong>切换环境</strong></p>
@@ -913,10 +913,10 @@ setImmediate(main);
 
 <p>尝试使用一些flutter解绑定的脚本</p>
 <p>暂时参考一些帖子吧，找到合适的案例再补上</p>
-<p><a class="link" target="_blank" rel="noopener" href="https://bbs.kanxue.com/thread-280261.htm">flutter抓包绕过-Android安全-看雪-安全社区|安全招聘|kanxue.com <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
-<p>[<a class="link" target="_blank" rel="noopener" href="https://bbs.kanxue.com/thread-261941.htm">原创]一种基于frida和drony的针对flutter抓包的方法-Android安全-看雪-安全社区|安全招聘|kanxue.com <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
-<p><a class="link" target="_blank" rel="noopener" href="https://github.com/horangi-cyops/flutter-ssl-pinning-bypass">horangi-cyops/flutter-ssl-pinning-bypass: Horangi tools for Android penetration testing (github.com) <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
-<p><a class="link" target="_blank" rel="noopener" href="https://johns.blog.csdn.net/article/details/126115979">flutter抓包 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<p><a class="link" target="_blank" rel="noopener" href="https://bbs.kanxue.com/thread-280261.htm">flutter抓包绕过-Android安全-看雪-安全社区|安全招聘|kanxue.com<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></p>
+<p>[<a class="link" target="_blank" rel="noopener" href="https://bbs.kanxue.com/thread-261941.htm">原创]一种基于frida和drony的针对flutter抓包的方法-Android安全-看雪-安全社区|安全招聘|kanxue.com<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></p>
+<p><a class="link" target="_blank" rel="noopener" href="https://github.com/horangi-cyops/flutter-ssl-pinning-bypass">horangi-cyops/flutter-ssl-pinning-bypass: Horangi tools for Android penetration testing (github.com)<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></p>
+<p><a class="link" target="_blank" rel="noopener" href="https://johns.blog.csdn.net/article/details/126115979">flutter抓包<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></p>
 
 		</div>
 

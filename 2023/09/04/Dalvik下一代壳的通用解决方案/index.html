@@ -409,7 +409,7 @@
 			<p>本节主要分析在Dalvik时代怎么做到把壳脱下来的，通过<strong>Android 4.x</strong>的源码跟踪一下系统帮我们加载dex时候的流程，分析一下脱壳的原理和时机。</p>
 <span id="more"></span>
 
-<h2 id="Dalvik下DexClassLoader加载dex源码流程分析"><a href="#Dalvik下DexClassLoader加载dex源码流程分析" class="headerlink" title="Dalvik下DexClassLoader加载dex源码流程分析"></a>Dalvik下DexClassLoader加载dex源码流程分析</h2><p><a class="link" target="_blank" rel="noopener" href="http://androidxref.com/">源码网址 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<h2 id="Dalvik下DexClassLoader加载dex源码流程分析"><a href="#Dalvik下DexClassLoader加载dex源码流程分析" class="headerlink" title="Dalvik下DexClassLoader加载dex源码流程分析"></a>Dalvik下DexClassLoader加载dex源码流程分析</h2><p><a class="link" target="_blank" rel="noopener" href="http://androidxref.com/">源码网址<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></p>
 <img lazyload="" src="/images/loading.svg" data-src="/2023/09/04/Dalvik%E4%B8%8B%E4%B8%80%E4%BB%A3%E5%A3%B3%E7%9A%84%E9%80%9A%E7%94%A8%E8%A7%A3%E5%86%B3%E6%96%B9%E6%A1%88/541a0875d28a486e802c19d42d9ea07d.png" class="" title="84070f0817edd69f1ec2c8dec32410f7.png">
 
 <p>在libcore中查找DexClassLoader函数</p>
@@ -497,7 +497,7 @@
 <ul>
 <li><p>这个函数也比较长，但是它的主要作用就是调用**/bin/dexopt<strong>生成优化后的</strong>odex**文件然后返回，下面我们去分析一下dexopt的源码</p>
 <ul>
-<li>寻找<a class="link" target="_blank" rel="noopener" href="http://androidxref.com/4.4.4_r1/xref/dalvik/dexopt/">dexopt <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></li>
+<li>寻找<a class="link" target="_blank" rel="noopener" href="http://androidxref.com/4.4.4_r1/xref/dalvik/dexopt/">dexopt<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></li>
 </ul>
 </li>
 </ul>

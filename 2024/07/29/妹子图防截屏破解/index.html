@@ -21,12 +21,12 @@
     
     
         
-        <meta name="description" content="本章主要是一个简单的hook，破解防截屏机制 抓包没啥反抓包措施，直接使用charle抓包就行        FRIDA破解防截屏   妹纸图无法直接截屏  查找一下Android中禁止截屏的实现方式     使用objection搜索一下addFlags或者setFlags      pixel 5的性能还不错能直接搜索到  使用r0tracer 搜索一下android.view.Window类">
+        <meta name="description" content="本章主要是一个简单的hook，破解防截屏机制 抓包没啥反抓包措施，直接使用charle抓包就行        FRIDA破解防截屏   妹纸图无法直接截屏  查找一下Android中禁止截屏的实现方式     使用objection搜索一下addFlags或者setFlags      pixel 5的性能还不错能直接搜索到  使用r0tracer搜索一下android.view.Window类的">
 <meta property="og:type" content="article">
 <meta property="og:title" content="妹子图防截屏破解">
 <meta property="og:url" content="https://xiaoeeyu.github.io/2024/07/29/%E5%A6%B9%E5%AD%90%E5%9B%BE%E9%98%B2%E6%88%AA%E5%B1%8F%E7%A0%B4%E8%A7%A3/index.html">
 <meta property="og:site_name" content="xiaoeryu">
-<meta property="og:description" content="本章主要是一个简单的hook，破解防截屏机制 抓包没啥反抓包措施，直接使用charle抓包就行        FRIDA破解防截屏   妹纸图无法直接截屏  查找一下Android中禁止截屏的实现方式     使用objection搜索一下addFlags或者setFlags      pixel 5的性能还不错能直接搜索到  使用r0tracer 搜索一下android.view.Window类">
+<meta property="og:description" content="本章主要是一个简单的hook，破解防截屏机制 抓包没啥反抓包措施，直接使用charle抓包就行        FRIDA破解防截屏   妹纸图无法直接截屏  查找一下Android中禁止截屏的实现方式     使用objection搜索一下addFlags或者setFlags      pixel 5的性能还不错能直接搜索到  使用r0tracer搜索一下android.view.Window类的">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://xiaoeeyu.github.io/2024/07/29/%E5%A6%B9%E5%AD%90%E5%9B%BE%E9%98%B2%E6%88%AA%E5%B1%8F%E7%A0%B4%E8%A7%A3/image-20240728103303669.png">
 <meta property="og:image" content="https://xiaoeeyu.github.io/2024/07/29/%E5%A6%B9%E5%AD%90%E5%9B%BE%E9%98%B2%E6%88%AA%E5%B1%8F%E7%A0%B4%E8%A7%A3/image-20240728102750717.png">
@@ -421,7 +421,7 @@
 <ul>
 <li>pixel 5的性能还不错能直接搜索到</li>
 </ul>
-<p>使用<a class="link" target="_blank" rel="noopener" href="https://github.com/r0ysue/r0tracer">r0tracer <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>搜索一下<code>android.view.Window</code>类的调用记录</p>
+<p>使用<a class="link" target="_blank" rel="noopener" href="https://github.com/r0ysue/r0tracer">r0tracer<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>搜索一下<code>android.view.Window</code>类的调用记录</p>
 <img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%A6%B9%E5%AD%90%E5%9B%BE%E9%98%B2%E6%88%AA%E5%B1%8F%E7%A0%B4%E8%A7%A3/image-20240727214328019.png" class="" title="image-20240727214328019">
 
 <p><code>frida -U -f com.mmzztt.app -l r0tracer.js -o log.txt</code></p>
@@ -443,7 +443,7 @@
 
 <h3 id="脱壳"><a href="#脱壳" class="headerlink" title="脱壳"></a>脱壳</h3><img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%A6%B9%E5%AD%90%E5%9B%BE%E9%98%B2%E6%88%AA%E5%B1%8F%E7%A0%B4%E8%A7%A3/image-20240728104911709.png" class="" title="image-20240728104911709">
 
-<p>另外这个app还加壳了，尝试使用<a class="link" target="_blank" rel="noopener" href="https://github.com/hluwa/frida-dexdump">frida-dexdump <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>直接脱壳</p>
+<p>另外这个app还加壳了，尝试使用<a class="link" target="_blank" rel="noopener" href="https://github.com/hluwa/frida-dexdump">frida-dexdump<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>直接脱壳</p>
 <p>使用起来还是比较简单的</p>
 <img lazyload="" src="/images/loading.svg" data-src="/2024/07/29/%E5%A6%B9%E5%AD%90%E5%9B%BE%E9%98%B2%E6%88%AA%E5%B1%8F%E7%A0%B4%E8%A7%A3/image-20240727221159301.png" class="" title="image-20240727221159301">
 

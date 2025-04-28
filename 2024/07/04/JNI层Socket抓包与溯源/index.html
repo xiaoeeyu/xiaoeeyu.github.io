@@ -661,7 +661,7 @@ setImmediate(main);
 <p>IP和port解析</p>
 <p><code>ssize_t sendto(int fd, const void *buf, size_t n, int flags, const struct sockaddr *addr, socklen_t addr_len)</code></p>
 <p>socket有ID或者叫句柄。对于<code>sendto</code>、<code>recvfrom</code>来说它的第一个参数就是socket的ID，所以可以通过解析这个ID来得到通信对端的IP和port。</p>
-<p>在<a class="link" target="_blank" rel="noopener" href="https://frida.re/docs/javascript-api/#socket">Frida中有相关的API <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>可以来对ID进行解析</p>
+<p>在<a class="link" target="_blank" rel="noopener" href="https://frida.re/docs/javascript-api/#socket">Frida中有相关的API<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>可以来对ID进行解析</p>
 </blockquote>
 <p>抓包结果：</p>
 <img lazyload="" src="/images/loading.svg" data-src="/2024/07/04/JNI%E5%B1%82Socket%E6%8A%93%E5%8C%85%E4%B8%8E%E6%BA%AF%E6%BA%90/image-20240609101052882.png" class="" title="image-20240609101052882">
@@ -704,7 +704,7 @@ function handleUdp(socketType, sockaddr_in_ptr, sizeofsockaddr_in) {
 
 <h3 id="总结："><a href="#总结：" class="headerlink" title="总结："></a>总结：</h3><p>本章完成了对SO库函数的socket抓包，包括打印IP以及C层堆栈调用。</p>
 <p>如果需要打印Java层的堆栈调用，还是需要使用之前写的Java层的hook脚本</p>
-<h6 id="附件"><a href="#附件" class="headerlink" title="附件"></a>附件</h6><p><a class="link" target="_blank" rel="noopener" href="https://github.com/xiaoeeyu/hookLibcSocket">完整fridaHook脚本 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<h6 id="附件"><a href="#附件" class="headerlink" title="附件"></a>附件</h6><p><a class="link" target="_blank" rel="noopener" href="https://github.com/xiaoeeyu/hookLibcSocket">完整fridaHook脚本<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></p>
 
 		</div>
 

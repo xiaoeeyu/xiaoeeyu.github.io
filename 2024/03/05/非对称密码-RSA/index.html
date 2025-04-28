@@ -439,7 +439,7 @@
 <p>例如：n = 3233，e = 17， d = 2753，所以公钥就是（3233， 17），私钥就是（3233， 2753）。有了公钥和私钥，就能进行加密和解密了。</p>
 </li>
 </ol>
-<p>下面具体过程可以参考<a class="link" target="_blank" rel="noopener" href="https://blog.csdn.net/lu1196700392/article/details/102593536">这篇帖子 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<p>下面具体过程可以参考<a class="link" target="_blank" rel="noopener" href="https://blog.csdn.net/lu1196700392/article/details/102593536">这篇帖子<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></p>
 </blockquote>
 <h6 id="安全性"><a href="#安全性" class="headerlink" title="安全性"></a>安全性</h6><p>对极大整数做因式分解的难度决定了RSA算法的可靠性。到目前为止公开的被破解的最长RSA密钥是768位。实际应用中一般情况下用1024位，重要场合2048位还都是安全的。</p>
 <h6 id="如何加密长信息"><a href="#如何加密长信息" class="headerlink" title="如何加密长信息"></a>如何加密长信息</h6><p>公钥（n，e）只能加密小于n的整数m，那么如果要加密大于n的整数，该怎么办？有两种解决方法：一种是把长信息分割成若干段短消息，每段分别加密；另一种是先选择一种“对称加密算法（例如：DES）”，用这种算法的密钥加密信息，再用RSA公钥加密DES密钥</p>

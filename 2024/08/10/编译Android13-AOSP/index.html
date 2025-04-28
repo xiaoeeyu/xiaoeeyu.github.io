@@ -442,8 +442,8 @@ deb-src https://mirrors.tuna.tsinghua.edu.cn/ubuntu/ jammy-security main restric
 <img lazyload="" src="/images/loading.svg" data-src="/2024/08/10/%E7%BC%96%E8%AF%91Android13-AOSP/image-20240805100950854.png" class="" title="image-20240805100950854">
 
 <h4 id="5-下载vendor"><a href="#5-下载vendor" class="headerlink" title="5. 下载vendor"></a>5. 下载vendor</h4><p>在AOSP（Android Open Source Project）源码中，<code>vendor</code> 目录有时可能会缺失，因为AOSP的基础源码通常只包含Android系统的核心部分和一些通用的硬件抽象层（HAL）实现。<code>vendor</code> 目录通常用于存放设备厂商的特定实现、定制和其他与硬件相关的代码</p>
-<p>我们这里使用的设备是pixel 5直接去<a class="link" target="_blank" rel="noopener" href="https://developers.google.com/android/drivers?hl=zh-cn">Google官方驱动下载页面 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a>下载合适的驱动，选择和下载的AOSP版本号对应的驱动：</p>
-<p><a class="link" target="_blank" rel="noopener" href="https://source.android.com/docs/setup/reference/build-numbers?hl=zh-cn">查找源码标记 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<p>我们这里使用的设备是pixel 5直接去<a class="link" target="_blank" rel="noopener" href="https://developers.google.com/android/drivers?hl=zh-cn">Google官方驱动下载页面<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>下载合适的驱动，选择和下载的AOSP版本号对应的驱动：</p>
+<p><a class="link" target="_blank" rel="noopener" href="https://source.android.com/docs/setup/reference/build-numbers?hl=zh-cn">查找源码标记<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></p>
 <img lazyload="" src="/images/loading.svg" data-src="/2024/08/10/%E7%BC%96%E8%AF%91Android13-AOSP/image-20240806082559753.png" class="" title="image-20240806082559753">
 
 <p>去下载<code>android-13.0.0_r69</code>对应的驱动</p>
@@ -582,12 +582,12 @@ fastboot flash userdata userdata.img
 <p><code>sudo iftop</code></p>
 </li>
 </ol>
-<h6 id="PS：没有vendor-img的话刷出来无法开机"><a href="#PS：没有vendor-img的话刷出来无法开机" class="headerlink" title="PS：没有vendor.img的话刷出来无法开机"></a>PS：没有vendor.img的话刷出来无法开机</h6><h6 id="参考文章："><a href="#参考文章：" class="headerlink" title="参考文章："></a>参考文章：</h6><p><a class="link" target="_blank" rel="noopener" href="https://www.cnblogs.com/bujiangjiu/p/17716052.html">使用Google Pixel5手机调试AOSP(代码下载、编译、刷机、调试)详细攻略 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<h6 id="PS：没有vendor-img的话刷出来无法开机"><a href="#PS：没有vendor-img的话刷出来无法开机" class="headerlink" title="PS：没有vendor.img的话刷出来无法开机"></a>PS：没有vendor.img的话刷出来无法开机</h6><h6 id="参考文章："><a href="#参考文章：" class="headerlink" title="参考文章："></a>参考文章：</h6><p><a class="link" target="_blank" rel="noopener" href="https://www.cnblogs.com/bujiangjiu/p/17716052.html">使用Google Pixel5手机调试AOSP(代码下载、编译、刷机、调试)详细攻略<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></p>
 <hr>
 <h3 id="相关话题："><a href="#相关话题：" class="headerlink" title="相关话题："></a>相关话题：</h3><ol>
 <li><p>自己编译的安卓源码要装谷歌框架，需要刷gapp，而opengapp又比较老了，此时有一些新的选择：</p>
-<p><a class="link" target="_blank" rel="noopener" href="https://nikgapps.com/">nikgapps <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
-<p><a class="link" target="_blank" rel="noopener" href="https://mindthegapps.com/">mindthegapps <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<p><a class="link" target="_blank" rel="noopener" href="https://nikgapps.com/">nikgapps<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></p>
+<p><a class="link" target="_blank" rel="noopener" href="https://mindthegapps.com/">mindthegapps<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></p>
 </li>
 </ol>
 

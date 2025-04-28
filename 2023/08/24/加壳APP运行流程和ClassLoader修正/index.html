@@ -400,8 +400,8 @@
 </ul>
 <p><strong>源码网址：</strong></p>
 <ul>
-<li><a class="link" target="_blank" rel="noopener" href="http://androidxref.com/">国外 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></li>
-<li><a class="link" target="_blank" rel="noopener" href="http://aospxref.com/">国内 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></li>
+<li><a class="link" target="_blank" rel="noopener" href="http://androidxref.com/">国外<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></li>
+<li><a class="link" target="_blank" rel="noopener" href="http://aospxref.com/">国内<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></li>
 </ul>
 <h4 id="ActivityThread的源代码"><a href="#ActivityThread的源代码" class="headerlink" title="ActivityThread的源代码"></a>ActivityThread的源代码</h4><p>ActivityThread的源代码在frameworks当中</p>
 <img lazyload="" src="/images/loading.svg" data-src="/2023/08/24/%E5%8A%A0%E5%A3%B3APP%E8%BF%90%E8%A1%8C%E6%B5%81%E7%A8%8B%E5%92%8CClassLoader%E4%BF%AE%E6%AD%A3/image-20230824174127453.png" class="" title="image-20230824174127453">
@@ -848,7 +848,7 @@ public class TestActivity extends Activity {
 <li>这个app的AndroidManifest.xml当中没有声明这个application的话，处理起来较为简单一些，加固厂商只需要添加一个application就可以了，然后在这个application里面完成一些classloader的替换</li>
 <li>如果已经有application的话呢，就需要一个代理的application。这种情况下壳的application不仅要完成解密dex以及classloader的一些相关修复还要完成解密dex之后原来application中两个函数（attachBaseContext和onCreate）的调用</li>
 </ol>
-<p>参考文章：<a class="link" target="_blank" rel="noopener" href="https://bbs.kanxue.com/thread-252630.htm#msg_header_h2_1">FART：ART环境下基于主动调用的自动化脱壳方案 <i class="fa-regular fa-arrow-up-right-from-square fa-sm"></i></a></p>
+<p>参考文章：<a class="link" target="_blank" rel="noopener" href="https://bbs.kanxue.com/thread-252630.htm#msg_header_h2_1">FART：ART环境下基于主动调用的自动化脱壳方案<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></p>
 
 		</div>
 
