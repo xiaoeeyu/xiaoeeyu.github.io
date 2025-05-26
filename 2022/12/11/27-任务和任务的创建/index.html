@@ -165,16 +165,16 @@
 <span id="more"></span>
 
 <p>将内核和用户程序可以看作一个整体：任务</p>
-<img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/e96a335381e80d83917a5b98fe09493f.png" class="">
+<img src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/e96a335381e80d83917a5b98fe09493f.png" class="">
 
 <p>在一个系统中只有一个内核，但可以有多个用户程序，即多任务系统。</p>
-<img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/1e64220c81caf3726dd50fce7fc21cf1.png" class="">
+<img src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/1e64220c81caf3726dd50fce7fc21cf1.png" class="">
 
 <p>GDT存放内核中的描述符，LDT存放每个任务中用户程序的描述符：</p>
-<img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/1b0bd96b722758508e4edac8c83acde7.png" class="">
+<img src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/1b0bd96b722758508e4edac8c83acde7.png" class="">
 
 <p>每个任务还需要一个任务状态段：<mark>TSS（Task Status Segment)</mark>。</p>
-<img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/bc6f1d19eff4c8baa3afc8c26a8196fe.png" class="">
+<img src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/bc6f1d19eff4c8baa3afc8c26a8196fe.png" class="">
 
 
 <h2 id="02-使用任务控制块保存任务的基本信息"><a href="#02-使用任务控制块保存任务的基本信息" class="headerlink" title="02. 使用任务控制块保存任务的基本信息"></a>02. 使用任务控制块保存任务的基本信息</h2><p>本节主要介绍了本章程序的结构，主要结构如下，本章程序有三个</p>
@@ -207,17 +207,17 @@
 </ul>
 <h2 id="03-将任务控制块加入任务控制块链表"><a href="#03-将任务控制块加入任务控制块链表" class="headerlink" title="03. 将任务控制块加入任务控制块链表"></a>03. 将任务控制块加入任务控制块链表</h2><p>本节主要讲解内核代码段中的<mark>append_to_tcb_link</mark>，在内核数据段定义标号<mark>tcb_chain dd 0</mark>，是一个指针，用来保存第一个任务控制块的线性基地址，称为头指针，为0表示链表为空没有任务。</p>
 <p>其中<mark>任务控制块TBC</mark>的结构如下：</p>
-<img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/ce3bc67dccb3b41f1febe9240302f413.png" class="">
+<img src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/ce3bc67dccb3b41f1febe9240302f413.png" class="">
 <p>任务控制链表：</p>
-<img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/ee187f1224874532ea372e7da9d13217.png" class="">
+<img src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/ee187f1224874532ea372e7da9d13217.png" class="">
 <p>清除<mark>TCB</mark>指针域：表明当前<mark>TCB</mark>是最后一个</p>
-<img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/3fbfe4df62a5f872cbf49f5b77a02957.png" class="">
+<img src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/3fbfe4df62a5f872cbf49f5b77a02957.png" class="">
 <p>判断链表中是否为空，为空表示这是第一个<mark>TCB</mark>：</p>
-<img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/18bca96edb3afcc2347f93c302822341.png" class="">
+<img src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/18bca96edb3afcc2347f93c302822341.png" class="">
 <p>若链表不为空，顺着链表找到最后一个<mark>TCB</mark>：</p>
-<img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/e399cbf96b88e4333b5f044b82f246d5.png" class="">
+<img src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/e399cbf96b88e4333b5f044b82f246d5.png" class="">
 <p>找到最后一个<mark>TCB</mark>，指向新的<mark>TCB</mark>，然后恢复压栈的内容并返回调用者：</p>
-<img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/8b8849472c1019804866c7e05797ad3d.png" class="">
+<img src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/8b8849472c1019804866c7e05797ad3d.png" class="">
 
 
 <h2 id="04-通过栈传递例程参数和立即数的压栈指令"><a href="#04-通过栈传递例程参数和立即数的压栈指令" class="headerlink" title="04. 通过栈传递例程参数和立即数的压栈指令"></a>04. 通过栈传递例程参数和立即数的压栈指令</h2><p>接上一节，在创建<mark>TCB</mark>之后接着加载和重定位用户程序并创建一个任务。使用<strong>callload_relocate_program</strong>调用例程<strong>load_relocate_program</strong>，使用栈传递参数，此时的栈是在引导程序中定义的4K字节、基地址为<strong>0x7c00</strong>的栈。<br>代码如下：</p>
@@ -227,19 +227,19 @@
          call load_relocate_program  
 </code></pre>
 <p>其中立即数的压栈指令：</p>
-<img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/d10aafc7c601090eaf89826ba9335b01.png" class="">
+<img src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/d10aafc7c601090eaf89826ba9335b01.png" class="">
 
 <p><strong>push imm8：</strong></p>
-<img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/f0947f4f65d29cd80eb688aa43360f92.png" class="">
+<img src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/f0947f4f65d29cd80eb688aa43360f92.png" class="">
 
 <p><strong>push imm16：</strong></p>
-<img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/ade7696522ed4dd6d4fa90da0f48ea0d.png" class="">
+<img src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/ade7696522ed4dd6d4fa90da0f48ea0d.png" class="">
 
 <p><strong>push imm32：</strong></p>
-<img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/627a51a70090a1105c6077311c122057.png" class="">
+<img src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/627a51a70090a1105c6077311c122057.png" class="">
 
 <p>压栈可以不需要容器，即直接使用立即数，但是出栈需要有容器接着：</p>
-<img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/b404d38251d64069081e94f8d38fb6c8.png" class="">
+<img src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/b404d38251d64069081e94f8d38fb6c8.png" class="">
 <p>其中处理器使用32位操作尺寸，压入一个双字，<mark>0x00000055</mark>。出栈使用32位寄存器<mark>EDX</mark>或者是一个<mark>dword修饰的内存地址</mark>。这里压栈和出栈的尺寸必须一致，否则会影响栈平衡。</p>
 <h2 id="05-段寄存器的压栈和出栈以及栈的随机访问机制"><a href="#05-段寄存器的压栈和出栈以及栈的随机访问机制" class="headerlink" title="05. 段寄存器的压栈和出栈以及栈的随机访问机制"></a>05. 段寄存器的压栈和出栈以及栈的随机访问机制</h2><p>接上一节，进入<strong>load_relocate_program</strong>例程之后进行段寄存器的压栈操作：</p>
 <pre><code class="assembly">load_relocate_program:                      ;加载并重定位用户程序
@@ -252,17 +252,17 @@
          push es 
 </code></pre>
 <p>其中段寄存器的压栈操作：</p>
-<img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/2ef30935b1b304720d708133a0879d04.png" class="">
+<img src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/2ef30935b1b304720d708133a0879d04.png" class="">
 
 <p>段寄存器的出栈操作：<strong>pop cs</strong>指令非法</p>
-<img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/ce5a6531157fcbe769f3ae15be1df14c.png" class="">
+<img src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/ce5a6531157fcbe769f3ae15be1df14c.png" class="">
 
 <p>接着执行命令：<br><code>mov ebp,esp                        ;为访问通过堆栈传递的参数做准备 </code></p>
 <p>此时栈的分布：</p>
-<img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/b69d353526e838f9c65efbc8549a4464.png" class="">
+<img src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/b69d353526e838f9c65efbc8549a4464.png" class="">
 
 <p>使用<strong>EBP</strong>记录<strong>ESP</strong>的值，用来访问战中的参数，可以在不破坏栈顶指针<strong>ESP</strong>的情况下去访问栈中的其他数据</p>
-<img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/dfb12cdd8ede0931a90a06b31e0be0ba.png" class="">
+<img src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/dfb12cdd8ede0931a90a06b31e0be0ba.png" class="">
 <p>其中若使用<mark>BP或者EBP</mark>访问栈，那么默认的前缀是栈段<mark>SS</mark>。</p>
 <h2 id="06-创建任务的局部描述符LDT"><a href="#06-创建任务的局部描述符LDT" class="headerlink" title="06. 创建任务的局部描述符LDT"></a>06. 创建任务的局部描述符LDT</h2><p>任务共有的部分安装在<strong>GDT</strong>，私有的部分安装在<strong>LDT</strong>中。</p>
 <p>接上一节，在<strong>load_relocate_program</strong>例程中：申请创建LDT所需要的内存、加载用户程序、判断整个用户程序的尺寸，之后建立用户头部段描述符、使用例程<strong>fill_descriptor_in_ldt</strong>将描述符安装在LDT中。</p>
@@ -274,7 +274,7 @@
          mov word [es:esi+0x0a],0xffff      ;登记LDT初始的界限到TCB中  
 </code></pre>
 <p>申请过的<strong>LDT</strong>可以将之保存在<strong>TCB</strong>中</p>
-<img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/12109993c7e17ddfd5c8879bae856361.png" class="">
+<img src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/12109993c7e17ddfd5c8879bae856361.png" class="">
 
 <p>登记过LDT的线性地址和界限值之后，接下来我们要从硬盘读取用户程序：将加载的用户程序的首地址也保存在<strong>TCB</strong>中。</p>
 <pre><code class="assembly"> ;以下开始加载用户程序 
@@ -336,20 +336,20 @@ fill_descriptor_in_ldt:                     ;在LDT内安装一个新的描述�
 </code></pre>
 <p><strong>fill_descriptor_in_ldt</strong>例程中运行。</p>
 <p>PS：CX在计算过程中溢出的进位不会影响ECX的高16位，而是会被丢弃。</p>
-<img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/0f5d7f1bb33536bbe7d31c87d29d3bd0.png" class="">
+<img src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/0f5d7f1bb33536bbe7d31c87d29d3bd0.png" class="">
 
 <p>更新<strong>TI位为1</strong>，表示在<strong>LDT</strong>中：</p>
-<img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/7f2cbf0b0f1b4e73fa3749111e55d15a.png" class="">
+<img src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/7f2cbf0b0f1b4e73fa3749111e55d15a.png" class="">
 
 
 <h2 id="08-LDT描述符的格式和创建"><a href="#08-LDT描述符的格式和创建" class="headerlink" title="08. LDT描述符的格式和创建"></a>08. LDT描述符的格式和创建</h2><p>描述符的分类：</p>
-<img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/5aac46f717951bdd2dea3d68d46c2791.png" class="">
+<img src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/5aac46f717951bdd2dea3d68d46c2791.png" class="">
 
 <p><mark>GDT</mark>的线性基地址存放在<mark>GDTR</mark>寄存器中，<mark>LDT=和</mark>TSS的线性基地址存放在<mark>GDT</mark>中，即<mark>LDT、TSS</mark>也有自己的段描述符，需要安装在<mark>GDT</mark>中。</p>
-<img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/e59e39f48ec6f9df891a080bf2abad4d.png" class="">
+<img src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/e59e39f48ec6f9df891a080bf2abad4d.png" class="">
 <p>描述符中的<mark>S位</mark>和<mark>TYPE</mark>字段：</p>
-<img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/769a49d03264c86aa8d7f323422ae21f.png" class="">
-<img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/6f62dba6c15ef8a90f6ef0af2a657ea1.png" class="">
+<img src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/769a49d03264c86aa8d7f323422ae21f.png" class="">
+<img src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/6f62dba6c15ef8a90f6ef0af2a657ea1.png" class="">
 
 <ul>
 <li><strong>S=0</strong>表示系统描述符中，在系统描述符中21、22位是没有意义的置零即可</li>
@@ -365,7 +365,7 @@ fill_descriptor_in_ldt:                     ;在LDT内安装一个新的描述�
          mov [es:esi+0x10],cx               ;登记LDT选择子到TCB中
 </code></pre>
 <p>其中：</p>
-<img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/3db05c407cd5675e55fdc0cdaadb9392.png" class="">
+<img src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/3db05c407cd5675e55fdc0cdaadb9392.png" class="">
 
 <ul>
 <li><strong>S = 0</strong>：表示系统描述符；</li>
@@ -383,7 +383,7 @@ fill_descriptor_in_ldt:                     ;在LDT内安装一个新的描述�
          mov [es:esi+0x14],ecx              ;登记TSS基地址到TCB    
 </code></pre>
 <p>其中<strong>TSS</strong>的内存分布：</p>
-<img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/6219d16607c30cad62c9818e5ff6d8ca.png" class="">
+<img src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/6219d16607c30cad62c9818e5ff6d8ca.png" class="">
 <p>若<mark>T位为1</mark>，在多任务环境中每次切换到该任务时，将引发一个调试异常中断，所以我们将此为置零。</p>
 <p>然后创建完TSS就将LDT选择子从TCB任务控制块中写入TSS</p>
 <pre><code class="assembly">         mov dx,[es:esi+0x10]               ;登记任务的LDT选择子
@@ -399,14 +399,14 @@ fill_descriptor_in_ldt:                     ;在LDT内安装一个新的描述�
          mov [es:esi+0x18],cx               ;登记TSS选择子到TCB 
 </code></pre>
 <p><strong>TSS</strong>描述符格式：</p>
-<img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/bfeaad06d3448d6d42ebd37f1ec5c946.png" class="">
+<img src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/bfeaad06d3448d6d42ebd37f1ec5c946.png" class="">
 
 <ul>
 <li><strong>S = 0</strong>：表示为系统描述符</li>
 <li><strong>TYPE中的B位（Busy）</strong>：此位由处理器根据任务的状态实时修改，我们创建时置零就好。</li>
 </ul>
 <h2 id="11-用带参数的RET指令返回调用者"><a href="#11-用带参数的RET指令返回调用者" class="headerlink" title="11. 用带参数的RET指令返回调用者"></a>11. 用带参数的RET指令返回调用者</h2><p>接上一节，本节从例程<mark>load_relocate_program</mark>返回调用者，在返回之前栈的状态：</p>
-<img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/89bedf3bfdcf7a56a9f9c5745d796fc4.png" class="">
+<img src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/89bedf3bfdcf7a56a9f9c5745d796fc4.png" class="">
 
 <p>在执行下列出栈指令之后：</p>
 <pre><code class="assembly">         pop es                             ;恢复到调用此过程前的es段 
@@ -415,33 +415,33 @@ fill_descriptor_in_ldt:                     ;在LDT内安装一个新的描述�
          popad 
 </code></pre>
 <p>栈的状态为：</p>
-<img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/7bf9a54f2a7cbf0f21dd5c26c5a1157a.png" class="">
+<img src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/7bf9a54f2a7cbf0f21dd5c26c5a1157a.png" class="">
 
 <p>然后执行返回指令：</p>
 <pre><code>         ret 8                              ;丢弃调用本过程前压入的参数  
 </code></pre>
 <p>栈的状态：</p>
-<img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/2de3214d8bf9a99c0f35e70e3d5dd025.png" class="">
+<img src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/2de3214d8bf9a99c0f35e70e3d5dd025.png" class="">
 <p>其中<strong>ret imm、retf imm</strong>指令：</p>
-<img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/fdfe40783a41395117ef15e131ff7d12.png" class="">
+<img src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/fdfe40783a41395117ef15e131ff7d12.png" class="">
 
 <p>到目前为止的内存布局：</p>
-<img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/e2aa71ca1a29a5b9f879751e458972b0.png" class="">
+<img src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/e2aa71ca1a29a5b9f879751e458972b0.png" class="">
 
 
 <h2 id="12-加载任务寄存器TR和局部描述符表寄存器LDTR"><a href="#12-加载任务寄存器TR和局部描述符表寄存器LDTR" class="headerlink" title="12. 加载任务寄存器TR和局部描述符表寄存器LDTR"></a>12. 加载任务寄存器TR和局部描述符表寄存器LDTR</h2><p>接上一节，接下来从<mark>load_relocate_program</mark>返回，之后要转到任务私有部分（用户程序）执行。</p>
 <p>在多任务系统中，有多个任务、多个TSS、LDT。</p>
-<img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/7af42fc51d3fd107ac29d2e88d88fec8.png" class="">
+<img src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/7af42fc51d3fd107ac29d2e88d88fec8.png" class="">
 
 <p>8086使用寄存器<mark>TR&amp;LDTR<mark>来存储<strong>TSS</strong>&amp;<strong>LDT</strong>的基地址和界限</mark></mark></p>
-<img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/05f3b2181bc5fcf58539e83c149ef293.png" class="">
+<img src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/05f3b2181bc5fcf58539e83c149ef293.png" class="">
 <p><mark>TR&amp;LDTR</mark>结构：</p>
-<img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/1508e59aad6f3af7980b3a068664d8e9.png" class="">
+<img src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/1508e59aad6f3af7980b3a068664d8e9.png" class="">
 
 <p><mark>TR&amp;LDTR</mark>可以使用<mark>ltr&amp;lldt</mark>指令加载：</p>
-<img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/786156d01803a7590541675d193fdcde.png" class="">
+<img src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/786156d01803a7590541675d193fdcde.png" class="">
 <p><mark>LDTR</mark>加载过程：</p>
-<img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/1b905e09c73bf3c3c1d77e200f5758d7.png" class="">
+<img src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/1b905e09c73bf3c3c1d77e200f5758d7.png" class="">
 
 <ul>
 <li><strong>lldt r/m16</strong>指令执行时，将选择子送入<strong>LDTR</strong>的LDT选择器中；</li>
@@ -450,7 +450,7 @@ fill_descriptor_in_ldt:                     ;在LDT内安装一个新的描述�
 <li>之后<strong>LDTR</strong>就指向<strong>LDT</strong>；</li>
 </ul>
 <p><mark>TR</mark>加载过程：</p>
-<img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/ecadab5ad4f6f0d59de9f22e0a8c42f9.png" class="">
+<img src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/ecadab5ad4f6f0d59de9f22e0a8c42f9.png" class="">
 
 <ul>
 <li><strong>ltr r/m16</strong>指令执行时，将选择子送入TR的TSS选择器中；</li>
@@ -460,29 +460,29 @@ fill_descriptor_in_ldt:                     ;在LDT内安装一个新的描述�
 </ul>
 <p>加载完之后就跳转用户程序执行。</p>
 <h2 id="13-在虚拟机上验证人物的执行"><a href="#13-在虚拟机上验证人物的执行" class="headerlink" title="13. 在虚拟机上验证人物的执行"></a>13. 在虚拟机上验证人物的执行</h2><p>写数据并执行：</p>
-<img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/fc609296920402a864a71c3c4003d99d.png" class="">
-<img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/3460dbd92cd27aadcd34d7ecd03e5a18.png" class="">
+<img src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/fc609296920402a864a71c3c4003d99d.png" class="">
+<img src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/3460dbd92cd27aadcd34d7ecd03e5a18.png" class="">
 <p>Bochs虚拟机：<br>在0x7c00（主引导程序）断下来之后设置<mark>modbp<mark>断点，会在从实模式切换到保护模式的时候断下来。</mark></mark></p>
-<img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/0ce3eb8e6bbc3727718a4c8430f3ad4b.png" class="">
-<img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/74325049411650aa30b1c896a5631a66.png" class="">
+<img src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/0ce3eb8e6bbc3727718a4c8430f3ad4b.png" class="">
+<img src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/74325049411650aa30b1c896a5631a66.png" class="">
 
 <p>进入内核：</p>
-<img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/32f951f463d45ebd695f1df9b36bc3be.png" class="">
+<img src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/32f951f463d45ebd695f1df9b36bc3be.png" class="">
 
 <p>执行完<mark>lldt</mark>指令之后看一下寄存器的状态：<strong>ldtr和gdtr</strong>的内容</p>
-<img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/2dc168b9cc4ac2f907d58cc0efb1e95e.png" class="">
+<img src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/2dc168b9cc4ac2f907d58cc0efb1e95e.png" class="">
 
 <p>查看<strong>GDT</strong>内容：<strong>info gdt</strong></p>
-<img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/b2344de727b335d75477e107d2561bfa.png" class="">
+<img src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/b2344de727b335d75477e107d2561bfa.png" class="">
 <p>查看描述符详细信息：<strong>info gdt 5</strong></p>
-<img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/f282e04e9d4a6ad7737ec2397b870111.png" class="">
+<img src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/f282e04e9d4a6ad7737ec2397b870111.png" class="">
 
 <p>查看<strong>LDT</strong>内容以及每个描述符的详细信息：<strong>info ldt</strong></p>
-<img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/a482da14f8170c07d4ca4d2d4efc14ad.png" class="">
+<img src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/a482da14f8170c07d4ca4d2d4efc14ad.png" class="">
 
 <p>查看<strong>TSS</strong>信息：<strong>info tss</strong></p>
-<img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/61ce088f2f0a21ae4ec28b11e8ab7c9d.png" class="">
+<img src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/61ce088f2f0a21ae4ec28b11e8ab7c9d.png" class="">
 
 <p>运行结果：正常执行</p>
-<img lazyload="" src="/images/loading.svg" data-src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/image-20221113164719509.png" class="" title="image-20221113164719509">
-</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://xiaoeeyu.github.io">xiaoeryu</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://xiaoeeyu.github.io/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/">https://xiaoeeyu.github.io/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://xiaoeeyu.github.io" target="_blank">xiaoeryu</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/x86%E5%86%85%E6%A0%B8%E4%BB%BB%E5%8A%A1%E7%B3%BB%E7%BB%9F/">x86内核任务系统</a></div><div class="post-share"><div class="social-share" data-image="/img/butterfly-icon.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2022/12/11/26-%E7%94%A8%E6%88%B7%E7%A8%8B%E5%BA%8F%E7%BC%96%E7%A8%8B%E6%8E%A5%E5%8F%A3%E5%8F%8A%E5%85%B6%E5%AE%9E%E7%8E%B0/" title="用户程序编程接口及其实现"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">用户程序编程接口及其实现</div></div><div class="info-2"><div class="info-item-1">01.内核与用户程序之间的栈切换问题从内核进入用户程序时，使用的是call far指令，这是一个过程调用指令，是需要使用retf指令返回的。过程调用需要隐式的栈操作，使用栈来保存返回地址，因此当call far指令执行时需要将下一条指令的地址压入当前正在使用的栈中保存，也就是内核的栈中。   用户程序： start:          mov eax,ds		;此时DS指向用户程序头部段          mov fs,eax		;但是我们不能失去对DS的追踪，所以使用其他FS段寄存器重新设置DS           mov ss, [fs:stack_seg]          mov esp,stack_end           ;mov eax,[data_seg]          ;mov ds,eax           ;用户程序要做的事情（省略）           retf...</div></div></div></a><a class="pagination-related" href="/2022/12/11/28-%E7%89%B9%E6%9D%83%E7%BA%A7%E5%92%8C%E7%89%B9%E6%9D%83%E7%BA%A7%E4%BF%9D%E6%8A%A4/" title="特权级和特权级保护"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">特权级和特权级保护</div></div><div class="info-2"><div class="info-item-1">1. 特权级保护的必要性和特权保护机制用描述符实施段与段之间的隔离和保护，建立在程序之间分工协作的基础上，首先用户程序需要在内核的支持下运行而不能独立运行。 内核需要加载和重定位用户程序，为用户程序每个段创建描述符，将段选择子回填到用户程序的头部中，因为这个原因用户程序只能访问自己的代码段、数据段和栈段。   当然这样并不能有效地阻止用户程序访问GDT，如下代码：         mov eax, 0x28		;00101_0_00         mov ds, eax         mov dword[0],012345678  用户程序虽然不知道5号描述符指向哪个段，但是仍然可以破坏段中的数据，甚至用户可以重新定义一个新的GDT来替换内核建立的GDT，从而达到破坏的目的。 用户程序只要知道内核中历程的段选择子和段内偏移就可以调用例程执行，这样会很容易的破坏内核。 系统的多任务如下：   使用特权级来划分内核和用户程序，任务的共有部分和私有部分之间的隔离特权级从0~3。   特权指令：只有0特权级的程序能够执行   02....</div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">xiaoeryu</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">113</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">93</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">14</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#01-%E4%BB%BB%E5%8A%A1%EF%BC%9A%E6%A6%82%E5%BF%B5%E5%92%8C%E7%BB%84%E6%88%90"><span class="toc-number">1.</span> <span class="toc-text">01. 任务：概念和组成</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#02-%E4%BD%BF%E7%94%A8%E4%BB%BB%E5%8A%A1%E6%8E%A7%E5%88%B6%E5%9D%97%E4%BF%9D%E5%AD%98%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BF%A1%E6%81%AF"><span class="toc-number">2.</span> <span class="toc-text">02. 使用任务控制块保存任务的基本信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#03-%E5%B0%86%E4%BB%BB%E5%8A%A1%E6%8E%A7%E5%88%B6%E5%9D%97%E5%8A%A0%E5%85%A5%E4%BB%BB%E5%8A%A1%E6%8E%A7%E5%88%B6%E5%9D%97%E9%93%BE%E8%A1%A8"><span class="toc-number">3.</span> <span class="toc-text">03. 将任务控制块加入任务控制块链表</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#04-%E9%80%9A%E8%BF%87%E6%A0%88%E4%BC%A0%E9%80%92%E4%BE%8B%E7%A8%8B%E5%8F%82%E6%95%B0%E5%92%8C%E7%AB%8B%E5%8D%B3%E6%95%B0%E7%9A%84%E5%8E%8B%E6%A0%88%E6%8C%87%E4%BB%A4"><span class="toc-number">4.</span> <span class="toc-text">04. 通过栈传递例程参数和立即数的压栈指令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#05-%E6%AE%B5%E5%AF%84%E5%AD%98%E5%99%A8%E7%9A%84%E5%8E%8B%E6%A0%88%E5%92%8C%E5%87%BA%E6%A0%88%E4%BB%A5%E5%8F%8A%E6%A0%88%E7%9A%84%E9%9A%8F%E6%9C%BA%E8%AE%BF%E9%97%AE%E6%9C%BA%E5%88%B6"><span class="toc-number">5.</span> <span class="toc-text">05. 段寄存器的压栈和出栈以及栈的随机访问机制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#06-%E5%88%9B%E5%BB%BA%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%B1%80%E9%83%A8%E6%8F%8F%E8%BF%B0%E7%AC%A6LDT"><span class="toc-number">6.</span> <span class="toc-text">06. 创建任务的局部描述符LDT</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#07-%E5%9C%A8%E5%BD%93%E5%89%8D%E4%BB%BB%E5%8A%A1%E7%9A%84LDT%E4%B8%AD%E5%AE%89%E8%A3%85%E6%8F%8F%E8%BF%B0%E7%AC%A6"><span class="toc-number">7.</span> <span class="toc-text">07. 在当前任务的LDT中安装描述符</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#08-LDT%E6%8F%8F%E8%BF%B0%E7%AC%A6%E7%9A%84%E6%A0%BC%E5%BC%8F%E5%92%8C%E5%88%9B%E5%BB%BA"><span class="toc-number">8.</span> <span class="toc-text">08. LDT描述符的格式和创建</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#09-%E5%88%9B%E5%BB%BA%E4%BB%BB%E5%8A%A1%E7%8A%B6%E6%80%81%E6%AE%B5TSS"><span class="toc-number">9.</span> <span class="toc-text">09. 创建任务状态段TSS\</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#10-TSS%E6%8F%8F%E8%BF%B0%E7%AC%A6%E7%9A%84%E6%A0%BC%E5%BC%8F%E5%92%8C%E5%88%9B%E5%BB%BA"><span class="toc-number">10.</span> <span class="toc-text">10. TSS描述符的格式和创建</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#11-%E7%94%A8%E5%B8%A6%E5%8F%82%E6%95%B0%E7%9A%84RET%E6%8C%87%E4%BB%A4%E8%BF%94%E5%9B%9E%E8%B0%83%E7%94%A8%E8%80%85"><span class="toc-number">11.</span> <span class="toc-text">11. 用带参数的RET指令返回调用者</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#12-%E5%8A%A0%E8%BD%BD%E4%BB%BB%E5%8A%A1%E5%AF%84%E5%AD%98%E5%99%A8TR%E5%92%8C%E5%B1%80%E9%83%A8%E6%8F%8F%E8%BF%B0%E7%AC%A6%E8%A1%A8%E5%AF%84%E5%AD%98%E5%99%A8LDTR"><span class="toc-number">12.</span> <span class="toc-text">12. 加载任务寄存器TR和局部描述符表寄存器LDTR</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#13-%E5%9C%A8%E8%99%9A%E6%8B%9F%E6%9C%BA%E4%B8%8A%E9%AA%8C%E8%AF%81%E4%BA%BA%E7%89%A9%E7%9A%84%E6%89%A7%E8%A1%8C"><span class="toc-number">13.</span> <span class="toc-text">13. 在虚拟机上验证人物的执行</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/05/26/%E6%9F%90%E9%BA%A6App%E8%B4%AD%E7%A5%A8%E6%8E%A5%E5%8F%A3%E5%88%86%E6%9E%90-0/" title="某麦App购票接口分析">某麦App购票接口分析</a><time datetime="2025-05-26T14:55:56.000Z" title="发表于 2025-05-26 22:55:56">2025-05-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/04/05/%E6%9F%90%E9%BA%A6APP%E8%B4%AD%E7%A5%A8%E6%8E%A5%E5%8F%A3%E5%88%86%E6%9E%90/" title="某麦APP购票接口分析">某麦APP购票接口分析</a><time datetime="2025-04-05T08:07:32.000Z" title="发表于 2025-04-05 16:07:32">2025-04-05</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/09/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E6%9F%90%E6%9F%90%E7%89%9B%E4%BB%94%E5%9F%8E/" title="微信小程序-某某牛仔城">微信小程序-某某牛仔城</a><time datetime="2024-09-16T14:14:02.000Z" title="发表于 2024-09-16 22:14:02">2024-09-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/08/10/%E7%BC%96%E8%AF%91Android13-AOSP/" title="编译Android13-AOSP">编译Android13-AOSP</a><time datetime="2024-08-10T01:40:30.000Z" title="发表于 2024-08-10 09:40:30">2024-08-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/08/09/%E7%BB%95%E8%BF%87%E7%88%B1%E5%A5%87%E8%89%BAlibmsaoaidsec-so%E7%9A%84Frida%E6%A3%80%E6%B5%8B/" title="绕过爱奇艺libmsaoaidsec.so的Frida检测">绕过爱奇艺libmsaoaidsec.so的Frida检测</a><time datetime="2024-08-09T03:29:58.000Z" title="发表于 2024-08-09 11:29:58">2024-08-09</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2025 By xiaoeryu</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 6.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
+<img src="/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/image-20221113164719509.png" class="" title="image-20221113164719509">
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://xiaoeeyu.github.io">xiaoeryu</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://xiaoeeyu.github.io/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/">https://xiaoeeyu.github.io/2022/12/11/27-%E4%BB%BB%E5%8A%A1%E5%92%8C%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%88%9B%E5%BB%BA/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://xiaoeeyu.github.io" target="_blank">xiaoeryu</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/x86%E5%86%85%E6%A0%B8%E4%BB%BB%E5%8A%A1%E7%B3%BB%E7%BB%9F/">x86内核任务系统</a></div><div class="post-share"><div class="social-share" data-image="/img/butterfly-icon.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2022/12/11/26-%E7%94%A8%E6%88%B7%E7%A8%8B%E5%BA%8F%E7%BC%96%E7%A8%8B%E6%8E%A5%E5%8F%A3%E5%8F%8A%E5%85%B6%E5%AE%9E%E7%8E%B0/" title="用户程序编程接口及其实现"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">用户程序编程接口及其实现</div></div><div class="info-2"><div class="info-item-1">01.内核与用户程序之间的栈切换问题从内核进入用户程序时，使用的是call far指令，这是一个过程调用指令，是需要使用retf指令返回的。过程调用需要隐式的栈操作，使用栈来保存返回地址，因此当call far指令执行时需要将下一条指令的地址压入当前正在使用的栈中保存，也就是内核的栈中。   用户程序： start:          mov eax,ds		;此时DS指向用户程序头部段          mov fs,eax		;但是我们不能失去对DS的追踪，所以使用其他FS段寄存器重新设置DS           mov ss, [fs:stack_seg]          mov esp,stack_end           ;mov eax,[data_seg]          ;mov ds,eax           ;用户程序要做的事情（省略）           retf...</div></div></div></a><a class="pagination-related" href="/2022/12/11/28-%E7%89%B9%E6%9D%83%E7%BA%A7%E5%92%8C%E7%89%B9%E6%9D%83%E7%BA%A7%E4%BF%9D%E6%8A%A4/" title="特权级和特权级保护"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">特权级和特权级保护</div></div><div class="info-2"><div class="info-item-1">1. 特权级保护的必要性和特权保护机制用描述符实施段与段之间的隔离和保护，建立在程序之间分工协作的基础上，首先用户程序需要在内核的支持下运行而不能独立运行。 内核需要加载和重定位用户程序，为用户程序每个段创建描述符，将段选择子回填到用户程序的头部中，因为这个原因用户程序只能访问自己的代码段、数据段和栈段。   当然这样并不能有效地阻止用户程序访问GDT，如下代码：         mov eax, 0x28		;00101_0_00         mov ds, eax         mov dword[0],012345678  用户程序虽然不知道5号描述符指向哪个段，但是仍然可以破坏段中的数据，甚至用户可以重新定义一个新的GDT来替换内核建立的GDT，从而达到破坏的目的。 用户程序只要知道内核中历程的段选择子和段内偏移就可以调用例程执行，这样会很容易的破坏内核。 系统的多任务如下：   使用特权级来划分内核和用户程序，任务的共有部分和私有部分之间的隔离特权级从0~3。   特权指令：只有0特权级的程序能够执行   02....</div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">xiaoeryu</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">112</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">92</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">14</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#01-%E4%BB%BB%E5%8A%A1%EF%BC%9A%E6%A6%82%E5%BF%B5%E5%92%8C%E7%BB%84%E6%88%90"><span class="toc-number">1.</span> <span class="toc-text">01. 任务：概念和组成</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#02-%E4%BD%BF%E7%94%A8%E4%BB%BB%E5%8A%A1%E6%8E%A7%E5%88%B6%E5%9D%97%E4%BF%9D%E5%AD%98%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BF%A1%E6%81%AF"><span class="toc-number">2.</span> <span class="toc-text">02. 使用任务控制块保存任务的基本信息</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#03-%E5%B0%86%E4%BB%BB%E5%8A%A1%E6%8E%A7%E5%88%B6%E5%9D%97%E5%8A%A0%E5%85%A5%E4%BB%BB%E5%8A%A1%E6%8E%A7%E5%88%B6%E5%9D%97%E9%93%BE%E8%A1%A8"><span class="toc-number">3.</span> <span class="toc-text">03. 将任务控制块加入任务控制块链表</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#04-%E9%80%9A%E8%BF%87%E6%A0%88%E4%BC%A0%E9%80%92%E4%BE%8B%E7%A8%8B%E5%8F%82%E6%95%B0%E5%92%8C%E7%AB%8B%E5%8D%B3%E6%95%B0%E7%9A%84%E5%8E%8B%E6%A0%88%E6%8C%87%E4%BB%A4"><span class="toc-number">4.</span> <span class="toc-text">04. 通过栈传递例程参数和立即数的压栈指令</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#05-%E6%AE%B5%E5%AF%84%E5%AD%98%E5%99%A8%E7%9A%84%E5%8E%8B%E6%A0%88%E5%92%8C%E5%87%BA%E6%A0%88%E4%BB%A5%E5%8F%8A%E6%A0%88%E7%9A%84%E9%9A%8F%E6%9C%BA%E8%AE%BF%E9%97%AE%E6%9C%BA%E5%88%B6"><span class="toc-number">5.</span> <span class="toc-text">05. 段寄存器的压栈和出栈以及栈的随机访问机制</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#06-%E5%88%9B%E5%BB%BA%E4%BB%BB%E5%8A%A1%E7%9A%84%E5%B1%80%E9%83%A8%E6%8F%8F%E8%BF%B0%E7%AC%A6LDT"><span class="toc-number">6.</span> <span class="toc-text">06. 创建任务的局部描述符LDT</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#07-%E5%9C%A8%E5%BD%93%E5%89%8D%E4%BB%BB%E5%8A%A1%E7%9A%84LDT%E4%B8%AD%E5%AE%89%E8%A3%85%E6%8F%8F%E8%BF%B0%E7%AC%A6"><span class="toc-number">7.</span> <span class="toc-text">07. 在当前任务的LDT中安装描述符</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#08-LDT%E6%8F%8F%E8%BF%B0%E7%AC%A6%E7%9A%84%E6%A0%BC%E5%BC%8F%E5%92%8C%E5%88%9B%E5%BB%BA"><span class="toc-number">8.</span> <span class="toc-text">08. LDT描述符的格式和创建</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#09-%E5%88%9B%E5%BB%BA%E4%BB%BB%E5%8A%A1%E7%8A%B6%E6%80%81%E6%AE%B5TSS"><span class="toc-number">9.</span> <span class="toc-text">09. 创建任务状态段TSS\</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#10-TSS%E6%8F%8F%E8%BF%B0%E7%AC%A6%E7%9A%84%E6%A0%BC%E5%BC%8F%E5%92%8C%E5%88%9B%E5%BB%BA"><span class="toc-number">10.</span> <span class="toc-text">10. TSS描述符的格式和创建</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#11-%E7%94%A8%E5%B8%A6%E5%8F%82%E6%95%B0%E7%9A%84RET%E6%8C%87%E4%BB%A4%E8%BF%94%E5%9B%9E%E8%B0%83%E7%94%A8%E8%80%85"><span class="toc-number">11.</span> <span class="toc-text">11. 用带参数的RET指令返回调用者</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#12-%E5%8A%A0%E8%BD%BD%E4%BB%BB%E5%8A%A1%E5%AF%84%E5%AD%98%E5%99%A8TR%E5%92%8C%E5%B1%80%E9%83%A8%E6%8F%8F%E8%BF%B0%E7%AC%A6%E8%A1%A8%E5%AF%84%E5%AD%98%E5%99%A8LDTR"><span class="toc-number">12.</span> <span class="toc-text">12. 加载任务寄存器TR和局部描述符表寄存器LDTR</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#13-%E5%9C%A8%E8%99%9A%E6%8B%9F%E6%9C%BA%E4%B8%8A%E9%AA%8C%E8%AF%81%E4%BA%BA%E7%89%A9%E7%9A%84%E6%89%A7%E8%A1%8C"><span class="toc-number">13.</span> <span class="toc-text">13. 在虚拟机上验证人物的执行</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/05/05/%E6%9F%90%E9%BA%A6APP%E8%B4%AD%E7%A5%A8%E6%8E%A5%E5%8F%A3%E5%88%86%E6%9E%90/" title="某麦APP购票接口分析">某麦APP购票接口分析</a><time datetime="2025-05-05T08:07:32.000Z" title="发表于 2025-05-05 16:07:32">2025-05-05</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/09/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E6%9F%90%E6%9F%90%E7%89%9B%E4%BB%94%E5%9F%8E/" title="微信小程序-某某牛仔城">微信小程序-某某牛仔城</a><time datetime="2024-09-16T14:14:02.000Z" title="发表于 2024-09-16 22:14:02">2024-09-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/08/10/%E7%BC%96%E8%AF%91Android13-AOSP/" title="编译Android13-AOSP">编译Android13-AOSP</a><time datetime="2024-08-10T01:40:30.000Z" title="发表于 2024-08-10 09:40:30">2024-08-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/08/09/%E7%BB%95%E8%BF%87%E7%88%B1%E5%A5%87%E8%89%BAlibmsaoaidsec-so%E7%9A%84Frida%E6%A3%80%E6%B5%8B/" title="绕过爱奇艺libmsaoaidsec.so的Frida检测">绕过爱奇艺libmsaoaidsec.so的Frida检测</a><time datetime="2024-08-09T03:29:58.000Z" title="发表于 2024-08-09 11:29:58">2024-08-09</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/08/01/%E6%9F%90%E6%98%93%E6%96%B0%E9%97%BB%E9%80%86%E5%90%91/" title="某易新闻逆向">某易新闻逆向</a><time datetime="2024-08-01T02:55:05.000Z" title="发表于 2024-08-01 10:55:05">2024-08-01</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2025 By xiaoeryu</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 6.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
