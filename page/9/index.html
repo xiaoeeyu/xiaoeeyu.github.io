@@ -1,1546 +1,237 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="keywords" content="Hexo Theme Redefine">
-    
-    <meta name="author" content="xiaoeryu">
-    <!-- preconnect -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-    
-    <!--- Seo Part-->
-    
-    <link rel="canonical" href="https://xiaoeeyu.github.io/page/9/"/>
-    <meta name="robots" content="index,follow">
-    <meta name="googlebot" content="index,follow">
-    <meta name="revisit-after" content="1 days">
-    
-    
-    
-        
-        <meta property="og:type" content="website">
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>xiaoeryu</title><meta name="author" content="xiaoeryu"><meta name="copyright" content="xiaoeryu"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta property="og:type" content="website">
 <meta property="og:title" content="xiaoeryu">
 <meta property="og:url" content="https://xiaoeeyu.github.io/page/9/index.html">
 <meta property="og:site_name" content="xiaoeryu">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://xiaoeeyu.github.io/img/butterfly-icon.png">
 <meta property="article:author" content="xiaoeryu">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://xiaoeeyu.github.io/img/butterfly-icon.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://xiaoeeyu.github.io/page/9/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
     
-    
-    <!--- Icon Part-->
-    <link rel="icon" type="image/png" href="/images/rabete.jpg" sizes="192x192">
-    <link rel="apple-touch-icon" sizes="180x180" href="/images/rabete.jpg">
-    <meta name="theme-color" content="#A31F34">
-    <link rel="shortcut icon" href="/images/rabete.jpg">
-    <!--- Page Info-->
-    
-    <title>
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
         
-            xiaoeryu - Redefine Your Hexo Journey.
-        
-    </title>
-
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
     
-<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
-
-
-    <!--- Inject Part-->
-    
-
-    
-<link rel="stylesheet" href="/css/style.css">
-
-
-    
-        
-<link rel="stylesheet" href="/css/build/tailwind.css">
-
-    
-
-    
-<link rel="stylesheet" href="/fonts/GeistMono/geist-mono.css">
-
-    
-<link rel="stylesheet" href="/fonts/Geist/geist.css">
-
-    <!--- Font Part-->
-    
-    
-    
-    
-    
-    
-
-    <script id="hexo-configurations">
-    window.config = {"hostname":"xiaoeeyu.github.io","root":"/","language":"zh-CN","path":"search.xml"};
-    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true,"delete_mask":false,"title_alignment":"left","headings_top_spacing":{"h1":"3.2rem","h2":"2.4rem","h3":"1.9rem","h4":"1.6rem","h5":"1.4rem","h6":"1.3rem"}},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","highlight_theme":{"light":"github","dark":"vs2015"},"font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":4,"number":false,"expand":true,"init_open":true},"copyright":{"enable":true,"default":"cc_by_nc_sa"},"lazyload":true,"pangu_js":false,"recommendation":{"enable":false,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/ball-0101.jpg","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null,"default_mode":"light"},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null},"title":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"preloader":{"enable":false,"custom_message":null},"open_graph":true,"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/wallhaven-jxl31y.png","dark":"/images/wallhaven-o5762l.png"},"title":"XIAOERYU","subtitle":{"text":["明心见性，拨云见日","Don't wait, to create"],"hitokoto":{"enable":false,"show_author":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":true,"style":"default","links":{"github":"https://github.com/xiaoeeyu","instagram":null,"zhihu":null,"twitter":null,"email":"xiaoeryu@163.com"},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null,"lrc":null}]},"mermaid":{"enable":false,"version":"9.3.0"}},"version":"2.8.2","navbar":{"auto_hide":false,"color":{"left":"#f78736","right":"#367df7","transparency":35},"width":{"home":"1200px","pages":"1000px"},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Archives":{"path":"/archives","icon":"fa-regular fa-archive"}},"search":{"enable":true,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"blur"},"home":{"sidebar":{"enable":true,"position":"left","first_item":"menu","announcement":null,"show_on_mobile":true,"links":null},"article_date_format":"auto","excerpt_length":200,"categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":3}},"footerStart":"2022/8/17 11:45:14"};
-    window.lang_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"};
-    window.data = {"masonry":false};
-  </script>
-    
-    <!--- Fontawesome Part-->
-    
-<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
-
-    
-<link rel="stylesheet" href="/fontawesome/brands.min.css">
-
-    
-<link rel="stylesheet" href="/fontawesome/solid.min.css">
-
-    
-<link rel="stylesheet" href="/fontawesome/regular.min.css">
-
-    
-    
-    
-    
-<meta name="generator" content="Hexo 6.3.0">
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'xiaoeryu',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'home'
+}</script><meta name="generator" content="Hexo 6.3.0">
 <style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
-</head>
-
-
-
-<body>
-	<div class="progress-bar-container">
-	
-
-	
-	<span class="pjax-progress-bar"></span>
-	<!--        <span class="swup-progress-icon">-->
-	<!--            <i class="fa-solid fa-circle-notch fa-spin"></i>-->
-	<!--        </span>-->
-	
-</div>
-
-<main class="page-container" id="swup">
-
-	
-	<style>
-    .home-article-item,
-    .sidebar-links,
-    .sidebar-content,
-    a.page-number,
-    a.extend,
-    .sidebar-links .links:hover,
-    .right-bottom-tools,
-    footer.footer {
-        background-color: var(--background-color-transparent-80) !important;
-    }
-    .right-bottom-tools:hover,
-    a.page-number:hover,
-    a.extend:hover {
-        background-color: var(--primary-color) !important;
-    }
-    .site-info,
-    .home-article-sticky-label {
-        background-color: var(--background-color-transparent-15) !important;
-    }
-    .home-article-sticky-label {
-        backdrop-filter: none !important;
-    }
-    .home-banner-background {
-        filter: blur(15px);
-    }
-</style>
-
-<div class="home-banner-background transition-fade fixed top-0 left-0 w-screen h-screen scale-125 sm:scale-110 box-border will-change-transform bg-cover">
-    <img src="/images/wallhaven-jxl31y.png" alt="home-banner-background" class="w-full h-full object-cover dark:hidden">
-    <img src="/images/wallhaven-o5762l.png" alt="home-banner-background" class="w-full h-full object-cover hidden dark:block">
-</div>
-
-
-	
-
-	<div class="main-content-container flex flex-col justify-between min-h-dvh">
-		<div class="main-content-header">
-			<header class="navbar-container px-6 md:px-12">
-    <div class="navbar-content transition-navbar ">
-        <div class="left">
-            
-                <a class="logo-image h-8 w-8 sm:w-10 sm:h-10 mr-3" href="/">
-                    <img src="/images/rabete.jpg" class="w-full h-full rounded-sm">
-                </a>
-            
-            <a class="logo-title" href="/">
-                <h1>
-                xiaoeryu
-                </h1>
-            </a>
-        </div>
-
-        <div class="right">
-            <!-- PC -->
-            <div class="desktop">
-                <ul class="navbar-list">
-                    
-                        
-                            
-
-                            <li class="navbar-item">
-                                <!-- Menu -->
-                                <a class="active"
-                                   href="/"
-                                        >
-                                    <i class="fa-regular fa-house fa-fw"></i>
-                                    首页
-                                    
-                                </a>
-
-                                <!-- Submenu -->
-                                
-                            </li>
-                    
-                        
-                            
-
-                            <li class="navbar-item">
-                                <!-- Menu -->
-                                <a class=""
-                                   href="/archives"
-                                        >
-                                    <i class="fa-regular fa-archive fa-fw"></i>
-                                    归档
-                                    
-                                </a>
-
-                                <!-- Submenu -->
-                                
-                            </li>
-                    
-                    
-                        <li class="navbar-item search search-popup-trigger">
-                            <i class="fa-solid fa-magnifying-glass"></i>
-                        </li>
-                    
-                </ul>
-            </div>
-            <!-- Mobile -->
-            <div class="mobile">
-                
-                    <div class="icon-item search search-popup-trigger"><i class="fa-solid fa-magnifying-glass"></i>
-                    </div>
-                
-                <div class="icon-item navbar-bar">
-                    <div class="navbar-bar-middle"></div>
-                </div>
-            </div>
-        </div>
+</head><body><div class="page" id="body-wrap"><header class="full_page" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">xiaoeryu</span></a></span><div id="menus"></div></nav><div id="site-info"><h1 id="site-title">xiaoeryu</h1></div><div id="scroll-down"><i class="fas fa-angle-down scroll-down-effects"></i></div></header><main class="layout" id="content-inner"><div class="recent-posts nc" id="recent-posts"><div class="recent-post-items"><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2021/05/28/Cobalt-Strike-%E5%9B%9B/" title="Cobalt-Strike-四">Cobalt-Strike-四</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-05-28T05:46:11.000Z" title="发表于 2021-05-28 13:46:11">2021-05-28</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E6%B8%97%E9%80%8F/">渗透</a></span></div><div class="content">Cobalt Strike用户驱动攻击使用cs生成木马让目标机上线后 有很多用户驱动攻击的模块可以使用     这里可以修改sleep的时间：获取信息的间隔时间/s  </div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2021/05/26/Cobalt-Strike-%E4%B8%89/" title="Cobalt Strike(三)">Cobalt Strike(三)</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-05-26T02:26:21.000Z" title="发表于 2021-05-26 10:26:21">2021-05-26</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E6%B8%97%E9%80%8F/">渗透</a></span></div><div class="content">Cobalt Strike DNS Beacon的使用与原理这一节实验需要有一台公网vps和一个域名   简介 dns木马 dns木马因为隐蔽性较好，在受害者不会开放任何端口可以规避防火墙协议，走的是53端口 (服务器)，防火墙不会拦截，缺点响应较慢。   1. 部署域名解析 配置域名解析：需要添加一条A记录和一条NS记录  A：告诉域名服务器，test.xiao（域名）指向的IP地址是多少  CN：告诉域名服务器，想要知道c1.xiao（域名）的IP就去问test.xiao（域名）    设置完成后验证一下A记录是否解析成功  找一台可以联网的主机输入ping test.xiao（域名）：可以显示IP地址说明解析已经成功了    然后在vps开启53端口并监听试试测试CN记录是否解析成功   开启端口命令  iptables -I INPUT -p tcp --dport 53 -j ACCEPT    监听端口命令 tcpdump -n -i any udp dst port 53  然后在一台可以联网的主机上执行nslookup...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2021/05/25/Cobalt-Strike-%E4%BA%8C/" title="Cobalt Strike(二)">Cobalt Strike(二)</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-05-25T08:40:52.000Z" title="发表于 2021-05-25 16:40:52">2021-05-25</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E6%B8%97%E9%80%8F/">渗透</a></span></div><div class="content">Cobalt Strike重定器域名：kali123.com dns服务器 ：192.168.3.40 csserver(kali)：192.168.3.8	k.kali.com Ubuntu：192.168.3.42   简介： 什么是“重定器”： “重定器”是一个在“CS”服务器和目标网络之间的服务器。作用是对你团队服务器下的连接，用做代理服务器或端口转发服务。	  作用  1. 保护服务器地址  2. 增强适应能力，保持通信   使用的工具 socat TCP4-LISTEN:80，fork TCP4:[team server]:80 可以用这个工具来建立80端口的连接管理，并且继续在80端口运行那个连接团队服务器的连接。 linux系统的使用命令 socat TCP4-LISTEN:80,fork TCP4:team.cskali.com:80   重定向拓扑图    本地域名配置 ​	先配置一下DNS信息 	  ​	然后在我们用我们的windows虚拟机输入域名连接一下csserver ​		a. 修改本地的DNS   ​		b....</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2021/05/24/Cobalt-Strike%E4%BD%BF%E7%94%A8%EF%BC%88%E4%B8%80%EF%BC%89/" title="Cobalt Strike使用（一）">Cobalt Strike使用（一）</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-05-24T09:55:48.000Z" title="发表于 2021-05-24 17:55:48">2021-05-24</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E6%B8%97%E9%80%8F/">渗透</a></span></div><div class="content">基本使用简介：​	Cobalt Strike作为一款GUI的框架式渗透工具，集成了端口转发、服务扫描、自动化溢出、多模式端口监听、exe\dll\java木马生成、office宏病毒生成、木马捆绑；钓鱼攻击包括：站点克隆、目标信息获取、java执行、浏览器自动攻击等等。   运行环境：​	Cobalt Strike4.3 ​	首先安装使用前需要安装java环境jre ​	服务器：kali 或者 Debian会比较好，Ubuntu的话可能会有些端口占用的问题需要处理 ​	客户端：安装jre即可使用（跨平台） 启动：1. 创建服务器​	./teamserver &lt;host&gt; &lt;password&gt; [/path/to/c2.profile] [YYYY-MM-DD] ​	 is the (default) IP address of this Cobalt Strike team server​	 is the shared password to connect to this server​	[/path/to/c2.profile] is your...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2021/05/24/ARM%E6%B1%87%E7%BC%96%E7%AC%94%E8%AE%B0/" title="ARM汇编笔记">ARM汇编笔记</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-05-24T08:20:34.000Z" title="发表于 2021-05-24 16:20:34">2021-05-24</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/ARM%E6%B1%87%E7%BC%96/">ARM汇编</a></span></div><div class="content">ARM汇编的一些知识寄存器数量ARM处理器一共有37个32位寄存器。30个为“通用“寄存器： r0-r14未分组：r0-r7，即只有一个寄存器分 组：r8-r14，即有多个同名寄存器r8-r12 ：两个r13-r14：6个 r13(sp),R14(lr)1个固定的程序计数器 ： pc (又称r15)6个为状态寄存器 ： cpsr spsr不能被同时访问,一种模式下最多同时访问18个寄存器   不同模式下访问的寄存器  寄存器用途sp(r13) - 堆栈指针lr(r14) - 连接寄存器调用子程序时存放调用地址,存放返回地址pc(r15) - 程序计数器,相当于windows的EIP(1)跳转到指定地址mov pc,lr// 直接修改pc ，完成跳转bx lr // 跳转到 lr保存的地址 (2)在函数入口保存寄存器信息stmfd sp!, {r11,lr} // 保存大括号中的寄存器到栈中，从右往左 (3)使用ldm指令修改pc,完成函数返回ldmfd sp!, {r11,pc} // 将栈中数据依次加载到寄存器中，从左往右 cpsr –...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2021/05/24/Ocean-Lotus%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/" title="Ocean Lotus样本分析">Ocean Lotus样本分析</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-05-24T07:51:57.000Z" title="发表于 2021-05-24 15:51:57">2021-05-24</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/">样本分析</a></span></div><div class="content">0x00样本简介​    该样本是2018年5月份国内某安全厂商威胁情报系统捕获的一起针对中国及其他东亚地区国家政府、科研单位领域的攻击样本，该APT组织确认为APT-32（海莲花OceanLotus）。​    此次攻击载体选用的是.doc后缀的rtf文件，该rtf文件通过利用漏洞CVE-2017-11882释放恶意文件到本地并加载执行。其释放文件利用了白加黑的组合加载手法逃避杀软的查杀，在运行过程中并无我们常见的多级注入行为，也并没有文件落地，具有较强的隐蔽性。原始样本信息如表１所示。    文件名称 Document_GPI Invitation-UNSOOC...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2021/05/24/%E4%B8%80%E6%9E%9A%E7%AE%80%E5%8D%95%E7%9A%84%E6%9C%AA%E7%9F%A5%E5%A3%B3/" title="一枚简单的未知壳">一枚简单的未知壳</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-05-24T07:29:04.000Z" title="发表于 2021-05-24 15:29:04">2021-05-24</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Win%E9%80%86%E5%90%91/">Win逆向</a></span></div><div class="content">工具&amp;环境:   工具 系统环境    PEID win7_x86   OD    IDA    imporREC    查壳先用PEID扫了一下发现什么都没有扫到    直接先用OD打开看一下发现有pushad/fd先用ESP定律下断试一下  嗯,直接就这样到了,F7几下就到了OEP  这里有个sub esp,0x58所以应该是Delphi写的,第一个call本来应该显示getversion的,但是并没有,发现它IAT加密了 OEP是47148B  那我们先跟进去看一下 这里有对ebx一个sub和add运算看了一下发现它获取到了GetVersion的地址  但是0x475080还是它WriteIAT的地址,所以在这里下硬件写入断点,然后重新运行寻找它GetAPI的地方  F9了两次发现这个地方像是写入IAT的地方  那这个1D0897应该是WriteIATAddr了 在0x2F0895这个地方下断用run跟踪F7跑一下  run跟踪的原理就是模拟操作然后全部记录在run跟踪窗口中  在写入iat的地方下断点,然后run跟踪,运行到下一次写入的时候就会断下来,...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2021/05/21/HW%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/" title="HW样本分析">HW样本分析</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-05-21T10:32:26.000Z" title="发表于 2021-05-21 18:32:26">2021-05-21</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/">样本分析</a></span></div><div class="content">0x00 样本信息​	HW期间拿到的一个样本，用了lnk的启动方式。运行后会启动隐藏属性的exe和dll文件，进行后续的内存解密操作后用域前置的方法执行外联操作。   0x01 行为分析 行为分析 样本解压后可以看到两个文件：一个excle表，一个pdf快捷方式。excle表查看后是一个正常的文件。   通过火绒剑行为监控可以看到快捷方式执行后会有一些启动bat脚本和外连等行为 根据bat文件可以看到lnk文件执行之后，运行的主体为sihost.exe &amp; MpSvc.dll，接下来跟据前面监测到的的一些行为对这两个文件进行详细分析。     0x02...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2021/05/20/winDbg%E5%AE%89%E8%A3%85mona/" title="winXP安装mona">winXP安装mona</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-05-20T03:05:14.000Z" title="发表于 2021-05-20 11:05:14">2021-05-20</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a></span></div><div class="content">Windows XP，32位 从https://github.com/corelan/windbglib/raw/master/pykd/pykd.zip下载pykd.zip  解压后获得2个文件：pykd.pyd和vcredist_x86.exe  使用管理员权限运行vcredist_x86.exe并接受默认值。  将pykd.pyd复制到 C:\Program Files\Debugging Tools for Windows (x86)\winext  打开具有管理员权限的命令提示符，然后运行以下命令： c: cd "C:\Program Files\Common Files\Microsoft Shared\VC" regsvr32 msdia90.dll (You should get a messagebox indicating that the dll was registered...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2021/05/20/go%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F%E8%AE%BE%E7%BD%AE/" title="go环境变量设置">go环境变量设置</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-05-20T02:56:10.000Z" title="发表于 2021-05-20 10:56:10">2021-05-20</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E5%B7%A5%E5%85%B7/">工具</a></span></div><div class="content">question： linux下设置go环境变量之后，再次打开新的终端或者重启后环境变量会失效需要重新source /etc/profile 后才能生效    answer： 原来在 /etc/profile 中写入的环境变量输出的是普通用户的环境变量，设置root用户的环境变量需要在/root/.bashrc 里面写入环境变量（将刚才在 /etc/profile 中写入的环境变量拷贝过来重新 source /root/.bashrc 即可） 然后无论是重启还是打开新的终端无论是普通用户还是root用户输入 go env 就可以看到我们设置好的环境变量生效。    </div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2021/05/20/exploit%E7%BC%96%E5%86%99%E7%B3%BB%E5%88%972%EF%BC%9A%E6%A0%88%E6%BA%A2%E5%87%BA%EF%BC%8C%E8%B7%B3%E8%BD%AC%E8%87%B3shellcode/" title="exploit编写系列2：栈溢出，跳转至shellcode">exploit编写系列2：栈溢出，跳转至shellcode</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-05-20T02:27:25.000Z" title="发表于 2021-05-20 10:27:25">2021-05-20</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Win%E9%80%86%E5%90%91/">Win逆向</a></span></div><div class="content">exploit编写系列2：栈溢出，跳转至shellcode这篇blog是为了学习如何用各种方式去构造栈溢出类型漏洞的exp 执行shellcode的多种方法：  jump/call	寄存器 pop return push return jmp[reg + offset] blind return jmp code SHE call     1. jmp/call 寄存器在第一篇中已经详细分析过 2. pop pop ret这个exp我们依然还使用上一篇分析的Easy RM to MP3的漏洞来编写，在上一章使用jmp register 编写exp的时候，我们已经能够调整缓冲区，使ESP直接指向我们的shellcode。但是如果shellcode入口发生偏移比如：shellcode的入口位于ESP+8的时候，我们又该怎么去编写exp呢？理论上，当ESP+offset已经包含shellcode地址，那么只有pop ret这种方法使可行的….如果不是如此（事情往往并非如此），那么也许还有其他方法。 接下来我们尝试采用pop pop...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2021/05/20/exploit%E7%BC%96%E5%86%99%E7%B3%BB%E5%88%971-Easy-RM-to-MP3-%E6%BC%8F%E6%B4%9E%E8%B0%83%E8%AF%95/" title="exploit编写系列1:Easy RM to MP3 漏洞调试">exploit编写系列1:Easy RM to MP3 漏洞调试</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2021-05-20T02:22:12.000Z" title="发表于 2021-05-20 10:22:12">2021-05-20</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Win%E9%80%86%E5%90%91/">Win逆向</a></span></div><div class="content">Easy RM to MP3 漏洞调试0X00	前言分析这个漏洞主要是为了学习怎么通过调试并编写溢出类型漏洞的EXP 0X01	分析环境   调试环境 版本    系统版本 XP_sp3   Easy RM to MP3 2.7.3.700   windbg 6.12     0X02	漏洞描述这个漏洞是一个典型的溢出类型漏洞，在处理字符的时候没有对长度做限制，在读取到第25000~30000个字符的时候会导致返回地址被覆盖导致溢出 0X03	漏洞分析编写perl脚本生成漏洞验证文件 my $file= "crash25000.m3u"; my $junk = "\x41" x 25000; my $junk2 = "\x42" x 5000; open($FILE,"&gt;$file"); print $FILE $junk.$junk2; close($FILE); print "m3u File Created successfully\n";  打开cmd输入命令windbg.exe -I，将windbg设置为默认调试器。 用 Easy RM to MP3...</div></div></div></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/8/#content-inner"><i class="fas fa-chevron-left fa-fw"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/8/#content-inner">8</a><span class="page-number current">9</span><a class="page-number" href="/page/10/#content-inner">10</a><a class="extend next" rel="next" href="/page/10/#content-inner"><i class="fas fa-chevron-right fa-fw"></i></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">xiaoeryu</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">113</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">93</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">14</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/05/26/%E6%9F%90%E9%BA%A6App%E8%B4%AD%E7%A5%A8%E6%8E%A5%E5%8F%A3%E5%88%86%E6%9E%90-0/" title="某麦App购票接口分析">某麦App购票接口分析</a><time datetime="2025-05-26T14:55:56.000Z" title="发表于 2025-05-26 22:55:56">2025-05-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/04/05/%E6%9F%90%E9%BA%A6APP%E8%B4%AD%E7%A5%A8%E6%8E%A5%E5%8F%A3%E5%88%86%E6%9E%90/" title="某麦APP购票接口分析">某麦APP购票接口分析</a><time datetime="2025-04-05T08:07:32.000Z" title="发表于 2025-04-05 16:07:32">2025-04-05</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/09/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E6%9F%90%E6%9F%90%E7%89%9B%E4%BB%94%E5%9F%8E/" title="微信小程序-某某牛仔城">微信小程序-某某牛仔城</a><time datetime="2024-09-16T14:14:02.000Z" title="发表于 2024-09-16 22:14:02">2024-09-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/08/10/%E7%BC%96%E8%AF%91Android13-AOSP/" title="编译Android13-AOSP">编译Android13-AOSP</a><time datetime="2024-08-10T01:40:30.000Z" title="发表于 2024-08-10 09:40:30">2024-08-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/08/09/%E7%BB%95%E8%BF%87%E7%88%B1%E5%A5%87%E8%89%BAlibmsaoaidsec-so%E7%9A%84Frida%E6%A3%80%E6%B5%8B/" title="绕过爱奇艺libmsaoaidsec.so的Frida检测">绕过爱奇艺libmsaoaidsec.so的Frida检测</a><time datetime="2024-08-09T03:29:58.000Z" title="发表于 2024-08-09 11:29:58">2024-08-09</time></div></div></div></div><div class="card-widget card-categories"><div class="item-headline">
+            <i class="fas fa-folder-open"></i>
+            <span>分类</span>
+            <a class="card-more-btn" href="/categories/" title="查看更多">
+      <i class="fas fa-angle-right"></i></a>
+          </div>
+          <ul class="card-category-list" id="aside-cat-list">
+            <li class="card-category-list-item "><a class="card-category-list-link" href="/categories/ARM%E6%B1%87%E7%BC%96/"><span class="card-category-list-name">ARM汇编</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Android%E9%80%86%E5%90%91/"><span class="card-category-list-name">Android逆向</span><span class="card-category-list-count">60</span></a><ul class="card-category-list child"><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Android%E9%80%86%E5%90%91/%E5%8A%A0%E5%AF%86%E8%A7%A3%E5%AF%86/"><span class="card-category-list-name">加密解密</span><span class="card-category-list-count">6</span></a></li></ul></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/NDK%E5%BC%80%E5%8F%91/"><span class="card-category-list-name">NDK开发</span><span class="card-category-list-count">8</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Win%E9%80%86%E5%90%91/"><span class="card-category-list-name">Win逆向</span><span class="card-category-list-count">9</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/X86%E6%B1%87%E7%BC%96%EF%BC%9A%E5%AE%9E%E6%A8%A1%E5%BC%8F%E5%88%B0%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F/"><span class="card-category-list-name">X86汇编：实模式到保护模式</span><span class="card-category-list-count">11</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/ios%E9%80%86%E5%90%91/"><span class="card-category-list-name">ios逆向</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E5%8A%A0%E5%AF%86%E8%A7%A3%E5%AF%86/"><span class="card-category-list-name">加密解密</span><span class="card-category-list-count">2</span></a></li>
+          </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/so-Hook/" style="font-size: 1.1em; color: #999">so Hook</a> <a href="/tags/x86%E7%89%B9%E6%9D%83%E7%BA%A7%E5%92%8C%E7%89%B9%E6%9D%83%E7%BA%A7%E4%BF%9D%E6%8A%A4/" style="font-size: 1.1em; color: #999">x86特权级和特权级保护</a> <a href="/tags/%E6%8A%A2%E8%8C%85%E5%8F%B0/" style="font-size: 1.1em; color: #999">抢茅台</a> <a href="/tags/exploit%E7%BC%96%E5%86%99/" style="font-size: 1.16em; color: #999b9e">exploit编写</a> <a href="/tags/%E5%8A%A0%E5%A3%B3%E5%92%8C%E8%BF%90%E8%A1%8C%E6%97%B6%E7%9A%84%E6%9C%BA%E5%88%B6/" style="font-size: 1.16em; color: #999b9e">加壳和运行时的机制</a> <a href="/tags/%E6%9A%B4%E5%8A%9B%E8%A7%A3%E5%AF%86/" style="font-size: 1.1em; color: #999">暴力解密</a> <a href="/tags/Frida-Hook/" style="font-size: 1.5em; color: #99a9bf">Frida Hook</a> <a href="/tags/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" style="font-size: 1.16em; color: #999b9e">环境搭建</a> <a href="/tags/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/" style="font-size: 1.21em; color: #999ea4">漏洞分析</a> <a href="/tags/%E5%8D%8F%E8%AE%AE%E5%88%86%E6%9E%90/" style="font-size: 1.21em; color: #999ea4">协议分析</a> <a href="/tags/Frida%E5%8F%8D%E8%B0%83%E8%AF%95/" style="font-size: 1.1em; color: #999">Frida反调试</a> <a href="/tags/Xposed%E6%8F%92%E4%BB%B6%E5%BC%80%E5%8F%91/" style="font-size: 1.39em; color: #99a4b4">Xposed插件开发</a> <a href="/tags/%E5%9B%BD%E5%AE%B6%E8%AE%A4%E5%90%8C%E6%84%9F%E6%9E%84%E5%BB%BA/" style="font-size: 1.1em; color: #999">国家认同感构建</a> <a href="/tags/Frida-HOOK/" style="font-size: 1.21em; color: #999ea4">Frida HOOK</a> <a href="/tags/%E5%93%B2%E5%AD%A6/" style="font-size: 1.1em; color: #999">哲学</a> <a href="/tags/Android%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" style="font-size: 1.21em; color: #999ea4">Android源码分析</a> <a href="/tags/Android%E8%84%B1%E5%A3%B3/" style="font-size: 1.33em; color: #99a2af">Android脱壳</a> <a href="/tags/office%E6%BC%8F%E6%B4%9E/" style="font-size: 1.1em; color: #999">office漏洞</a> <a href="/tags/X86%E5%AF%84%E5%AD%98%E5%99%A8%E6%8C%87%E4%BB%A4%E6%A0%BC%E5%BC%8F/" style="font-size: 1.1em; color: #999">X86寄存器指令格式</a> <a href="/tags/AES/" style="font-size: 1.16em; color: #999b9e">AES</a> <a href="/tags/%E6%BA%90%E7%A0%81%E4%BF%AE%E6%94%B9/" style="font-size: 1.1em; color: #999">源码修改</a> <a href="/tags/x86%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/" style="font-size: 1.1em; color: #999">x86内存管理</a> <a href="/tags/%E6%8A%93%E5%8C%85%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" style="font-size: 1.1em; color: #999">抓包工具使用</a> <a href="/tags/frida-Hook/" style="font-size: 1.1em; color: #999">frida Hook</a> <a href="/tags/%E6%B3%A8%E5%86%8C%E6%9C%BA/" style="font-size: 1.1em; color: #999">注册机</a> <a href="/tags/Android%E5%8A%A0%E5%A3%B3/" style="font-size: 1.21em; color: #999ea4">Android加壳</a> <a href="/tags/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81/" style="font-size: 1.1em; color: #999">分组密码</a> <a href="/tags/windows%E6%9C%A8%E9%A9%AC/" style="font-size: 1.27em; color: #99a0a9">windows木马</a> <a href="/tags/JavaVM%E4%B8%8EJNIEnv/" style="font-size: 1.1em; color: #999">JavaVM与JNIEnv</a> <a href="/tags/x86%E5%B9%B3%E5%9D%A6%E6%A8%A1%E5%9E%8B/" style="font-size: 1.1em; color: #999">x86平坦模型</a> <a href="/tags/%E5%A4%84%E7%90%86%E5%90%84%E7%A7%8D%E5%8F%82%E6%95%B0%E7%9A%84%E6%96%B9%E6%B3%95/" style="font-size: 1.1em; color: #999">处理各种参数的方法</a> <a href="/tags/JNI%E5%87%BD%E6%95%B0%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E4%B8%8E%E8%BF%BD%E8%B8%AA/" style="font-size: 1.1em; color: #999">JNI函数注册原理与追踪</a> <a href="/tags/%E7%AE%97%E6%B3%95%E5%88%86%E6%9E%90/" style="font-size: 1.16em; color: #999b9e">算法分析</a> <a href="/tags/Android%E5%88%B7%E6%9C%BA/" style="font-size: 1.1em; color: #999">Android刷机</a> <a href="/tags/%E7%88%AC%E8%99%AB/" style="font-size: 1.1em; color: #999">爬虫</a> <a href="/tags/%E5%87%BD%E6%95%B0%E6%8A%BD%E5%8F%96%E5%A3%B3/" style="font-size: 1.1em; color: #999">函数抽取壳</a> <a href="/tags/x86%E5%86%85%E6%A0%B8%E4%BB%BB%E5%8A%A1%E7%B3%BB%E7%BB%9F/" style="font-size: 1.1em; color: #999">x86内核任务系统</a> <a href="/tags/Cobalt-Strike/" style="font-size: 1.44em; color: #99a7ba">-Cobalt Strike</a> <a href="/tags/X86%E5%AD%98%E5%82%A8%E5%99%A8%E5%8F%8A%E5%85%B6%E4%BF%9D%E6%8A%A4/" style="font-size: 1.1em; color: #999">X86存储器及其保护</a> <a href="/tags/%E6%BA%A2%E5%87%BA%E7%B1%BB%E5%9E%8B%E6%BC%8F%E6%B4%9E/" style="font-size: 1.16em; color: #999b9e">溢出类型漏洞</a></div></div><div class="card-widget card-archives">
+    <div class="item-headline">
+      <i class="fas fa-archive"></i>
+      <span>归档</span>
+      <a class="card-more-btn" href="/archives/"
+            title="查看更多">
+            <i class="fas fa-angle-right"></i>
+          </a>
     </div>
-
-    <!-- Mobile sheet -->
-    <div class="navbar-drawer h-dvh w-full absolute top-0 left-0 bg-background-color flex flex-col justify-between">
-        <ul class="drawer-navbar-list flex flex-col px-4 justify-center items-start">
-            
-                
-                    
-
-                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
-                        
-                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full active"
-                           href="/"
-                        >
-                            <span>
-                                首页
-                            </span>
-                            
-                                <i class="fa-regular fa-house fa-sm fa-fw"></i>
-                            
-                        </a>
-                        
-
-                        
-                    </li>
-            
-                
-                    
-
-                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
-                        
-                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
-                           href="/archives"
-                        >
-                            <span>
-                                归档
-                            </span>
-                            
-                                <i class="fa-regular fa-archive fa-sm fa-fw"></i>
-                            
-                        </a>
-                        
-
-                        
-                    </li>
-            
-
-            
-            
-        </ul>
-
-        <div class="statistics flex justify-around my-2.5">
-    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">93</div>
-        <div class="label text-third-text-color text-sm">标签</div>
-    </a>
-    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">14</div>
-        <div class="label text-third-text-color text-sm">分类</div>
-    </a>
-    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">113</div>
-        <div class="label text-third-text-color text-sm">文章</div>
-    </a>
-</div>
-    </div>
-
-    <div class="window-mask"></div>
-
-</header>
-
-
-		</div>
-
-		<div class="main-content-body transition-fade-up">
-			
-			<div class="home-sidebar-container">
-    <div class="sticky-container sticky">
-        
-        
-            
-            <div class="sidebar-content" >
-                <div class="avatar flex justify-center">
-    <img src="/images/rabete.jpg">
-</div>
-                <div class="author flex flex-col justify-center my-2.5 mx-0">
-    <div class="name">xiaoeryu</div>
-    
-        <div class="label">Lv5</div>
-    
-</div>
-                <div class="statistics flex justify-around my-2.5">
-    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">93</div>
-        <div class="label text-third-text-color text-sm">标签</div>
-    </a>
-    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">14</div>
-        <div class="label text-third-text-color text-sm">分类</div>
-    </a>
-    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">113</div>
-        <div class="label text-third-text-color text-sm">文章</div>
-    </a>
-</div>
-            </div>
-        
-
-    </div>
-</div>
-
-			
-
-			<div class="main-content">
-				<div class="home-content-container">
-    <ul class="home-article-list">
-        
-            <li class="home-article-item">
-
-                
-
-                
-
-                
-                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
-                    <h3 class="home-article-title">
-                        <a href="/2021/05/28/Cobalt-Strike-%E5%9B%9B/">
-                            Cobalt-Strike-四
-                        </a>
-                    </h3>
-
-                    <div class="home-article-content markdown-body">
-                        
-                            <h2 id="Cobalt-Strike用户驱动攻击"><a href="#Cobalt-Strike用户驱动攻击" class="headerlink" title="Cobalt Strike用户驱动攻击"></a>Cobalt Strike用户驱动攻击</h2><p>使用cs生成木马让目标机上线后</p>
-<p>有很多用户驱动攻击的模块可以使用</p>
-                        
-                    </div>
-
-                    <div class="home-article-meta-info-container">
-    <div class="home-article-meta-info">
-        <span><i class="fa-solid fa-calendars"></i>&nbsp;
-            <span class="home-article-date" data-date="Fri May 28 2021 13:46:11 GMT+0800">
-                
-                    2021-05-28
-                
+  
+    <ul class="card-archive-list">
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2025/05/">
+            <span class="card-archive-list-date">
+              五月 2025
             </span>
-        </span>
-        
-            <span class="home-article-category">
-                <i class="fa-solid fa-folders"></i>&nbsp;
-            <ul>
-                
-                
-                    
-                        
-                        <li>
-                            <a href="/categories/%E6%B8%97%E9%80%8F/">渗透</a>&nbsp;
-                        </li>
-                    
-                    
-                
-            </ul>
-        </span>
-        
-        
-            <span class="home-article-tag">
-                <i class="fa-solid fa-tags"></i>&nbsp;
-                <ul>
-                    
-                        <li>
-                            
-                            <a href="/tags/Cobalt-Strike/">-Cobalt Strike</a>&nbsp;
-                        </li>
-                    
-                </ul>
+            <span class="card-archive-list-count">1</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2025/04/">
+            <span class="card-archive-list-date">
+              四月 2025
             </span>
-        
-    </div>
-
-    <a href="/2021/05/28/Cobalt-Strike-%E5%9B%9B/">阅读全文<span class="seo-reader-text">Cobalt-Strike-四</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
-</div>
-
-                </div>
-            </li>
-        
-            <li class="home-article-item">
-
-                
-
-                
-
-                
-                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
-                    <h3 class="home-article-title">
-                        <a href="/2021/05/26/Cobalt-Strike-%E4%B8%89/">
-                            Cobalt Strike(三)
-                        </a>
-                    </h3>
-
-                    <div class="home-article-content markdown-body">
-                        
-                            <h2 id="Cobalt-Strike-DNS-Beacon的使用与原理"><a href="#Cobalt-Strike-DNS-Beacon的使用与原理" class="headerlink" title="Cobalt Strike DNS Beacon的使用与原理"></a>Cobalt Strike DNS Beacon的使用与原理</h2><p>这一节实验需要有一台公网vps和一个域名</p>
-                        
-                    </div>
-
-                    <div class="home-article-meta-info-container">
-    <div class="home-article-meta-info">
-        <span><i class="fa-solid fa-calendars"></i>&nbsp;
-            <span class="home-article-date" data-date="Wed May 26 2021 10:26:21 GMT+0800">
-                
-                    2021-05-26
-                
+            <span class="card-archive-list-count">1</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2024/09/">
+            <span class="card-archive-list-date">
+              九月 2024
             </span>
-        </span>
-        
-            <span class="home-article-category">
-                <i class="fa-solid fa-folders"></i>&nbsp;
-            <ul>
-                
-                
-                    
-                        
-                        <li>
-                            <a href="/categories/%E6%B8%97%E9%80%8F/">渗透</a>&nbsp;
-                        </li>
-                    
-                    
-                
-            </ul>
-        </span>
-        
-        
-            <span class="home-article-tag">
-                <i class="fa-solid fa-tags"></i>&nbsp;
-                <ul>
-                    
-                        <li>
-                            
-                            <a href="/tags/Cobalt-Strike/">-Cobalt Strike</a>&nbsp;
-                        </li>
-                    
-                </ul>
+            <span class="card-archive-list-count">1</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2024/08/">
+            <span class="card-archive-list-date">
+              八月 2024
             </span>
-        
-    </div>
-
-    <a href="/2021/05/26/Cobalt-Strike-%E4%B8%89/">阅读全文<span class="seo-reader-text">Cobalt Strike(三)</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
-</div>
-
-                </div>
-            </li>
-        
-            <li class="home-article-item">
-
-                
-
-                
-
-                
-                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
-                    <h3 class="home-article-title">
-                        <a href="/2021/05/25/Cobalt-Strike-%E4%BA%8C/">
-                            Cobalt Strike(二)
-                        </a>
-                    </h3>
-
-                    <div class="home-article-content markdown-body">
-                        
-                            <h2 id="Cobalt-Strike重定器"><a href="#Cobalt-Strike重定器" class="headerlink" title="Cobalt Strike重定器"></a>Cobalt Strike重定器</h2><p>域名：kali123.com</p>
-<p>dns服务器 ：192.168.3.40</p>
-<p>csserver(kali)：192.168.3.8	k.kali.com</p>
-<p>Ubuntu：192.168.3.42</p>
-                        
-                    </div>
-
-                    <div class="home-article-meta-info-container">
-    <div class="home-article-meta-info">
-        <span><i class="fa-solid fa-calendars"></i>&nbsp;
-            <span class="home-article-date" data-date="Tue May 25 2021 16:40:52 GMT+0800">
-                
-                    2021-05-25
-                
+            <span class="card-archive-list-count">3</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2024/07/">
+            <span class="card-archive-list-date">
+              七月 2024
             </span>
-        </span>
-        
-            <span class="home-article-category">
-                <i class="fa-solid fa-folders"></i>&nbsp;
-            <ul>
-                
-                
-                    
-                        
-                        <li>
-                            <a href="/categories/%E6%B8%97%E9%80%8F/">渗透</a>&nbsp;
-                        </li>
-                    
-                    
-                
-            </ul>
-        </span>
-        
-        
-            <span class="home-article-tag">
-                <i class="fa-solid fa-tags"></i>&nbsp;
-                <ul>
-                    
-                        <li>
-                            
-                            <a href="/tags/Cobalt-Strike/">-Cobalt Strike</a>&nbsp;
-                        </li>
-                    
-                </ul>
+            <span class="card-archive-list-count">7</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2024/06/">
+            <span class="card-archive-list-date">
+              六月 2024
             </span>
-        
-    </div>
-
-    <a href="/2021/05/25/Cobalt-Strike-%E4%BA%8C/">阅读全文<span class="seo-reader-text">Cobalt Strike(二)</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
-</div>
-
-                </div>
-            </li>
-        
-            <li class="home-article-item">
-
-                
-
-                
-
-                
-                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
-                    <h3 class="home-article-title">
-                        <a href="/2021/05/24/Cobalt-Strike%E4%BD%BF%E7%94%A8%EF%BC%88%E4%B8%80%EF%BC%89/">
-                            Cobalt Strike使用（一）
-                        </a>
-                    </h3>
-
-                    <div class="home-article-content markdown-body">
-                        
-                            <h2 id="基本使用"><a href="#基本使用" class="headerlink" title="基本使用"></a>基本使用</h2><h3 id="简介："><a href="#简介：" class="headerlink" title="简介："></a>简介：</h3><p>​	Cobalt Strike作为一款GUI的框架式渗透工具，集成了端口转发、服务扫描、自动化溢出、多模式端口监听、exe\dll\java木马生成、office宏病毒生成、木马捆绑；钓鱼攻击包括：站点克隆、目标信息获取、java执行、浏览器自动攻击等等。</p>
-                        
-                    </div>
-
-                    <div class="home-article-meta-info-container">
-    <div class="home-article-meta-info">
-        <span><i class="fa-solid fa-calendars"></i>&nbsp;
-            <span class="home-article-date" data-date="Mon May 24 2021 17:55:48 GMT+0800">
-                
-                    2021-05-24
-                
+            <span class="card-archive-list-count">5</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2024/05/">
+            <span class="card-archive-list-date">
+              五月 2024
             </span>
-        </span>
-        
-            <span class="home-article-category">
-                <i class="fa-solid fa-folders"></i>&nbsp;
-            <ul>
-                
-                
-                    
-                        
-                        <li>
-                            <a href="/categories/%E6%B8%97%E9%80%8F/">渗透</a>&nbsp;
-                        </li>
-                    
-                    
-                
-            </ul>
-        </span>
-        
-        
-            <span class="home-article-tag">
-                <i class="fa-solid fa-tags"></i>&nbsp;
-                <ul>
-                    
-                        <li>
-                            
-                            <a href="/tags/Cobalt-Strike/">-Cobalt Strike</a>&nbsp;
-                        </li>
-                    
-                </ul>
+            <span class="card-archive-list-count">1</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2024/04/">
+            <span class="card-archive-list-date">
+              四月 2024
             </span>
-        
-    </div>
-
-    <a href="/2021/05/24/Cobalt-Strike%E4%BD%BF%E7%94%A8%EF%BC%88%E4%B8%80%EF%BC%89/">阅读全文<span class="seo-reader-text">Cobalt Strike使用（一）</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
-</div>
-
-                </div>
-            </li>
-        
-            <li class="home-article-item">
-
-                
-
-                
-
-                
-                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
-                    <h3 class="home-article-title">
-                        <a href="/2021/05/24/ARM%E6%B1%87%E7%BC%96%E7%AC%94%E8%AE%B0/">
-                            ARM汇编笔记
-                        </a>
-                    </h3>
-
-                    <div class="home-article-content markdown-body">
-                        
-                            <h2 id="ARM汇编的一些知识"><a href="#ARM汇编的一些知识" class="headerlink" title="ARM汇编的一些知识"></a>ARM汇编的一些知识</h2><h3 id="寄存器数量"><a href="#寄存器数量" class="headerlink" title="寄存器数量"></a>寄存器数量</h3><p>ARM处理器一共有37个32位寄存器。<br>30个为“通用“寄存器： r0-r14<br>未分组：r0-r7，即只有一个寄存器<br>分 组：r8-r14，即有多个同名寄存器<br>r8-r12 ：两个<br>r13-r14：6个 r13(sp),R14(lr)<br>1个固定的程序计数器 ： pc (又称r15)<br>6个为状态寄存器 ： cpsr spsr<br>不能被同时访问,一种模式下最多同时访问18个寄存器</p>
-                        
-                    </div>
-
-                    <div class="home-article-meta-info-container">
-    <div class="home-article-meta-info">
-        <span><i class="fa-solid fa-calendars"></i>&nbsp;
-            <span class="home-article-date" data-date="Mon May 24 2021 16:20:34 GMT+0800">
-                
-                    2021-05-24
-                
-            </span>
-        </span>
-        
-            <span class="home-article-category">
-                <i class="fa-solid fa-folders"></i>&nbsp;
-            <ul>
-                
-                
-                    
-                        
-                        <li>
-                            <a href="/categories/ARM%E6%B1%87%E7%BC%96/">ARM汇编</a>&nbsp;
-                        </li>
-                    
-                    
-                
-            </ul>
-        </span>
-        
-        
-    </div>
-
-    <a href="/2021/05/24/ARM%E6%B1%87%E7%BC%96%E7%AC%94%E8%AE%B0/">阅读全文<span class="seo-reader-text">ARM汇编笔记</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
-</div>
-
-                </div>
-            </li>
-        
-            <li class="home-article-item">
-
-                
-
-                
-
-                
-                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
-                    <h3 class="home-article-title">
-                        <a href="/2021/05/24/Ocean-Lotus%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/">
-                            Ocean Lotus样本分析
-                        </a>
-                    </h3>
-
-                    <div class="home-article-content markdown-body">
-                        
-                            <h2 id="0x00样本简介"><a href="#0x00样本简介" class="headerlink" title="0x00样本简介"></a>0x00样本简介</h2><p>​    该样本是2018年5月份国内某安全厂商威胁情报系统捕获的一起针对中国及其他东亚地区国家政府、科研单位领域的攻击样本，该APT组织确认为APT-32（海莲花OceanLotus）。<br>​    此次攻击载体选用的是.doc后缀的rtf文件，该rtf文件通过利用漏洞CVE-2017-11882释放恶意文件到本地并加载执行。其释放文件利用了白加黑的组合加载手法逃避杀软的查杀，在运行过程中并无我们常见的多级注入行为，也并没有文件落地，具有较强的隐蔽性。原始样本信息如表１所示。</p>
-<table>
-<thead>
-<tr>
-<th>文件名称</th>
-<th>Document_GPI Invitation-UNSOOC China.doc</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>Md5</td>
-<td>02ae075da4fb2a6d38ce06f8f40e397e</td>
-</tr>
-<tr>
-<td>文件类型</td>
-<td>Rtf</td>
-</tr>
-</tbody></table>
-<center>表1</center>
-                        
-                    </div>
-
-                    <div class="home-article-meta-info-container">
-    <div class="home-article-meta-info">
-        <span><i class="fa-solid fa-calendars"></i>&nbsp;
-            <span class="home-article-date" data-date="Mon May 24 2021 15:51:57 GMT+0800">
-                
-                    2021-05-24
-                
-            </span>
-        </span>
-        
-            <span class="home-article-category">
-                <i class="fa-solid fa-folders"></i>&nbsp;
-            <ul>
-                
-                
-                    
-                        
-                        <li>
-                            <a href="/categories/%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/">样本分析</a>&nbsp;
-                        </li>
-                    
-                    
-                
-            </ul>
-        </span>
-        
-        
-            <span class="home-article-tag">
-                <i class="fa-solid fa-tags"></i>&nbsp;
-                <ul>
-                    
-                        <li>
-                            
-                            <a href="/tags/windows%E6%9C%A8%E9%A9%AC/">windows木马</a>&nbsp;
-                        </li>
-                    
-                        <li>
-                            | 
-                            <a href="/tags/OceanLotus/">OceanLotus</a>&nbsp;
-                        </li>
-                    
-                </ul>
-            </span>
-        
-    </div>
-
-    <a href="/2021/05/24/Ocean-Lotus%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/">阅读全文<span class="seo-reader-text">Ocean Lotus样本分析</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
-</div>
-
-                </div>
-            </li>
-        
-            <li class="home-article-item">
-
-                
-
-                
-
-                
-                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
-                    <h3 class="home-article-title">
-                        <a href="/2021/05/24/%E4%B8%80%E6%9E%9A%E7%AE%80%E5%8D%95%E7%9A%84%E6%9C%AA%E7%9F%A5%E5%A3%B3/">
-                            一枚简单的未知壳
-                        </a>
-                    </h3>
-
-                    <div class="home-article-content markdown-body">
-                        
-                            <h3 id="工具-amp-环境"><a href="#工具-amp-环境" class="headerlink" title="工具&amp;环境:"></a>工具&amp;环境:</h3><table>
-<thead>
-<tr>
-<th align="left">工具</th>
-<th>系统环境</th>
-</tr>
-</thead>
-<tbody><tr>
-<td align="left">PEID</td>
-<td>win7_x86</td>
-</tr>
-<tr>
-<td align="left">OD</td>
-<td></td>
-</tr>
-<tr>
-<td align="left">IDA</td>
-<td></td>
-</tr>
-<tr>
-<td align="left">imporREC</td>
-<td></td>
-</tr>
-</tbody></table>
-<h3 id="查壳"><a href="#查壳" class="headerlink" title="查壳"></a>查壳</h3><p>先用PEID扫了一下发现什么都没有扫到<br> <img lazyload="" src="/images/loading.svg" data-src="/2021/05/24/%E4%B8%80%E6%9E%9A%E7%AE%80%E5%8D%95%E7%9A%84%E6%9C%AA%E7%9F%A5%E5%A3%B3/623a1200-5054-432b-9613-8ceb28562e82.jpg" class="" title="img"></p>
-                        
-                    </div>
-
-                    <div class="home-article-meta-info-container">
-    <div class="home-article-meta-info">
-        <span><i class="fa-solid fa-calendars"></i>&nbsp;
-            <span class="home-article-date" data-date="Mon May 24 2021 15:29:04 GMT+0800">
-                
-                    2021-05-24
-                
-            </span>
-        </span>
-        
-            <span class="home-article-category">
-                <i class="fa-solid fa-folders"></i>&nbsp;
-            <ul>
-                
-                
-                    
-                        
-                        <li>
-                            <a href="/categories/Win%E9%80%86%E5%90%91/">Win逆向</a>&nbsp;
-                        </li>
-                    
-                    
-                
-            </ul>
-        </span>
-        
-        
-            <span class="home-article-tag">
-                <i class="fa-solid fa-tags"></i>&nbsp;
-                <ul>
-                    
-                        <li>
-                            
-                            <a href="/tags/Windows%E8%84%B1%E5%A3%B3/">Windows脱壳</a>&nbsp;
-                        </li>
-                    
-                </ul>
-            </span>
-        
-    </div>
-
-    <a href="/2021/05/24/%E4%B8%80%E6%9E%9A%E7%AE%80%E5%8D%95%E7%9A%84%E6%9C%AA%E7%9F%A5%E5%A3%B3/">阅读全文<span class="seo-reader-text">一枚简单的未知壳</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
-</div>
-
-                </div>
-            </li>
-        
-            <li class="home-article-item">
-
-                
-
-                
-
-                
-                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
-                    <h3 class="home-article-title">
-                        <a href="/2021/05/21/HW%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/">
-                            HW样本分析
-                        </a>
-                    </h3>
-
-                    <div class="home-article-content markdown-body">
-                        
-                            <h3 id="0x00-样本信息"><a href="#0x00-样本信息" class="headerlink" title="0x00 样本信息"></a>0x00 样本信息</h3><p>​	HW期间拿到的一个样本，用了lnk的启动方式。运行后会启动隐藏属性的exe和dll文件，进行后续的内存解密操作后用域前置的方法执行外联操作。</p>
-                        
-                    </div>
-
-                    <div class="home-article-meta-info-container">
-    <div class="home-article-meta-info">
-        <span><i class="fa-solid fa-calendars"></i>&nbsp;
-            <span class="home-article-date" data-date="Fri May 21 2021 18:32:26 GMT+0800">
-                
-                    2021-05-21
-                
-            </span>
-        </span>
-        
-            <span class="home-article-category">
-                <i class="fa-solid fa-folders"></i>&nbsp;
-            <ul>
-                
-                
-                    
-                        
-                        <li>
-                            <a href="/categories/%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/">样本分析</a>&nbsp;
-                        </li>
-                    
-                    
-                
-            </ul>
-        </span>
-        
-        
-            <span class="home-article-tag">
-                <i class="fa-solid fa-tags"></i>&nbsp;
-                <ul>
-                    
-                        <li>
-                            
-                            <a href="/tags/windows%E6%9C%A8%E9%A9%AC/">windows木马</a>&nbsp;
-                        </li>
-                    
-                </ul>
-            </span>
-        
-    </div>
-
-    <a href="/2021/05/21/HW%E6%A0%B7%E6%9C%AC%E5%88%86%E6%9E%90/">阅读全文<span class="seo-reader-text">HW样本分析</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
-</div>
-
-                </div>
-            </li>
-        
-            <li class="home-article-item">
-
-                
-
-                
-
-                
-                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
-                    <h3 class="home-article-title">
-                        <a href="/2021/05/20/winDbg%E5%AE%89%E8%A3%85mona/">
-                            winXP安装mona
-                        </a>
-                    </h3>
-
-                    <div class="home-article-content markdown-body">
-                        
-                            <h3 id="Windows-XP，32位"><a href="#Windows-XP，32位" class="headerlink" title="Windows XP，32位"></a>Windows XP，32位</h3><ol>
-<li><p>从<a class="link" target="_blank" rel="noopener" href="https://github.com/corelan/windbglib/raw/master/pykd/pykd.zip%E4%B8%8B%E8%BD%BDpykd.zip">https://github.com/corelan/windbglib/raw/master/pykd/pykd.zip下载pykd.zip<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></p>
-</li>
-<li><p>解压后获得2个文件：pykd.pyd和vcredist_x86.exe</p>
-</li>
-<li><p>使用管理员权限运行vcredist_x86.exe并接受默认值。</p>
-</li>
-<li><p>将pykd.pyd复制到 <code>C:\Program Files\Debugging Tools for Windows (x86)\winext</code></p>
-</li>
-<li><p>打开具有管理员权限的命令提示符，然后运行以下命令：</p>
-<pre><code>c:
-cd "C:\Program Files\Common Files\Microsoft Shared\VC"
-regsvr32 msdia90.dll
-(You should get a messagebox indicating that the dll was registered successfully)
-</code></pre>
-</li>
-<li><p>从<a class="link" target="_blank" rel="noopener" href="https://github.com/corelan/windbglib/raw/master/windbglib.py%E4%B8%8B%E8%BD%BDwindbglib.py">https://github.com/corelan/windbglib/raw/master/windbglib.py下载windbglib.py<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></p>
-</li>
-<li><p>将文件保存在下面<code>C:\Program Files\Debugging Tools for Windows (x86)</code> （如果需要，“取消阻止”文件）</p>
-</li>
-<li><p>从<a class="link" target="_blank" rel="noopener" href="https://github.com/corelan/mona/raw/master/mona.py%E4%B8%8B%E8%BD%BDmona.py">https://github.com/corelan/mona/raw/master/mona.py下载mona.py<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></p>
-</li>
-<li><p>将文件保存在下面<code>C:\Program Files\Debugging Tools for Windows (x86)</code> （如果需要，“取消阻止”文件）</p>
-</li>
-</ol>
-                        
-                    </div>
-
-                    <div class="home-article-meta-info-container">
-    <div class="home-article-meta-info">
-        <span><i class="fa-solid fa-calendars"></i>&nbsp;
-            <span class="home-article-date" data-date="Thu May 20 2021 11:05:14 GMT+0800">
-                
-                    2021-05-20
-                
-            </span>
-        </span>
-        
-            <span class="home-article-category">
-                <i class="fa-solid fa-folders"></i>&nbsp;
-            <ul>
-                
-                
-                    
-                        
-                        <li>
-                            <a href="/categories/%E5%B7%A5%E5%85%B7/">工具</a>&nbsp;
-                        </li>
-                    
-                    
-                
-            </ul>
-        </span>
-        
-        
-            <span class="home-article-tag">
-                <i class="fa-solid fa-tags"></i>&nbsp;
-                <ul>
-                    
-                        <li>
-                            
-                            <a href="/tags/winDbg%E6%8F%92%E4%BB%B6/">winDbg插件</a>&nbsp;
-                        </li>
-                    
-                </ul>
-            </span>
-        
-    </div>
-
-    <a href="/2021/05/20/winDbg%E5%AE%89%E8%A3%85mona/">阅读全文<span class="seo-reader-text">winXP安装mona</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
-</div>
-
-                </div>
-            </li>
-        
-            <li class="home-article-item">
-
-                
-
-                
-
-                
-                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
-                    <h3 class="home-article-title">
-                        <a href="/2021/05/20/go%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F%E8%AE%BE%E7%BD%AE/">
-                            go环境变量设置
-                        </a>
-                    </h3>
-
-                    <div class="home-article-content markdown-body">
-                        
-                            <h3 id="question："><a href="#question：" class="headerlink" title="question："></a>question：</h3><ul>
-<li>linux下设置go环境变量之后，再次打开新的终端或者重启后环境变量会失效需要重新<code>source /etc/profile</code> 后才能生效</li>
-</ul>
-                        
-                    </div>
-
-                    <div class="home-article-meta-info-container">
-    <div class="home-article-meta-info">
-        <span><i class="fa-solid fa-calendars"></i>&nbsp;
-            <span class="home-article-date" data-date="Thu May 20 2021 10:56:10 GMT+0800">
-                
-                    2021-05-20
-                
-            </span>
-        </span>
-        
-            <span class="home-article-category">
-                <i class="fa-solid fa-folders"></i>&nbsp;
-            <ul>
-                
-                
-                    
-                        
-                        <li>
-                            <a href="/categories/%E5%B7%A5%E5%85%B7/">工具</a>&nbsp;
-                        </li>
-                    
-                    
-                
-            </ul>
-        </span>
-        
-        
-            <span class="home-article-tag">
-                <i class="fa-solid fa-tags"></i>&nbsp;
-                <ul>
-                    
-                        <li>
-                            
-                            <a href="/tags/%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/">环境配置</a>&nbsp;
-                        </li>
-                    
-                        <li>
-                            | 
-                            <a href="/tags/golang/">golang</a>&nbsp;
-                        </li>
-                    
-                </ul>
-            </span>
-        
-    </div>
-
-    <a href="/2021/05/20/go%E7%8E%AF%E5%A2%83%E5%8F%98%E9%87%8F%E8%AE%BE%E7%BD%AE/">阅读全文<span class="seo-reader-text">go环境变量设置</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
-</div>
-
-                </div>
-            </li>
-        
-            <li class="home-article-item">
-
-                
-
-                
-
-                
-                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
-                    <h3 class="home-article-title">
-                        <a href="/2021/05/20/exploit%E7%BC%96%E5%86%99%E7%B3%BB%E5%88%972%EF%BC%9A%E6%A0%88%E6%BA%A2%E5%87%BA%EF%BC%8C%E8%B7%B3%E8%BD%AC%E8%87%B3shellcode/">
-                            exploit编写系列2：栈溢出，跳转至shellcode
-                        </a>
-                    </h3>
-
-                    <div class="home-article-content markdown-body">
-                        
-                            <h1 id="exploit编写系列2：栈溢出，跳转至shellcode"><a href="#exploit编写系列2：栈溢出，跳转至shellcode" class="headerlink" title="exploit编写系列2：栈溢出，跳转至shellcode"></a>exploit编写系列2：栈溢出，跳转至shellcode</h1><p>这篇blog是为了学习如何用各种方式去构造栈溢出类型漏洞的exp</p>
-<p>执行shellcode的多种方法：</p>
-<ol>
-<li>jump/call	寄存器</li>
-<li>pop return</li>
-<li>push return</li>
-<li>jmp[reg + offset]</li>
-<li>blind return</li>
-<li>jmp code</li>
-<li>SHE</li>
-<li>call</li>
-</ol>
-                        
-                    </div>
-
-                    <div class="home-article-meta-info-container">
-    <div class="home-article-meta-info">
-        <span><i class="fa-solid fa-calendars"></i>&nbsp;
-            <span class="home-article-date" data-date="Thu May 20 2021 10:27:25 GMT+0800">
-                
-                    2021-05-20
-                
-            </span>
-        </span>
-        
-            <span class="home-article-category">
-                <i class="fa-solid fa-folders"></i>&nbsp;
-            <ul>
-                
-                
-                    
-                        
-                        <li>
-                            <a href="/categories/Win%E9%80%86%E5%90%91/">Win逆向</a>&nbsp;
-                        </li>
-                    
-                    
-                
-            </ul>
-        </span>
-        
-        
-            <span class="home-article-tag">
-                <i class="fa-solid fa-tags"></i>&nbsp;
-                <ul>
-                    
-                        <li>
-                            
-                            <a href="/tags/exploit%E7%BC%96%E5%86%99/">exploit编写</a>&nbsp;
-                        </li>
-                    
-                        <li>
-                            | 
-                            <a href="/tags/%E6%BA%A2%E5%87%BA%E7%B1%BB%E5%9E%8B%E6%BC%8F%E6%B4%9E/">溢出类型漏洞</a>&nbsp;
-                        </li>
-                    
-                </ul>
-            </span>
-        
-    </div>
-
-    <a href="/2021/05/20/exploit%E7%BC%96%E5%86%99%E7%B3%BB%E5%88%972%EF%BC%9A%E6%A0%88%E6%BA%A2%E5%87%BA%EF%BC%8C%E8%B7%B3%E8%BD%AC%E8%87%B3shellcode/">阅读全文<span class="seo-reader-text">exploit编写系列2：栈溢出，跳转至shellcode</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
-</div>
-
-                </div>
-            </li>
-        
-            <li class="home-article-item">
-
-                
-
-                
-
-                
-                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
-                    <h3 class="home-article-title">
-                        <a href="/2021/05/20/exploit%E7%BC%96%E5%86%99%E7%B3%BB%E5%88%971-Easy-RM-to-MP3-%E6%BC%8F%E6%B4%9E%E8%B0%83%E8%AF%95/">
-                            exploit编写系列1:Easy RM to MP3 漏洞调试
-                        </a>
-                    </h3>
-
-                    <div class="home-article-content markdown-body">
-                        
-                            <h1 id="Easy-RM-to-MP3-漏洞调试"><a href="#Easy-RM-to-MP3-漏洞调试" class="headerlink" title="Easy RM to MP3 漏洞调试"></a>Easy RM to MP3 漏洞调试</h1><h3 id="0X00前言"><a href="#0X00前言" class="headerlink" title="0X00	前言"></a>0X00	前言</h3><p>分析这个漏洞主要是为了学习怎么通过调试并编写溢出类型漏洞的EXP</p>
-<h3 id="0X01分析环境"><a href="#0X01分析环境" class="headerlink" title="0X01	分析环境"></a>0X01	分析环境</h3><table>
-<thead>
-<tr>
-<th>调试环境</th>
-<th>版本</th>
-</tr>
-</thead>
-<tbody><tr>
-<td>系统版本</td>
-<td>XP_sp3</td>
-</tr>
-<tr>
-<td>Easy RM to MP3</td>
-<td>2.7.3.700</td>
-</tr>
-<tr>
-<td>windbg</td>
-<td>6.12</td>
-</tr>
-</tbody></table>
-                        
-                    </div>
-
-                    <div class="home-article-meta-info-container">
-    <div class="home-article-meta-info">
-        <span><i class="fa-solid fa-calendars"></i>&nbsp;
-            <span class="home-article-date" data-date="Thu May 20 2021 10:22:12 GMT+0800">
-                
-                    2021-05-20
-                
-            </span>
-        </span>
-        
-            <span class="home-article-category">
-                <i class="fa-solid fa-folders"></i>&nbsp;
-            <ul>
-                
-                
-                    
-                        
-                        <li>
-                            <a href="/categories/Win%E9%80%86%E5%90%91/">Win逆向</a>&nbsp;
-                        </li>
-                    
-                    
-                
-            </ul>
-        </span>
-        
-        
-            <span class="home-article-tag">
-                <i class="fa-solid fa-tags"></i>&nbsp;
-                <ul>
-                    
-                        <li>
-                            
-                            <a href="/tags/exploit%E7%BC%96%E5%86%99/">exploit编写</a>&nbsp;
-                        </li>
-                    
-                        <li>
-                            | 
-                            <a href="/tags/%E6%BA%A2%E5%87%BA%E7%B1%BB%E5%9E%8B%E6%BC%8F%E6%B4%9E/">溢出类型漏洞</a>&nbsp;
-                        </li>
-                    
-                </ul>
-            </span>
-        
-    </div>
-
-    <a href="/2021/05/20/exploit%E7%BC%96%E5%86%99%E7%B3%BB%E5%88%971-Easy-RM-to-MP3-%E6%BC%8F%E6%B4%9E%E8%B0%83%E8%AF%95/">阅读全文<span class="seo-reader-text">exploit编写系列1:Easy RM to MP3 漏洞调试</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
-</div>
-
-                </div>
-            </li>
-        
+            <span class="card-archive-list-count">1</span>
+          </a>
+        </li>
+      
     </ul>
-
-    <div class="home-paginator px-7 py-5">
-        <div class="paginator">
-	<a class="extend prev" rel="prev" href="/page/8/"><i class="fa-regular fa-angle-left"></i></a><a class="page-number" href="/">1</a><span class="space">&hellip;</span><a class="page-number" href="/page/7/">7</a><a class="page-number" href="/page/8/">8</a><span class="page-number current">9</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/10/"><i class="fa-regular fa-angle-right"></i></a>
-</div>
-  
-    </div>
-</div>
-
-			</div>
-
-			
-		</div>
-
-		<div class="main-content-footer">
-			<footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
-    <div class="info-container py-3 text-center">
-        
-        <div class="text-center">
-            &copy;
-            
-              <span>2022</span>
-              -
-            
-            2025&nbsp;&nbsp;<i class="fa-solid fa-heart fa-beat" style="--fa-animation-duration: 0.5s; color: #f54545"></i>&nbsp;&nbsp;<a href="/">xiaoeryu</a>
-            
-                
-                <p class="post-count space-x-0.5">
-                    <span>
-                        共撰写了 113 篇文章
-                    </span>
-                    
-                </p>
-            
-        </div>
-        
-            <script data-swup-reload-script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-            <div class="relative text-center lg:absolute lg:right-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-right">
-                
-                    <span id="busuanzi_container_site_uv" class="lg:!block">
-                        <span class="text-sm">访问人数</span>
-                        <span id="busuanzi_value_site_uv"></span>
-                    </span>
-                
-                
-                    <span id="busuanzi_container_site_pv" class="lg:!block">
-                        <span class="text-sm">总访问量</span>
-                        <span id="busuanzi_value_site_pv"></span>
-                    </span>
-                
-            </div>
-        
-        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
-            <span class="lg:block text-sm">由 <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a> 驱动</span>
-            <span class="text-sm lg:block">主题&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.8.2</a></span>
-        </div>
-        
-        
-            <div>
-                博客已运行 <span class="odometer" id="runtime_days" ></span> 天 <span class="odometer" id="runtime_hours"></span> 小时 <span class="odometer" id="runtime_minutes"></span> 分钟 <span class="odometer" id="runtime_seconds"></span> 秒
-            </div>
-        
-        
-            <script data-swup-reload-script>
-                try {
-                    function odometer_init() {
-                    const elements = document.querySelectorAll('.odometer');
-                    elements.forEach(el => {
-                        new Odometer({
-                            el,
-                            format: '( ddd).dd',
-                            duration: 200
-                        });
-                    });
-                    }
-                    odometer_init();
-                } catch (error) {}
-            </script>
-        
-        
-        
-    </div>  
-</footer>
-		</div>
-	</div>
-
-	
-
-	<div class="right-side-tools-container">
-		<div class="side-tools-container">
-	<ul class="hidden-tools-list">
-		<li class="right-bottom-tools tool-font-adjust-plus flex justify-center items-center">
-			<i class="fa-regular fa-magnifying-glass-plus"></i>
-		</li>
-
-		<li class="right-bottom-tools tool-font-adjust-minus flex justify-center items-center">
-			<i class="fa-regular fa-magnifying-glass-minus"></i>
-		</li>
-
-		<li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
-			<i class="fa-regular fa-moon"></i>
-		</li>
-
-		<!-- rss -->
-		
-
-		
-
-		<li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
-			<i class="fa-regular fa-arrow-down"></i>
-		</li>
-	</ul>
-
-	<ul class="visible-tools-list">
-		<li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
-			<i class="fa-regular fa-cog fa-spin"></i>
-		</li>
-		
-		<li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
-			<i class="arrow-up fas fa-arrow-up"></i>
-			<span class="percent"></span>
-		</li>
-		
-		
-	</ul>
-</div>
-	</div>
-
-	<div class="image-viewer-container">
-	<img src="">
-</div>
-
-	
-	<div class="search-pop-overlay">
-	<div class="popup search-popup">
-		<div class="search-header">
-			<span class="search-input-field-pre">
-				<i class="fa-solid fa-keyboard"></i>
-			</span>
-			<div class="search-input-container">
-				<input autocomplete="off" autocorrect="off" autocapitalize="off" placeholder="站内搜索您需要的内容..." spellcheck="false" type="search" class="search-input">
-			</div>
-			<span class="popup-btn-close">
-				<i class="fa-solid fa-times"></i>
-			</span>
-		</div>
-		<div id="search-result">
-			<div id="no-result">
-				<i class="fa-solid fa-spinner fa-spin-pulse fa-5x fa-fw"></i>
-			</div>
-		</div>
-	</div>
-</div>
-	
-
-</main>
-
-
-
-<script src="/js/build/libs/Swup.min.js"></script>
-
-<script src="/js/build/libs/SwupSlideTheme.min.js"></script>
-
-<script src="/js/build/libs/SwupScriptsPlugin.min.js"></script>
-
-<script src="/js/build/libs/SwupProgressPlugin.min.js"></script>
-
-<script src="/js/build/libs/SwupScrollPlugin.min.js"></script>
-
-<script src="/js/build/libs/SwupPreloadPlugin.min.js"></script>
-
-<script>
-    const swup = new Swup({
-        plugins: [
-            new SwupScriptsPlugin({
-                optin: true,
-            }),
-            new SwupProgressPlugin(),
-            new SwupScrollPlugin({
-                offset: 80,
-            }),
-            new SwupSlideTheme({
-                mainElement: ".main-content-body",
-            }),
-            new SwupPreloadPlugin(),
-        ],
-        containers: ["#swup"],
-    });
-</script>
-
-
-
-
-	
-<script src="/js/build/tools/imageViewer.js" type="module"></script>
-
-<script src="/js/build/utils.js" type="module"></script>
-
-<script src="/js/build/main.js" type="module"></script>
-
-<script src="/js/build/layouts/navbarShrink.js" type="module"></script>
-
-<script src="/js/build/tools/scrollTopBottom.js" type="module"></script>
-
-<script src="/js/build/tools/lightDarkSwitch.js" type="module"></script>
-
-<script src="/js/build/layouts/categoryList.js" type="module"></script>
-
-
-
-    
-<script src="/js/build/tools/localSearch.js" type="module"></script>
-
-
-
-
-    
-<script src="/js/build/tools/codeBlock.js" type="module"></script>
-
-
-
-
-    
-<script src="/js/build/layouts/lazyload.js" type="module"></script>
-
-
-
-
-    
-<script src="/js/build/tools/runtime.js"></script>
-
-    
-<script src="/js/build/libs/odometer.min.js"></script>
-
-    
-<link rel="stylesheet" href="/assets/odometer-theme-minimal.css">
-
-
-
-
-  
-<script src="/js/build/libs/Typed.min.js"></script>
-
-  
-<script src="/js/build/plugins/typed.js" type="module"></script>
-
-
-
-
-
-
-
-
-    
-<script src="/js/build/libs/anime.min.js"></script>
-
-
-
-
-
-    
-<script src="/js/build/tools/tocToggle.js" type="module" data-swup-reload-script=""></script>
-
-<script src="/js/build/layouts/toc.js" type="module" data-swup-reload-script=""></script>
-
-<script src="/js/build/plugins/tabs.js" type="module" data-swup-reload-script=""></script>
-
-
-
-
-<script src="/js/build/libs/moment-with-locales.min.js" data-swup-reload-script=""></script>
-
-
-<script src="/js/build/layouts/essays.js" type="module" data-swup-reload-script=""></script>
-
-
-
-
-
-	
-</body>
-
-</html>
+  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">113</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总浏览量 :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2025-05-26T15:58:36.209Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2025 By xiaoeryu</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 6.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

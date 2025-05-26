@@ -1,416 +1,168 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="keywords" content="Hexo Theme Redefine">
-    
-    <meta name="author" content="xiaoeryu">
-    <!-- preconnect -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-    
-    <!--- Seo Part-->
-    
-    <link rel="canonical" href="https://xiaoeeyu.github.io/2023/10/04/android刷机-抓包环境配置/"/>
-    <meta name="robots" content="index,follow">
-    <meta name="googlebot" content="index,follow">
-    <meta name="revisit-after" content="1 days">
-    
-    
-    
-        
-        <meta name="description" content="设备：Pixel XL 镜像：Android10 抓包环境：Lsposed + fiddler 刷入镜像下载镜像并解压   将手机进入bootloader模式 开机状态可以使用命令adb reboot bootloader直接进入 关机可以直接按住电源键+音量下键进入  执行flash-all.s刷机  刷机完成 ROOT先在开发者模式打开USB调试开关  安装Magisk下载Magisk现在最新">
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Android刷机+抓包环境配置 | xiaoeryu</title><meta name="author" content="xiaoeryu"><meta name="copyright" content="xiaoeryu"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="设备：Pixel XL 镜像：Android10 抓包环境：Lsposed + fiddler 刷入镜像下载镜像并解压   将手机进入bootloader模式 开机状态可以使用命令adb reboot bootloader直接进入 关机可以直接按住电源键+音量下键进入  执行flash-all.s刷机  刷机完成 ROOT先在开发者模式打开USB调试开关  安装Magisk下载Magisk现在最新">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Android刷机+抓包环境配置">
 <meta property="og:url" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/index.html">
 <meta property="og:site_name" content="xiaoeryu">
 <meta property="og:description" content="设备：Pixel XL 镜像：Android10 抓包环境：Lsposed + fiddler 刷入镜像下载镜像并解压   将手机进入bootloader模式 开机状态可以使用命令adb reboot bootloader直接进入 关机可以直接按住电源键+音量下键进入  执行flash-all.s刷机  刷机完成 ROOT先在开发者模式打开USB调试开关  安装Magisk下载Magisk现在最新">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/a4cd7f6de8dc443c9980acee79e9741b.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/a76805cdef144f7095e4825e5b658e49.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/ecad2747929040459f2e8493a9119071.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/12604ffaeb2347ceab722cd88a3c3933.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/1e400ef78079400c8430e7464c21df43.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/f848fc1d2e9c4533b4eb1e0c436c9551.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/e69c6ffabb2d40b2b5aee4acb69e20ac.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/de47521ef65e4c36808242065efaea8f.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/6f5ef72746244259a2efaec320865d4f.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/a5c0bbef2a994a418645a09edac4bac3.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/54a900ad116444c59fccec41454b8a1b.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/ba1e2632fdc84716afaac61da9c8201f.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/8d5754c6b5834055ab39886d623af152.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/e38d4f7f3f50499ea0c748e8d3be11a0.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/7d1f65fbdd3c486a9887089ce92c4393.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/image-20231004111707549.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/e030a98bf6ca43dcb5c961cdba97729e.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/a4b569d9c68c40a3b60698935c7a0eab.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/917422b659024a99bfeb5dac99f7de65.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/43.webp">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/image-20240421090726368.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/image-20240130104814015.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/image-20240130104941332.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/image-20240130105156510.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/image-20240824001058526.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/image-20240203173559472.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/image-20240421095907897.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/image-20240421100108352.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/image-20240130105551351.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/image-20240131220513849.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/image-20240131220539447.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/image-20240420102901757.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/image-20240420103212662.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/image-20240420103351225.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/image-20240420103643932.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/image-20240420104407828.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/image-20240420104501134.png">
-<meta property="og:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/image-20240420134728981.png">
+<meta property="og:image" content="https://xiaoeeyu.github.io/img/butterfly-icon.png">
 <meta property="article:published_time" content="2023-10-04T03:09:02.000Z">
 <meta property="article:modified_time" content="2025-05-01T08:17:30.964Z">
 <meta property="article:author" content="xiaoeryu">
 <meta property="article:tag" content="Android刷机">
 <meta property="article:tag" content="抓包环境">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/a4cd7f6de8dc443c9980acee79e9741b.png">
+<meta name="twitter:image" content="https://xiaoeeyu.github.io/img/butterfly-icon.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "Android刷机+抓包环境配置",
+  "url": "https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/",
+  "image": "https://xiaoeeyu.github.io/img/butterfly-icon.png",
+  "datePublished": "2023-10-04T03:09:02.000Z",
+  "dateModified": "2025-05-01T08:17:30.964Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "xiaoeryu",
+      "url": "https://xiaoeeyu.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
     
-    
-    <!--- Icon Part-->
-    <link rel="icon" type="image/png" href="/images/rabete.jpg" sizes="192x192">
-    <link rel="apple-touch-icon" sizes="180x180" href="/images/rabete.jpg">
-    <meta name="theme-color" content="#A31F34">
-    <link rel="shortcut icon" href="/images/rabete.jpg">
-    <!--- Page Info-->
-    
-    <title>
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
         
-            Android刷机+抓包环境配置 | xiaoeryu
-        
-    </title>
-
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
     
-<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
-
-
-    <!--- Inject Part-->
-    
-
-    
-<link rel="stylesheet" href="/css/style.css">
-
-
-    
-        
-<link rel="stylesheet" href="/css/build/tailwind.css">
-
-    
-
-    
-<link rel="stylesheet" href="/fonts/GeistMono/geist-mono.css">
-
-    
-<link rel="stylesheet" href="/fonts/Geist/geist.css">
-
-    <!--- Font Part-->
-    
-    
-    
-    
-    
-    
-
-    <script id="hexo-configurations">
-    window.config = {"hostname":"xiaoeeyu.github.io","root":"/","language":"zh-CN","path":"search.xml"};
-    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true,"delete_mask":false,"title_alignment":"left","headings_top_spacing":{"h1":"3.2rem","h2":"2.4rem","h3":"1.9rem","h4":"1.6rem","h5":"1.4rem","h6":"1.3rem"}},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","highlight_theme":{"light":"github","dark":"vs2015"},"font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":4,"number":false,"expand":true,"init_open":true},"copyright":{"enable":true,"default":"cc_by_nc_sa"},"lazyload":true,"pangu_js":false,"recommendation":{"enable":false,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/ball-0101.jpg","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null,"default_mode":"light"},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null},"title":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"preloader":{"enable":false,"custom_message":null},"open_graph":true,"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/wallhaven-jxl31y.png","dark":"/images/wallhaven-o5762l.png"},"title":"XIAOERYU","subtitle":{"text":["明心见性，拨云见日","Don't wait, to create"],"hitokoto":{"enable":false,"show_author":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":true,"style":"default","links":{"github":"https://github.com/xiaoeeyu","instagram":null,"zhihu":null,"twitter":null,"email":"xiaoeryu@163.com"},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null,"lrc":null}]},"mermaid":{"enable":false,"version":"9.3.0"}},"version":"2.8.2","navbar":{"auto_hide":false,"color":{"left":"#f78736","right":"#367df7","transparency":35},"width":{"home":"1200px","pages":"1000px"},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Archives":{"path":"/archives","icon":"fa-regular fa-archive"}},"search":{"enable":true,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"blur"},"home":{"sidebar":{"enable":true,"position":"left","first_item":"menu","announcement":null,"show_on_mobile":true,"links":null},"article_date_format":"auto","excerpt_length":200,"categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":3}},"footerStart":"2022/8/17 11:45:14"};
-    window.lang_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"};
-    window.data = {"masonry":false};
-  </script>
-    
-    <!--- Fontawesome Part-->
-    
-<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
-
-    
-<link rel="stylesheet" href="/fontawesome/brands.min.css">
-
-    
-<link rel="stylesheet" href="/fontawesome/solid.min.css">
-
-    
-<link rel="stylesheet" href="/fontawesome/regular.min.css">
-
-    
-    
-    
-    
-<meta name="generator" content="Hexo 6.3.0">
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Android刷机+抓包环境配置',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 6.3.0">
 <style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
-</head>
-
-
-
-<body>
-	<div class="progress-bar-container">
-	
-
-	
-	<span class="pjax-progress-bar"></span>
-	<!--        <span class="swup-progress-icon">-->
-	<!--            <i class="fa-solid fa-circle-notch fa-spin"></i>-->
-	<!--        </span>-->
-	
-</div>
-
-<main class="page-container" id="swup">
-
-	
-
-	<div class="main-content-container flex flex-col justify-between min-h-dvh">
-		<div class="main-content-header">
-			<header class="navbar-container px-6 md:px-12">
-    <div class="navbar-content transition-navbar ">
-        <div class="left">
-            
-                <a class="logo-image h-8 w-8 sm:w-10 sm:h-10 mr-3" href="/">
-                    <img src="/images/rabete.jpg" class="w-full h-full rounded-sm">
-                </a>
-            
-            <a class="logo-title" href="/">
-                
-                xiaoeryu
-                
-            </a>
-        </div>
-
-        <div class="right">
-            <!-- PC -->
-            <div class="desktop">
-                <ul class="navbar-list">
-                    
-                        
-                            
-
-                            <li class="navbar-item">
-                                <!-- Menu -->
-                                <a class=""
-                                   href="/"
-                                        >
-                                    <i class="fa-regular fa-house fa-fw"></i>
-                                    首页
-                                    
-                                </a>
-
-                                <!-- Submenu -->
-                                
-                            </li>
-                    
-                        
-                            
-
-                            <li class="navbar-item">
-                                <!-- Menu -->
-                                <a class=""
-                                   href="/archives"
-                                        >
-                                    <i class="fa-regular fa-archive fa-fw"></i>
-                                    归档
-                                    
-                                </a>
-
-                                <!-- Submenu -->
-                                
-                            </li>
-                    
-                    
-                        <li class="navbar-item search search-popup-trigger">
-                            <i class="fa-solid fa-magnifying-glass"></i>
-                        </li>
-                    
-                </ul>
-            </div>
-            <!-- Mobile -->
-            <div class="mobile">
-                
-                    <div class="icon-item search search-popup-trigger"><i class="fa-solid fa-magnifying-glass"></i>
-                    </div>
-                
-                <div class="icon-item navbar-bar">
-                    <div class="navbar-bar-middle"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- Mobile sheet -->
-    <div class="navbar-drawer h-dvh w-full absolute top-0 left-0 bg-background-color flex flex-col justify-between">
-        <ul class="drawer-navbar-list flex flex-col px-4 justify-center items-start">
-            
-                
-                    
-
-                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
-                        
-                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
-                           href="/"
-                        >
-                            <span>
-                                首页
-                            </span>
-                            
-                                <i class="fa-regular fa-house fa-sm fa-fw"></i>
-                            
-                        </a>
-                        
-
-                        
-                    </li>
-            
-                
-                    
-
-                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
-                        
-                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
-                           href="/archives"
-                        >
-                            <span>
-                                归档
-                            </span>
-                            
-                                <i class="fa-regular fa-archive fa-sm fa-fw"></i>
-                            
-                        </a>
-                        
-
-                        
-                    </li>
-            
-
-            
-            
-        </ul>
-
-        <div class="statistics flex justify-around my-2.5">
-    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">93</div>
-        <div class="label text-third-text-color text-sm">标签</div>
-    </a>
-    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">14</div>
-        <div class="label text-third-text-color text-sm">分类</div>
-    </a>
-    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">113</div>
-        <div class="label text-third-text-color text-sm">文章</div>
-    </a>
-</div>
-    </div>
-
-    <div class="window-mask"></div>
-
-</header>
-
-
-		</div>
-
-		<div class="main-content-body transition-fade-up">
-			
-
-			<div class="main-content">
-				<div class="post-page-container flex relative justify-between box-border w-full h-full">
-	<div class="article-content-container">
-
-		<div class="article-title relative w-full">
-			
-			<div class="w-full flex items-center pt-6 justify-start">
-				<h1 class="article-title-regular text-second-text-color tracking-tight text-4xl md:text-6xl font-semibold px-2 sm:px-6 md:px-8 py-3">Android刷机+抓包环境配置</h1>
-			</div>
-			
-		</div>
-
-		
-		<div class="article-header flex flex-row gap-2 items-center px-2 sm:px-6 md:px-8">
-			<div class="avatar w-[46px] h-[46px] flex-shrink-0 rounded-medium border border-border-color p-[1px]">
-				<img src="/images/rabete.jpg">
-			</div>
-			<div class="info flex flex-col justify-between">
-				<div class="author flex items-center">
-					<span class="name text-default-text-color text-lg font-semibold">xiaoeryu</span>
-					
-					<span class="author-label ml-1.5 text-xs px-2 py-0.5 rounded-small text-third-text-color border border-shadow-color-1">Lv5</span>
-					
-				</div>
-				<div class="meta-info">
-					<div class="article-meta-info">
-    <span class="article-date article-meta-item">
-        <i class="fa-regular fa-pen-fancy"></i>&nbsp;
-        <span class="desktop">2023-10-04 11:09:02</span>
-        <span class="mobile">2023-10-04 11:09:02</span>
-        <span class="hover-info">创建</span>
-    </span>
-    
-        <span class="article-date article-meta-item">
-            <i class="fa-regular fa-wrench"></i>&nbsp;
-            <span class="desktop">2025-05-01 16:17:30</span>
-            <span class="mobile">2025-05-01 16:17:30</span>
-            <span class="hover-info">更新</span>
-        </span>
-    
-
-    
-        <span class="article-categories article-meta-item">
-            <i class="fa-regular fa-folders"></i>&nbsp;
-            <ul>
-                
-                
-                    
-                        
-                        <li>
-                            <a href="/categories/Android%E9%80%86%E5%90%91/">Android逆向</a>&nbsp;
-                        </li>
-                    
-                    
-                
-            </ul>
-        </span>
-    
-    
-        <span class="article-tags article-meta-item">
-            <i class="fa-regular fa-tags"></i>&nbsp;
-            <ul>
-                
-                    <li>
-                        <a href="/tags/Android%E5%88%B7%E6%9C%BA/">Android刷机</a>&nbsp;
-                    </li>
-                
-                    <li>
-                        | <a href="/tags/%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83/">抓包环境</a>&nbsp;
-                    </li>
-                
-            </ul>
-        </span>
-    
-
-    
-    
-    
-    
-        <span class="article-pv article-meta-item">
-            <i class="fa-regular fa-eye"></i>&nbsp;<span id="busuanzi_value_page_pv"></span>
-        </span>
-    
-</div>
-
-				</div>
-			</div>
-		</div>
-		
-
-		
-
-
-		<div class="article-content markdown-body px-2 sm:px-6 md:px-8 pb-8">
-			<p>设备：Pixel XL</p>
+</head><body><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">xiaoeryu</span></a><a class="nav-page-title" href="/"><span class="site-name">Android刷机+抓包环境配置</span></a></span><div id="menus"></div></nav><div id="post-info"><h1 class="post-title">Android刷机+抓包环境配置</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2023-10-04T03:09:02.000Z" title="发表于 2023-10-04 11:09:02">2023-10-04</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-05-01T08:17:30.964Z" title="更新于 2025-05-01 16:17:30">2025-05-01</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Android%E9%80%86%E5%90%91/">Android逆向</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><p>设备：Pixel XL</p>
 <p>镜像：Android10</p>
 <p>抓包环境：Lsposed + fiddler</p>
 <h2 id="刷入镜像"><a href="#刷入镜像" class="headerlink" title="刷入镜像"></a>刷入镜像</h2><h3 id="下载镜像并解压"><a href="#下载镜像并解压" class="headerlink" title="下载镜像并解压"></a><a class="link" target="_blank" rel="noopener" href="https://dl.google.com/dl/android/aosp/marlin-ota-qp1a.191005.007.a1-eea9b8dd.zip?hl=zh-cn">下载镜像<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a>并解压</h3><img lazyload="" src="/images/loading.svg" data-src="/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/a4cd7f6de8dc443c9980acee79e9741b.png" class="" title="fe13d07737febe2d3f7b857ff4dab08b.png">
@@ -591,415 +343,4 @@
 </ul>
 <p><strong>参考文章</strong></p>
 <p><a class="link" target="_blank" rel="noopener" href="https://www.ddosi.org/app-packet-captures/">APP各种抓包教程 Hook | SSL Pinning |Frida - 🔰雨苁ℒ🔰 (ddosi.org)<i class="fa-solid fa-arrow-up-right ml-[0.2em] font-light align-text-top text-[0.7em] link-icon"></i></a></p>
-
-		</div>
-
-		
-		<div class="post-copyright-info w-full my-8 px-2 sm:px-6 md:px-8">
-			<div class="article-copyright-info-container">
-    <ul>
-        <li><strong>标题:</strong> Android刷机+抓包环境配置</li>
-        <li><strong>作者:</strong> xiaoeryu</li>
-        <li><strong>创建于
-                :</strong> 2023-10-04 11:09:02</li>
-        
-            <li>
-                <strong>更新于
-                    :</strong> 2025-05-01 16:17:30
-            </li>
-        
-        <li>
-            <strong>链接:</strong> https://github.com/xiaoeryu/2023/10/04/Android刷机-抓包环境配置/
-        </li>
-        <li>
-            <strong>
-                版权声明:
-            </strong>
-            
-
-            
-                本文章采用 <a class="license" target="_blank" rel="noopener" href="https://creativecommons.org/licenses/by-nc-sa/4.0">CC BY-NC-SA 4.0</a> 进行许可。
-            
-        </li>
-    </ul>
-</div>
-
-		</div>
-		
-
-		
-		<ul class="post-tags-box text-lg mt-1.5 flex-wrap justify-center flex md:hidden">
-			
-			<li class="tag-item mx-0.5">
-				<a href="/tags/Android%E5%88%B7%E6%9C%BA/">#Android刷机</a>&nbsp;
-			</li>
-			
-			<li class="tag-item mx-0.5">
-				<a href="/tags/%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83/">#抓包环境</a>&nbsp;
-			</li>
-			
-		</ul>
-		
-
-		
-
-		
-		<div class="article-nav my-8 flex justify-between items-center px-2 sm:px-6 md:px-8">
-			
-			<div class="article-prev border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
-				<a class="prev" rel="prev" href="/2023/10/06/NDK%E5%BC%80%E5%8F%91%E6%80%A7%E8%83%BD%E6%8F%90%E5%8D%87/">
-					<span class="left arrow-icon flex justify-center items-center">
-						<i class="fa-solid fa-chevron-left"></i>
-					</span>
-					<span class="title flex justify-center items-center">
-						<span class="post-nav-title-item">NDK开发性能提升</span>
-						<span class="post-nav-item">上一篇</span>
-					</span>
-				</a>
-			</div>
-			
-			
-			<div class="article-next border-border-color shadow-redefine-flat shadow-shadow-color-2 rounded-medium px-4 py-2 hover:shadow-redefine-flat-hover hover:shadow-shadow-color-2">
-				<a class="next" rel="next" href="/2023/10/03/NDK%E5%BC%80%E5%8F%91%E7%AE%80%E4%BB%8B/">
-					<span class="title flex justify-center items-center">
-						<span class="post-nav-title-item">NDK开发简介</span>
-						<span class="post-nav-item">下一篇</span>
-					</span>
-					<span class="right arrow-icon flex justify-center items-center">
-						<i class="fa-solid fa-chevron-right"></i>
-					</span>
-				</a>
-			</div>
-			
-		</div>
-		
-
-
-		
-		<div class="comment-container px-2 sm:px-6 md:px-8 pb-8">
-			<div class="comments-container mt-10 w-full ">
-    <div id="comment-anchor" class="w-full h-2.5"></div>
-    <div class="comment-area-title w-full my-1.5 md:my-2.5 text-xl md:text-3xl font-bold">
-        评论
-    </div>
-    
-
-        
-            
-
-
-        
-    
-</div>
-
-		</div>
-		
-	</div>
-
-	
-	<div class="toc-content-container">
-		<div class="post-toc-wrap">
-	<div class="post-toc">
-		<div class="toc-title">目录</div>
-		<div class="page-title">Android刷机+抓包环境配置</div>
-		<ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#%E5%88%B7%E5%85%A5%E9%95%9C%E5%83%8F"><span class="nav-text">刷入镜像</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E4%B8%8B%E8%BD%BD%E9%95%9C%E5%83%8F%E5%B9%B6%E8%A7%A3%E5%8E%8B"><span class="nav-text">下载镜像并解压</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%B0%86%E6%89%8B%E6%9C%BA%E8%BF%9B%E5%85%A5bootloader%E6%A8%A1%E5%BC%8F"><span class="nav-text">将手机进入bootloader模式</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E6%89%A7%E8%A1%8Cflash-all-s%E5%88%B7%E6%9C%BA"><span class="nav-text">执行flash-all.s刷机</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#ROOT"><span class="nav-text">ROOT</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%85%88%E5%9C%A8%E5%BC%80%E5%8F%91%E8%80%85%E6%A8%A1%E5%BC%8F%E6%89%93%E5%BC%80USB%E8%B0%83%E8%AF%95%E5%BC%80%E5%85%B3"><span class="nav-text">先在开发者模式打开USB调试开关</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85Magisk"><span class="nav-text">安装Magisk</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%88%B7%E5%85%A5boot-img"><span class="nav-text">刷入boot.img</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#%E9%85%8D%E7%BD%AE%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83"><span class="nav-text">配置抓包环境</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85Lsposed"><span class="nav-text">安装Lsposed</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#%E5%AE%89%E8%A3%85%E6%8F%92%E4%BB%B6"><span class="nav-text">安装插件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#fiddler%E6%8A%93%E5%8C%85"><span class="nav-text">fiddler抓包</span></a><ol class="nav-child"><li class="nav-item nav-level-4"><a class="nav-link" href="#%E5%AE%89%E8%A3%85fiddler%E8%AF%81%E4%B9%A6"><span class="nav-text">安装fiddler证书</span></a></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link" href="#Charles%E6%8A%93%E5%8C%85"><span class="nav-text">Charles抓包</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#burp%E6%8A%93%E5%8C%85"><span class="nav-text">burp抓包</span></a></li></ol></li></ol>
-
-	</div>
-</div>
-	</div>
-	
-</div>
-			</div>
-
-			
-		</div>
-
-		<div class="main-content-footer">
-			<footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
-    <div class="info-container py-3 text-center">
-        
-        <div class="text-center">
-            &copy;
-            
-              <span>2022</span>
-              -
-            
-            2025&nbsp;&nbsp;<i class="fa-solid fa-heart fa-beat" style="--fa-animation-duration: 0.5s; color: #f54545"></i>&nbsp;&nbsp;<a href="/">xiaoeryu</a>
-            
-                
-                <p class="post-count space-x-0.5">
-                    <span>
-                        共撰写了 113 篇文章
-                    </span>
-                    
-                </p>
-            
-        </div>
-        
-            <script data-swup-reload-script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-            <div class="relative text-center lg:absolute lg:right-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-right">
-                
-                    <span id="busuanzi_container_site_uv" class="lg:!block">
-                        <span class="text-sm">访问人数</span>
-                        <span id="busuanzi_value_site_uv"></span>
-                    </span>
-                
-                
-                    <span id="busuanzi_container_site_pv" class="lg:!block">
-                        <span class="text-sm">总访问量</span>
-                        <span id="busuanzi_value_site_pv"></span>
-                    </span>
-                
-            </div>
-        
-        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
-            <span class="lg:block text-sm">由 <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a> 驱动</span>
-            <span class="text-sm lg:block">主题&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.8.2</a></span>
-        </div>
-        
-        
-            <div>
-                博客已运行 <span class="odometer" id="runtime_days" ></span> 天 <span class="odometer" id="runtime_hours"></span> 小时 <span class="odometer" id="runtime_minutes"></span> 分钟 <span class="odometer" id="runtime_seconds"></span> 秒
-            </div>
-        
-        
-            <script data-swup-reload-script>
-                try {
-                    function odometer_init() {
-                    const elements = document.querySelectorAll('.odometer');
-                    elements.forEach(el => {
-                        new Odometer({
-                            el,
-                            format: '( ddd).dd',
-                            duration: 200
-                        });
-                    });
-                    }
-                    odometer_init();
-                } catch (error) {}
-            </script>
-        
-        
-        
-    </div>  
-</footer>
-		</div>
-	</div>
-
-	
-	<div class="post-tools">
-		<div class="post-tools-container">
-	<ul class="article-tools-list">
-		<!-- TOC aside toggle -->
-		
-		<li class="right-bottom-tools page-aside-toggle">
-			<i class="fa-regular fa-outdent"></i>
-		</li>
-		
-
-		<!-- go comment -->
-		
-		<li class="go-comment">
-			<i class="fa-regular fa-comments"></i>
-		</li>
-		
-	</ul>
-</div>
-	</div>
-	
-
-	<div class="right-side-tools-container">
-		<div class="side-tools-container">
-	<ul class="hidden-tools-list">
-		<li class="right-bottom-tools tool-font-adjust-plus flex justify-center items-center">
-			<i class="fa-regular fa-magnifying-glass-plus"></i>
-		</li>
-
-		<li class="right-bottom-tools tool-font-adjust-minus flex justify-center items-center">
-			<i class="fa-regular fa-magnifying-glass-minus"></i>
-		</li>
-
-		<li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
-			<i class="fa-regular fa-moon"></i>
-		</li>
-
-		<!-- rss -->
-		
-
-		
-
-		<li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
-			<i class="fa-regular fa-arrow-down"></i>
-		</li>
-	</ul>
-
-	<ul class="visible-tools-list">
-		<li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
-			<i class="fa-regular fa-cog fa-spin"></i>
-		</li>
-		
-		<li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
-			<i class="arrow-up fas fa-arrow-up"></i>
-			<span class="percent"></span>
-		</li>
-		
-		
-	</ul>
-</div>
-	</div>
-
-	<div class="image-viewer-container">
-	<img src="">
-</div>
-
-	
-	<div class="search-pop-overlay">
-	<div class="popup search-popup">
-		<div class="search-header">
-			<span class="search-input-field-pre">
-				<i class="fa-solid fa-keyboard"></i>
-			</span>
-			<div class="search-input-container">
-				<input autocomplete="off" autocorrect="off" autocapitalize="off" placeholder="站内搜索您需要的内容..." spellcheck="false" type="search" class="search-input">
-			</div>
-			<span class="popup-btn-close">
-				<i class="fa-solid fa-times"></i>
-			</span>
-		</div>
-		<div id="search-result">
-			<div id="no-result">
-				<i class="fa-solid fa-spinner fa-spin-pulse fa-5x fa-fw"></i>
-			</div>
-		</div>
-	</div>
-</div>
-	
-
-</main>
-
-
-
-<script src="/js/build/libs/Swup.min.js"></script>
-
-<script src="/js/build/libs/SwupSlideTheme.min.js"></script>
-
-<script src="/js/build/libs/SwupScriptsPlugin.min.js"></script>
-
-<script src="/js/build/libs/SwupProgressPlugin.min.js"></script>
-
-<script src="/js/build/libs/SwupScrollPlugin.min.js"></script>
-
-<script src="/js/build/libs/SwupPreloadPlugin.min.js"></script>
-
-<script>
-    const swup = new Swup({
-        plugins: [
-            new SwupScriptsPlugin({
-                optin: true,
-            }),
-            new SwupProgressPlugin(),
-            new SwupScrollPlugin({
-                offset: 80,
-            }),
-            new SwupSlideTheme({
-                mainElement: ".main-content-body",
-            }),
-            new SwupPreloadPlugin(),
-        ],
-        containers: ["#swup"],
-    });
-</script>
-
-
-
-
-	
-<script src="/js/build/tools/imageViewer.js" type="module"></script>
-
-<script src="/js/build/utils.js" type="module"></script>
-
-<script src="/js/build/main.js" type="module"></script>
-
-<script src="/js/build/layouts/navbarShrink.js" type="module"></script>
-
-<script src="/js/build/tools/scrollTopBottom.js" type="module"></script>
-
-<script src="/js/build/tools/lightDarkSwitch.js" type="module"></script>
-
-<script src="/js/build/layouts/categoryList.js" type="module"></script>
-
-
-
-    
-<script src="/js/build/tools/localSearch.js" type="module"></script>
-
-
-
-
-    
-<script src="/js/build/tools/codeBlock.js" type="module"></script>
-
-
-
-
-    
-<script src="/js/build/layouts/lazyload.js" type="module"></script>
-
-
-
-
-    
-<script src="/js/build/tools/runtime.js"></script>
-
-    
-<script src="/js/build/libs/odometer.min.js"></script>
-
-    
-<link rel="stylesheet" href="/assets/odometer-theme-minimal.css">
-
-
-
-
-  
-<script src="/js/build/libs/Typed.min.js"></script>
-
-  
-<script src="/js/build/plugins/typed.js" type="module"></script>
-
-
-
-
-
-
-
-
-    
-<script src="/js/build/libs/anime.min.js"></script>
-
-
-
-
-
-    
-<script src="/js/build/tools/tocToggle.js" type="module" data-swup-reload-script=""></script>
-
-<script src="/js/build/layouts/toc.js" type="module" data-swup-reload-script=""></script>
-
-<script src="/js/build/plugins/tabs.js" type="module" data-swup-reload-script=""></script>
-
-
-
-
-<script src="/js/build/libs/moment-with-locales.min.js" data-swup-reload-script=""></script>
-
-
-<script src="/js/build/layouts/essays.js" type="module" data-swup-reload-script=""></script>
-
-
-
-
-
-	
-</body>
-
-</html>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://xiaoeeyu.github.io">xiaoeryu</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/">https://xiaoeeyu.github.io/2023/10/04/Android%E5%88%B7%E6%9C%BA-%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83%E9%85%8D%E7%BD%AE/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://xiaoeeyu.github.io" target="_blank">xiaoeryu</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/Android%E5%88%B7%E6%9C%BA/">Android刷机</a><a class="post-meta__tags" href="/tags/%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83/">抓包环境</a></div><div class="post-share"><div class="social-share" data-image="/img/butterfly-icon.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2023/10/03/NDK%E5%BC%80%E5%8F%91%E7%AE%80%E4%BB%8B/" title="NDK开发简介"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">NDK开发简介</div></div><div class="info-2"><div class="info-item-1">记录一些NDK开发的基础问题，这里记录的方向会更偏向于逆向、安全方面的内容。   什么是NDKJNI：Java Native Interface的缩写，JAVA本地接口的意思 NDK：Native Development Kit（本地开发套件）    可以帮助开发人员快速开发、调试动态库    JNI函数JNI是一个规范    有时候需要编译后保留函数名可以加上extern ”C”，使其按C的方式进行编译        JNI参数静态函数和动态函数实现的时候第二个传参是不同的     静态成员可以直接通过类名的方式访问调用，非静态函数是不行的    通过对参数的分析，我们可以知道一个JNI函数它的参数一定是不少于两个的，从第三个参数开始才是属于函数自己的参数  调用在调用C文件中的函数的时候要显式的加上extern “C”      因为如果不加的话编译器会默认按C++的方式进行编译，在函数名称粉碎之后就链接不到了。  变量类型 在前面加上 j   测试执行成功：测试的时候注意一下系统版本      debug调试要注意设备版本跟项目SDK版本保持一致，不然会报错  </div></div></div></a><a class="pagination-related" href="/2023/10/06/NDK%E5%BC%80%E5%8F%91%E6%80%A7%E8%83%BD%E6%8F%90%E5%8D%87/" title="NDK开发性能提升"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">NDK开发性能提升</div></div><div class="info-2"><div class="info-item-1">初步了解以下NDK开发对性能的提升，包括dex2oat的处理、函数运行在解释模式、ART模式、JNI模式的性能差别，以及数据类型的转换。   NDK开发的优缺点    什么是ART模式dex2oat虽然提升了性能，但是对手机的存储空间、性能、耗电量提出了更高的要求（因为要把几乎所有的函数都要编译一遍），所以从Android7.0开始换为了ART的运作方式   所以java函数在Android7.0之后可能运行在三种模式下：   OAT文件分析Google提供了一个[oatdump](oatdump/oatdump.cc - platform/art - Git at Google (googlesource.com))工具来反编译oat文件 新建一个native C++项目来测试对oat文件反编译，分析文件结构 在MainActivity.java中写一个简单函数编译一下，安装到手机上 这里测试项目的SDK最好使用Android5.0以下的不然编译出来的dex太多找起来麻烦     public int java_add(int num){         int k =...</div></div></div></a></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">xiaoeryu</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">113</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">93</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">14</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%88%B7%E5%85%A5%E9%95%9C%E5%83%8F"><span class="toc-number">1.</span> <span class="toc-text">刷入镜像</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E4%B8%8B%E8%BD%BD%E9%95%9C%E5%83%8F%E5%B9%B6%E8%A7%A3%E5%8E%8B"><span class="toc-number">1.1.</span> <span class="toc-text">下载镜像并解压</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%B0%86%E6%89%8B%E6%9C%BA%E8%BF%9B%E5%85%A5bootloader%E6%A8%A1%E5%BC%8F"><span class="toc-number">1.2.</span> <span class="toc-text">将手机进入bootloader模式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E6%89%A7%E8%A1%8Cflash-all-s%E5%88%B7%E6%9C%BA"><span class="toc-number">1.3.</span> <span class="toc-text">执行flash-all.s刷机</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#ROOT"><span class="toc-number">2.</span> <span class="toc-text">ROOT</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%85%88%E5%9C%A8%E5%BC%80%E5%8F%91%E8%80%85%E6%A8%A1%E5%BC%8F%E6%89%93%E5%BC%80USB%E8%B0%83%E8%AF%95%E5%BC%80%E5%85%B3"><span class="toc-number">2.1.</span> <span class="toc-text">先在开发者模式打开USB调试开关</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%85Magisk"><span class="toc-number">2.2.</span> <span class="toc-text">安装Magisk</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%88%B7%E5%85%A5boot-img"><span class="toc-number">2.3.</span> <span class="toc-text">刷入boot.img</span></a></li></ol></li><li class="toc-item toc-level-2"><a class="toc-link" href="#%E9%85%8D%E7%BD%AE%E6%8A%93%E5%8C%85%E7%8E%AF%E5%A2%83"><span class="toc-number">3.</span> <span class="toc-text">配置抓包环境</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%85Lsposed"><span class="toc-number">3.1.</span> <span class="toc-text">安装Lsposed</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E6%8F%92%E4%BB%B6"><span class="toc-number">3.2.</span> <span class="toc-text">安装插件</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#fiddler%E6%8A%93%E5%8C%85"><span class="toc-number">3.3.</span> <span class="toc-text">fiddler抓包</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#%E5%AE%89%E8%A3%85fiddler%E8%AF%81%E4%B9%A6"><span class="toc-number">3.3.1.</span> <span class="toc-text">安装fiddler证书</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#Charles%E6%8A%93%E5%8C%85"><span class="toc-number">3.4.</span> <span class="toc-text">Charles抓包</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#%E4%BB%A3%E7%90%86%E6%9C%8D%E5%8A%A1%E5%99%A8%E7%9A%84%E5%B7%A5%E4%BD%9C%E5%8E%9F%E7%90%86%E5%A6%82%E4%B8%8B%E6%89%80%E7%A4%BA%EF%BC%9A"><span class="toc-number">3.4.0.1.</span> <span class="toc-text">代理服务器的工作原理如下所示：</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E9%85%8D%E7%BD%AEcharles"><span class="toc-number">3.4.0.2.</span> <span class="toc-text">配置charles</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#HTTPS%E8%A7%A3%E6%9E%90"><span class="toc-number">3.4.0.3.</span> <span class="toc-text">HTTPS解析</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%8A%93%E5%8C%85"><span class="toc-number">3.4.0.4.</span> <span class="toc-text">抓包</span></a></li></ol></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#burp%E6%8A%93%E5%8C%85"><span class="toc-number">3.5.</span> <span class="toc-text">burp抓包</span></a><ol class="toc-child"><li class="toc-item toc-level-5"><a class="toc-link" href="#PC%E7%AB%AF%E5%AE%89%E8%A3%85"><span class="toc-number">3.5.0.1.</span> <span class="toc-text">PC端安装</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E5%AE%89%E8%A3%85%E8%AF%81%E4%B9%A6"><span class="toc-number">3.5.0.2.</span> <span class="toc-text">安装证书</span></a></li><li class="toc-item toc-level-5"><a class="toc-link" href="#%E6%8A%93%E5%8C%85-1"><span class="toc-number">3.5.0.3.</span> <span class="toc-text">抓包</span></a></li></ol></li></ol></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/05/26/%E6%9F%90%E9%BA%A6App%E8%B4%AD%E7%A5%A8%E6%8E%A5%E5%8F%A3%E5%88%86%E6%9E%90-0/" title="某麦App购票接口分析">某麦App购票接口分析</a><time datetime="2025-05-26T14:55:56.000Z" title="发表于 2025-05-26 22:55:56">2025-05-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/04/05/%E6%9F%90%E9%BA%A6APP%E8%B4%AD%E7%A5%A8%E6%8E%A5%E5%8F%A3%E5%88%86%E6%9E%90/" title="某麦APP购票接口分析">某麦APP购票接口分析</a><time datetime="2025-04-05T08:07:32.000Z" title="发表于 2025-04-05 16:07:32">2025-04-05</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/09/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E6%9F%90%E6%9F%90%E7%89%9B%E4%BB%94%E5%9F%8E/" title="微信小程序-某某牛仔城">微信小程序-某某牛仔城</a><time datetime="2024-09-16T14:14:02.000Z" title="发表于 2024-09-16 22:14:02">2024-09-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/08/10/%E7%BC%96%E8%AF%91Android13-AOSP/" title="编译Android13-AOSP">编译Android13-AOSP</a><time datetime="2024-08-10T01:40:30.000Z" title="发表于 2024-08-10 09:40:30">2024-08-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/08/09/%E7%BB%95%E8%BF%87%E7%88%B1%E5%A5%87%E8%89%BAlibmsaoaidsec-so%E7%9A%84Frida%E6%A3%80%E6%B5%8B/" title="绕过爱奇艺libmsaoaidsec.so的Frida检测">绕过爱奇艺libmsaoaidsec.so的Frida检测</a><time datetime="2024-08-09T03:29:58.000Z" title="发表于 2024-08-09 11:29:58">2024-08-09</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2025 By xiaoeryu</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 6.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

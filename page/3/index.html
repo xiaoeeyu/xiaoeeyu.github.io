@@ -1,1575 +1,237 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="keywords" content="Hexo Theme Redefine">
-    
-    <meta name="author" content="xiaoeryu">
-    <!-- preconnect -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-
-    
-    <!--- Seo Part-->
-    
-    <link rel="canonical" href="https://xiaoeeyu.github.io/page/3/"/>
-    <meta name="robots" content="index,follow">
-    <meta name="googlebot" content="index,follow">
-    <meta name="revisit-after" content="1 days">
-    
-    
-    
-        
-        <meta property="og:type" content="website">
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>xiaoeryu</title><meta name="author" content="xiaoeryu"><meta name="copyright" content="xiaoeryu"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta property="og:type" content="website">
 <meta property="og:title" content="xiaoeryu">
 <meta property="og:url" content="https://xiaoeeyu.github.io/page/3/index.html">
 <meta property="og:site_name" content="xiaoeryu">
 <meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://xiaoeeyu.github.io/img/butterfly-icon.png">
 <meta property="article:author" content="xiaoeryu">
 <meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://xiaoeeyu.github.io/img/butterfly-icon.png"><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://xiaoeeyu.github.io/page/3/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
     
-    
-    <!--- Icon Part-->
-    <link rel="icon" type="image/png" href="/images/rabete.jpg" sizes="192x192">
-    <link rel="apple-touch-icon" sizes="180x180" href="/images/rabete.jpg">
-    <meta name="theme-color" content="#A31F34">
-    <link rel="shortcut icon" href="/images/rabete.jpg">
-    <!--- Page Info-->
-    
-    <title>
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
         
-            xiaoeryu - Redefine Your Hexo Journey.
-        
-    </title>
-
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
     
-<link rel="stylesheet" href="/fonts/Chillax/chillax.css">
-
-
-    <!--- Inject Part-->
-    
-
-    
-<link rel="stylesheet" href="/css/style.css">
-
-
-    
-        
-<link rel="stylesheet" href="/css/build/tailwind.css">
-
-    
-
-    
-<link rel="stylesheet" href="/fonts/GeistMono/geist-mono.css">
-
-    
-<link rel="stylesheet" href="/fonts/Geist/geist.css">
-
-    <!--- Font Part-->
-    
-    
-    
-    
-    
-    
-
-    <script id="hexo-configurations">
-    window.config = {"hostname":"xiaoeeyu.github.io","root":"/","language":"zh-CN","path":"search.xml"};
-    window.theme = {"articles":{"style":{"font_size":"16px","line_height":1.5,"image_border_radius":"14px","image_alignment":"center","image_caption":false,"link_icon":true,"delete_mask":false,"title_alignment":"left","headings_top_spacing":{"h1":"3.2rem","h2":"2.4rem","h3":"1.9rem","h4":"1.6rem","h5":"1.4rem","h6":"1.3rem"}},"word_count":{"enable":true,"count":true,"min2read":true},"author_label":{"enable":true,"auto":false,"list":[]},"code_block":{"copy":true,"style":"mac","highlight_theme":{"light":"github","dark":"vs2015"},"font":{"enable":false,"family":null,"url":null}},"toc":{"enable":true,"max_depth":4,"number":false,"expand":true,"init_open":true},"copyright":{"enable":true,"default":"cc_by_nc_sa"},"lazyload":true,"pangu_js":false,"recommendation":{"enable":false,"title":"推荐阅读","limit":3,"mobile_limit":2,"placeholder":"/images/ball-0101.jpg","skip_dirs":[]}},"colors":{"primary":"#A31F34","secondary":null,"default_mode":"light"},"global":{"fonts":{"chinese":{"enable":false,"family":null,"url":null},"english":{"enable":false,"family":null,"url":null},"title":{"enable":false,"family":null,"url":null}},"content_max_width":"1000px","sidebar_width":"210px","hover":{"shadow":true,"scale":false},"scroll_progress":{"bar":false,"percentage":true},"website_counter":{"url":"https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js","enable":true,"site_pv":true,"site_uv":true,"post_pv":true},"single_page":true,"preloader":{"enable":false,"custom_message":null},"open_graph":true,"google_analytics":{"enable":false,"id":null}},"home_banner":{"enable":true,"style":"fixed","image":{"light":"/images/wallhaven-jxl31y.png","dark":"/images/wallhaven-o5762l.png"},"title":"XIAOERYU","subtitle":{"text":["明心见性，拨云见日","Don't wait, to create"],"hitokoto":{"enable":false,"show_author":false,"api":"https://v1.hitokoto.cn"},"typing_speed":100,"backing_speed":80,"starting_delay":500,"backing_delay":1500,"loop":true,"smart_backspace":true},"text_color":{"light":"#fff","dark":"#d1d1b6"},"text_style":{"title_size":"2.8rem","subtitle_size":"1.5rem","line_height":1.2},"custom_font":{"enable":false,"family":null,"url":null},"social_links":{"enable":true,"style":"default","links":{"github":"https://github.com/xiaoeeyu","instagram":null,"zhihu":null,"twitter":null,"email":"xiaoeryu@163.com"},"qrs":{"weixin":null}}},"plugins":{"feed":{"enable":false},"aplayer":{"enable":false,"type":"fixed","audios":[{"name":null,"artist":null,"url":null,"cover":null,"lrc":null}]},"mermaid":{"enable":false,"version":"9.3.0"}},"version":"2.8.2","navbar":{"auto_hide":false,"color":{"left":"#f78736","right":"#367df7","transparency":35},"width":{"home":"1200px","pages":"1000px"},"links":{"Home":{"path":"/","icon":"fa-regular fa-house"},"Archives":{"path":"/archives","icon":"fa-regular fa-archive"}},"search":{"enable":true,"preload":true}},"page_templates":{"friends_column":2,"tags_style":"blur"},"home":{"sidebar":{"enable":true,"position":"left","first_item":"menu","announcement":null,"show_on_mobile":true,"links":null},"article_date_format":"auto","excerpt_length":200,"categories":{"enable":true,"limit":3},"tags":{"enable":true,"limit":3}},"footerStart":"2022/8/17 11:45:14"};
-    window.lang_ago = {"second":"%s 秒前","minute":"%s 分钟前","hour":"%s 小时前","day":"%s 天前","week":"%s 周前","month":"%s 个月前","year":"%s 年前"};
-    window.data = {"masonry":false};
-  </script>
-    
-    <!--- Fontawesome Part-->
-    
-<link rel="stylesheet" href="/fontawesome/fontawesome.min.css">
-
-    
-<link rel="stylesheet" href="/fontawesome/brands.min.css">
-
-    
-<link rel="stylesheet" href="/fontawesome/solid.min.css">
-
-    
-<link rel="stylesheet" href="/fontawesome/regular.min.css">
-
-    
-    
-    
-    
-<meta name="generator" content="Hexo 6.3.0">
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'xiaoeryu',
+  isHighlightShrink: false,
+  isToc: false,
+  pageType: 'home'
+}</script><meta name="generator" content="Hexo 6.3.0">
 <style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
-</head>
-
-
-
-<body>
-	<div class="progress-bar-container">
-	
-
-	
-	<span class="pjax-progress-bar"></span>
-	<!--        <span class="swup-progress-icon">-->
-	<!--            <i class="fa-solid fa-circle-notch fa-spin"></i>-->
-	<!--        </span>-->
-	
-</div>
-
-<main class="page-container" id="swup">
-
-	
-	<style>
-    .home-article-item,
-    .sidebar-links,
-    .sidebar-content,
-    a.page-number,
-    a.extend,
-    .sidebar-links .links:hover,
-    .right-bottom-tools,
-    footer.footer {
-        background-color: var(--background-color-transparent-80) !important;
-    }
-    .right-bottom-tools:hover,
-    a.page-number:hover,
-    a.extend:hover {
-        background-color: var(--primary-color) !important;
-    }
-    .site-info,
-    .home-article-sticky-label {
-        background-color: var(--background-color-transparent-15) !important;
-    }
-    .home-article-sticky-label {
-        backdrop-filter: none !important;
-    }
-    .home-banner-background {
-        filter: blur(15px);
-    }
-</style>
-
-<div class="home-banner-background transition-fade fixed top-0 left-0 w-screen h-screen scale-125 sm:scale-110 box-border will-change-transform bg-cover">
-    <img src="/images/wallhaven-jxl31y.png" alt="home-banner-background" class="w-full h-full object-cover dark:hidden">
-    <img src="/images/wallhaven-o5762l.png" alt="home-banner-background" class="w-full h-full object-cover hidden dark:block">
-</div>
-
-
-	
-
-	<div class="main-content-container flex flex-col justify-between min-h-dvh">
-		<div class="main-content-header">
-			<header class="navbar-container px-6 md:px-12">
-    <div class="navbar-content transition-navbar ">
-        <div class="left">
-            
-                <a class="logo-image h-8 w-8 sm:w-10 sm:h-10 mr-3" href="/">
-                    <img src="/images/rabete.jpg" class="w-full h-full rounded-sm">
-                </a>
-            
-            <a class="logo-title" href="/">
-                <h1>
-                xiaoeryu
-                </h1>
-            </a>
-        </div>
-
-        <div class="right">
-            <!-- PC -->
-            <div class="desktop">
-                <ul class="navbar-list">
-                    
-                        
-                            
-
-                            <li class="navbar-item">
-                                <!-- Menu -->
-                                <a class="active"
-                                   href="/"
-                                        >
-                                    <i class="fa-regular fa-house fa-fw"></i>
-                                    首页
-                                    
-                                </a>
-
-                                <!-- Submenu -->
-                                
-                            </li>
-                    
-                        
-                            
-
-                            <li class="navbar-item">
-                                <!-- Menu -->
-                                <a class=""
-                                   href="/archives"
-                                        >
-                                    <i class="fa-regular fa-archive fa-fw"></i>
-                                    归档
-                                    
-                                </a>
-
-                                <!-- Submenu -->
-                                
-                            </li>
-                    
-                    
-                        <li class="navbar-item search search-popup-trigger">
-                            <i class="fa-solid fa-magnifying-glass"></i>
-                        </li>
-                    
-                </ul>
-            </div>
-            <!-- Mobile -->
-            <div class="mobile">
-                
-                    <div class="icon-item search search-popup-trigger"><i class="fa-solid fa-magnifying-glass"></i>
-                    </div>
-                
-                <div class="icon-item navbar-bar">
-                    <div class="navbar-bar-middle"></div>
-                </div>
-            </div>
-        </div>
+</head><body><div class="page" id="body-wrap"><header class="full_page" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">xiaoeryu</span></a></span><div id="menus"></div></nav><div id="site-info"><h1 id="site-title">xiaoeryu</h1></div><div id="scroll-down"><i class="fas fa-angle-down scroll-down-effects"></i></div></header><main class="layout" id="content-inner"><div class="recent-posts nc" id="recent-posts"><div class="recent-post-items"><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2024/03/05/%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%AF%86%E7%A0%81-RSA/" title="非对称密码-RSA">非对称密码-RSA</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2024-03-05T10:01:10.000Z" title="发表于 2024-03-05 18:01:10">2024-03-05</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Android%E9%80%86%E5%90%91/">Android逆向</a><i class="fas fa-angle-right article-meta-link"></i><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Android%E9%80%86%E5%90%91/%E5%8A%A0%E5%AF%86%E8%A7%A3%E5%AF%86/">加密解密</a></span></div><div class="content">本章内容主要为RSA密码的原理以及定位 分组密码在应用和协议的加解密中比较常用，非对称加密RSA因为加密效率的原因更多的用在密钥的分发方面 非对称密码中的RSA在当前互联网时代被广泛使用（网站、app、协议、桌面应用、服务器等等）。RSA加密算法是公钥密码体制中的一种，改算法基于数学理论而不是对称密码中的混淆和扩散。RSA密码算法当中加密和解密使用的是不同的密钥，因此被称为非对称密码。RSA是1977年由罗纳德·里维斯特、阿迪·萨莫尔和伦纳德·阿德曼一起提出的。RSA就是他们三人姓氏开头字母拼在一起的。   RSA原理来自数论相关知识。RSA公开密钥密码体制的原理是：根据数论，寻求两个大素数比较简单，而将它们的乘积进行因式分解却极其困难，因此可以将乘积公开作为加密密钥。  找素数  选取两个大的随机素数  计算模n和Euler函数φ(n)  $n = pq$ $φ(n) = (p-1)(q-1)$  找$ed ≡ 1 mod...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2024/03/05/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-%E9%80%86%E5%90%91%E5%AE%9E%E8%B7%B5/" title="分组密码-逆向实践">分组密码-逆向实践</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2024-03-04T17:31:05.000Z" title="发表于 2024-03-05 01:31:05">2024-03-05</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Android%E9%80%86%E5%90%91/">Android逆向</a><i class="fas fa-angle-right article-meta-link"></i><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Android%E9%80%86%E5%90%91/%E5%8A%A0%E5%AF%86%E8%A7%A3%E5%AF%86/">加密解密</a></span></div><div class="content">之前几章已经对分组密码的原理以及填充进行了详细分析，本章使用一个demo来进行实战分析  一个两层密钥的demo，第一层是java中的AES，第二层是native层的AES加密    第一层   以32位安装方便进行分析测试  一个简单demo，打开界面是输入框和按钮，点击按钮后校验密码错误的话，会弹窗提示错误      GDA打开看到有360的加固，先脱壳 不想刷脱壳机使用frida_fart_hook脚本脱壳也行，使用方法脚本里面写的很清楚，之前也讲过了这里不再赘述  分析脱壳后的dex   直接查看onClick()函数，看到这里的校验是在test4()函数里面做的，那就继续分析test4()     这里算法特征相关的函数和字符串都已经被隐藏了。这里只能看到一个key、IV以及要与之比较的一个值，不能看到是什么加密和工作以及填充模式 所以如果想要搞清楚这些东西，需要使用hook的方式来获取  编写frida_hook脚本    hook *loadClass()*获取它的参数看是加载了哪个类 hook...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2024/03/02/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81%E7%9A%84%E5%A1%AB%E5%85%85%E5%8F%8A%E5%B7%A5%E4%BD%9C%E6%A8%A1%E5%BC%8F/" title="分组密码的填充及工作模式">分组密码的填充及工作模式</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2024-03-02T02:00:01.000Z" title="发表于 2024-03-02 10:00:01">2024-03-02</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Android%E9%80%86%E5%90%91/">Android逆向</a><i class="fas fa-angle-right article-meta-link"></i><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Android%E9%80%86%E5%90%91/%E5%8A%A0%E5%AF%86%E8%A7%A3%E5%AF%86/">加密解密</a></span></div><div class="content">...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2024/02/29/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-AES/" title="分组密码-AES">分组密码-AES</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2024-02-29T03:05:35.000Z" title="发表于 2024-02-29 11:05:35">2024-02-29</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Android%E9%80%86%E5%90%91/">Android逆向</a><i class="fas fa-angle-right article-meta-link"></i><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Android%E9%80%86%E5%90%91/%E5%8A%A0%E5%AF%86%E8%A7%A3%E5%AF%86/">加密解密</a></span></div><div class="content">本章主要是学习AES如何实现，如何对java中的AES方法进行hook，以及定位so文件中的AES 这里以AES-128为例，会对明文分组进行10轮迭代运算，加密的第1轮到第9轮的函数一样，包括4个操作：字节替换、行位移、列混合和轮密钥加。最后一轮迭代不执行行列混合。另外，在第一轮迭代之前，先将明文和原始密钥进行一次异或加密操作。     AES加解密理论    AES实现的原理图  AES的加解密，跟DES一样由左右两部分组成 左边是对明文（16字节）进行的一个10轮的迭代处理  第一轮到第9轮每一轮都有四个操作： AddRoundKey 为 异或SubBytes 为 查表替换ShiftRows 为 按字节循环左移MixColumns 为...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2024/02/23/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-DES/" title="分组密码-DES">分组密码-DES</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2024-02-23T07:22:17.000Z" title="发表于 2024-02-23 15:22:17">2024-02-23</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Android%E9%80%86%E5%90%91/">Android逆向</a><i class="fas fa-angle-right article-meta-link"></i><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Android%E9%80%86%E5%90%91/%E5%8A%A0%E5%AF%86%E8%A7%A3%E5%AF%86/">加密解密</a></span></div><div class="content">...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2024/02/21/%E5%BA%8F%E5%88%97%E5%AF%86%E7%A0%81%E4%B9%8BRC4%E5%AE%9E%E8%B7%B5%E7%AF%87/" title="序列密码之RC4实践篇">序列密码之RC4实践篇</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2024-02-21T05:33:27.000Z" title="发表于 2024-02-21 13:33:27">2024-02-21</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E5%8A%A0%E5%AF%86%E8%A7%A3%E5%AF%86/">加密解密</a><i class="fas fa-angle-right article-meta-link"></i><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E5%8A%A0%E5%AF%86%E8%A7%A3%E5%AF%86/Android%E9%80%86%E5%90%91/">Android逆向</a></span></div><div class="content">...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2024/02/21/%E5%BA%8F%E5%88%97%E5%AF%86%E7%A0%81RC4%E7%90%86%E8%AE%BA%E7%AF%87/" title="序列密码RC4理论篇">序列密码RC4理论篇</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2024-02-21T05:29:38.000Z" title="发表于 2024-02-21 13:29:38">2024-02-21</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E5%8A%A0%E5%AF%86%E8%A7%A3%E5%AF%86/">加密解密</a><i class="fas fa-angle-right article-meta-link"></i><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/%E5%8A%A0%E5%AF%86%E8%A7%A3%E5%AF%86/Android%E9%80%86%E5%90%91/">Android逆向</a></span></div><div class="content">本章的主要内容为对RC4算法原理的了解和实现 RC4是序列密码中用的非常广泛的一个加解密算法      因为是按位异或，所以显著特征是密文C和明文M的长度肯定是相等的。  RC4（来自Rivest Cipher 4的缩写）是一种流加密算法，密钥长度可变。在给定一密钥时，会生成一固定序列的字节流，用于和明文进行异或。它加解密使用相同的密钥，因此属于对称加密算法。RC4已经成为一些常用协议和标准的一部分，如1997年的WEP和2003/2004年的WPA；和1995年的SSL，以及后来1999年的TLS。让他如此广泛分布和使用的主要因素是它不可思议的简单和速度，不管是软件还是硬件，实现起来都十分容易。    RC4算法的原理很简单，主要包括初始化算法（KSA）和伪随机子密码生成算法（PRGA）两个部分。假设S-box的长度为256，密钥长度为Len。目前RC4在不知道key的情况下还是只能暴力破解，所以它的安全性还是有一定保证的。    KSA   初始化（KSA）算法部分参数1是一个256长度的char型数组，定义为：unsigned char...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2024/02/13/%E5%AF%86%E7%A0%81%E5%AD%A6%E5%88%9D%E6%AD%A5%E8%AE%A4%E8%AF%86/" title="密码学初步认识">密码学初步认识</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2024-02-13T08:38:12.000Z" title="发表于 2024-02-13 16:38:12">2024-02-13</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Android%E9%80%86%E5%90%91/">Android逆向</a></span></div><div class="content">...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2023/12/25/so%E5%87%BD%E6%95%B0Hook%EF%BC%88%E4%B8%8A%EF%BC%89/" title="so函数Hook（上）">so函数Hook（上）</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2023-12-24T16:37:44.000Z" title="发表于 2023-12-25 00:37:44">2023-12-25</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Android%E9%80%86%E5%90%91/">Android逆向</a></span></div><div class="content">Xposed插件开发之对so中函数的处理对so中函数的hook跟对java层函数的hook不同，Xposed无法完成对so层函数的hook。需要使用其它的框架编写so层的hook代码，然后通过xposed进行主动调用的方式来完成hook。 这里我们先以32位为例，使用inlineHook框架，不过这个框架只能hook 32位的app 先来创建一个包含有so库的native C++项目，作为目标app    这里strstr方法默认返回的是false，如果我们想通过hook让它的返回结果为true，有几个hook点   hookstrstr()让其在遇到hookso的时候返回的结果为非空 修改testhook()的参数、或者直接修改返回值    对libC函数的hook要注意一点，hook时机要在目标函数调用前   hook...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2023/12/25/Hook%E5%A4%9Adex%E7%9A%84app/" title="Hook多dex的app">Hook多dex的app</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2023-12-24T16:33:21.000Z" title="发表于 2023-12-25 00:33:21">2023-12-25</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Android%E9%80%86%E5%90%91/">Android逆向</a></span></div><div class="content">...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2023/12/20/Hook%E5%8A%A0%E5%A3%B3app/" title="Hook加壳app">Hook加壳app</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2023-12-20T11:18:29.000Z" title="发表于 2023-12-20 19:18:29">2023-12-20</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Android%E9%80%86%E5%90%91/">Android逆向</a></span></div><div class="content">本章主要分析怎么处理加壳app 之前几篇文章编写的Xposed插件都是在没有加壳的情况下编写的，如果加壳后应该怎么处理 在应用内部代码被加固的情况下，如何hook到内部代码   因为ClassLoader是壳的ClassLoader 因为Xposed框架Hook的时机是比较早的，如果一个app加壳了，那么Xposed...</div></div></div><div class="recent-post-item"><div class="recent-post-info no-cover"><a class="article-title" href="/2023/12/15/%E4%B8%BB%E5%8A%A8%E8%B0%83%E7%94%A8%E5%87%BD%E6%95%B0/" title="主动调用函数">主动调用函数</a><div class="article-meta-wrap"><span class="post-meta-date"><i class="far fa-calendar-alt"></i><span class="article-meta-label">发表于</span><time datetime="2023-12-15T14:02:09.000Z" title="发表于 2023-12-15 22:02:09">2023-12-15</time></span><span class="article-meta"><span class="article-meta-separator">|</span><i class="fas fa-inbox"></i><a class="article-meta__categories" href="/categories/Android%E9%80%86%E5%90%91/">Android逆向</a></span></div><div class="content">本章主要内容： 主动调用类函数  使用java反射完成对类函数的调用 使用Xposed的API完成对类函数的调用    通过java反射的方式主动调用主动调用静态函数目标app的两个静态函数   在Xposed01项目中新建一个Class来进行主动调用：使用java反射的方式来主动调用    调用成功，需要注意的是在调用private函数的时候注意要取消权限检查  主动调用非静态函数目标app的两个非静态函数   同样使用java反射的方式来调用 对于类的非静态函数，需要先创建类的实例然后通过实例来调用非静态方法 Method publicFunc_method = StuClass.getDeclaredMethod("publicFunc", String.class, int.class);   获取静态方法  //            public Student(String name, String id){ //                this.name = name; //                this.id = id; //        ...</div></div></div></div><nav id="pagination"><div class="pagination"><a class="extend prev" rel="prev" href="/page/2/#content-inner"><i class="fas fa-chevron-left fa-fw"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/#content-inner">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/#content-inner">4</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/#content-inner">10</a><a class="extend next" rel="next" href="/page/4/#content-inner"><i class="fas fa-chevron-right fa-fw"></i></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">xiaoeryu</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">113</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">93</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">14</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/05/26/%E6%9F%90%E9%BA%A6App%E8%B4%AD%E7%A5%A8%E6%8E%A5%E5%8F%A3%E5%88%86%E6%9E%90-0/" title="某麦App购票接口分析">某麦App购票接口分析</a><time datetime="2025-05-26T14:55:56.000Z" title="发表于 2025-05-26 22:55:56">2025-05-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/04/05/%E6%9F%90%E9%BA%A6APP%E8%B4%AD%E7%A5%A8%E6%8E%A5%E5%8F%A3%E5%88%86%E6%9E%90/" title="某麦APP购票接口分析">某麦APP购票接口分析</a><time datetime="2025-04-05T08:07:32.000Z" title="发表于 2025-04-05 16:07:32">2025-04-05</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/09/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E6%9F%90%E6%9F%90%E7%89%9B%E4%BB%94%E5%9F%8E/" title="微信小程序-某某牛仔城">微信小程序-某某牛仔城</a><time datetime="2024-09-16T14:14:02.000Z" title="发表于 2024-09-16 22:14:02">2024-09-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/08/10/%E7%BC%96%E8%AF%91Android13-AOSP/" title="编译Android13-AOSP">编译Android13-AOSP</a><time datetime="2024-08-10T01:40:30.000Z" title="发表于 2024-08-10 09:40:30">2024-08-10</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/08/09/%E7%BB%95%E8%BF%87%E7%88%B1%E5%A5%87%E8%89%BAlibmsaoaidsec-so%E7%9A%84Frida%E6%A3%80%E6%B5%8B/" title="绕过爱奇艺libmsaoaidsec.so的Frida检测">绕过爱奇艺libmsaoaidsec.so的Frida检测</a><time datetime="2024-08-09T03:29:58.000Z" title="发表于 2024-08-09 11:29:58">2024-08-09</time></div></div></div></div><div class="card-widget card-categories"><div class="item-headline">
+            <i class="fas fa-folder-open"></i>
+            <span>分类</span>
+            <a class="card-more-btn" href="/categories/" title="查看更多">
+      <i class="fas fa-angle-right"></i></a>
+          </div>
+          <ul class="card-category-list" id="aside-cat-list">
+            <li class="card-category-list-item "><a class="card-category-list-link" href="/categories/ARM%E6%B1%87%E7%BC%96/"><span class="card-category-list-name">ARM汇编</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Android%E9%80%86%E5%90%91/"><span class="card-category-list-name">Android逆向</span><span class="card-category-list-count">60</span></a><ul class="card-category-list child"><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Android%E9%80%86%E5%90%91/%E5%8A%A0%E5%AF%86%E8%A7%A3%E5%AF%86/"><span class="card-category-list-name">加密解密</span><span class="card-category-list-count">6</span></a></li></ul></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/NDK%E5%BC%80%E5%8F%91/"><span class="card-category-list-name">NDK开发</span><span class="card-category-list-count">8</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/Win%E9%80%86%E5%90%91/"><span class="card-category-list-name">Win逆向</span><span class="card-category-list-count">9</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/X86%E6%B1%87%E7%BC%96%EF%BC%9A%E5%AE%9E%E6%A8%A1%E5%BC%8F%E5%88%B0%E4%BF%9D%E6%8A%A4%E6%A8%A1%E5%BC%8F/"><span class="card-category-list-name">X86汇编：实模式到保护模式</span><span class="card-category-list-count">11</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/ios%E9%80%86%E5%90%91/"><span class="card-category-list-name">ios逆向</span><span class="card-category-list-count">1</span></a></li><li class="card-category-list-item "><a class="card-category-list-link" href="/categories/%E5%8A%A0%E5%AF%86%E8%A7%A3%E5%AF%86/"><span class="card-category-list-name">加密解密</span><span class="card-category-list-count">2</span></a></li>
+          </ul></div><div class="card-widget card-tags"><div class="item-headline"><i class="fas fa-tags"></i><span>标签</span></div><div class="card-tag-cloud"><a href="/tags/so-Hook/" style="font-size: 1.1em; color: #999">so Hook</a> <a href="/tags/x86%E7%89%B9%E6%9D%83%E7%BA%A7%E5%92%8C%E7%89%B9%E6%9D%83%E7%BA%A7%E4%BF%9D%E6%8A%A4/" style="font-size: 1.1em; color: #999">x86特权级和特权级保护</a> <a href="/tags/%E6%8A%A2%E8%8C%85%E5%8F%B0/" style="font-size: 1.1em; color: #999">抢茅台</a> <a href="/tags/exploit%E7%BC%96%E5%86%99/" style="font-size: 1.16em; color: #999b9e">exploit编写</a> <a href="/tags/%E5%8A%A0%E5%A3%B3%E5%92%8C%E8%BF%90%E8%A1%8C%E6%97%B6%E7%9A%84%E6%9C%BA%E5%88%B6/" style="font-size: 1.16em; color: #999b9e">加壳和运行时的机制</a> <a href="/tags/%E6%9A%B4%E5%8A%9B%E8%A7%A3%E5%AF%86/" style="font-size: 1.1em; color: #999">暴力解密</a> <a href="/tags/Frida-Hook/" style="font-size: 1.5em; color: #99a9bf">Frida Hook</a> <a href="/tags/%E7%8E%AF%E5%A2%83%E6%90%AD%E5%BB%BA/" style="font-size: 1.16em; color: #999b9e">环境搭建</a> <a href="/tags/%E6%BC%8F%E6%B4%9E%E5%88%86%E6%9E%90/" style="font-size: 1.21em; color: #999ea4">漏洞分析</a> <a href="/tags/%E5%8D%8F%E8%AE%AE%E5%88%86%E6%9E%90/" style="font-size: 1.21em; color: #999ea4">协议分析</a> <a href="/tags/Frida%E5%8F%8D%E8%B0%83%E8%AF%95/" style="font-size: 1.1em; color: #999">Frida反调试</a> <a href="/tags/Xposed%E6%8F%92%E4%BB%B6%E5%BC%80%E5%8F%91/" style="font-size: 1.39em; color: #99a4b4">Xposed插件开发</a> <a href="/tags/%E5%9B%BD%E5%AE%B6%E8%AE%A4%E5%90%8C%E6%84%9F%E6%9E%84%E5%BB%BA/" style="font-size: 1.1em; color: #999">国家认同感构建</a> <a href="/tags/Frida-HOOK/" style="font-size: 1.21em; color: #999ea4">Frida HOOK</a> <a href="/tags/%E5%93%B2%E5%AD%A6/" style="font-size: 1.1em; color: #999">哲学</a> <a href="/tags/Android%E6%BA%90%E7%A0%81%E5%88%86%E6%9E%90/" style="font-size: 1.21em; color: #999ea4">Android源码分析</a> <a href="/tags/Android%E8%84%B1%E5%A3%B3/" style="font-size: 1.33em; color: #99a2af">Android脱壳</a> <a href="/tags/office%E6%BC%8F%E6%B4%9E/" style="font-size: 1.1em; color: #999">office漏洞</a> <a href="/tags/X86%E5%AF%84%E5%AD%98%E5%99%A8%E6%8C%87%E4%BB%A4%E6%A0%BC%E5%BC%8F/" style="font-size: 1.1em; color: #999">X86寄存器指令格式</a> <a href="/tags/AES/" style="font-size: 1.16em; color: #999b9e">AES</a> <a href="/tags/%E6%BA%90%E7%A0%81%E4%BF%AE%E6%94%B9/" style="font-size: 1.1em; color: #999">源码修改</a> <a href="/tags/x86%E5%86%85%E5%AD%98%E7%AE%A1%E7%90%86/" style="font-size: 1.1em; color: #999">x86内存管理</a> <a href="/tags/%E6%8A%93%E5%8C%85%E5%B7%A5%E5%85%B7%E4%BD%BF%E7%94%A8/" style="font-size: 1.1em; color: #999">抓包工具使用</a> <a href="/tags/frida-Hook/" style="font-size: 1.1em; color: #999">frida Hook</a> <a href="/tags/%E6%B3%A8%E5%86%8C%E6%9C%BA/" style="font-size: 1.1em; color: #999">注册机</a> <a href="/tags/Android%E5%8A%A0%E5%A3%B3/" style="font-size: 1.21em; color: #999ea4">Android加壳</a> <a href="/tags/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81/" style="font-size: 1.1em; color: #999">分组密码</a> <a href="/tags/windows%E6%9C%A8%E9%A9%AC/" style="font-size: 1.27em; color: #99a0a9">windows木马</a> <a href="/tags/JavaVM%E4%B8%8EJNIEnv/" style="font-size: 1.1em; color: #999">JavaVM与JNIEnv</a> <a href="/tags/x86%E5%B9%B3%E5%9D%A6%E6%A8%A1%E5%9E%8B/" style="font-size: 1.1em; color: #999">x86平坦模型</a> <a href="/tags/%E5%A4%84%E7%90%86%E5%90%84%E7%A7%8D%E5%8F%82%E6%95%B0%E7%9A%84%E6%96%B9%E6%B3%95/" style="font-size: 1.1em; color: #999">处理各种参数的方法</a> <a href="/tags/JNI%E5%87%BD%E6%95%B0%E6%B3%A8%E5%86%8C%E5%8E%9F%E7%90%86%E4%B8%8E%E8%BF%BD%E8%B8%AA/" style="font-size: 1.1em; color: #999">JNI函数注册原理与追踪</a> <a href="/tags/%E7%AE%97%E6%B3%95%E5%88%86%E6%9E%90/" style="font-size: 1.16em; color: #999b9e">算法分析</a> <a href="/tags/Android%E5%88%B7%E6%9C%BA/" style="font-size: 1.1em; color: #999">Android刷机</a> <a href="/tags/%E7%88%AC%E8%99%AB/" style="font-size: 1.1em; color: #999">爬虫</a> <a href="/tags/%E5%87%BD%E6%95%B0%E6%8A%BD%E5%8F%96%E5%A3%B3/" style="font-size: 1.1em; color: #999">函数抽取壳</a> <a href="/tags/x86%E5%86%85%E6%A0%B8%E4%BB%BB%E5%8A%A1%E7%B3%BB%E7%BB%9F/" style="font-size: 1.1em; color: #999">x86内核任务系统</a> <a href="/tags/Cobalt-Strike/" style="font-size: 1.44em; color: #99a7ba">-Cobalt Strike</a> <a href="/tags/X86%E5%AD%98%E5%82%A8%E5%99%A8%E5%8F%8A%E5%85%B6%E4%BF%9D%E6%8A%A4/" style="font-size: 1.1em; color: #999">X86存储器及其保护</a> <a href="/tags/%E6%BA%A2%E5%87%BA%E7%B1%BB%E5%9E%8B%E6%BC%8F%E6%B4%9E/" style="font-size: 1.16em; color: #999b9e">溢出类型漏洞</a></div></div><div class="card-widget card-archives">
+    <div class="item-headline">
+      <i class="fas fa-archive"></i>
+      <span>归档</span>
+      <a class="card-more-btn" href="/archives/"
+            title="查看更多">
+            <i class="fas fa-angle-right"></i>
+          </a>
     </div>
-
-    <!-- Mobile sheet -->
-    <div class="navbar-drawer h-dvh w-full absolute top-0 left-0 bg-background-color flex flex-col justify-between">
-        <ul class="drawer-navbar-list flex flex-col px-4 justify-center items-start">
-            
-                
-                    
-
-                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
-                        
-                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full active"
-                           href="/"
-                        >
-                            <span>
-                                首页
-                            </span>
-                            
-                                <i class="fa-regular fa-house fa-sm fa-fw"></i>
-                            
-                        </a>
-                        
-
-                        
-                    </li>
-            
-                
-                    
-
-                    <li class="drawer-navbar-item text-base my-1.5 flex flex-col w-full">
-                        
-                        <a class="py-1.5 px-2 flex flex-row items-center justify-between gap-1 hover:!text-primary active:!text-primary text-2xl font-semibold group border-b border-border-color hover:border-primary w-full "
-                           href="/archives"
-                        >
-                            <span>
-                                归档
-                            </span>
-                            
-                                <i class="fa-regular fa-archive fa-sm fa-fw"></i>
-                            
-                        </a>
-                        
-
-                        
-                    </li>
-            
-
-            
-            
-        </ul>
-
-        <div class="statistics flex justify-around my-2.5">
-    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">93</div>
-        <div class="label text-third-text-color text-sm">标签</div>
-    </a>
-    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">14</div>
-        <div class="label text-third-text-color text-sm">分类</div>
-    </a>
-    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">113</div>
-        <div class="label text-third-text-color text-sm">文章</div>
-    </a>
-</div>
-    </div>
-
-    <div class="window-mask"></div>
-
-</header>
-
-
-		</div>
-
-		<div class="main-content-body transition-fade-up">
-			
-			<div class="home-sidebar-container">
-    <div class="sticky-container sticky">
-        
-        
-            
-            <div class="sidebar-content" >
-                <div class="avatar flex justify-center">
-    <img src="/images/rabete.jpg">
-</div>
-                <div class="author flex flex-col justify-center my-2.5 mx-0">
-    <div class="name">xiaoeryu</div>
-    
-        <div class="label">Lv5</div>
-    
-</div>
-                <div class="statistics flex justify-around my-2.5">
-    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/tags">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">93</div>
-        <div class="label text-third-text-color text-sm">标签</div>
-    </a>
-    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/categories">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">14</div>
-        <div class="label text-third-text-color text-sm">分类</div>
-    </a>
-    <a class="item tag-count-item flex flex-col justify-center items-center w-20" href="/archives">
-        <div class="number text-2xl sm:text-xl text-second-text-color font-semibold">113</div>
-        <div class="label text-third-text-color text-sm">文章</div>
-    </a>
-</div>
-            </div>
-        
-
-    </div>
-</div>
-
-			
-
-			<div class="main-content">
-				<div class="home-content-container">
-    <ul class="home-article-list">
-        
-            <li class="home-article-item">
-
-                
-
-                
-
-                
-                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
-                    <h3 class="home-article-title">
-                        <a href="/2024/03/05/%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%AF%86%E7%A0%81-RSA/">
-                            非对称密码-RSA
-                        </a>
-                    </h3>
-
-                    <div class="home-article-content markdown-body">
-                        
-                            <p>本章内容主要为RSA密码的原理以及定位</p>
-<p>分组密码在应用和协议的加解密中比较常用，非对称加密RSA因为加密效率的原因更多的用在密钥的分发方面</p>
-<p>非对称密码中的RSA在当前互联网时代被广泛使用（网站、app、协议、桌面应用、服务器等等）。RSA加密算法是公钥密码体制中的一种，改算法基于数学理论而不是对称密码中的混淆和扩散。RSA密码算法当中加密和解密使用的是不同的密钥，因此被称为非对称密码。RSA是1977年由罗纳德·里维斯特、阿迪·萨莫尔和伦纳德·阿德曼一起提出的。RSA就是他们三人姓氏开头字母拼在一起的。</p>
-                        
-                    </div>
-
-                    <div class="home-article-meta-info-container">
-    <div class="home-article-meta-info">
-        <span><i class="fa-solid fa-calendars"></i>&nbsp;
-            <span class="home-article-date" data-date="Tue Mar 05 2024 18:01:10 GMT+0800">
-                
-                    2024-03-05
-                
+  
+    <ul class="card-archive-list">
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2025/05/">
+            <span class="card-archive-list-date">
+              五月 2025
             </span>
-        </span>
-        
-            <span class="home-article-category">
-                <i class="fa-solid fa-folders"></i>&nbsp;
-            <ul>
-                
-                
-                    
-                        
-                        <li>
-                            <a href="/categories/Android%E9%80%86%E5%90%91/">Android逆向</a>&nbsp;
-                        </li>
-                    
-                    
-                
-                    
-                        
-                            <li>></li>
-                        
-                        <li>
-                            <a href="/categories/Android%E9%80%86%E5%90%91/%E5%8A%A0%E5%AF%86%E8%A7%A3%E5%AF%86/">加密解密</a>&nbsp;
-                        </li>
-                    
-                    
-                
-            </ul>
-        </span>
-        
-        
-            <span class="home-article-tag">
-                <i class="fa-solid fa-tags"></i>&nbsp;
-                <ul>
-                    
-                        <li>
-                            
-                            <a href="/tags/RSA/">RSA</a>&nbsp;
-                        </li>
-                    
-                </ul>
+            <span class="card-archive-list-count">1</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2025/04/">
+            <span class="card-archive-list-date">
+              四月 2025
             </span>
-        
-    </div>
-
-    <a href="/2024/03/05/%E9%9D%9E%E5%AF%B9%E7%A7%B0%E5%AF%86%E7%A0%81-RSA/">阅读全文<span class="seo-reader-text">非对称密码-RSA</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
-</div>
-
-                </div>
-            </li>
-        
-            <li class="home-article-item">
-
-                
-
-                
-
-                
-                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
-                    <h3 class="home-article-title">
-                        <a href="/2024/03/05/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-%E9%80%86%E5%90%91%E5%AE%9E%E8%B7%B5/">
-                            分组密码-逆向实践
-                        </a>
-                    </h3>
-
-                    <div class="home-article-content markdown-body">
-                        
-                            <p>之前几章已经对分组密码的原理以及填充进行了详细分析，本章使用一个demo来进行实战分析</p>
-<ul>
-<li>一个两层密钥的demo，第一层是java中的AES，第二层是native层的AES加密</li>
-</ul>
-                        
-                    </div>
-
-                    <div class="home-article-meta-info-container">
-    <div class="home-article-meta-info">
-        <span><i class="fa-solid fa-calendars"></i>&nbsp;
-            <span class="home-article-date" data-date="Tue Mar 05 2024 01:31:05 GMT+0800">
-                
-                    2024-03-05
-                
+            <span class="card-archive-list-count">1</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2024/09/">
+            <span class="card-archive-list-date">
+              九月 2024
             </span>
-        </span>
-        
-            <span class="home-article-category">
-                <i class="fa-solid fa-folders"></i>&nbsp;
-            <ul>
-                
-                
-                    
-                        
-                        <li>
-                            <a href="/categories/Android%E9%80%86%E5%90%91/">Android逆向</a>&nbsp;
-                        </li>
-                    
-                    
-                
-                    
-                        
-                            <li>></li>
-                        
-                        <li>
-                            <a href="/categories/Android%E9%80%86%E5%90%91/%E5%8A%A0%E5%AF%86%E8%A7%A3%E5%AF%86/">加密解密</a>&nbsp;
-                        </li>
-                    
-                    
-                
-            </ul>
-        </span>
-        
-        
-            <span class="home-article-tag">
-                <i class="fa-solid fa-tags"></i>&nbsp;
-                <ul>
-                    
-                        <li>
-                            
-                            <a href="/tags/Frida-Hook/">Frida Hook</a>&nbsp;
-                        </li>
-                    
-                        <li>
-                            | 
-                            <a href="/tags/AES/">AES</a>&nbsp;
-                        </li>
-                    
-                </ul>
+            <span class="card-archive-list-count">1</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2024/08/">
+            <span class="card-archive-list-date">
+              八月 2024
             </span>
-        
-    </div>
-
-    <a href="/2024/03/05/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-%E9%80%86%E5%90%91%E5%AE%9E%E8%B7%B5/">阅读全文<span class="seo-reader-text">分组密码-逆向实践</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
-</div>
-
-                </div>
-            </li>
-        
-            <li class="home-article-item">
-
-                
-
-                
-
-                
-                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
-                    <h3 class="home-article-title">
-                        <a href="/2024/03/02/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81%E7%9A%84%E5%A1%AB%E5%85%85%E5%8F%8A%E5%B7%A5%E4%BD%9C%E6%A8%A1%E5%BC%8F/">
-                            分组密码的填充及工作模式
-                        </a>
-                    </h3>
-
-                    <div class="home-article-content markdown-body">
-                        
-                            <p>前一章了解了AES的工作模式以及在java中的hook和so中的定位，本章主要来介绍一下分组密码的填充以及工作模式</p>
-<p>经过插件、hook等方式分析出是AES或DES之后，接下来就要判断分组密码的<strong>填充和工作模式</strong></p>
-                        
-                    </div>
-
-                    <div class="home-article-meta-info-container">
-    <div class="home-article-meta-info">
-        <span><i class="fa-solid fa-calendars"></i>&nbsp;
-            <span class="home-article-date" data-date="Sat Mar 02 2024 10:00:01 GMT+0800">
-                
-                    2024-03-02
-                
+            <span class="card-archive-list-count">3</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2024/07/">
+            <span class="card-archive-list-date">
+              七月 2024
             </span>
-        </span>
-        
-            <span class="home-article-category">
-                <i class="fa-solid fa-folders"></i>&nbsp;
-            <ul>
-                
-                
-                    
-                        
-                        <li>
-                            <a href="/categories/Android%E9%80%86%E5%90%91/">Android逆向</a>&nbsp;
-                        </li>
-                    
-                    
-                
-                    
-                        
-                            <li>></li>
-                        
-                        <li>
-                            <a href="/categories/Android%E9%80%86%E5%90%91/%E5%8A%A0%E5%AF%86%E8%A7%A3%E5%AF%86/">加密解密</a>&nbsp;
-                        </li>
-                    
-                    
-                
-            </ul>
-        </span>
-        
-        
-            <span class="home-article-tag">
-                <i class="fa-solid fa-tags"></i>&nbsp;
-                <ul>
-                    
-                        <li>
-                            
-                            <a href="/tags/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81/">分组密码</a>&nbsp;
-                        </li>
-                    
-                </ul>
+            <span class="card-archive-list-count">7</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2024/06/">
+            <span class="card-archive-list-date">
+              六月 2024
             </span>
-        
-    </div>
-
-    <a href="/2024/03/02/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81%E7%9A%84%E5%A1%AB%E5%85%85%E5%8F%8A%E5%B7%A5%E4%BD%9C%E6%A8%A1%E5%BC%8F/">阅读全文<span class="seo-reader-text">分组密码的填充及工作模式</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
-</div>
-
-                </div>
-            </li>
-        
-            <li class="home-article-item">
-
-                
-
-                
-
-                
-                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
-                    <h3 class="home-article-title">
-                        <a href="/2024/02/29/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-AES/">
-                            分组密码-AES
-                        </a>
-                    </h3>
-
-                    <div class="home-article-content markdown-body">
-                        
-                            <p>本章主要是学习AES如何实现，如何对java中的AES方法进行hook，以及定位so文件中的AES</p>
-<p>这里以AES-128为例，会对明文分组进行10轮迭代运算，加密的第1轮到第9轮的函数一样，包括4个操作：字节替换、行位移、列混合和轮密钥加。最后一轮迭代不执行行列混合。另外，在第一轮迭代之前，先将明文和原始密钥进行一次异或加密操作。</p>
-                        
-                    </div>
-
-                    <div class="home-article-meta-info-container">
-    <div class="home-article-meta-info">
-        <span><i class="fa-solid fa-calendars"></i>&nbsp;
-            <span class="home-article-date" data-date="Thu Feb 29 2024 11:05:35 GMT+0800">
-                
-                    2024-02-29
-                
+            <span class="card-archive-list-count">5</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2024/05/">
+            <span class="card-archive-list-date">
+              五月 2024
             </span>
-        </span>
-        
-            <span class="home-article-category">
-                <i class="fa-solid fa-folders"></i>&nbsp;
-            <ul>
-                
-                
-                    
-                        
-                        <li>
-                            <a href="/categories/Android%E9%80%86%E5%90%91/">Android逆向</a>&nbsp;
-                        </li>
-                    
-                    
-                
-                    
-                        
-                            <li>></li>
-                        
-                        <li>
-                            <a href="/categories/Android%E9%80%86%E5%90%91/%E5%8A%A0%E5%AF%86%E8%A7%A3%E5%AF%86/">加密解密</a>&nbsp;
-                        </li>
-                    
-                    
-                
-            </ul>
-        </span>
-        
-        
-            <span class="home-article-tag">
-                <i class="fa-solid fa-tags"></i>&nbsp;
-                <ul>
-                    
-                        <li>
-                            
-                            <a href="/tags/Frida-Hook/">Frida Hook</a>&nbsp;
-                        </li>
-                    
-                        <li>
-                            | 
-                            <a href="/tags/AES/">AES</a>&nbsp;
-                        </li>
-                    
-                </ul>
+            <span class="card-archive-list-count">1</span>
+          </a>
+        </li>
+      
+        <li class="card-archive-list-item">
+          <a class="card-archive-list-link" href="/archives/2024/04/">
+            <span class="card-archive-list-date">
+              四月 2024
             </span>
-        
-    </div>
-
-    <a href="/2024/02/29/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-AES/">阅读全文<span class="seo-reader-text">分组密码-AES</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
-</div>
-
-                </div>
-            </li>
-        
-            <li class="home-article-item">
-
-                
-
-                
-
-                
-                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
-                    <h3 class="home-article-title">
-                        <a href="/2024/02/23/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-DES/">
-                            分组密码-DES
-                        </a>
-                    </h3>
-
-                    <div class="home-article-content markdown-body">
-                        
-                            <p>本章内容主要是DES加密的原理和如何在Java以及SO中识别DES算法</p>
-                        
-                    </div>
-
-                    <div class="home-article-meta-info-container">
-    <div class="home-article-meta-info">
-        <span><i class="fa-solid fa-calendars"></i>&nbsp;
-            <span class="home-article-date" data-date="Fri Feb 23 2024 15:22:17 GMT+0800">
-                
-                    2024-02-23
-                
-            </span>
-        </span>
-        
-            <span class="home-article-category">
-                <i class="fa-solid fa-folders"></i>&nbsp;
-            <ul>
-                
-                
-                    
-                        
-                        <li>
-                            <a href="/categories/Android%E9%80%86%E5%90%91/">Android逆向</a>&nbsp;
-                        </li>
-                    
-                    
-                
-                    
-                        
-                            <li>></li>
-                        
-                        <li>
-                            <a href="/categories/Android%E9%80%86%E5%90%91/%E5%8A%A0%E5%AF%86%E8%A7%A3%E5%AF%86/">加密解密</a>&nbsp;
-                        </li>
-                    
-                    
-                
-            </ul>
-        </span>
-        
-        
-            <span class="home-article-tag">
-                <i class="fa-solid fa-tags"></i>&nbsp;
-                <ul>
-                    
-                        <li>
-                            
-                            <a href="/tags/Frida-Hook/">Frida Hook</a>&nbsp;
-                        </li>
-                    
-                        <li>
-                            | 
-                            <a href="/tags/DES/">DES</a>&nbsp;
-                        </li>
-                    
-                </ul>
-            </span>
-        
-    </div>
-
-    <a href="/2024/02/23/%E5%88%86%E7%BB%84%E5%AF%86%E7%A0%81-DES/">阅读全文<span class="seo-reader-text">分组密码-DES</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
-</div>
-
-                </div>
-            </li>
-        
-            <li class="home-article-item">
-
-                
-
-                
-
-                
-                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
-                    <h3 class="home-article-title">
-                        <a href="/2024/02/21/%E5%BA%8F%E5%88%97%E5%AF%86%E7%A0%81%E4%B9%8BRC4%E5%AE%9E%E8%B7%B5%E7%AF%87/">
-                            序列密码之RC4实践篇
-                        </a>
-                    </h3>
-
-                    <div class="home-article-content markdown-body">
-                        
-                            <p>本章主要使用上一章开发的RC4代码作为例子进行分析，如何在逆向分析中识别RC4算法，以及如何通过编写frida代码来获取RC4的密钥。</p>
-                        
-                    </div>
-
-                    <div class="home-article-meta-info-container">
-    <div class="home-article-meta-info">
-        <span><i class="fa-solid fa-calendars"></i>&nbsp;
-            <span class="home-article-date" data-date="Wed Feb 21 2024 13:33:27 GMT+0800">
-                
-                    2024-02-21
-                
-            </span>
-        </span>
-        
-            <span class="home-article-category">
-                <i class="fa-solid fa-folders"></i>&nbsp;
-            <ul>
-                
-                
-                    
-                        
-                        <li>
-                            <a href="/categories/%E5%8A%A0%E5%AF%86%E8%A7%A3%E5%AF%86/">加密解密</a>&nbsp;
-                        </li>
-                    
-                    
-                
-                    
-                        
-                            <li>></li>
-                        
-                        <li>
-                            <a href="/categories/%E5%8A%A0%E5%AF%86%E8%A7%A3%E5%AF%86/Android%E9%80%86%E5%90%91/">Android逆向</a>&nbsp;
-                        </li>
-                    
-                    
-                
-            </ul>
-        </span>
-        
-        
-            <span class="home-article-tag">
-                <i class="fa-solid fa-tags"></i>&nbsp;
-                <ul>
-                    
-                        <li>
-                            
-                            <a href="/tags/RC4/">RC4</a>&nbsp;
-                        </li>
-                    
-                        <li>
-                            | 
-                            <a href="/tags/frida-Hook/">frida Hook</a>&nbsp;
-                        </li>
-                    
-                </ul>
-            </span>
-        
-    </div>
-
-    <a href="/2024/02/21/%E5%BA%8F%E5%88%97%E5%AF%86%E7%A0%81%E4%B9%8BRC4%E5%AE%9E%E8%B7%B5%E7%AF%87/">阅读全文<span class="seo-reader-text">序列密码之RC4实践篇</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
-</div>
-
-                </div>
-            </li>
-        
-            <li class="home-article-item">
-
-                
-
-                
-
-                
-                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
-                    <h3 class="home-article-title">
-                        <a href="/2024/02/21/%E5%BA%8F%E5%88%97%E5%AF%86%E7%A0%81RC4%E7%90%86%E8%AE%BA%E7%AF%87/">
-                            序列密码RC4理论篇
-                        </a>
-                    </h3>
-
-                    <div class="home-article-content markdown-body">
-                        
-                            <p>本章的主要内容为对RC4算法原理的了解和实现</p>
-<p>RC4是序列密码中用的非常广泛的一个加解密算法</p>
-                        
-                    </div>
-
-                    <div class="home-article-meta-info-container">
-    <div class="home-article-meta-info">
-        <span><i class="fa-solid fa-calendars"></i>&nbsp;
-            <span class="home-article-date" data-date="Wed Feb 21 2024 13:29:38 GMT+0800">
-                
-                    2024-02-21
-                
-            </span>
-        </span>
-        
-            <span class="home-article-category">
-                <i class="fa-solid fa-folders"></i>&nbsp;
-            <ul>
-                
-                
-                    
-                        
-                        <li>
-                            <a href="/categories/%E5%8A%A0%E5%AF%86%E8%A7%A3%E5%AF%86/">加密解密</a>&nbsp;
-                        </li>
-                    
-                    
-                
-                    
-                        
-                            <li>></li>
-                        
-                        <li>
-                            <a href="/categories/%E5%8A%A0%E5%AF%86%E8%A7%A3%E5%AF%86/Android%E9%80%86%E5%90%91/">Android逆向</a>&nbsp;
-                        </li>
-                    
-                    
-                
-            </ul>
-        </span>
-        
-        
-            <span class="home-article-tag">
-                <i class="fa-solid fa-tags"></i>&nbsp;
-                <ul>
-                    
-                        <li>
-                            
-                            <a href="/tags/RC4/">RC4</a>&nbsp;
-                        </li>
-                    
-                </ul>
-            </span>
-        
-    </div>
-
-    <a href="/2024/02/21/%E5%BA%8F%E5%88%97%E5%AF%86%E7%A0%81RC4%E7%90%86%E8%AE%BA%E7%AF%87/">阅读全文<span class="seo-reader-text">序列密码RC4理论篇</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
-</div>
-
-                </div>
-            </li>
-        
-            <li class="home-article-item">
-
-                
-
-                
-
-                
-                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
-                    <h3 class="home-article-title">
-                        <a href="/2024/02/13/%E5%AF%86%E7%A0%81%E5%AD%A6%E5%88%9D%E6%AD%A5%E8%AE%A4%E8%AF%86/">
-                            密码学初步认识
-                        </a>
-                    </h3>
-
-                    <div class="home-article-content markdown-body">
-                        
-                            <p>接下来几篇文章主要是对常见加解密算法的认识和逆向分析，如果不了解加解密算法的话我们直接去分析app是比较困难的。</p>
-                        
-                    </div>
-
-                    <div class="home-article-meta-info-container">
-    <div class="home-article-meta-info">
-        <span><i class="fa-solid fa-calendars"></i>&nbsp;
-            <span class="home-article-date" data-date="Tue Feb 13 2024 16:38:12 GMT+0800">
-                
-                    2024-02-13
-                
-            </span>
-        </span>
-        
-            <span class="home-article-category">
-                <i class="fa-solid fa-folders"></i>&nbsp;
-            <ul>
-                
-                
-                    
-                        
-                        <li>
-                            <a href="/categories/Android%E9%80%86%E5%90%91/">Android逆向</a>&nbsp;
-                        </li>
-                    
-                    
-                
-            </ul>
-        </span>
-        
-        
-            <span class="home-article-tag">
-                <i class="fa-solid fa-tags"></i>&nbsp;
-                <ul>
-                    
-                        <li>
-                            
-                            <a href="/tags/Frida-Hook/">Frida Hook</a>&nbsp;
-                        </li>
-                    
-                        <li>
-                            | 
-                            <a href="/tags/%E5%8A%A0%E8%A7%A3%E5%AF%86%E7%AE%97%E6%B3%95%E5%88%86%E6%9E%90/">加解密算法分析</a>&nbsp;
-                        </li>
-                    
-                </ul>
-            </span>
-        
-    </div>
-
-    <a href="/2024/02/13/%E5%AF%86%E7%A0%81%E5%AD%A6%E5%88%9D%E6%AD%A5%E8%AE%A4%E8%AF%86/">阅读全文<span class="seo-reader-text">密码学初步认识</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
-</div>
-
-                </div>
-            </li>
-        
-            <li class="home-article-item">
-
-                
-
-                
-
-                
-                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
-                    <h3 class="home-article-title">
-                        <a href="/2023/12/25/so%E5%87%BD%E6%95%B0Hook%EF%BC%88%E4%B8%8A%EF%BC%89/">
-                            so函数Hook（上）
-                        </a>
-                    </h3>
-
-                    <div class="home-article-content markdown-body">
-                        
-                            
-                            Xposed插件开发之对so中函数的处理对so中函数的hook跟对java层函数的hook不同，Xposed无法完成对so层函数的hook。需要使用其它的框架编写so层的hook代码，然后通过xposed进行主动调用的方式来完成hook。
-这里我们先以32位为例，使用inlineHook框架，不过这个框架只能hook 32位的app
-先来创建一个包含有so库的native C++项目，作为目...
-                        
-                    </div>
-
-                    <div class="home-article-meta-info-container">
-    <div class="home-article-meta-info">
-        <span><i class="fa-solid fa-calendars"></i>&nbsp;
-            <span class="home-article-date" data-date="Mon Dec 25 2023 00:37:44 GMT+0800">
-                
-                    2023-12-25
-                
-            </span>
-        </span>
-        
-            <span class="home-article-category">
-                <i class="fa-solid fa-folders"></i>&nbsp;
-            <ul>
-                
-                
-                    
-                        
-                        <li>
-                            <a href="/categories/Android%E9%80%86%E5%90%91/">Android逆向</a>&nbsp;
-                        </li>
-                    
-                    
-                
-            </ul>
-        </span>
-        
-        
-            <span class="home-article-tag">
-                <i class="fa-solid fa-tags"></i>&nbsp;
-                <ul>
-                    
-                        <li>
-                            
-                            <a href="/tags/Frida-Hook/">Frida Hook</a>&nbsp;
-                        </li>
-                    
-                        <li>
-                            | 
-                            <a href="/tags/Xposed%E6%8F%92%E4%BB%B6%E5%BC%80%E5%8F%91/">Xposed插件开发</a>&nbsp;
-                        </li>
-                    
-                        <li>
-                            | 
-                            <a href="/tags/so-Hook/">so Hook</a>&nbsp;
-                        </li>
-                    
-                </ul>
-            </span>
-        
-    </div>
-
-    <a href="/2023/12/25/so%E5%87%BD%E6%95%B0Hook%EF%BC%88%E4%B8%8A%EF%BC%89/">阅读全文<span class="seo-reader-text">so函数Hook（上）</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
-</div>
-
-                </div>
-            </li>
-        
-            <li class="home-article-item">
-
-                
-
-                
-
-                
-                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
-                    <h3 class="home-article-title">
-                        <a href="/2023/12/25/Hook%E5%A4%9Adex%E7%9A%84app/">
-                            Hook多dex的app
-                        </a>
-                    </h3>
-
-                    <div class="home-article-content markdown-body">
-                        
-                            <p>本章内容为多dex的hook</p>
-<p>之前一章分析了对加壳的app进行hook，但是在多dex的情况下我们可能并不知道哪个ClassLoader加载了我们想要hook的dex。</p>
-                        
-                    </div>
-
-                    <div class="home-article-meta-info-container">
-    <div class="home-article-meta-info">
-        <span><i class="fa-solid fa-calendars"></i>&nbsp;
-            <span class="home-article-date" data-date="Mon Dec 25 2023 00:33:21 GMT+0800">
-                
-                    2023-12-25
-                
-            </span>
-        </span>
-        
-            <span class="home-article-category">
-                <i class="fa-solid fa-folders"></i>&nbsp;
-            <ul>
-                
-                
-                    
-                        
-                        <li>
-                            <a href="/categories/Android%E9%80%86%E5%90%91/">Android逆向</a>&nbsp;
-                        </li>
-                    
-                    
-                
-            </ul>
-        </span>
-        
-        
-            <span class="home-article-tag">
-                <i class="fa-solid fa-tags"></i>&nbsp;
-                <ul>
-                    
-                        <li>
-                            
-                            <a href="/tags/Frida-Hook/">Frida Hook</a>&nbsp;
-                        </li>
-                    
-                        <li>
-                            | 
-                            <a href="/tags/Xposed%E6%8F%92%E4%BB%B6%E5%BC%80%E5%8F%91/">Xposed插件开发</a>&nbsp;
-                        </li>
-                    
-                </ul>
-            </span>
-        
-    </div>
-
-    <a href="/2023/12/25/Hook%E5%A4%9Adex%E7%9A%84app/">阅读全文<span class="seo-reader-text">Hook多dex的app</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
-</div>
-
-                </div>
-            </li>
-        
-            <li class="home-article-item">
-
-                
-
-                
-
-                
-                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
-                    <h3 class="home-article-title">
-                        <a href="/2023/12/20/Hook%E5%8A%A0%E5%A3%B3app/">
-                            Hook加壳app
-                        </a>
-                    </h3>
-
-                    <div class="home-article-content markdown-body">
-                        
-                            
-                            本章主要分析怎么处理加壳app
-之前几篇文章编写的Xposed插件都是在没有加壳的情况下编写的，如果加壳后应该怎么处理
-在应用内部代码被加固的情况下，如何hook到内部代码
-
-
-因为ClassLoader是壳的ClassLoader
-因为Xposed框架Hook的时机是比较早的，如果一个app加壳了，那么Xposed hook默认使用的ClassLoader默认使用的是壳程序的ClassLo...
-                        
-                    </div>
-
-                    <div class="home-article-meta-info-container">
-    <div class="home-article-meta-info">
-        <span><i class="fa-solid fa-calendars"></i>&nbsp;
-            <span class="home-article-date" data-date="Wed Dec 20 2023 19:18:29 GMT+0800">
-                
-                    2023-12-20
-                
-            </span>
-        </span>
-        
-            <span class="home-article-category">
-                <i class="fa-solid fa-folders"></i>&nbsp;
-            <ul>
-                
-                
-                    
-                        
-                        <li>
-                            <a href="/categories/Android%E9%80%86%E5%90%91/">Android逆向</a>&nbsp;
-                        </li>
-                    
-                    
-                
-            </ul>
-        </span>
-        
-        
-            <span class="home-article-tag">
-                <i class="fa-solid fa-tags"></i>&nbsp;
-                <ul>
-                    
-                        <li>
-                            
-                            <a href="/tags/Frida-Hook/">Frida Hook</a>&nbsp;
-                        </li>
-                    
-                        <li>
-                            | 
-                            <a href="/tags/Xposed%E6%8F%92%E4%BB%B6%E5%BC%80%E5%8F%91/">Xposed插件开发</a>&nbsp;
-                        </li>
-                    
-                </ul>
-            </span>
-        
-    </div>
-
-    <a href="/2023/12/20/Hook%E5%8A%A0%E5%A3%B3app/">阅读全文<span class="seo-reader-text">Hook加壳app</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
-</div>
-
-                </div>
-            </li>
-        
-            <li class="home-article-item">
-
-                
-
-                
-
-                
-                <div class="flex flex-col gap-5 px-7 pb-7 pt-7">
-                    <h3 class="home-article-title">
-                        <a href="/2023/12/15/%E4%B8%BB%E5%8A%A8%E8%B0%83%E7%94%A8%E5%87%BD%E6%95%B0/">
-                            主动调用函数
-                        </a>
-                    </h3>
-
-                    <div class="home-article-content markdown-body">
-                        
-                            <p>本章主要内容：</p>
-<p>主动调用类函数</p>
-<ol>
-<li>使用java反射完成对类函数的调用</li>
-<li>使用Xposed的API完成对类函数的调用</li>
-</ol>
-                        
-                    </div>
-
-                    <div class="home-article-meta-info-container">
-    <div class="home-article-meta-info">
-        <span><i class="fa-solid fa-calendars"></i>&nbsp;
-            <span class="home-article-date" data-date="Fri Dec 15 2023 22:02:09 GMT+0800">
-                
-                    2023-12-15
-                
-            </span>
-        </span>
-        
-            <span class="home-article-category">
-                <i class="fa-solid fa-folders"></i>&nbsp;
-            <ul>
-                
-                
-                    
-                        
-                        <li>
-                            <a href="/categories/Android%E9%80%86%E5%90%91/">Android逆向</a>&nbsp;
-                        </li>
-                    
-                    
-                
-            </ul>
-        </span>
-        
-        
-            <span class="home-article-tag">
-                <i class="fa-solid fa-tags"></i>&nbsp;
-                <ul>
-                    
-                        <li>
-                            
-                            <a href="/tags/Xposed%E6%8F%92%E4%BB%B6%E5%BC%80%E5%8F%91/">Xposed插件开发</a>&nbsp;
-                        </li>
-                    
-                </ul>
-            </span>
-        
-    </div>
-
-    <a href="/2023/12/15/%E4%B8%BB%E5%8A%A8%E8%B0%83%E7%94%A8%E5%87%BD%E6%95%B0/">阅读全文<span class="seo-reader-text">主动调用函数</span>&nbsp;<i class="fa-solid fa-angle-right"></i></a>
-</div>
-
-                </div>
-            </li>
-        
+            <span class="card-archive-list-count">1</span>
+          </a>
+        </li>
+      
     </ul>
-
-    <div class="home-paginator px-7 py-5">
-        <div class="paginator">
-	<a class="extend prev" rel="prev" href="/page/2/"><i class="fa-regular fa-angle-left"></i></a><a class="page-number" href="/">1</a><a class="page-number" href="/page/2/">2</a><span class="page-number current">3</span><a class="page-number" href="/page/4/">4</a><a class="page-number" href="/page/5/">5</a><span class="space">&hellip;</span><a class="page-number" href="/page/10/">10</a><a class="extend next" rel="next" href="/page/4/"><i class="fa-regular fa-angle-right"></i></a>
-</div>
-  
-    </div>
-</div>
-
-			</div>
-
-			
-		</div>
-
-		<div class="main-content-footer">
-			<footer class="footer mt-5 py-5 h-auto text-base text-third-text-color relative border-t-2 border-t-border-color">
-    <div class="info-container py-3 text-center">
-        
-        <div class="text-center">
-            &copy;
-            
-              <span>2022</span>
-              -
-            
-            2025&nbsp;&nbsp;<i class="fa-solid fa-heart fa-beat" style="--fa-animation-duration: 0.5s; color: #f54545"></i>&nbsp;&nbsp;<a href="/">xiaoeryu</a>
-            
-                
-                <p class="post-count space-x-0.5">
-                    <span>
-                        共撰写了 113 篇文章
-                    </span>
-                    
-                </p>
-            
-        </div>
-        
-            <script data-swup-reload-script src="https://busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
-            <div class="relative text-center lg:absolute lg:right-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-right">
-                
-                    <span id="busuanzi_container_site_uv" class="lg:!block">
-                        <span class="text-sm">访问人数</span>
-                        <span id="busuanzi_value_site_uv"></span>
-                    </span>
-                
-                
-                    <span id="busuanzi_container_site_pv" class="lg:!block">
-                        <span class="text-sm">总访问量</span>
-                        <span id="busuanzi_value_site_pv"></span>
-                    </span>
-                
-            </div>
-        
-        <div class="relative text-center lg:absolute lg:left-[20px] lg:top-1/2 lg:-translate-y-1/2 lg:text-left">
-            <span class="lg:block text-sm">由 <?xml version="1.0" encoding="utf-8"?><!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd"><svg class="relative top-[2px] inline-block align-baseline" version="1.1" id="圖層_1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" x="0px" y="0px" width="1rem" height="1rem" viewBox="0 0 512 512" enable-background="new 0 0 512 512" xml:space="preserve"><path fill="#0E83CD" d="M256.4,25.8l-200,115.5L56,371.5l199.6,114.7l200-115.5l0.4-230.2L256.4,25.8z M349,354.6l-18.4,10.7l-18.6-11V275H200v79.6l-18.4,10.7l-18.6-11v-197l18.5-10.6l18.5,10.8V237h112v-79.6l18.5-10.6l18.5,10.8V354.6z"/></svg><a target="_blank" class="text-base" href="https://hexo.io">Hexo</a> 驱动</span>
-            <span class="text-sm lg:block">主题&nbsp;<a class="text-base" target="_blank" href="https://github.com/EvanNotFound/hexo-theme-redefine">Redefine v2.8.2</a></span>
-        </div>
-        
-        
-            <div>
-                博客已运行 <span class="odometer" id="runtime_days" ></span> 天 <span class="odometer" id="runtime_hours"></span> 小时 <span class="odometer" id="runtime_minutes"></span> 分钟 <span class="odometer" id="runtime_seconds"></span> 秒
-            </div>
-        
-        
-            <script data-swup-reload-script>
-                try {
-                    function odometer_init() {
-                    const elements = document.querySelectorAll('.odometer');
-                    elements.forEach(el => {
-                        new Odometer({
-                            el,
-                            format: '( ddd).dd',
-                            duration: 200
-                        });
-                    });
-                    }
-                    odometer_init();
-                } catch (error) {}
-            </script>
-        
-        
-        
-    </div>  
-</footer>
-		</div>
-	</div>
-
-	
-
-	<div class="right-side-tools-container">
-		<div class="side-tools-container">
-	<ul class="hidden-tools-list">
-		<li class="right-bottom-tools tool-font-adjust-plus flex justify-center items-center">
-			<i class="fa-regular fa-magnifying-glass-plus"></i>
-		</li>
-
-		<li class="right-bottom-tools tool-font-adjust-minus flex justify-center items-center">
-			<i class="fa-regular fa-magnifying-glass-minus"></i>
-		</li>
-
-		<li class="right-bottom-tools tool-dark-light-toggle flex justify-center items-center">
-			<i class="fa-regular fa-moon"></i>
-		</li>
-
-		<!-- rss -->
-		
-
-		
-
-		<li class="right-bottom-tools tool-scroll-to-bottom flex justify-center items-center">
-			<i class="fa-regular fa-arrow-down"></i>
-		</li>
-	</ul>
-
-	<ul class="visible-tools-list">
-		<li class="right-bottom-tools toggle-tools-list flex justify-center items-center">
-			<i class="fa-regular fa-cog fa-spin"></i>
-		</li>
-		
-		<li class="right-bottom-tools tool-scroll-to-top flex justify-center items-center">
-			<i class="arrow-up fas fa-arrow-up"></i>
-			<span class="percent"></span>
-		</li>
-		
-		
-	</ul>
-</div>
-	</div>
-
-	<div class="image-viewer-container">
-	<img src="">
-</div>
-
-	
-	<div class="search-pop-overlay">
-	<div class="popup search-popup">
-		<div class="search-header">
-			<span class="search-input-field-pre">
-				<i class="fa-solid fa-keyboard"></i>
-			</span>
-			<div class="search-input-container">
-				<input autocomplete="off" autocorrect="off" autocapitalize="off" placeholder="站内搜索您需要的内容..." spellcheck="false" type="search" class="search-input">
-			</div>
-			<span class="popup-btn-close">
-				<i class="fa-solid fa-times"></i>
-			</span>
-		</div>
-		<div id="search-result">
-			<div id="no-result">
-				<i class="fa-solid fa-spinner fa-spin-pulse fa-5x fa-fw"></i>
-			</div>
-		</div>
-	</div>
-</div>
-	
-
-</main>
-
-
-
-<script src="/js/build/libs/Swup.min.js"></script>
-
-<script src="/js/build/libs/SwupSlideTheme.min.js"></script>
-
-<script src="/js/build/libs/SwupScriptsPlugin.min.js"></script>
-
-<script src="/js/build/libs/SwupProgressPlugin.min.js"></script>
-
-<script src="/js/build/libs/SwupScrollPlugin.min.js"></script>
-
-<script src="/js/build/libs/SwupPreloadPlugin.min.js"></script>
-
-<script>
-    const swup = new Swup({
-        plugins: [
-            new SwupScriptsPlugin({
-                optin: true,
-            }),
-            new SwupProgressPlugin(),
-            new SwupScrollPlugin({
-                offset: 80,
-            }),
-            new SwupSlideTheme({
-                mainElement: ".main-content-body",
-            }),
-            new SwupPreloadPlugin(),
-        ],
-        containers: ["#swup"],
-    });
-</script>
-
-
-
-
-	
-<script src="/js/build/tools/imageViewer.js" type="module"></script>
-
-<script src="/js/build/utils.js" type="module"></script>
-
-<script src="/js/build/main.js" type="module"></script>
-
-<script src="/js/build/layouts/navbarShrink.js" type="module"></script>
-
-<script src="/js/build/tools/scrollTopBottom.js" type="module"></script>
-
-<script src="/js/build/tools/lightDarkSwitch.js" type="module"></script>
-
-<script src="/js/build/layouts/categoryList.js" type="module"></script>
-
-
-
-    
-<script src="/js/build/tools/localSearch.js" type="module"></script>
-
-
-
-
-    
-<script src="/js/build/tools/codeBlock.js" type="module"></script>
-
-
-
-
-    
-<script src="/js/build/layouts/lazyload.js" type="module"></script>
-
-
-
-
-    
-<script src="/js/build/tools/runtime.js"></script>
-
-    
-<script src="/js/build/libs/odometer.min.js"></script>
-
-    
-<link rel="stylesheet" href="/assets/odometer-theme-minimal.css">
-
-
-
-
-  
-<script src="/js/build/libs/Typed.min.js"></script>
-
-  
-<script src="/js/build/plugins/typed.js" type="module"></script>
-
-
-
-
-
-
-
-
-    
-<script src="/js/build/libs/anime.min.js"></script>
-
-
-
-
-
-    
-<script src="/js/build/tools/tocToggle.js" type="module" data-swup-reload-script=""></script>
-
-<script src="/js/build/layouts/toc.js" type="module" data-swup-reload-script=""></script>
-
-<script src="/js/build/plugins/tabs.js" type="module" data-swup-reload-script=""></script>
-
-
-
-
-<script src="/js/build/libs/moment-with-locales.min.js" data-swup-reload-script=""></script>
-
-
-<script src="/js/build/layouts/essays.js" type="module" data-swup-reload-script=""></script>
-
-
-
-
-
-	
-</body>
-
-</html>
+  </div><div class="card-widget card-webinfo"><div class="item-headline"><i class="fas fa-chart-line"></i><span>网站信息</span></div><div class="webinfo"><div class="webinfo-item"><div class="item-name">文章数目 :</div><div class="item-count">113</div></div><div class="webinfo-item"><div class="item-name">本站访客数 :</div><div class="item-count" id="busuanzi_value_site_uv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">本站总浏览量 :</div><div class="item-count" id="busuanzi_value_site_pv"><i class="fa-solid fa-spinner fa-spin"></i></div></div><div class="webinfo-item"><div class="item-name">最后更新时间 :</div><div class="item-count" id="last-push-date" data-lastPushDate="2025-05-26T15:58:36.209Z"><i class="fa-solid fa-spinner fa-spin"></i></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2025 By xiaoeryu</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 6.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
