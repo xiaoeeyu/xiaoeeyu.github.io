@@ -20,6 +20,15 @@
   </url>
   
   <url>
+    <loc>https://xiaoeeyu.github.io/2025/05/26/%E6%9F%90%E9%BA%A6App%E8%B4%AD%E7%A5%A8%E6%8E%A5%E5%8F%A3%E5%88%86%E6%9E%90-0/</loc>
+    
+    <lastmod>2025-05-26</lastmod>
+    
+    <changefreq>monthly</changefreq>
+    <priority>0.6</priority>
+  </url>
+  
+  <url>
     <loc>https://xiaoeeyu.github.io/2024/08/09/%E7%BB%95%E8%BF%87%E7%88%B1%E5%A5%87%E8%89%BAlibmsaoaidsec-so%E7%9A%84Frida%E6%A3%80%E6%B5%8B/</loc>
     
     <lastmod>2025-05-26</lastmod>
@@ -1718,6 +1727,13 @@
   
   <url>
     <loc>https://xiaoeeyu.github.io/tags/frida/</loc>
+    <lastmod>2025-05-28</lastmod>
+    <changefreq>weekly</changefreq>
+    <priority>0.2</priority>
+  </url>
+  
+  <url>
+    <loc>https://xiaoeeyu.github.io/tags/%E6%8A%93%E5%8C%85/</loc>
     <lastmod>2025-05-28</lastmod>
     <changefreq>weekly</changefreq>
     <priority>0.2</priority>

@@ -1,0 +1,178 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>某麦App购票接口分析 | xiaoeryu</title><meta name="author" content="xiaoeryu"><meta name="copyright" content="xiaoeryu"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="#ffffff"><meta name="description" content="Here&#39;s something encrypted, password is required to continue reading.">
+<meta property="og:type" content="article">
+<meta property="og:title" content="某麦App购票接口分析">
+<meta property="og:url" content="https://xiaoeeyu.github.io/2025/05/26/%E6%9F%90%E9%BA%A6App%E8%B4%AD%E7%A5%A8%E6%8E%A5%E5%8F%A3%E5%88%86%E6%9E%90-0/index.html">
+<meta property="og:site_name" content="xiaoeryu">
+<meta property="og:description" content="Here&#39;s something encrypted, password is required to continue reading.">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://xiaoeeyu.github.io/img/butterfly-icon.png">
+<meta property="article:published_time" content="2025-05-26T14:55:56.000Z">
+<meta property="article:modified_time" content="2025-05-26T16:28:17.770Z">
+<meta property="article:author" content="xiaoeryu">
+<meta property="article:tag" content="frida-hook">
+<meta property="article:tag" content="协议分析">
+<meta property="article:tag" content="App逆向">
+<meta property="article:tag" content="抓包">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://xiaoeeyu.github.io/img/butterfly-icon.png"><script type="application/ld+json">{
+  "@context": "https://schema.org",
+  "@type": "BlogPosting",
+  "headline": "某麦App购票接口分析",
+  "url": "https://xiaoeeyu.github.io/2025/05/26/%E6%9F%90%E9%BA%A6App%E8%B4%AD%E7%A5%A8%E6%8E%A5%E5%8F%A3%E5%88%86%E6%9E%90-0/",
+  "image": "https://xiaoeeyu.github.io/img/butterfly-icon.png",
+  "datePublished": "2025-05-26T14:55:56.000Z",
+  "dateModified": "2025-05-26T16:28:17.770Z",
+  "author": [
+    {
+      "@type": "Person",
+      "name": "xiaoeryu",
+      "url": "https://xiaoeeyu.github.io/"
+    }
+  ]
+}</script><link rel="shortcut icon" href="/img/favicon.png"><link rel="canonical" href="https://xiaoeeyu.github.io/2025/05/26/%E6%9F%90%E9%BA%A6App%E8%B4%AD%E7%A5%A8%E6%8E%A5%E5%8F%A3%E5%88%86%E6%9E%90-0/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><script>
+    (() => {
+      
+    const saveToLocal = {
+      set: (key, value, ttl) => {
+        if (!ttl) return
+        const expiry = Date.now() + ttl * 86400000
+        localStorage.setItem(key, JSON.stringify({ value, expiry }))
+      },
+      get: key => {
+        const itemStr = localStorage.getItem(key)
+        if (!itemStr) return undefined
+        const { value, expiry } = JSON.parse(itemStr)
+        if (Date.now() > expiry) {
+          localStorage.removeItem(key)
+          return undefined
+        }
+        return value
+      }
+    }
+
+    window.btf = {
+      saveToLocal,
+      getScript: (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        Object.entries(attr).forEach(([key, val]) => script.setAttribute(key, val))
+        script.onload = script.onreadystatechange = () => {
+          if (!script.readyState || /loaded|complete/.test(script.readyState)) resolve()
+        }
+        script.onerror = reject
+        document.head.appendChild(script)
+      }),
+      getCSS: (url, id) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onload = link.onreadystatechange = () => {
+          if (!link.readyState || /loaded|complete/.test(link.readyState)) resolve()
+        }
+        link.onerror = reject
+        document.head.appendChild(link)
+      }),
+      addGlobalFn: (key, fn, name = false, parent = window) => {
+        if (!false && key.startsWith('pjax')) return
+        const globalFn = parent.globalFn || {}
+        globalFn[key] = globalFn[key] || {}
+        globalFn[key][name || Object.keys(globalFn[key]).length] = fn
+        parent.globalFn = globalFn
+      }
+    }
+  
+      
+      const activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      const activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#ffffff')
+        }
+      }
+
+      btf.activateDarkMode = activateDarkMode
+      btf.activateLightMode = activateLightMode
+
+      const theme = saveToLocal.get('theme')
+    
+          theme === 'dark' ? activateDarkMode() : theme === 'light' ? activateLightMode() : null
+        
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        document.documentElement.classList.toggle('hide-aside', asideStatus === 'hide')
+      }
+    
+      
+    const detectApple = () => {
+      if (/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)) {
+        document.documentElement.classList.add('apple')
+      }
+    }
+    detectApple()
+  
+    })()
+  </script><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  highlight: undefined,
+  copy: {
+    success: '复制成功',
+    error: '复制失败',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'null',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyloadPlugin: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: '某麦App购票接口分析',
+  isHighlightShrink: false,
+  isToc: true,
+  pageType: 'post'
+}</script><meta name="generator" content="Hexo 6.3.0">
+<style>.github-emoji { position: relative; display: inline-block; width: 1.2em; min-height: 1.2em; overflow: hidden; vertical-align: top; color: transparent; }  .github-emoji > span { position: relative; z-index: 10; }  .github-emoji img, .github-emoji .fancybox { margin: 0 !important; padding: 0 !important; border: none !important; outline: none !important; text-decoration: none !important; user-select: none !important; cursor: auto !important; }  .github-emoji img { height: 1.2em !important; width: 1.2em !important; position: absolute !important; left: 50% !important; top: 50% !important; transform: translate(-50%, -50%) !important; user-select: none !important; cursor: auto !important; } .github-emoji-fallback { color: inherit; } .github-emoji-fallback img { opacity: 0 !important; }</style>
+</head><body><div class="post" id="body-wrap"><header class="post-bg" id="page-header"><nav id="nav"><span id="blog-info"><a class="nav-site-title" href="/"><span class="site-name">xiaoeryu</span></a><a class="nav-page-title" href="/"><span class="site-name">某麦App购票接口分析</span></a></span><div id="menus"></div></nav><div id="post-info"><h1 class="post-title">某麦App购票接口分析</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2025-05-26T14:55:56.000Z" title="发表于 2025-05-26 22:55:56">2025-05-26</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2025-05-26T16:28:17.770Z" title="更新于 2025-05-27 00:28:17">2025-05-27</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Android%E9%80%86%E5%90%91/">Android逆向</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title=""><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">浏览量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="container post-content" id="article-container"><div class="hbe hbe-container" id="hexo-blog-encrypt" data-wpm="Oh, this is an invalid password. Check and try again, please." data-whm="OOPS, these decrypted content may changed, but you can still have a look.">
+  <script id="hbeData" type="hbeData" data-hmacdigest="bd06d0e8d6b38d671a6b66fe6fd17fe3b7025bb8ee6ec6a62f303e3d9672a901">9c5c92dcebb0f00aaa2706e19b539b8bc89e43c0bbb2dbc02612c21cafac3cdf4cbdd7ab0dc0a2aa59e09d2e8b25a14e984890f640a331b15b93ac7b5d83994847a3a3fab4fc77d75be0384b1347bf250df592412fe30e4ceb30f6e1c38055340ea38a6d8cdb2f2ed9beab05cce11aa4ab7d1c38cd24f4fe3e1bd3614a9faa137de303f05b926476d1e34e078fb45fe69956fdead9220f6306e9a9c90cecd774fecba39182586aeec5c02403b7e55a5983f1a73cf2ea467638d8125eb4cd3e9cae7527d48bcfb432c93a1d4f21e21547cd8dc26fee13297e999679593e384664a1b9b2a8bc8700b05c270cb8fa5fae13dd1bdfaacc52fc52e8607d3e2bcfac9b52de0b29bf63b685d4891cc6b9e906963ead35808ade9fca5d12a72c36d1424377d80b6530de9791cae412209a4f5d354a41f9932f156102bbf1a027bd605b12f41147136fbdffdffb7e9f189c7794c587a47faa1ad9b164c300146c29cf61bd16165812cf3fe9bd623d229a8cb8298f744caa2e66326b2877694a519b75dfe255a718f64d9dbcae8a83c9c01fed0e6ea09a0020b5f9d830c0df3e18bdfa8ddd66b0d31e597285ac2fa7afbf599c70ce6b88d948b2fc157cb6368a981eb3cb9109e49df2edecd125935b1000d636ba44da6e32799d7490ae19a8fdeb5af9e4521bd7032d856905a6ceb372c7f791722e3792b5ed294c53e5a379715c74208d56175174c472480fceafb3959ad305ace9c6b7339e2ae372212e01ede04efb0e492d9415506be888f2f6c9d518a3f9e512fc6a88c78661442ed8c7d9d3b7d7ba9cd9fe5ca7e2b2b2b784932da6d9629358eecb5f356fda86d1d34e6719c97bec21677b6354842ce51145d44fabae152a6ae5df4dc5f08716d7b46d2741c7d7c52787476c6822a72493d35a16275c3ef45160f3e765c4c8d957c429148c194f873c3121beae650f3cc43fc52527cf20f80399520492993cb06de9d1edcaee9f55124a8019007064078643d53c82570e38d516f31bd5bef5a2ca119c5389696917b8f3881c7e5e14816e66f35754d8b440e6e80f6ee33d0db0d13e871c2a7c09f7275455e4fa0eb17b63d07f965735a2ede5480b7a7af217fb3ef5b121b3ee9fff008765612ced73e3665a464a36368697980d583bbc58028d9335cef0c5015cbfe31f7a65be31c36c14fe970718350777bd81c1102086c81ef38819be6955db8a49027ac695ff2a2429dc6827206db79bb19bf6ddcd0b0e8acf5e2564e8eef0ae91c75ed8ab7b383504ee1b2cf2fbd87f3973e958dcd1700efd956c5111471fd8c6dc035e18a60d4a80bb448c07048c578bacd6a8ff489cd09fb4d11a34df2e18db8d27e9500ac7459019ce01850650a568cc8febbcf4d1aff59fa28a4f36809bf291f544c57f1e591656f30cf5ff1117cf05ef844cafa4c981bfaa75d39752aa7acdc1dcf27a48bbdf72e612b0a16bba7cdefe820dde60ad510ba6687c450aa7a2b9560c22d0abe5376b0e8509752106f1051785c9e60f3e328507d8b36a7907c177c166df51c8756893feeeb60fb2d1d5fe2f5604e4a53b2aac87d446462ce9cc824bafa061d2efe83ec417903e9f58dc89e2598b4251b7804a861be4561aec2c10fd8966a8aa7bd2345c3e099edc9ead20a7ca0ea194c31721b152f5eb6e0264d4c3a9d68557d65116d3cf58dc4fefd125c67db71c44e9e1474bd8ce57fe33c39bd228e1707e3ce7b42946085dd4de6ee1ee8c98e7cd1a3a50b158c5626028964c4ecfc73d32e9031695d309722a972ff6d146eb4356c68f27fc619e4e152fc7994deaffa3f67051143e5693f6d401ed04793a643d60c2f59b317e03cb4d0f86540829ca8c6367de6fcf17cde2f65e6969a8e652c549ee05d6ba8ff7101206b35fa7f3f89dfb9700e437fc1040eb598e089c606e8beab8205bb33195ca4a7fc603860a258a747ca7c202de3626404b696979af5d5d30d6478c68ab53ad93fd94f4e7362ea5dc46c6b02d697c5926f78cf3d21887979891d7439cb898842a11ba11b1749d868e9e96063c3cb50981cb5dc5eeeaca0142a61e2e57cf4f582821ceffe8ab8e72ce6c23d7a892008650dd79cd0ed39c4dc9a7036f216c79e75ee643e2d896679a5d3ebc763785141232511c0722f624831302750a514cefe9820bd40cbf3a4f2e107757bb066684aaaae614c09db2d650a37b46b48c59ed49e2799711942d835deb6bb71e6c25359146ef2e63bd758b9f1ea8a3b9db859339f240635334082276c502d570b8b5a062735ca427d58bee1a41d00eb989108cdb8586bac6db5fa3879dd17847ca49215250badc35563d15a276c99af0d8243cf0f94b643d2d5d673c26e0941b7d39e555b9c82ccb6aec7a263be02be113cf016c1d8c855c5460df32cc2ad90f670fd0c55edb340f50bec8e92e15b88644459dde71eaceafad48eea9a6154bdf0e757620bb317506c82b04633b91cc047083320a57f06e6b2379312527e4317cc018edacb2435d81a55d20eae6831e1d41e5bd1296246a40af6fed707a2fb98485645f4d6ff62f422fd91f99a7c99960d56cf17c24d5ee93d13eeef193e307ec74762607ae29dff70662f1e4edb853f1a5b3a94719ae596da8f95efd6a8062cc57181af278662993728ef36c1ac2be0a20fda4057c1775c05fe501eb4342eb11e490f3b02c96eaf47ca5b14c7c3bc5b087e5175a3c6e268589eba2e32e3e66cbbafd165244219e26d5a8bc7ee3e2fbccdf59cdb33b7abe2ad91f3c37d31a20c1207dffb182dfa5066455908d8bfb3a0c943f40f76eb4de4655c5bd8f3b279a6cef1dd2b4bb8818d3c4a583724c1657c671e197518a5133a545061bd48406023be32e9785468fa2853cb2a2c5d6dbf8f41698dae8df0f0d2114bf3f00797e718b669e11e696fa4d297b0972b493b2043e60007e4ceec51f16a2c2ea7193b7cf98d802732faf1f6cd1fa655089adee154bff20163d62aa9e56939efc1b858ef2c0426d6a8faff847a26a87825511da8ce944b4fcbaac70d48340668fa870002eccff40af82bc46ee3c5a5503dacc0383901fa94b896968e0354dea2d25f1d5bdda0bf344a46a8cc88c56e9d9633f703f19e5a35f1c325ffb3c2fcc304018763acff3c3ea82b7324f3e3991638d6c4cc1503ff73000f39a880205af4cf87d918f2bb006567a3a985f7703ff1c8bf8496473974c70e5e9573bef132bdaadec00c398370bcc8267a9dc302c1c74658f2ba9ffbe536ccc1ed816dfa5f6ba3dc466328a7d27f4871e762fc19d67db6b7fea62c4831c3e929dfdab</script>
+  <div class="hbe hbe-content">
+    <div class="hbe hbe-input hbe-input-default">
+      <input class="hbe hbe-input-field hbe-input-field-default" type="password" id="hbePass">
+      <label class="hbe hbe-input-label hbe-input-label-default" for="hbePass">
+        <span class="hbe hbe-input-label-content hbe-input-label-content-default">Hey, password is required here.</span>
+      </label>
+    </div>
+  </div>
+</div>
+<script data-pjax src="/lib/hbe.js"></script><link href="/css/hbe.style.css" rel="stylesheet" type="text/css"></article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://xiaoeeyu.github.io">xiaoeryu</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://xiaoeeyu.github.io/2025/05/26/%E6%9F%90%E9%BA%A6App%E8%B4%AD%E7%A5%A8%E6%8E%A5%E5%8F%A3%E5%88%86%E6%9E%90-0/">https://xiaoeeyu.github.io/2025/05/26/%E6%9F%90%E9%BA%A6App%E8%B4%AD%E7%A5%A8%E6%8E%A5%E5%8F%A3%E5%88%86%E6%9E%90-0/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来源 <a href="https://xiaoeeyu.github.io" target="_blank">xiaoeryu</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/frida-hook/">frida-hook</a><a class="post-meta__tags" href="/tags/%E5%8D%8F%E8%AE%AE%E5%88%86%E6%9E%90/">协议分析</a><a class="post-meta__tags" href="/tags/App%E9%80%86%E5%90%91/">App逆向</a><a class="post-meta__tags" href="/tags/%E6%8A%93%E5%8C%85/">抓包</a></div><div class="post-share"><div class="social-share" data-image="/img/butterfly-icon.png" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><a class="pagination-related" href="/2025/05/05/%E6%9F%90%E9%BA%A6APP%E8%B4%AD%E7%A5%A8%E6%8E%A5%E5%8F%A3%E5%88%86%E6%9E%90/" title="某麦APP购票接口分析"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info"><div class="info-1"><div class="info-item-1">上一篇</div><div class="info-item-2">某麦APP购票接口分析</div></div><div class="info-2"><div class="info-item-1">  ...</div></div></div></a><a class="pagination-related" href="/2025/05/28/%E6%9F%90%E9%BA%A6%E8%B4%AD%E7%A5%A8Xposed%E8%84%9A%E6%9C%AC%EF%BC%88%E4%B8%80%EF%BC%89/" title="某麦购票Xposed脚本（一）"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-right"><div class="info-1"><div class="info-item-1">下一篇</div><div class="info-item-2">某麦购票Xposed脚本（一）</div></div><div class="info-2"><div class="info-item-1">本文仅研究了某麦app的购票接口，不涉及破盾方法。 本文仅供研究学习使用，请勿用于任何商业和非法用途。否则后果自负。 在之前的文章中我们详细分析了大麦的购票协议接口，并使用了 Python + Frida RPC 的方式成功实现了购票。本文我们尝试将其改为用 Xposed 来实现。 环境设备：pixel 5（Android11已root） app平台：Android app版本：8.10.9 工具：  抓包：Postern + Charles 动态静态分析：jadx、frida LSPosed版本：1.9.2 Magisk版本：26.1  流程拆解先来分解一下我们之前获取订单详情的 frida hook 流程：    构建MtopContext对象作为参数主动调用buildParams获取加密参数  构建MtopContext对象 ​	构造 MtopRequest 对象 ​	构造 MtopBusiness 对象 ​	构造 MtopContext...</div></div></div></a></nav><div class="relatedPosts"><div class="headline"><i class="fas fa-thumbs-up fa-fw"></i><span>相关推荐</span></div><div class="relatedPosts-list"><a class="pagination-related" href="/2025/05/05/%E6%9F%90%E9%BA%A6APP%E8%B4%AD%E7%A5%A8%E6%8E%A5%E5%8F%A3%E5%88%86%E6%9E%90/" title="某麦APP购票接口分析"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2025-05-05</div><div class="info-item-2">某麦APP购票接口分析</div></div><div class="info-2"><div class="info-item-1">  ...</div></div></div></a><a class="pagination-related" href="/2023/07/09/CTF004/" title="CTF004"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2023-07-09</div><div class="info-item-2">CTF004</div></div><div class="info-2"><div class="info-item-1">1. 脱壳用jadx打开之后发现有加壳那先脱壳再分析   看名字是一个_qihoo_的壳，这个呢我们使用反射大师去脱壳，反射大师需要运行在安卓7.1以下的系统上在root过的手机上安装一个_VMOS Pro_模拟一个安卓7.1的系统安装上反射大师和CTF004,注意：反射大师需要重启才能启用然后打开反射大师，选择我们的CTF004并打开   然后点击这个芒星点击 当前ACTIVITY   然后点击写出DEX-&gt;修复Magic-&gt;确定之后去提示的路径处将文件拷贝到物理机，再使用_adb pull_命令拉取下来对脱壳后的文件开始分析。   2. 开始分析分析代码逻辑  进来_MainActivity_之后发现_onCreate_函数都在native层去实现了，那再看看其它的类点进Flag类   进来之后发现这里面有些需要我们注意的点：   1. 有两个key   2....</div></div></div></a><a class="pagination-related" href="/2023/07/09/CTF003/" title="CTF003"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2023-07-09</div><div class="info-item-2">CTF003</div></div><div class="info-2"><div class="info-item-1">  分析函数逻辑打开入口函数后，可以发现把校验函数写在so库里了   IDA分析so库文件那接下来用ida打开_native-lib.so_进行分析，文件打开之后可以直接搜索到这个函数，可以看到如果没有动态加载的话，java层映射到native层的本地函数命名特点Java+包名+函数名   修复参数这个函数解析的看起来比较乱，我们可以修复一下参数类型看会不会好点  在jadx里面看到只传递了一个参数，这里可以看到又三个参数，实际只有第三个参数_a3_才是我们传递的字符串参数，_a1_是JNIEnv*...</div></div></div></a><a class="pagination-related" href="/2023/07/08/CTF005/" title="CTF005"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2023-07-08</div><div class="info-item-2">CTF005</div></div><div class="info-2"><div class="info-item-1">  PS：这个题目比较简单，尝试采用多种不同的方式去获取flag 第一种方式：静态分析用jadx打开进入口点看代码逻辑    看入口点的代码非常简单明了进入case vip分支就算是通过了验证，那我们跟进去看一下它里面有没有校验的函数   进来之后发现它只是用_setContenView_方法加载了一个新的布局，那去看一眼这个布局的xml文件资源文件在res-&gt;layout文件夹里面：进来之后发现flag是一个明文存储的字符串   这个比较简单，再使用改跳转重打包的方式获取flag试一下 第二种方式：重打包使用_AndroidKiller_重打包改一下apk的执行流程：先来分析一下代码看修改哪里才能让我们获取到flag    首先我们点击首页的“点我获取FLAG”按钮之后会进入第一个case，之后会校验a的值大于30才能跳转往else分支充钱，这里可以把跳转改为(a &gt;...</div></div></div></a><a class="pagination-related" href="/2024/09/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E6%9F%90%E6%9F%90%E7%89%9B%E4%BB%94%E5%9F%8E/" title="微信小程序-某某牛仔城"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-09-16</div><div class="info-item-2">微信小程序-某某牛仔城</div></div><div class="info-2"><div class="info-item-1">本文中所有内容仅供研究与学习使用，禁止用于任何商业用途和非法用途，否则后果自负！！！ 本章来分析一个微信小程序的协议，这个小程序的协议本身比较简单。主要是来学习一下分析微信小程序的流程 0x00 环境设备：pixel 5 Android11.0 抓包：Charles + Postern 发包工具：postman、APIfox 0x01 抓包环境配置好了，那么先来抓个包吧    随便选一个领取，这里我们以预览充值中心为例    抓到的包比较多，找不到多翻翻  分析这个协议  member_no：会员编号 type：操作目标的类型，例如这里33是“每日预览充值中心” store_no：字面翻译是商店编号，这里我们抓了几次包都没变过。暂时当它是个固定值 sign：签名是本篇文章要分析的一个重点，看起来像是一个md5值 time：时间戳   经过分析，看起来只有这个sign需要我们进行分析，其它的都可以直接获取或者是固定值      0x02...</div></div></div></a><a class="pagination-related" href="/2024/08/01/%E6%9F%90%E6%98%93%E6%96%B0%E9%97%BB%E9%80%86%E5%90%91/" title="某易新闻逆向"><div class="cover" style="background: var(--default-bg-color)"></div><div class="info text-center"><div class="info-1"><div class="info-item-1"><i class="far fa-calendar-alt fa-fw"></i> 2024-08-01</div><div class="info-item-2">某易新闻逆向</div></div><div class="info-2"><div class="info-item-1">本文中所有内容仅供研究与学习使用，请勿用于任何商业用途和非法用途，否则后果自负！ 环境 App版本：108.1（1807）豌豆荚下载 设备：Pixel XL 抓包工具：Charles + Postern 反汇编工具：jadx-gui 1.5.0、IDA Pro 7.7 hook：frida 12.8.0  抓包  HeaderAdd-To-Queue-Millis	1716155605001 data4-Sent-Millis	1716155605002 Cache-Control	no-cache User-Agent	NewsApp/108.1 Android/8.1.0...</div></div></div></a></div></div></div><div class="aside-content" id="aside-content"><div class="card-widget card-info text-center"><div class="avatar-img"><img src="/img/butterfly-icon.png" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info-name">xiaoeryu</div><div class="author-info-description"></div><div class="site-data"><a href="/archives/"><div class="headline">文章</div><div class="length-num">114</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">94</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">14</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xxxxxx"><i class="fab fa-github"></i><span>Follow Me</span></a></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">This is my Blog</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content toc-div-class" style="display:none"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#0x00-%E7%8E%AF%E5%A2%83"><span class="toc-number">1.</span> <span class="toc-text">0x00 环境</span></a></li><li class="toc-item toc-level-2"><a class="toc-link" href="#0x01-%E4%BF%A1%E6%81%AF%E6%90%9C%E9%9B%86"><span class="toc-number">2.</span> <span class="toc-text">0x01 信息搜集</span></a><ol class="toc-child"><li class="toc-item toc-level-3"><a class="toc-link" href="#1-1-%E6%9F%A5%E5%A3%B3"><span class="toc-number">2.1.</span> <span class="toc-text">1.1. 查壳</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#1-2-%E8%84%B1%E5%A3%B3"><span class="toc-number">2.2.</span> <span class="toc-text">1.2. 脱壳</span></a></li></ol></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/05/28/%E6%9F%90%E9%BA%A6%E8%B4%AD%E7%A5%A8Xposed%E8%84%9A%E6%9C%AC%EF%BC%88%E4%B8%80%EF%BC%89/" title="某麦购票Xposed脚本（一）">某麦购票Xposed脚本（一）</a><time datetime="2025-05-28T06:20:12.000Z" title="发表于 2025-05-28 14:20:12">2025-05-28</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/05/26/%E6%9F%90%E9%BA%A6App%E8%B4%AD%E7%A5%A8%E6%8E%A5%E5%8F%A3%E5%88%86%E6%9E%90-0/" title="某麦App购票接口分析">某麦App购票接口分析</a><time datetime="2025-05-26T14:55:56.000Z" title="发表于 2025-05-26 22:55:56">2025-05-26</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2025/05/05/%E6%9F%90%E9%BA%A6APP%E8%B4%AD%E7%A5%A8%E6%8E%A5%E5%8F%A3%E5%88%86%E6%9E%90/" title="某麦APP购票接口分析">某麦APP购票接口分析</a><time datetime="2025-05-05T08:07:32.000Z" title="发表于 2025-05-05 16:07:32">2025-05-05</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/09/16/%E5%BE%AE%E4%BF%A1%E5%B0%8F%E7%A8%8B%E5%BA%8F-%E6%9F%90%E6%9F%90%E7%89%9B%E4%BB%94%E5%9F%8E/" title="微信小程序-某某牛仔城">微信小程序-某某牛仔城</a><time datetime="2024-09-16T14:14:02.000Z" title="发表于 2024-09-16 22:14:02">2024-09-16</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2024/08/10/%E7%BC%96%E8%AF%91Android13-AOSP/" title="编译Android13-AOSP">编译Android13-AOSP</a><time datetime="2024-08-10T01:40:30.000Z" title="发表于 2024-08-10 09:40:30">2024-08-10</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2019 - 2025 By xiaoeryu</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo 6.3.0</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly 5.3.5</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="日间和夜间模式切换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>
