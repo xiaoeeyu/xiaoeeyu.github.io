@@ -22092,4 +22092,307 @@ Interceptor.attach(Module.findExportByName(null, 'syscall'), {
         <tag>RSA</tag>
       </tags>
   </entry>
+  <entry>
+    <title>绕过某邦企业壳root、frida检测</title>
+    <url>/2025/06/05/%E7%BB%95%E8%BF%87%E6%9F%90%E9%82%A6%E4%BC%81%E4%B8%9A%E5%A3%B3root%E3%80%81frida%E6%A3%80%E6%B5%8B/</url>
+    <content><![CDATA[<p>本文主要分析下某梆企业壳的frida反调试</p>
+<h1 id="环境"><a href="#环境" class="headerlink" title="环境"></a>环境</h1><p>设备：pixel 5（Android11已root）</p>
+<p>app平台：Android</p>
+<p>app版本：4.66.0</p>
+<p>工具：</p>
+<blockquote>
+<p>抓包：Postern + Charles</p>
+<p>LSPosed版本：1.9.2</p>
+<p>Magisk版本：28.1</p>
+</blockquote>
+<h1 id="查壳"><a href="#查壳" class="headerlink" title="查壳"></a>查壳</h1><img src="/2025/06/05/%E7%BB%95%E8%BF%87%E6%9F%90%E9%82%A6%E4%BC%81%E4%B8%9A%E5%A3%B3root%E3%80%81frida%E6%A3%80%E6%B5%8B/image-20250605232717197.png" class="" title="image-20250605232717197">
+
+<ul>
+<li>检测结果表明是梆梆的壳，并且有root、模拟器检测以及各种反调试检测</li>
+</ul>
+<h1 id="绕过检测"><a href="#绕过检测" class="headerlink" title="绕过检测"></a>绕过检测</h1><h2 id="绕过-root-检测"><a href="#绕过-root-检测" class="headerlink" title="绕过 root 检测"></a>绕过 root 检测</h2><img src="/2025/06/05/%E7%BB%95%E8%BF%87%E6%9F%90%E9%82%A6%E4%BC%81%E4%B8%9A%E5%A3%B3root%E3%80%81frida%E6%A3%80%E6%B5%8B/image-20250606005803395.png" class="" title="image-20250606005803395">
+
+<ul>
+<li>对此我们采用隐藏 Magisk + <a href="https://magiskcn.com/shamiko-install.html">Shamiko</a>  的方式来绕过 root 检测</li>
+</ul>
+<img src="/2025/06/05/%E7%BB%95%E8%BF%87%E6%9F%90%E9%82%A6%E4%BC%81%E4%B8%9A%E5%A3%B3root%E3%80%81frida%E6%A3%80%E6%B5%8B/image-20250606010411720.png" class="" title="image-20250606010411720">
+
+<img src="/2025/06/05/%E7%BB%95%E8%BF%87%E6%9F%90%E9%82%A6%E4%BC%81%E4%B8%9A%E5%A3%B3root%E3%80%81frida%E6%A3%80%E6%B5%8B/image-20250606010320680.png" class="" title="image-20250606010320680">
+
+<ul>
+<li>配置好之后再打开 app 就不会检测到设备已经被 root 了</li>
+</ul>
+<h2 id="绕过-frida"><a href="#绕过-frida" class="headerlink" title="绕过 frida"></a>绕过 frida</h2><p>在设备上运行frida-server的时候app会直接闪退</p>
+<img src="/2025/06/05/%E7%BB%95%E8%BF%87%E6%9F%90%E9%82%A6%E4%BC%81%E4%B8%9A%E5%A3%B3root%E3%80%81frida%E6%A3%80%E6%B5%8B/image-20250606011342622.png" class="" title="image-20250606011342622">
+
+<ul>
+<li>我们只是在设备上运行了 frida-server 在没有执行脚本的情况下 app 就会闪退</li>
+</ul>
+<h3 id="端口检测"><a href="#端口检测" class="headerlink" title="端口检测"></a>端口检测</h3><p>那么，可能是对 frida-server 的默认监听端口 <strong>27042</strong> 有检测</p>
+<img src="/2025/06/05/%E7%BB%95%E8%BF%87%E6%9F%90%E9%82%A6%E4%BC%81%E4%B8%9A%E5%A3%B3root%E3%80%81frida%E6%A3%80%E6%B5%8B/image-20250606011913621.png" class="" title="image-20250606011913621">
+
+<ul>
+<li>修改端口后，打开app就不会闪退了</li>
+</ul>
+<p>那接下来尝试执行一下 frida-hook 脚本是否能正常执行</p>
+<img src="/2025/06/05/%E7%BB%95%E8%BF%87%E6%9F%90%E9%82%A6%E4%BC%81%E4%B8%9A%E5%A3%B3root%E3%80%81frida%E6%A3%80%E6%B5%8B/image-20250606012655774.png" class="" title="image-20250606012655774">
+
+<ul>
+<li>可以看到有针对 frida-agent 的检测</li>
+</ul>
+<h3 id="agent-检测"><a href="#agent-检测" class="headerlink" title="agent 检测"></a>agent 检测</h3><p>通过前面查壳的结果可知，梆梆的壳的检测点在 libDexHelper.so 中。</p>
+<p>这里的退出的提示表明是进程中的某个线程杀死了我们的注入。</p>
+<h4 id="hook-pthread-create"><a href="#hook-pthread-create" class="headerlink" title="hook pthread_create"></a>hook <code>pthread_create</code></h4><p>那么我们就先 hook <code>pthread_create</code> 试试看能不能定位检测函数的位置</p>
+<blockquote>
+<p>函数原型：</p>
+<pre><code class="c">int pthread_create(pthread_t *thread,
+                   const pthread_attr_t *attr,
+                   void *(*start_routine)(void *),
+                   void *arg);
+</code></pre>
+<ul>
+<li><p><code>thread</code>: 返回创建的线程 ID。</p>
+</li>
+<li><p><code>attr</code>: 线程属性（可以为 NULL）。</p>
+</li>
+<li><p><code>start_routine</code>: 线程执行函数。</p>
+</li>
+<li><p><code>arg</code>: 传入线程函数的参数。</p>
+</li>
+</ul>
+</blockquote>
+<pre><code class="js">function hook_pthread_create(){
+    var pthC_addr = Module.findExportByName("libc.so", "pthread_create");
+    console.log("pthC_addr &gt;&gt; ", pthC_addr);
+
+    Interceptor.attach(pthC_addr, {
+        onEnter:function(args){
+            console.log(args[2], Process.findModuleByAddress(args[2]).name);
+        }, onLeave:function(retval){
+
+        }
+    });
+}
+
+hook_pthread_create();
+</code></pre>
+<ul>
+<li><p>执行：</p>
+<img src="/2025/06/05/%E7%BB%95%E8%BF%87%E6%9F%90%E9%82%A6%E4%BC%81%E4%B8%9A%E5%A3%B3root%E3%80%81frida%E6%A3%80%E6%B5%8B/image-20250606020127187.png" class="" title="image-20250606020127187">
+
+<ul>
+<li>这里我们的脚本还是被干掉了，那可能是对 <code>pthread_create</code> 这个方法进行了hook检测</li>
+</ul>
+</li>
+</ul>
+<p><code>pthread_create</code> 的调用流程</p>
+<pre><code class="bash">pthread_create()
+   ↓
+分配线程控制块（TCB）、栈空间等
+   ↓
+设置调度策略/属性（可选）
+   ↓
+调用 clone()
+   ↓
+内核创建 task_struct（共享 mm、fs、files、sighand 等）
+   ↓
+新线程执行 start_routine(arg)
+</code></pre>
+<ul>
+<li>那我们尝试调用更深一层的 <code>clone()</code>试试</li>
+</ul>
+<blockquote>
+<p>函数原型：</p>
+<pre><code class="c">int clone(int (*fn)(void *), void *child_stack, int flags, void *arg, 
+          ... /* pid_t *ptid, struct user_desc *tls, pid_t *ctid */ );
+</code></pre>
+<table>
+<thead>
+<tr>
+<th>参数</th>
+<th>含义</th>
+</tr>
+</thead>
+<tbody><tr>
+<td><code>fn</code></td>
+<td>子进程/线程启动后要执行的函数指针，类型为 <code>int (*fn)(void *)</code></td>
+</tr>
+<tr>
+<td><code>child_stack</code></td>
+<td>指向为子线程分配的栈顶（栈向下增长）</td>
+</tr>
+<tr>
+<td><code>flags</code></td>
+<td>控制资源共享与行为的标志位（如 <code>CLONE_VM</code>, <code>CLONE_THREAD</code> 等）</td>
+</tr>
+<tr>
+<td><code>arg</code></td>
+<td>传给 <code>fn</code> 的参数，即 <code>fn(arg)</code></td>
+</tr>
+<tr>
+<td>其余参数（可选）</td>
+<td>只在某些 <code>flags</code> 开启时需要，比如 <code>CLONE_PARENT_SETTID</code>, <code>CLONE_CHILD_SETTID</code>，用于设置 <code>ptid</code>、<code>tls</code>、<code>ctid</code> 等</td>
+</tr>
+</tbody></table>
+</blockquote>
+<p>先试试看能不能找到<code>clone()</code>是在哪个模块中调用的，和它的调用位置</p>
+<pre><code class="js">var clone = Module.findExportByName(null, 'clone');
+Interceptor.attach(clone,{
+    onEnter: function(args){
+        // 获取线程函数地址
+        var thread_func = args[0];
+        // 获取线程函数所在的模块
+        var module_name = Process.findModuleByAddress(thread_func);
+        if(module_name){
+            console.log("Thread function is located in module: " + module_name.name);
+        }
+        // 打印调用栈
+        console.log("Backtrace: ");
+        console.log(Thread.backtrace(this.context, Backtracer.ACCURATE).map(DebugSymbol.fromAddress).join('\n'));
+    }, onLeave:function(retval){
+
+    }
+});
+</code></pre>
+<ul>
+<li><p>执行：<code>frida -H 127.0.0.1:6688 -f com.bybit.app -l test.js </code></p>
+<blockquote>
+<p>执行结果：</p>
+<pre><code class="bash">Spawned `com.bybit.app`. Resuming main thread!                          
+[Remote::com.bybit.app ]-&gt; Thread function is located in module: libc.so
+Backtrace: 
+0x71546cd5d4 libc.so!pthread_create+0x24c
+</code></pre>
+<ul>
+<li>根据打印的结果现在我们去 libc.so 中的<code>pthread_create+0x24c</code>处看看</li>
+</ul>
+<p>直接跳转过去 F5 查看伪代码</p>
+<pre><code class="c++">__int64 __fastcall pthread_create(_QWORD *a1, __int64 a2, __int64 a3, __int64 a4)
+{
+    ...
+
+    *(_QWORD *)(v30 + 96) = a3;
+    
+    ...
+
+    v32 = clone(__pthread_start, v18, 4001536LL, v30, v30 + 16, v22 + 8, v30 + 16);
+}
+</code></pre>
+<img src="/2025/06/05/%E7%BB%95%E8%BF%87%E6%9F%90%E9%82%A6%E4%BC%81%E4%B8%9A%E5%A3%B3root%E3%80%81frida%E6%A3%80%E6%B5%8B/image-20250606025528774.png" class="" title="image-20250606025528774">
+
+<ul>
+<li>根据上述代码可知<ul>
+<li><code>a3</code> 就是线程执行函数</li>
+<li><code>v30 + 96</code> 是线程函数</li>
+</ul>
+</li>
+</ul>
+</blockquote>
+</li>
+</ul>
+<p>那接下来就获取一下线程函数的位置</p>
+<pre><code class="js">var clone = Module.findExportByName('libc.so', 'clone');
+Interceptor.attach(clone, {
+    onEnter: function(args) {
+        // 只有当 args[3] 不为 NULL 时，才说明上层确实把 “线程控制块指针” 传进来了
+        if(args[3] != 0){
+            // 真正的用户线程函数地址
+            var addr = args[3].add(96).readPointer()
+            // 根据线程函数地址 addr，找它属于哪个模块
+            var so_name = Process.findModuleByAddress(addr).name;
+            // 获取该 so 在进程里的基址
+            var so_base = Module.getBaseAddress(so_name);
+            // 获取相对于 so_base 的偏移
+            var offset = (addr - so_base);
+            console.log("===============&gt;", so_name, addr,offset, offset.toString(16));
+        }
+    },
+    onLeave: function(retval) {
+ 
+    }
+});
+</code></pre>
+<ul>
+<li><p>执行结果：</p>
+<img src="/2025/06/05/%E7%BB%95%E8%BF%87%E6%9F%90%E9%82%A6%E4%BC%81%E4%B8%9A%E5%A3%B3root%E3%80%81frida%E6%A3%80%E6%B5%8B/image-20250606031739164.png" class="" title="image-20250606031739164">
+
+<ul>
+<li>打印出了 libDexHelper.so 创建的几个线程的位置</li>
+</ul>
+</li>
+</ul>
+<p>把 libDexHelper.so 创建的几个线程都 nop 掉试试</p>
+<pre><code class="js">function hook_dlopen(so_name) {
+    // 参数 args[0] 就是即将要加载的 so 文件路径（C 字符串指针）
+    Interceptor.attach(Module.findExportByName(null, "android_dlopen_ext"), {
+        onEnter: function (args) {
+            // args[0] 是一个指向 char* 的指针，指向要加载的 so 路径
+            var pathptr = args[0];
+            if (pathptr !== undefined &amp;&amp; pathptr != null) {
+                // 读取这个路径对应的 C 字符串
+                var path = ptr(pathptr).readCString();
+                // 如果路径里包含了我们关心的 so 名称，就把 this.match 标记为 true
+                if (path.indexOf(so_name) !== -1) {
+                    this.match = true;
+                }
+            }
+        },
+        onLeave: function (retval) {
+            // 当 android_dlopen_ext 返回时，如果 onEnter 已经标记了 match，就说明 libDexHelper.so 加载完毕
+            if (this.match) {
+                console.log(so_name + " 加载成功");
+
+                // 找到 libDexHelper.so 在进程里实际映射的基址（Memory 仓库地址）
+                var base = Module.findBaseAddress(so_name);
+                if (base === null) {
+                    console.error("！！加载成功，但未找到基址：", so_name);
+                    return;
+                }
+
+                // 下面对之前打印出来的几个偏移（相对于基址）位置，逐个进行 NOP 补丁
+                patch_func_nop(base.add(346132));
+                patch_func_nop(base.add(332548));
+                patch_func_nop(base.add(376884));
+                patch_func_nop(base.add(378220));
+                patch_func_nop(base.add(403656));
+            }
+        }
+    });
+}
+
+function patch_func_nop(addr) {
+    // Memory.patchCode 用来在指定地址范围内进行写入，并在写入结束后自动恢复页面权限
+    // 这里长度写 8，表示我们要覆盖 8 个字节（ARM64 下两条指令分别占 4 字节）
+    Memory.patchCode(addr, 8, function (code) {
+        // ARM64 下的 NOP 指令编码：0x1F2003D5，但有时写成 0xE0 0x03 0x00 0xAA / 0xC0 0x03 0x5F 0xD6
+        // 这里我们分两次写，分别覆盖两条指令：
+        // 第一条：mov x0, x0 (等同于 nop) -&gt; 0xE00300AA
+        code.writeByteArray([0xE0, 0x03, 0x00, 0xAA]);
+        // 第二条：nop           -&gt; 0xC0035FD6
+        code.writeByteArray([0xC0, 0x03, 0x5F, 0xD6]);
+
+        console.log("patch code at " + addr);
+    });
+}
+
+hook_dlopen("libDexHelper.so");
+</code></pre>
+<ul>
+<li><p>执行结果：</p>
+<img src="/2025/06/05/%E7%BB%95%E8%BF%87%E6%9F%90%E9%82%A6%E4%BC%81%E4%B8%9A%E5%A3%B3root%E3%80%81frida%E6%A3%80%E6%B5%8B/image-20250606033607430.png" class="" title="image-20250606033607430">
+
+<ul>
+<li>搞定，现在 app 就不会检测到 frida-agent 闪退了。</li>
+</ul>
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>Android逆向</category>
+      </categories>
+      <tags>
+        <tag>App逆向</tag>
+        <tag>Frida反调试</tag>
+      </tags>
+  </entry>
 </search>
