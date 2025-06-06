@@ -22282,15 +22282,15 @@ Backtrace:
 
 <ul>
 <li>根据上述代码可知<ul>
-<li><code>a3</code> 就是线程执行函数</li>
-<li><code>v30 + 96</code> 是线程函数</li>
+<li><code>a3</code>： 对应 start_routine（线程回调函数）</li>
+<li><code>*(_QWORD *)(v30 + 96) = a3 </code>： 保存 start_routine 到新线程的内部结构中</li>
 </ul>
 </li>
 </ul>
 </blockquote>
 </li>
 </ul>
-<p>那接下来就获取一下线程函数的位置</p>
+<p>那接下来就获取一下 “线程控制块” 的位置</p>
 <pre><code class="js">var clone = Module.findExportByName('libc.so', 'clone');
 Interceptor.attach(clone, {
     onEnter: function(args) {
@@ -22386,6 +22386,12 @@ hook_dlopen("libDexHelper.so");
 </ul>
 </li>
 </ul>
+<h1 id="脱壳"><a href="#脱壳" class="headerlink" title="脱壳"></a>脱壳</h1><p>脱壳试了frida-dexdump、fart 8没脱掉，暂时搞不定</p>
+<img src="/2025/06/05/%E7%BB%95%E8%BF%87%E6%9F%90%E9%82%A6%E4%BC%81%E4%B8%9A%E5%A3%B3root%E3%80%81frida%E6%A3%80%E6%B5%8B/image-20250606152002530.png" class="" title="image-20250606152002530">
+
+
+
+<p>fart 8也是启动 app 就会闪退</p>
 ]]></content>
       <categories>
         <category>Android逆向</category>
